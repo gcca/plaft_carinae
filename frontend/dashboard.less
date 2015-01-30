@@ -1,0 +1,69 @@
+@import 'base/base'
+
+// h6 + p {
+//     text-align: justify;
+//     padding-right: 21px;
+//     margin-top: 3px;
+// }
+
+body {
+  padding-top: 50px;
+  padding-bottom: 20px;
+}
+
+.jumbotron-options a {
+  margin-right: 16px;
+  margin-bottom: 8px;
+}
+
+.navbar-form .form-group {
+  margin-right: 4px;
+}
+
+.publicity h2 + p {
+  text-align: justify;
+}
+
+
+/**
+ * Desktop
+ */
+.module {
+  padding: 0;
+}
+
+/**
+ * Shareholders
+ */
+@media (min-width: 992px) {
+  .col-shareholder-1,
+  .col-shareholder-2,
+  .col-shareholder-3,
+  .col-shareholder-4,
+  .col-shareholder-5,
+  .col-shareholder-header-1,
+  .col-shareholder-header-2,
+  .col-shareholder-header-3,
+  .col-shareholder-header-4 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+    float: left;
+  }
+
+  .col-shareholder-header-1 { width: 25%; }
+  .col-shareholder-header-2 { width: 22%; }
+  .col-shareholder-header-3 { width: 30%; }
+  .col-shareholder-header-4 {
+    label { padding-left: 25%; }
+    width: 23%; }
+
+  .col-shareholder-1 { width: 25%; }
+  .col-shareholder-2 { width: 22%; }
+  .col-shareholder-3 { width: 35%; }
+  .col-shareholder-4 { width: 11%; }
+  .col-shareholder-5 { width: 7%; }
+}
+
+/* vim: ts=2 sw=2 sts=2 et: */

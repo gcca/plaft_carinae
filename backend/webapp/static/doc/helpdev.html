@@ -1,0 +1,678 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Desarrollo &mdash; lac 1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/gcca.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <link rel="top" title="lac 1 documentation" href="index.html" />
+    <link rel="prev" title="Ciclo de desarrollo" href="devcicle.html" /><link href='http://fonts.googleapis.com/css?family=Source+Code+Pro|Open+Sans:300italic,400italic,700italic,400,300,700' rel='stylesheet' type='text/css'>
+<link href="_static/solarized-dark.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Índice General"
+             accesskey="I">índice</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >módulos</a> |</li>
+        <li class="right" >
+          <a href="devcicle.html" title="Ciclo de desarrollo"
+             accesskey="P">anterior</a> |</li>
+        <li><a href="index.html">lac 1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Contenidos</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Desarrollo</a><ul>
+<li><a class="reference internal" href="#module-application.service">Casos de Uso</a></li>
+<li><a class="reference internal" href="#module-domain.shared">Diseño de dominio</a></li>
+<li><a class="reference internal" href="#module-interface">Interface: <em>Handlers</em></a></li>
+<li><a class="reference internal" href="#module-infraestructure.utils">Infraestructure</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Tema anterior</h4>
+  <p class="topless"><a href="devcicle.html"
+                        title="Capítulo anterior">Ciclo de desarrollo</a></p>
+  <h3>Esta página</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/helpdev.txt"
+           rel="nofollow">Enseñar el código</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Búsqueda rápida</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Ir a" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="desarrollo">
+<h1>Desarrollo<a class="headerlink" href="#desarrollo" title="Enlazar permanentemente con este título">¶</a></h1>
+<div class="section" id="module-application.service">
+<span id="casos-de-uso"></span><h2>Casos de Uso<a class="headerlink" href="#module-application.service" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Application Layer: Services</p>
+<p>TODO(...): requestLastDeclaration, DispatchService</p>
+<dl class="class">
+<dt id="application.service.CustomerService">
+<em class="property">class </em><tt class="descclassname">application.service.</tt><tt class="descname">CustomerService</tt><a class="reference internal" href="_modules/application/service.html#CustomerService"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#application.service.CustomerService" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Customer Service.</p>
+<dl class="method">
+<dt id="application.service.CustomerService.createDeclaration">
+<tt class="descname">createDeclaration</tt><big>(</big><em>id</em>, <em>declaration_dto</em><big>)</big><a class="reference internal" href="_modules/application/service.html#CustomerService.createDeclaration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#application.service.CustomerService.createDeclaration" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Customer creates new delcaration.</p>
+<p>When customer creates a declaration, last declaration attribute
+of customer must be updated with the declaration reference.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>id:</dt>
+<dd>Customer identifier.</dd>
+<dt>declaration_dto:</dt>
+<dd>Declaration data transfer object.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>A declaration entity.</dd>
+<dt>Raises:</dt>
+<dd><dl class="first last docutils">
+<dt>StoreFailedError:</dt>
+<dd>Storing the declaration.</dd>
+<dt>BadArgumentError:</dt>
+<dd><cite>id</cite> isn&#8217;t integer.</dd>
+<dt>BadValueError:</dt>
+<dd>A error ocurred creating a declaration with bad attributes
+value or types.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="application.service.CustomerService.newCustomer">
+<tt class="descname">newCustomer</tt><big>(</big><em>dto</em><big>)</big><a class="reference internal" href="_modules/application/service.html#CustomerService.newCustomer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#application.service.CustomerService.newCustomer" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Create a customer.</p>
+<p>Create new customer from data transfer object.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>dto:</dt>
+<dd>Customer data transfer object.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>A customer identifier from datastore.</dd>
+<dt>Raises:</dt>
+<dd><dl class="first last docutils">
+<dt>SpecificationError:</dt>
+<dd>A error occurred unsatisfying domain specification.
+When customer exists in datastore or provided a invalid
+document number.</dd>
+<dt>BadValueError:</dt>
+<dd>A error ocurred creating a customer with bad attributes
+value or types.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="application.service.CustomerService.requestCustomer">
+<tt class="descname">requestCustomer</tt><big>(</big><em>documentNumber</em><big>)</big><a class="reference internal" href="_modules/application/service.html#CustomerService.requestCustomer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#application.service.CustomerService.requestCustomer" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Fetch customer from datastore.</p>
+<p>Retrieve a customer entity, given the identification document number.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>documentNumber:</dt>
+<dd>Identification document number (DNI, RUC, PA, CA, ...)</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>A customer entity to the corresponding document number provided.</dd>
+<dt>Raises:</dt>
+<dd><dl class="first last docutils">
+<dt>SpecificationError:</dt>
+<dd>A error occurred unsatisfying domain specification.
+The requests raises when the document number is invalid.</dd>
+<dt>NotFoundError:</dt>
+<dd>An error occurred searching a customer by document number.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="application.service.CustomerService.requestLastDeclaration">
+<tt class="descname">requestLastDeclaration</tt><big>(</big><em>dto</em><big>)</big><a class="reference internal" href="_modules/application/service.html#CustomerService.requestLastDeclaration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#application.service.CustomerService.requestLastDeclaration" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Fetch lastDeclaration attribute from Customer entity.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>dto:</dt>
+<dd>Customer data transfer object. It&#8217;s use like a filter by
+attributes with exactly match.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>A declaration entity.</dd>
+<dt>Raises:</dt>
+<dd><dl class="first last docutils">
+<dt>NotFoundError:</dt>
+<dd>Searching customer.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="application.service.CustomerService.updateCustomer">
+<tt class="descname">updateCustomer</tt><big>(</big><em>id</em>, <em>dto</em><big>)</big><a class="reference internal" href="_modules/application/service.html#CustomerService.updateCustomer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#application.service.CustomerService.updateCustomer" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Update customer.</p>
+<p>Update customer info</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>id:</dt>
+<dd>Customer identifier.</dd>
+<dt>dto:</dt>
+<dd>Customer data transfer object.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>None.</dd>
+<dt>Raises:</dt>
+<dd><dl class="first last docutils">
+<dt>SpecificationError:</dt>
+<dd>A error occurred providing a invalid document number,
+updating a nonexistent customer.</dd>
+<dt>NotFoundError:</dt>
+<dd>A error occurred searching for nonexistent customer.</dd>
+<dt>BadArgumentError:</dt>
+<dd><cite>id</cite> isn&#8217;t integer.</dd>
+<dt>BadValueError:</dt>
+<dd>A error ocurred updating a customer with bad attributes
+value or types.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="application.service.DeclarationService">
+<em class="property">class </em><tt class="descclassname">application.service.</tt><tt class="descname">DeclarationService</tt><a class="reference internal" href="_modules/application/service.html#DeclarationService"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#application.service.DeclarationService" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Declaration Service.</p>
+<dl class="method">
+<dt id="application.service.DeclarationService.requestDeclaration">
+<tt class="descname">requestDeclaration</tt><big>(</big><em>trackingId</em><big>)</big><a class="reference internal" href="_modules/application/service.html#DeclarationService.requestDeclaration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#application.service.DeclarationService.requestDeclaration" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Fetch declaration from datastore.</p>
+<p>Retrieve a declaration entity, given a tracking identifier.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>trackingId:</dt>
+<dd>Declaration tracking identifier.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>A declaration entity to the corresponding tracking identifier.</dd>
+<dt>Raises:</dt>
+<dd><dl class="first last docutils">
+<dt>SpecificationError:</dt>
+<dd>A error occurred creating declaration with bad tracking
+identifier.</dd>
+<dt>NotFoundError:</dt>
+<dd>An error occurred searching a declaration by tracking
+identifier.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-domain.shared">
+<span id="diseno-de-dominio"></span><h2>Diseño de dominio<a class="headerlink" href="#module-domain.shared" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Pattern interfaces and support code for the domain layer</p>
+<dl class="class">
+<dt id="domain.shared.AbstractSpecification">
+<em class="property">class </em><tt class="descclassname">domain.shared.</tt><tt class="descname">AbstractSpecification</tt><a class="reference internal" href="_modules/domain/shared.html#AbstractSpecification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.AbstractSpecification" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Abstract base implementation of composite <cite>Specification</cite> with default
+implementations for <cite>and</cite>, <cite>or</cite> and <cite>not</cite>.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="domain.shared.AndSpecification">
+<em class="property">class </em><tt class="descclassname">domain.shared.</tt><tt class="descname">AndSpecification</tt><big>(</big><em>spec1</em>, <em>spec2</em><big>)</big><a class="reference internal" href="_modules/domain/shared.html#AndSpecification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.AndSpecification" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>AND specification, used to create a new specification that is the AND
+of two other specifications.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="domain.shared.DomainEvent">
+<em class="property">class </em><tt class="descclassname">domain.shared.</tt><tt class="descname">DomainEvent</tt><a class="reference internal" href="_modules/domain/shared.html#DomainEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.DomainEvent" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>A domain event is something that is unique, but does not have
+a lifecycle.
+The identity may be explicit, for example the sequence number
+of a payment, or it could be derived from various aspects
+of the event such as where, when and what has happened.</p>
+<dl class="method">
+<dt id="domain.shared.DomainEvent.sameEventAs">
+<tt class="descname">sameEventAs</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/domain/shared.html#DomainEvent.sameEventAs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.DomainEvent.sameEventAs" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>(DomainEvent) -&gt; bool</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>other &#8211; The other domain event</dd>
+<dt>Returns:</dt>
+<dd><cite>True</cite> if the given domain event and this event
+are regarded as being the same event</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="domain.shared.Entity">
+<em class="property">class </em><tt class="descclassname">domain.shared.</tt><tt class="descname">Entity</tt><a class="reference internal" href="_modules/domain/shared.html#Entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.Entity" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>An entity</p>
+<dl class="attribute">
+<dt id="domain.shared.Entity.identity">
+<tt class="descname">identity</tt><a class="reference internal" href="_modules/domain/shared.html#Entity.identity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.Entity.identity" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>(Entity) -&gt; ID</p>
+<p>Entities have an identity</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>The identity of this entity</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="domain.shared.Entity.sameIdentityAs">
+<tt class="descname">sameIdentityAs</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/domain/shared.html#Entity.sameIdentityAs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.Entity.sameIdentityAs" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>(Entity, Entity) -&gt; bool</p>
+<p>Entities compare by identity, not by attributes</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>other &#8211; The other entity</dd>
+<dt>Returns:</dt>
+<dd><cite>True</cite> if the identities are the same,
+regardles of other attributes</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="domain.shared.EntitySupport">
+<em class="property">class </em><tt class="descclassname">domain.shared.</tt><tt class="descname">EntitySupport</tt><a class="reference internal" href="_modules/domain/shared.html#EntitySupport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.EntitySupport" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Base class for entities</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="domain.shared.Identity">
+<em class="property">class </em><tt class="descclassname">domain.shared.</tt><tt class="descname">Identity</tt><a class="reference internal" href="_modules/domain/shared.html#Identity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.Identity" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Every class that inherits from <cite>EntitySupport</cite> must have
+exactly one field annotated with this annotation</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="domain.shared.NotSpecification">
+<em class="property">class </em><tt class="descclassname">domain.shared.</tt><tt class="descname">NotSpecification</tt><big>(</big><em>spec1</em><big>)</big><a class="reference internal" href="_modules/domain/shared.html#NotSpecification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.NotSpecification" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Not decorator, used to create a new specification that is the inverse
+(NOT) the given specification.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="domain.shared.OrSpecification">
+<em class="property">class </em><tt class="descclassname">domain.shared.</tt><tt class="descname">OrSpecification</tt><big>(</big><em>spec1</em>, <em>spec2</em><big>)</big><a class="reference internal" href="_modules/domain/shared.html#OrSpecification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.OrSpecification" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>OR specification, used to create a new specification that is the OR
+of two other specifications.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="domain.shared.Specification">
+<em class="property">class </em><tt class="descclassname">domain.shared.</tt><tt class="descname">Specification</tt><a class="reference internal" href="_modules/domain/shared.html#Specification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.Specification" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Specification interface</p>
+<p>Use AbstractSpecification as base for creating specifications,
+and only the method isSatisfiedBy(object) must be implemented.</p>
+<dl class="method">
+<dt id="domain.shared.Specification.And">
+<tt class="descname">And</tt><big>(</big><em>specification</em><big>)</big><a class="reference internal" href="_modules/domain/shared.html#Specification.And"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.Specification.And" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>(Specification) - Specification</p>
+<p>Creates a new specification that is the AND operation
+of <cite>this</cite> specification and another specification.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>specification &#8211; Specification to AND</dd>
+<dt>Returns:</dt>
+<dd>A new specification</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="domain.shared.Specification.Not">
+<tt class="descname">Not</tt><big>(</big><em>specification</em><big>)</big><a class="reference internal" href="_modules/domain/shared.html#Specification.Not"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.Specification.Not" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>(Specification) - Specification</p>
+<p>Creates a new specification that is the NOT operation
+of <cite>this</cite> specification.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>specification &#8211; Specification to NOT</dd>
+<dt>Returns:</dt>
+<dd>A new specification</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="domain.shared.Specification.Or">
+<tt class="descname">Or</tt><big>(</big><em>specification</em><big>)</big><a class="reference internal" href="_modules/domain/shared.html#Specification.Or"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.Specification.Or" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>(Specification) - Specification</p>
+<p>Creates a new specification that is the OR operation
+of <cite>this</cite> specification and another specification.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>specification &#8211; Specification to OR</dd>
+<dt>Returns:</dt>
+<dd>A new specification</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="domain.shared.Specification.isSatisfiedBy">
+<tt class="descname">isSatisfiedBy</tt><big>(</big><em>o</em><big>)</big><a class="reference internal" href="_modules/domain/shared.html#Specification.isSatisfiedBy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.Specification.isSatisfiedBy" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>(object) -&gt; bool</p>
+<p>Check if <cite>object</cite> is satisfied by the specification.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>o &#8211; Object to test</dd>
+<dt>Returns:</dt>
+<dd><cite>True</cite> if <cite>object</cite> satisfies the specification</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="domain.shared.Specification.isntSatisfiedBy">
+<tt class="descname">isntSatisfiedBy</tt><big>(</big><em>o</em><big>)</big><a class="reference internal" href="_modules/domain/shared.html#Specification.isntSatisfiedBy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.Specification.isntSatisfiedBy" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>(object) -&gt; bool</p>
+<p>Check if <cite>object</cite> is not satisfied by the specification.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>o &#8211; Object to test</dd>
+<dt>Returns:</dt>
+<dd><cite>True</cite> if <cite>object</cite> does not satisfies the specification</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="domain.shared.ValueObject">
+<em class="property">class </em><tt class="descclassname">domain.shared.</tt><tt class="descname">ValueObject</tt><a class="reference internal" href="_modules/domain/shared.html#ValueObject"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.ValueObject" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>A value object</p>
+<dl class="method">
+<dt id="domain.shared.ValueObject.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/domain/shared.html#ValueObject.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.ValueObject.copy" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>(ValueObject) -&gt; ValueObject</p>
+<p>Value objects can be freely copied</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>A safe, deep copy of this value object</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="domain.shared.ValueObject.sameValueAs">
+<tt class="descname">sameValueAs</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/domain/shared.html#ValueObject.sameValueAs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.ValueObject.sameValueAs" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>(ValueObject, ValueObject) -&gt; bool</p>
+<p>Value objects compare by the values of their attributes,
+they don&#8217;t have an identity</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>other &#8211; The other value object</dd>
+<dt>Returns:</dt>
+<dd><cite>True</cite> if the given value object&#8217;s
+and this value object&#8217;s attributes are the same</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="domain.shared.ValueObjectSupport">
+<em class="property">class </em><tt class="descclassname">domain.shared.</tt><tt class="descname">ValueObjectSupport</tt><a class="reference internal" href="_modules/domain/shared.html#ValueObjectSupport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.ValueObjectSupport" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Base class for value objects</p>
+<dl class="method">
+<dt id="domain.shared.ValueObjectSupport.equal">
+<tt class="descname">equal</tt><big>(</big><em>o</em><big>)</big><a class="reference internal" href="_modules/domain/shared.html#ValueObjectSupport.equal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.ValueObjectSupport.equal" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Args:</dt>
+<dd>o &#8211; other object</dd>
+<dt>Returns:</dt>
+<dd><cite>True</cite> is other object has the same value as this value object</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="domain.shared.ValueObjectSupport.hashCode">
+<tt class="descname">hashCode</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/domain/shared.html#ValueObjectSupport.hashCode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.ValueObjectSupport.hashCode" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Using a local variable to ensure that we only do a single
+read of the cachedHashCode field, to avoid race conditions.
+It doesn&#8217;t matter if several threads compute the hash code
+and overwrite each other, but it&#8217;s important that
+we never return 0, which could happen with multiple reads
+of the cachedHashCode field.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="domain.shared.ValueObjectSupport.sameValueAs">
+<tt class="descname">sameValueAs</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/domain/shared.html#ValueObjectSupport.sameValueAs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.shared.ValueObjectSupport.sameValueAs" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Args:</dt>
+<dd>other &#8211; The other value object</dd>
+<dt>Returns:</dt>
+<dd><cite>True</cite> if all non-transient fields are equal</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-domain.gz"></span><p>Gz</p>
+<dl class="exception">
+<dt id="domain.gz.BadValueError">
+<em class="property">exception </em><tt class="descclassname">domain.gz.</tt><tt class="descname">BadValueError</tt><a class="reference internal" href="_modules/domain/gz.html#BadValueError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.gz.BadValueError" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Raised by models when set bad values attributes.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="domain.gz.DuplicateError">
+<em class="property">exception </em><tt class="descclassname">domain.gz.</tt><tt class="descname">DuplicateError</tt><a class="reference internal" href="_modules/domain/gz.html#DuplicateError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.gz.DuplicateError" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Raised by service when the entity exists.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="domain.gz.EntityMixIn">
+<em class="property">class </em><tt class="descclassname">domain.gz.</tt><tt class="descname">EntityMixIn</tt><a class="reference internal" href="_modules/domain/gz.html#EntityMixIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.gz.EntityMixIn" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Base Model</p>
+<dl class="attribute">
+<dt id="domain.gz.EntityMixIn.className">
+<tt class="descname">className</tt><a class="reference internal" href="_modules/domain/gz.html#EntityMixIn.className"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.gz.EntityMixIn.className" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>() -&gt; str</p>
+<p>Return class name from internal user hierarchy</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">exporterObject</span><span class="o">.</span><span class="n">classname</span>
+<span class="go">&#39;Exporter&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">customsbrokerObject</span><span class="o">.</span><span class="n">classname</span>
+<span class="go">&#39;CustomsBroker&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">customsWarehouseObject</span><span class="o">.</span><span class="n">classname</span>
+<span class="go">&#39;CustomsWarehouse&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="domain.gz.EntityMixIn.dict">
+<tt class="descname">dict</tt><a class="reference internal" href="_modules/domain/gz.html#EntityMixIn.dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.gz.EntityMixIn.dict" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>() -&gt; User like dict</p>
+<p>To serialize and template context</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="n">email</span> <span class="o">=</span> <span class="s">&#39;gcca@gcca.tk&#39;</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="n">password</span> <span class="o">=</span> <span class="s">&#39;cristHian Gz. (gcca)&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">user</span><span class="o">.</span><span class="n">dict</span>
+<span class="go">{</span>
+<span class="go">email: &#39;gcca@gcca.tk&#39;,</span>
+<span class="go">password: &#39;cristHian Gz. (gcca)&#39;</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="domain.gz.EntityMixIn.id">
+<tt class="descname">id</tt><a class="reference internal" href="_modules/domain/gz.html#EntityMixIn.id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.gz.EntityMixIn.id" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>()  -&gt; int</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="domain.gz.EntityMixIn.json">
+<tt class="descname">json</tt><a class="reference internal" href="_modules/domain/gz.html#EntityMixIn.json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.gz.EntityMixIn.json" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>() -&gt; str</p>
+<p>Object to JSON str</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">exporter</span> <span class="o">=</span> <span class="n">Exporter</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">email</span> <span class="o">=</span> <span class="s">&#39;gcca@gcca.tk&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">password</span><span class="o">=</span><span class="s">&#39;cristHian Gz. (gcca)&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">exporter</span><span class="o">.</span><span class="n">json</span>
+<span class="go">&#39;{&quot;email&quot;: &quot;gcca@gcca.tk&quot;, &quot;password&quot;: &quot;cristHian Gz. (gcca)&quot;}&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="domain.gz.EntityMixIn.new">
+<em class="property">classmethod </em><tt class="descname">new</tt><big>(</big><em>object</em><big>)</big><a class="reference internal" href="_modules/domain/gz.html#EntityMixIn.new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.gz.EntityMixIn.new" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>(request_object) -&gt; Model</p>
+<p>Creates new model from request object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="domain.gz.EntityMixIn.update">
+<tt class="descname">update</tt><big>(</big><em>object</em><big>)</big><a class="reference internal" href="_modules/domain/gz.html#EntityMixIn.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.gz.EntityMixIn.update" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>(request_object) -&gt; Model</p>
+<p>Updates model from request object</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="domain.gz.Error">
+<em class="property">exception </em><tt class="descclassname">domain.gz.</tt><tt class="descname">Error</tt><a class="reference internal" href="_modules/domain/gz.html#Error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.gz.Error" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Base model error type.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="domain.gz.NotFoundError">
+<em class="property">exception </em><tt class="descclassname">domain.gz.</tt><tt class="descname">NotFoundError</tt><a class="reference internal" href="_modules/domain/gz.html#NotFoundError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.gz.NotFoundError" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Raised by service when the requested entity is not found.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="domain.gz.SpecificationError">
+<em class="property">exception </em><tt class="descclassname">domain.gz.</tt><tt class="descname">SpecificationError</tt><big>(</big><em>msg</em>, <em>specification=&lt;class 'domain.shared.AbstractSpecification'&gt;</em>, <em>*a</em>, <em>**k</em><big>)</big><a class="reference internal" href="_modules/domain/gz.html#SpecificationError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.gz.SpecificationError" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Raised by specification when is not satisfied at domain layer.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="domain.gz.StoreFailedError">
+<em class="property">exception </em><tt class="descclassname">domain.gz.</tt><tt class="descname">StoreFailedError</tt><a class="reference internal" href="_modules/domain/gz.html#StoreFailedError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#domain.gz.StoreFailedError" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Raised by repository store method when entity could not be stored.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-interface">
+<span id="interface-handlers"></span><h2>Interface: <em>Handlers</em><a class="headerlink" href="#module-interface" title="Enlazar permanentemente con este título">¶</a></h2>
+<dl class="class">
+<dt id="interface.BaseHandler">
+<em class="property">class </em><tt class="descclassname">interface.</tt><tt class="descname">BaseHandler</tt><big>(</big><em>*a</em>, <em>**k</em><big>)</big><a class="reference internal" href="_modules/interface.html#BaseHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#interface.BaseHandler" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Base Handler</p>
+<dl class="method">
+<dt id="interface.BaseHandler.safe_put">
+<tt class="descname">safe_put</tt><big>(</big><em>model</em><big>)</big><a class="reference internal" href="_modules/interface.html#BaseHandler.safe_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#interface.BaseHandler.safe_put" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>(Model) -&gt; db.Key or NoneType
+If exception, return <cite>None</cite></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-infraestructure.utils">
+<span id="infraestructure"></span><h2>Infraestructure<a class="headerlink" href="#module-infraestructure.utils" title="Enlazar permanentemente con este título">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Índice General"
+             >índice</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >módulos</a> |</li>
+        <li class="right" >
+          <a href="devcicle.html" title="Ciclo de desarrollo"
+             >anterior</a> |</li>
+        <li><a href="index.html">lac 1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, cristHian Gz. (gcca).
+    Created by <a href="https://launchpad.net/~gcca">(gcca)</a>
+    </div>
+  </body>
+</html>

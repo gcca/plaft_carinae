@@ -1,0 +1,481 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>domain.gz &mdash; lac 1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/gcca.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/translations.js"></script>
+    <link rel="top" title="lac 1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /><link href='http://fonts.googleapis.com/css?family=Source+Code+Pro|Open+Sans:300italic,400italic,700italic,400,300,700' rel='stylesheet' type='text/css'>
+<link href="../../_static/solarized-dark.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Índice General"
+             accesskey="I">índice</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >módulos</a> |</li>
+        <li><a href="../../index.html">lac 1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Búsqueda rápida</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Ir a" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for domain.gz</h1><div class="highlight"><pre>
+<span class="c"># encoding: utf-8</span>
+<span class="sd">&quot;&quot;&quot;Gz &quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">google.appengine.ext.db</span> <span class="kn">import</span> <span class="n">TransactionFailedError</span><span class="p">,</span> <span class="n">Text</span>
+<span class="kn">from</span> <span class="nn">google.appengine.ext.db.polymodel</span> <span class="kn">import</span> <span class="n">_ClassKeyProperty</span>
+<span class="kn">from</span> <span class="nn">google.appengine.ext</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">infraestructure.utils</span> <span class="kn">import</span> <span class="n">jsondumps</span><span class="p">,</span> <span class="n">jsonloads</span><span class="p">,</span> <span class="n">logging</span><span class="p">,</span> <span class="n">Dto</span>
+<span class="kn">from</span> <span class="nn">domain.shared</span> <span class="kn">import</span> <span class="n">Entity</span> <span class="k">as</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">AbstractSpecification</span>
+
+<span class="n">StringProperty</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringProperty</span>
+<span class="n">EmailProperty</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">EmailProperty</span>
+<span class="n">DateTimeProperty</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">DateTimeProperty</span>
+<span class="n">DateProperty</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">DateProperty</span>
+<span class="n">BlobProperty</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">BlobProperty</span>
+<span class="n">GeoPtProperty</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">GeoPtProperty</span>
+<span class="n">CategoryProperty</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">CategoryProperty</span>
+<span class="n">ReferenceProperty</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">ReferenceProperty</span>
+<span class="n">BooleanProperty</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">BooleanProperty</span>
+<span class="n">TextProperty</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">TextProperty</span>
+<span class="n">ListProperty</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">ListProperty</span>
+<span class="n">IntegerProperty</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">IntegerProperty</span>
+<span class="n">FloatProperty</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">FloatProperty</span>
+<span class="n">StringListProperty</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringListProperty</span>
+<span class="n">UnindexedProperty</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">UnindexedProperty</span>
+
+<span class="c"># ----------</span>
+<span class="c"># Exceptions</span>
+<span class="c"># ----------</span>
+<div class="viewcode-block" id="Error"><a class="viewcode-back" href="../../helpdev.html#domain.gz.Error">[docs]</a><span class="k">class</span> <span class="nc">Error</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Error</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base model error type. &quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="StoreFailedError"><a class="viewcode-back" href="../../helpdev.html#domain.gz.StoreFailedError">[docs]</a><span class="k">class</span> <span class="nc">StoreFailedError</span><span class="p">(</span><span class="n">Error</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised by repository store method when entity could not be stored. &quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="SpecificationError"><a class="viewcode-back" href="../../helpdev.html#domain.gz.SpecificationError">[docs]</a><span class="k">class</span> <span class="nc">SpecificationError</span><span class="p">(</span><span class="n">Error</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised by specification when is not satisfied at domain layer. &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">specification</span><span class="o">=</span><span class="n">AbstractSpecification</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_specification</span> <span class="o">=</span> <span class="n">specification</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SpecificationError</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">doesntSatisfies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specification</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">specification</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_specification</span>
+</div>
+<div class="viewcode-block" id="NotFoundError"><a class="viewcode-back" href="../../helpdev.html#domain.gz.NotFoundError">[docs]</a><span class="k">class</span> <span class="nc">NotFoundError</span><span class="p">(</span><span class="n">Error</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised by service when the requested entity is not found. &quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="DuplicateError"><a class="viewcode-back" href="../../helpdev.html#domain.gz.DuplicateError">[docs]</a><span class="k">class</span> <span class="nc">DuplicateError</span><span class="p">(</span><span class="n">Error</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised by service when the entity exists. &quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="BadValueError"><a class="viewcode-back" href="../../helpdev.html#domain.gz.BadValueError">[docs]</a><span class="k">class</span> <span class="nc">BadValueError</span><span class="p">(</span><span class="n">Error</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">BadValueError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised by models when set bad values attributes. &quot;&quot;&quot;</span>
+
+<span class="c"># ------</span>
+<span class="c"># Entity</span>
+<span class="c"># ------</span></div>
+<div class="viewcode-block" id="EntityMixIn"><a class="viewcode-back" href="../../helpdev.html#domain.gz.EntityMixIn">[docs]</a><span class="k">class</span> <span class="nc">EntityMixIn</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Base Model &#39;&#39;&#39;</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="EntityMixIn.id"><a class="viewcode-back" href="../../helpdev.html#domain.gz.EntityMixIn.id">[docs]</a>    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; ()  -&gt; int &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">()</span><span class="o">.</span><span class="n">id</span><span class="p">()</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="EntityMixIn.className"><a class="viewcode-back" href="../../helpdev.html#domain.gz.EntityMixIn.className">[docs]</a>    <span class="k">def</span> <span class="nf">className</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;() -&gt; str</span>
+
+<span class="sd">        Return class name from internal user hierarchy</span>
+
+<span class="sd">        &gt;&gt;&gt; exporterObject.classname</span>
+<span class="sd">        &#39;Exporter&#39;</span>
+<span class="sd">        &gt;&gt;&gt; customsbrokerObject.classname</span>
+<span class="sd">        &#39;CustomsBroker&#39;</span>
+<span class="sd">        &gt;&gt;&gt; customsWarehouseObject.classname</span>
+<span class="sd">        &#39;CustomsWarehouse&#39;</span>
+<span class="sd">        &gt;&gt;&gt; ...</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_name</span><span class="p">()</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="EntityMixIn.dict"><a class="viewcode-back" href="../../helpdev.html#domain.gz.EntityMixIn.dict">[docs]</a>    <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;() -&gt; User like dict</span>
+
+<span class="sd">        To serialize and template context</span>
+
+<span class="sd">        &gt;&gt;&gt; user = User(email = &#39;gcca@gcca.tk&#39;,</span>
+<span class="sd">        ...             password = &#39;cristHian Gz. (gcca)&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; user.dict</span>
+<span class="sd">        {</span>
+<span class="sd">        email: &#39;gcca@gcca.tk&#39;,</span>
+<span class="sd">        password: &#39;cristHian Gz. (gcca)&#39;</span>
+<span class="sd">        }</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c"># MOD INFORMATION HOLE! on handler: be careful</span>
+        <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">mdlmap</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">_attr_name</span><span class="p">()))</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> \
+                     <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="p">}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_saved</span><span class="p">():</span> <span class="nb">dict</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">return</span> <span class="nb">dict</span>
+</div>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">jsonparse</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span> <span class="k">return</span> <span class="n">jsonloads</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="EntityMixIn.json"><a class="viewcode-back" href="../../helpdev.html#domain.gz.EntityMixIn.json">[docs]</a>    <span class="k">def</span> <span class="nf">json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;() -&gt; str</span>
+
+<span class="sd">        Object to JSON str</span>
+
+<span class="sd">        &gt;&gt;&gt; exporter = Exporter(</span>
+<span class="sd">        ...     email = &#39;gcca@gcca.tk&#39;,</span>
+<span class="sd">        ...     password=&#39;cristHian Gz. (gcca)&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; exporter.json</span>
+<span class="sd">        &#39;{&quot;email&quot;: &quot;gcca@gcca.tk&quot;, &quot;password&quot;: &quot;cristHian Gz. (gcca)&quot;}&#39;</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">jsondumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">)</span>
+</div>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">cast</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="n">DateProperty</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="ow">is</span> <span class="n">DateTimeProperty</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">)))</span>
+        <span class="k">elif</span> <span class="n">t</span> <span class="ow">is</span> <span class="n">ReferenceProperty</span><span class="p">:</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">reference_class</span>
+            <span class="nb">id</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+            <span class="c"># if value is None:</span>
+            <span class="c">#     raise NotFoundError(&#39;Reference `%s`: %s&#39; % (c.__name__, id))</span>
+        <span class="k">elif</span> <span class="n">t</span> <span class="ow">is</span> <span class="n">FloatProperty</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_sandict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="c"># (-o-) improve perfomance with filtering-loop</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">()</span>
+        <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span> <span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="p">}</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">q</span><span class="p">:</span>
+                <span class="k">del</span> <span class="nb">dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">dict</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="EntityMixIn.new"><a class="viewcode-back" href="../../helpdev.html#domain.gz.EntityMixIn.new">[docs]</a>    <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; (request_object) -&gt; Model</span>
+
+<span class="sd">        Creates new model from request object</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_sandict</span><span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="n">__dict__</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="EntityMixIn.update"><a class="viewcode-back" href="../../helpdev.html#domain.gz.EntityMixIn.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; (request_object) -&gt; Model</span>
+
+<span class="sd">        Updates model from request object</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">object</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="ow">is</span> <span class="n">ReferenceProperty</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Dto</span><span class="p">:</span> <span class="k">continue</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">q</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">q</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span>
+</div>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">uuid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">()</span>
+</div>
+<span class="k">class</span> <span class="nc">Repository</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;(int) -&gt; Model &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">store</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">TransactionFailedError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;DataStore Error: &#39;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">StoreFailedError</span><span class="p">(</span><span class="s">&#39;Error storing </span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&#39;</span>
+                                   <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">key</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">findAll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dto</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">filters</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">dto</span><span class="p">:</span> <span class="n">filters</span> <span class="o">=</span> <span class="n">dto</span><span class="o">.</span><span class="n">__dict__</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">for</span> <span class="nb">property</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">filters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">property</span><span class="o">.</span><span class="n">isalpha</span><span class="p">():</span>  <span class="c"># find in model properties</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Bad property name&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span><span class="p">:</span>
+                <span class="n">operator</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">operator</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;=&#39;</span><span class="p">,</span> <span class="s">&#39;!=&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;=&#39;</span><span class="p">,</span> <span class="s">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s">&#39;&gt;=&#39;</span><span class="p">,</span> <span class="s">&#39;IN&#39;</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Bad filter operator&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">operator</span> <span class="o">=</span> <span class="s">&#39;=&#39;</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">property</span><span class="p">,</span> <span class="n">operator</span><span class="p">),</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cursor</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">find</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dto</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">filters</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="n">dto</span><span class="p">,</span> <span class="o">**</span><span class="n">filters</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+<span class="k">class</span> <span class="nc">Entity</span><span class="p">(</span><span class="n">EntityMixIn</span><span class="p">,</span> <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">Repository</span><span class="p">):</span>
+
+    <span class="n">created</span> <span class="o">=</span> <span class="n">DateTimeProperty</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">last_modified</span> <span class="o">=</span> <span class="n">DateTimeProperty</span><span class="p">(</span><span class="n">auto_now</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="n">protected</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">dict</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Entity</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">dict</span>
+        <span class="k">del</span> <span class="nb">dict</span><span class="p">[</span><span class="s">&#39;created&#39;</span><span class="p">]</span>
+        <span class="k">del</span> <span class="nb">dict</span><span class="p">[</span><span class="s">&#39;last_modified&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">dict</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="s">&#39;class&#39;</span><span class="p">):</span> <span class="k">del</span> <span class="nb">dict</span><span class="p">[</span><span class="s">&#39;class&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">protected</span><span class="p">:</span> <span class="k">del</span> <span class="nb">dict</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">dict</span>
+
+<span class="n">mdlmap</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">dict</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Entity</span><span class="p">)</span> <span class="k">else</span> <span class="n">v</span>
+
+<span class="c"># ----------</span>
+<span class="c"># PolyEntity</span>
+<span class="c"># ----------</span>
+<span class="n">_class_map</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">class</span> <span class="nc">PolyClass</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">PropertiedClass</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">dct</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&#39;PolyEntity&#39;</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">PolyClass</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">dct</span><span class="p">,</span> <span class="n">map_kind</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">elif</span> <span class="n">PolyEntity</span> <span class="ow">in</span> <span class="n">bases</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;__class_hierarchy__&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">db</span><span class="o">.</span><span class="n">ConfigurationError</span><span class="p">(</span>
+                    <span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> cannot derive from PolyEntity as &#39;</span>
+                     <span class="s">&#39;__class_hierarchy__ is already defined.&#39;</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__class_hierarchy__</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__root_class__</span> <span class="o">=</span> <span class="bp">self</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">PolyClass</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">dct</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">PolyClass</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">dct</span><span class="p">,</span> <span class="n">map_kind</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__class_hierarchy__</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mro</span><span class="p">())</span>
+                    <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">PolyEntity</span><span class="p">)</span> <span class="ow">and</span> <span class="n">c</span> <span class="o">!=</span> <span class="n">PolyEntity</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class_hierarchy__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root_class__</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">db</span><span class="o">.</span><span class="n">ConfigurationError</span><span class="p">(</span>
+                    <span class="s">&#39;</span><span class="si">%s</span><span class="s"> cannot be derived from both root classes </span><span class="si">%s</span><span class="s"> and </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+                     <span class="bp">self</span><span class="o">.</span><span class="n">__class_hierarchy__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+                     <span class="bp">self</span><span class="o">.</span><span class="n">__root_class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+        <span class="n">_class_map</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">class_key</span><span class="p">()]</span> <span class="o">=</span> <span class="bp">self</span>
+
+<span class="k">class</span> <span class="nc">PolyEntity</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
+    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">PolyClass</span>
+    <span class="n">_class</span> <span class="o">=</span> <span class="n">_ClassKeyProperty</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;class&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">PolyEntity</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">PolyEntity</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">kind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root_class__</span><span class="p">:</span> <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">PolyEntity</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">kind</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root_class__</span><span class="o">.</span><span class="n">kind</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">class_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;__class_hierarchy__&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s">&#39;Cannot determine class key without class hierarchy&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_name</span><span class="p">()</span> <span class="k">for</span> <span class="bp">self</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class_hierarchy__</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">class_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__name__</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s">&#39;class&#39;</span> <span class="ow">in</span> <span class="n">entity</span>
+            <span class="ow">and</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">entity</span><span class="p">[</span><span class="s">&#39;class&#39;</span><span class="p">])</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_key</span><span class="p">()):</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">entity</span><span class="p">[</span><span class="s">&#39;class&#39;</span><span class="p">])</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">poly_class</span> <span class="o">=</span> <span class="n">_class_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">db</span><span class="o">.</span><span class="n">KindError</span><span class="p">(</span>
+                    <span class="s">&#39;No implementation for class </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,))</span>
+            <span class="k">return</span> <span class="n">poly_class</span><span class="o">.</span><span class="n">from_entity</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">PolyEntity</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">from_entity</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">):</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">PolyEntity</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="o">**</span><span class="n">k</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root_class__</span><span class="p">:</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;class&#39;</span> <span class="o">+</span> <span class="s">&#39; =&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_name</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">q</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">gql</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q_str</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">__root_class__</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">PolyEntity</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">gql</span><span class="p">(</span><span class="n">q_str</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">google.appengine.ext</span> <span class="kn">import</span> <span class="n">gql</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">GqlQuery</span><span class="p">(</span><span class="s">&#39;SELECT * FROM </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">(),</span> <span class="n">q_str</span><span class="p">))</span>
+            <span class="n">q_filter</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;nop&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">gql</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_name</span><span class="p">())])]</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">_proto_query</span><span class="o">.</span><span class="n">filters</span><span class="p">()[(</span><span class="s">&#39;class&#39;</span><span class="p">,</span> <span class="s">&#39;=&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">q_filter</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">q</span>
+
+<span class="c"># -----------------</span>
+<span class="c"># Custom Properties</span>
+<span class="c"># -----------------</span>
+<span class="k">class</span> <span class="nc">DocumentType</span><span class="p">(</span><span class="nb">unicode</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="n">value</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="k">return</span> <span class="nb">unicode</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="n">documentTypeNameMap</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&#39;DNI&#39;</span> <span class="p">:</span> <span class="s">&#39;Documento Nacional de Identidad&#39;</span><span class="p">,</span>
+        <span class="s">&#39;RUC&#39;</span> <span class="p">:</span> <span class="s">&#39;Registro Único de Contribuyente&#39;</span><span class="p">,</span>
+        <span class="s">&#39;PA&#39;</span>  <span class="p">:</span> <span class="s">&#39;Pasaporte&#39;</span><span class="p">,</span>
+        <span class="s">&#39;CE&#39;</span>  <span class="p">:</span> <span class="s">&#39;Carné de Extranjería&#39;</span><span class="p">,</span>
+        <span class="s">&#39;&#39;</span>    <span class="p">:</span> <span class="s">&#39;&#39;</span> <span class="p">}</span>
+
+    <span class="n">documentTypeCodeStrMap</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="c"># (-o-) Revisar</span>
+        <span class="s">&#39;DNI&#39;</span> <span class="p">:</span> <span class="s">&#39;001&#39;</span><span class="p">,</span>
+        <span class="s">&#39;RUC&#39;</span> <span class="p">:</span> <span class="s">&#39;002&#39;</span><span class="p">,</span>
+        <span class="s">&#39;PA&#39;</span>  <span class="p">:</span> <span class="s">&#39;003&#39;</span><span class="p">,</span>
+        <span class="s">&#39;CE&#39;</span>  <span class="p">:</span> <span class="s">&#39;004&#39;</span><span class="p">,</span>
+        <span class="s">&#39;&#39;</span>    <span class="p">:</span> <span class="s">&#39;&#39;</span> <span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">toName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">DocumentType</span><span class="o">.</span><span class="n">documentTypeNameMap</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span>
+
+<span class="k">class</span> <span class="nc">DocumentTypeProperty</span><span class="p">(</span><span class="n">TextProperty</span><span class="p">):</span>
+    <span class="n">data_type</span> <span class="o">=</span> <span class="n">DocumentType</span>
+
+    <span class="k">def</span> <span class="nf">get_value_for_datastore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">DocumentTypeProperty</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_value_for_datastore</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">make_value_from_datastore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">DocumentType</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">DocumentType</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">DocumentType</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;DNI&#39;</span><span class="p">,</span> <span class="s">&#39;RUC&#39;</span><span class="p">,</span> <span class="s">&#39;PA&#39;</span><span class="p">,</span> <span class="s">&#39;CE&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">DocumentType</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Document type must be DNI, RUC, PA, CE or avoid&#39;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">ValueObjectProperty</span><span class="p">(</span><span class="n">TextProperty</span><span class="p">):</span>
+    <span class="n">data_type</span> <span class="o">=</span> <span class="n">Entity</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ValueObjectProperty</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_value_for_datastore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ValueObjectProperty</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_value_for_datastore</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">model</span><span class="p">:</span> <span class="k">return</span> <span class="n">Text</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">json</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">make_value_from_datastore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">jsonloads</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span> <span class="k">return</span> <span class="n">value</span>
+
+<span class="k">class</span> <span class="nc">JsonProperty</span><span class="p">(</span><span class="n">UnindexedProperty</span><span class="p">):</span>
+    <span class="n">data_type</span> <span class="o">=</span> <span class="n">Dto</span>
+
+    <span class="k">def</span> <span class="nf">get_value_for_datastore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">JsonProperty</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_value_for_datastore</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="k">return</span> <span class="n">Text</span><span class="p">(</span><span class="n">jsondumps</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_2Dto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span> <span class="k">return</span> <span class="n">Dto</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span> <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_2Dto</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">o</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;Incorrect type for parsing Dto&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">make_value_from_datastore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span><span class="p">:</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_2Dto</span><span class="p">(</span><span class="n">jsonloads</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span> <span class="k">return</span> <span class="n">value</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Índice General"
+             >índice</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >módulos</a> |</li>
+        <li><a href="../../index.html">lac 1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, cristHian Gz. (gcca).
+    Created by <a href="https://launchpad.net/~gcca">(gcca)</a>
+    </div>
+  </body>
+</html>

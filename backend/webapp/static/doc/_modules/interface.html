@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>interface &mdash; lac 1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/gcca.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/translations.js"></script>
+    <link rel="top" title="lac 1 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /><link href='http://fonts.googleapis.com/css?family=Source+Code+Pro|Open+Sans:300italic,400italic,700italic,400,300,700' rel='stylesheet' type='text/css'>
+<link href="../_static/solarized-dark.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="Índice General"
+             accesskey="I">índice</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >módulos</a> |</li>
+        <li><a href="../index.html">lac 1 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Búsqueda rápida</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Ir a" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for interface</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">webapp2</span>
+<span class="kn">from</span> <span class="nn">webapp2_extras</span> <span class="kn">import</span> <span class="n">jinja2</span>
+
+<span class="kn">from</span> <span class="nn">infraestructure.utils</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">google.appengine.ext.db</span> <span class="kn">import</span> <span class="n">TransactionFailedError</span>
+<span class="kn">from</span> <span class="nn">domain.model</span> <span class="kn">import</span> <span class="n">User</span>
+
+<div class="viewcode-block" id="BaseHandler"><a class="viewcode-back" href="../helpdev.html#interface.BaseHandler">[docs]</a><span class="k">class</span> <span class="nc">BaseHandler</span><span class="p">(</span><span class="n">webapp2</span><span class="o">.</span><span class="n">RequestHandler</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Base Handler &#39;&#39;&#39;</span>
+
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">rc_factory</span><span class="p">()</span>
+    <span class="n">ct</span> <span class="o">=</span> <span class="n">ct_factory</span><span class="p">()</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">jinja_factory</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+        <span class="n">jinja</span> <span class="o">=</span> <span class="n">jinja2</span><span class="o">.</span><span class="n">Jinja2</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="p">{</span>
+            <span class="s">&#39;template_path&#39;</span><span class="p">:</span> <span class="s">&#39;interface/templates&#39;</span><span class="p">,</span>
+            <span class="s">&#39;compiled_path&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+            <span class="s">&#39;force_compiled&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="s">&#39;environment_args&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s">&#39;autoescape&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                <span class="s">&#39;trim_blocks&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+                <span class="s">&#39;extensions&#39;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s">&#39;jinja2.ext.autoescape&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;jinja2.ext.with_&#39;</span><span class="p">,</span>
+                    <span class="p">],},</span>
+            <span class="s">&#39;globals&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+            <span class="s">&#39;filters&#39;</span><span class="p">:</span> <span class="bp">None</span> <span class="p">})</span>
+        <span class="n">jinja</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">newline_sequence</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">jinja</span>
+
+    <span class="nd">@webapp2.cached_property</span>
+    <span class="k">def</span> <span class="nf">jinja2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">jinja2</span><span class="o">.</span><span class="n">get_jinja2</span><span class="p">(</span><span class="n">app</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">,</span>
+            <span class="n">factory</span> <span class="o">=</span> <span class="n">BaseHandler</span><span class="o">.</span><span class="n">jinja_factory</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status_factory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">write_status</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_error</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BaseHandler</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">write_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">rc</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ct</span><span class="o">.</span><span class="n">JSON</span>
+        <span class="k">if</span> <span class="n">rc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">[</span><span class="n">rc</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">write_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ct</span><span class="o">.</span><span class="n">DOWN</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">write_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rc</span><span class="p">):</span>
+        <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">rc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s">&#39;Warning&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">write_content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ct</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s">&#39;Content-Type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ct</span>
+    <span class="n">contt</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">fset</span> <span class="o">=</span> <span class="n">write_content_type</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">write_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_json</span><span class="p">(</span><span class="s">&#39;{&quot;e&quot;:&quot;</span><span class="si">%s</span><span class="s">&quot;}&#39;</span> <span class="o">%</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">request_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">body</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">body</span><span class="p">)</span> <span class="k">if</span> <span class="n">body</span> <span class="k">else</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">request_dto</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Dto</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request_json</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+        <span class="n">params</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">jinja2</span><span class="o">.</span><span class="n">render_template</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">render_str</span><span class="p">(</span><span class="n">template</span><span class="o">+</span><span class="s">&#39;.html&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">render_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">rc</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">json_txt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_2json</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_json</span><span class="p">(</span><span class="n">json_txt</span><span class="p">,</span> <span class="n">rc</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_secure_cookie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="n">cookie_val</span> <span class="o">=</span> <span class="n">make_secure_val</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s">&#39;Set-Cookie&#39;</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">=</span><span class="si">%s</span><span class="s">; Path=/&#39;</span>
+                                         <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">cookie_val</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">read_secure_cookie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="n">cookie_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">cookies</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cookie_val</span> <span class="ow">and</span> <span class="n">check_secure_val</span><span class="p">(</span><span class="n">cookie_val</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_secure_cookie</span><span class="p">(</span><span class="s">&#39;ud&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">key</span><span class="p">()</span><span class="o">.</span><span class="n">id</span><span class="p">()))</span>
+
+    <span class="k">def</span> <span class="nf">logout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s">&#39;Set-Cookie&#39;</span><span class="p">,</span> <span class="s">&#39;ud=; Path=/&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="n">webapp2</span><span class="o">.</span><span class="n">RequestHandler</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="n">povd</span><span class="p">]</span> <span class="o">=</span> <span class="n">powd</span>
+        <span class="n">uid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_secure_cookie</span><span class="p">(</span><span class="s">&#39;ud&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">uid</span> <span class="ow">and</span> <span class="n">User</span><span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">uid</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.json&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="s">&#39;json&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="s">&#39;html&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_2json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">jsondumps</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+
+    <span class="c"># better `put`</span>
+<div class="viewcode-block" id="BaseHandler.safe_put"><a class="viewcode-back" href="../helpdev.html#interface.BaseHandler.safe_put">[docs]</a>    <span class="k">def</span> <span class="nf">safe_put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; (Model) -&gt; db.Key or NoneType</span>
+<span class="sd">        If exception, return `None`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">put</span><span class="p">()</span> <span class="c"># BUG (mb)</span>
+            <span class="c">#key = 666</span>
+        <span class="k">except</span> <span class="n">TransactionFailedError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;DataStore Error: &#39;</span> <span class="o">+</span> <span class="n">ex</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">INTERNAL_ERROR</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">key</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="Índice General"
+             >índice</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >módulos</a> |</li>
+        <li><a href="../index.html">lac 1 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, cristHian Gz. (gcca).
+    Created by <a href="https://launchpad.net/~gcca">(gcca)</a>
+    </div>
+  </body>
+</html>

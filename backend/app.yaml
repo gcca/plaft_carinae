@@ -1,0 +1,31 @@
+# App settings
+# author: Gonzales Castillo, Cristhian A. <cristhian.gz@aol.com>
+
+application: plaft-sw
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /static
+  static_dir: webapp/static
+
+- url: /webapp
+  static_dir: webapp/controllers
+
+- url: /gz.appcache
+  static_files: static/gz.appcache
+  mime_type: text/cache-manifest
+  upload: static/gz.appcache
+
+- url: .*
+  script: webapp.main.app
+  secure: always
+
+libraries:
+- name: webapp2
+  version: latest
+
+
+# vim: ts=2:sw=2:sts=2:et

@@ -1,0 +1,457 @@
+@import 'elements'
+
+@screen-xs:                  480px;
+@screen-xs-min:              @screen-xs;
+@screen-phone:               @screen-xs-min;
+
+@screen-sm:                  768px;
+@screen-sm-min:              @screen-sm;
+@screen-tablet:              @screen-sm-min;
+
+@screen-md:                  992px;
+@screen-md-min:              @screen-md;
+@screen-desktop:             @screen-md-min;
+
+@screen-lg:                  1200px;
+@screen-lg-min:              @screen-lg;
+@screen-lg-desktop:          @screen-lg-min;
+
+@screen-xs-max:              (@screen-sm-min - 1);
+@screen-sm-max:              (@screen-md-min - 1);
+@screen-md-max:              (@screen-lg-min - 1);
+
+
+// Rem
+.layout-detector {filter:none;}
+
+// Spinner
+.espin-mn{
+  // position:relative;
+  width: 128px;
+  height: 128px;
+  position: fixed;
+  top: 29%;
+  right: 43%;
+  z-index: 666;
+  opacity: 0;
+  .transition(0.5s, ease-in-out);
+}
+
+.espin-mn-show{
+  opacity: 0.7;
+}
+
+.espin-a{
+/* @alternate 3 */ position:absolute;
+/* @alternate 4 */ background-color:#2BA0D6;
+/* @alternate 5 */ width:29px;
+/* @alternate 6 */ height:29px;
+/* @alternate 7 */ -moz-border-radius:19px;
+/* @alternate 8 */ -moz-animation-name:sp-bou_c;
+/* @alternate 9 */ -moz-animation-duration:0.8s;
+/* @alternate a */ -moz-animation-iteration-count:infinite;
+/* @alternate b */ -moz-animation-direction:linear;
+/* @alternate c */ -webkit-border-radius:19px;
+/* @alternate d */ -webkit-animation-name:sp-bou_c;
+/* @alternate f */ -webkit-animation-duration:0.8s;
+/* @alternate g */ -webkit-animation-iteration-count:infinite;
+/* @alternate h */ -webkit-animation-direction:linear;
+/* @alternate i */ -ms-border-radius:19px;
+/* @alternate j */ -ms-animation-name:sp-bou_c;
+/* @alternate k */ -ms-animation-duration:0.8s;
+/* @alternate l */ -ms-animation-iteration-count:infinite;
+/* @alternate m */ -ms-animation-direction:linear;
+/* @alternate n */ -o-border-radius:19px;
+/* @alternate o */ -o-animation-name:sp-bou_c;
+/* @alternate p */ -o-animation-duration:0.8s;
+/* @alternate q */ -o-animation-iteration-count:infinite;
+/* @alternate r */ -o-animation-direction:linear;
+/* @alternate s */ border-radius:19px;
+/* @alternate t */ animation-name:sp-bou_c;
+/* @alternate u */ animation-duration:0.8s;
+/* @alternate v */ animation-iteration-count:infinite;
+/* @alternate w */ animation-direction:linear;
+}
+
+.espin-a-666_1{
+/* @alternate 0 */ left:0;
+/* @alternate 1 */ top:50px;
+/* @alternate 2 */ -moz-animation-delay:1s;
+/* @alternate 3 */ -webkit-animation-delay:1s;
+/* @alternate 4 */ -ms-animation-delay:1s;
+/* @alternate 5 */ -o-animation-delay:1s;
+/* @alternate 6 */ animation-delay:1s;
+}
+
+.espin-a-666_2{
+/* @alternate 1 */ left:14px;
+/* @alternate 2 */ top:14px;
+/* @alternate 3 */ -moz-animation-delay:0.9s;
+/* @alternate 4 */ -webkit-animation-delay:0.9s;
+/* @alternate 5 */ -ms-animation-delay:0.9s;
+/* @alternate 6 */ -o-animation-delay:0.9s;
+/* @alternate 7 */ animation-delay:0.9s;
+}
+
+.espin-a-666_3{
+/* @alternate 1 */ top:0;
+/* @alternate 2 */ left:50px;
+/* @alternate 3 */ -moz-animation-delay:0.8s;
+/* @alternate 4 */ -webkit-animation-delay:0.8s;
+/* @alternate 5 */ -ms-animation-delay:0.8s;
+/* @alternate 6 */ -o-animation-delay:0.8s;
+/* @alternate 7 */ animation-delay:0.8s;
+}
+
+.espin-a-666_4{
+/* @alternate 1 */ right:14px;
+/* @alternate 2 */ top:14px;
+/* @alternate 3 */ -moz-animation-delay:0.7s;
+/* @alternate 4 */ -webkit-animation-delay:0.7s;
+/* @alternate 5 */ -ms-animation-delay:0.7s;
+/* @alternate 6 */ -o-animation-delay:0.7s;
+/* @alternate 7 */ animation-delay:0.7s;
+}
+
+.espin-a-666_5{
+/* @alternate 1 */ right:0;
+/* @alternate 2 */ top:50px;
+/* @alternate 3 */ -moz-animation-delay:0.6s;
+/* @alternate 4 */ -webkit-animation-delay:0.6s;
+/* @alternate 5 */ -ms-animation-delay:0.6s;
+/* @alternate 6 */ -o-animation-delay:0.6s;
+/* @alternate 7 */ animation-delay:0.6s;
+}
+
+.espin-a-666_6{
+/* @alternate 1 */ right:14px;
+/* @alternate 2 */ bottom:14px;
+/* @alternate 3 */ -moz-animation-delay:0.5s;
+/* @alternate 4 */ -webkit-animation-delay:0.5s;
+/* @alternate 5 */ -ms-animation-delay:0.5s;
+/* @alternate 6 */ -o-animation-delay:0.5s;
+/* @alternate 7 */ animation-delay:0.5s;
+}
+
+.espin-a-666_7{
+/* @alternate 1 */ left:50px;
+/* @alternate 2 */ bottom:0;
+/* @alternate 3 */ -moz-animation-delay:0.4s;
+/* @alternate 4 */ -webkit-animation-delay:0.4s;
+/* @alternate 5 */ -ms-animation-delay:0.4s;
+/* @alternate 6 */ -o-animation-delay:0.4s;
+/* @alternate 7 */ animation-delay:0.4s;
+}
+
+.espin-a-666_8{
+/* @alternate 1 */ left:14px;
+/* @alternate 2 */ bottom:14px;
+/* @alternate 3 */ -moz-animation-delay:0.3s;
+/* @alternate 4 */ -webkit-animation-delay:0.3s;
+/* @alternate 5 */ -ms-animation-delay:0.3s;
+/* @alternate 6 */ -o-animation-delay:0.3s;
+/* @alternate 7 */ animation-delay:0.3s;
+}
+
+@-moz-keyframes sp-bou_c{
+  0%{
+    -moz-transform:scale(1)}
+
+  100%{
+    -moz-transform:scale(.3)}
+
+}
+
+@-webkit-keyframes sp-bou_c{
+  0%{
+    -webkit-transform:scale(1)}
+
+  100%{
+    -webkit-transform:scale(.3)}
+
+}
+// @-ms-keyframes sp-bou_c{
+//     0%{
+//         -ms-transform:scale(1)}
+//     100%{
+//         -ms-transform:scale(.3)}
+// }
+// @-o-keyframes sp-bou_c{
+//     0%{
+//         -o-transform:scale(1)}
+//     100%
+//         -o-transform:scale(.3)}
+// }
+// @keyframes sp-bou_c{
+//     0%{
+//         transform:scale(1)}
+//     100%{
+//         transform:scale(.3)}
+// }
+// end Spinner
+
+:focus {outline:none !important;}
+a, input, button, select, textarea {outline:none !important;}
+::-moz-focus-inner {border:0 !important;}
+button, li a, thead, tbody { .user-select; }
+
+
+a { cursor: pointer }
+
+// Base
+.parent-toggle {
+  .toggle {
+    visibility: hidden;
+  }  // .toggle
+
+  &:hover .toggle {
+    visibility: visible;
+  }
+
+  .sibling:focus + .toggle {
+    visibility: visible;
+  }
+}  // .parent-toggle
+
+
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+
+// id
+.id-none {filter:none;}
+
+// event
+.on-key-enter-shift-control {filter:none;}
+
+// Form
+.check-yesno + i:before {
+  content: "No";
+  margin-left: 0.5em;
+  font-family: Ubuntu, Arial, sans-serif;
+}
+
+.check-yesno:checked + i:before {
+  content: "Sí";
+  margin-left: 0.5em;
+  font-family: Ubuntu, Arial, sans-serif;
+}
+
+
+// Custom styles
+.navbar-top-min {
+  min-height: 40px;
+
+  .navbar-brand {
+    padding: 9px;
+  }
+
+  .navbar-nav > li > a {
+    padding-top: 9px;
+    padding-bottom: 9px;
+  }
+
+  .navbar-toggle {
+    margin-top: 3px;
+    margin-bottom: 3px;
+  }
+}
+
+.collapsed {filter:none;}
+
+.panel.panel-default {
+  &:hover {
+    overflow : visible;
+  }
+}
+
+.radio-inline {
+  label {
+    cursor: pointer;
+  }
+}
+
+.navbar-input-group {
+  @media (min-width: @screen-sm) {
+    font-size: 0px;
+
+    input {
+      border-top-right-radius: 0px;
+      border-bottom-right-radius: 0px;
+    }
+    .btn {
+      border-top-left-radius: 0px;
+      border-bottom-left-radius: 0px;
+      border-left: 0px;
+    }
+  }
+  @media (max-width: @screen-xs-max) {
+    margin-top:0px;
+    margin-bottom:0px;
+
+    .btn {
+      width:100%;
+    }
+  }
+}
+
+.has-feedback .form-control-feedback {
+  top: 24px;
+  right: 12px;
+}
+
+.tab-content {
+  padding-top: 10px;
+}
+
+
+// GTypeahead
+.tt-suggestions, .tt-dataset {filter:none}
+
+.tt-dropdown-menu, .gist {
+  text-align: left;
+}
+
+
+.typeahead, .tt-query, .tt-hint {
+//  width: 396px;
+//  height: 30px;
+//  padding: 8px 12px;
+//  font-size: 24px;
+//  line-height: 30px;
+//  border: 2px solid #ccc;
+//  -webkit-border-radius: 8px;
+//     -moz-border-radius: 8px;
+//          border-radius: 8px;
+//  outline: none;
+}
+
+.typeahead {
+  background-color: #fff;
+}
+
+.typeahead:focus {
+  border: 2px solid #0097cf;
+}
+
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.tt-hint {
+  color: #999
+}
+
+.tt-dropdown-menu {
+  width: 100%;  // 422px;
+  margin-top: 12px;
+  padding: 8px 0;
+  background-color: #fff;
+  // border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+}
+
+.tt-suggestion {
+  padding: 5px 22px;
+  font-size: 14px;
+  line-height: 24px;
+}
+
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #0097cf;
+
+}
+
+.tt-suggestion p {
+  margin: 0;
+}
+
+.gist {
+  font-size: 12px;
+}
+
+/* specific styles */
+/* --------------- */
+
+.tt-input {
+  border-top-left-radius: 4px !important;
+  border-bottom-left-radius: 4px !important;
+}
+
+.tt-suggestion {
+  padding: 8px 20px;
+}
+
+.tt-suggestion + .tt-suggestion {
+  border-top: 1px solid #ccc;
+}
+
+.repo-language {
+  float: right;
+  font-style: italic;
+}
+
+.repo-name {
+  font-weight: bold;
+}
+
+.repo-description {
+  font-size: 14px;
+}
+
+
+// Styles
+.app-container {
+  margin-top: 12px;
+}
+
+.form-blank {
+  padding-left: 0;
+}
+
+.inline-radios, .inline-checkbox {
+  margin-left: 2em;
+
+  .radio-inline + .radio-inline, .checkbox-inline + .checkbox-inline {
+    margin-left: 1.5em;
+  }
+}
+
+@media (min-width: 992px) {
+  .inline-control {
+    .form-control {
+      width: 48%;
+    }
+  }
+}
+
+// events
+.on-click-change-submit-add-remove-module-select-add {filter:none}
+.on-stored-saved-blur-operation {filter:none}
+
+// ids
+.id-app-container-on-search-save-select-collapse {filter:none}
+.id-one-two-three-four-five-six-seven-eight-nine-ten {filter:none}
+.id-0-1-2-3-4-5-6-7-8-9 {filter:none}
+.id-customs-list {filter:none}
+.id-dashboard-menu-desktop-verifies-stakeholders-group {filter:none}
+.id-accordion-collapse {filter:none}
+.id-zero-one-two-three-four-five-six-seven-eight-nine-ten {filter:none}
+.id-module-modules-income-alert-signal-signals {filter:none}
+.id-settings-users-user-employee-employees-list {filter:none}
+.id-back-next {filter:none}
+
+/* vim: set ts=2 sw=2 sts=2 et: */

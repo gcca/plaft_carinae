@@ -1,0 +1,420 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>application.service &mdash; lac 1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/gcca.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/translations.js"></script>
+    <link rel="top" title="lac 1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /><link href='http://fonts.googleapis.com/css?family=Source+Code+Pro|Open+Sans:300italic,400italic,700italic,400,300,700' rel='stylesheet' type='text/css'>
+<link href="../../_static/solarized-dark.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Índice General"
+             accesskey="I">índice</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >módulos</a> |</li>
+        <li><a href="../../index.html">lac 1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Búsqueda rápida</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Ir a" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for application.service</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;Application Layer: Services</span>
+
+<span class="sd">TODO(...): requestLastDeclaration, DispatchService</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">domain.gz</span> <span class="kn">import</span> <span class="n">SpecificationError</span><span class="p">,</span> <span class="n">NotFoundError</span><span class="p">,</span> <span class="n">StoreFailedError</span>
+<span class="kn">from</span> <span class="nn">domain.model</span> <span class="kn">import</span> <span class="n">Customer</span><span class="p">,</span> <span class="n">Person</span><span class="p">,</span> <span class="n">Business</span><span class="p">,</span> <span class="n">Declaration</span><span class="p">,</span> <span class="n">Dispatch</span>
+<span class="kn">from</span> <span class="nn">domain.model.customer</span> <span class="kn">import</span> \
+    <span class="n">DocumentNumberSpecification</span> <span class="k">as</span> <span class="n">CustomerDocumentNumberSpecification</span><span class="p">,</span> \
+    <span class="n">UniqueSpecification</span> <span class="k">as</span> <span class="n">CustomerUniqueSpecification</span>
+<span class="kn">from</span> <span class="nn">domain.model.declaration</span> <span class="kn">import</span> \
+    <span class="n">TrackingIdSpecification</span> <span class="k">as</span> <span class="n">DeclarationTrackingIdSpecification</span>
+
+<div class="viewcode-block" id="CustomerService"><a class="viewcode-back" href="../../helpdev.html#application.service.CustomerService">[docs]</a><span class="k">class</span> <span class="nc">CustomerService</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Customer Service. &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CustomerService.requestCustomer"><a class="viewcode-back" href="../../helpdev.html#application.service.CustomerService.requestCustomer">[docs]</a>    <span class="k">def</span> <span class="nf">requestCustomer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">documentNumber</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fetch customer from datastore.</span>
+
+<span class="sd">        Retrieve a customer entity, given the identification document number.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            documentNumber:</span>
+<span class="sd">                Identification document number (DNI, RUC, PA, CA, ...)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A customer entity to the corresponding document number provided.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            SpecificationError:</span>
+<span class="sd">                A error occurred unsatisfying domain specification.</span>
+<span class="sd">                The requests raises when the document number is invalid.</span>
+<span class="sd">            NotFoundError:</span>
+<span class="sd">                An error occurred searching a customer by document number.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">customer</span> <span class="o">=</span> <span class="n">Customer</span><span class="p">(</span><span class="n">documentNumber</span><span class="o">=</span><span class="n">documentNumber</span><span class="p">)</span>
+        <span class="n">documentNumberSpec</span> <span class="o">=</span> <span class="n">CustomerDocumentNumberSpecification</span><span class="p">()</span>
+        <span class="n">customer</span><span class="o">.</span><span class="n">documentType</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inferDocumentType</span><span class="p">(</span><span class="n">customer</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">documentNumberSpec</span><span class="o">.</span><span class="n">isSatisfiedBy</span><span class="p">(</span><span class="n">customer</span><span class="p">):</span>
+            <span class="n">customer</span> <span class="o">=</span> <span class="n">Customer</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">documentNumber</span><span class="o">=</span><span class="n">documentNumber</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SpecificationError</span><span class="p">(</span><span class="s">&#39;Invalid number: &#39;</span> <span class="o">+</span> <span class="n">documentNumber</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">customer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NotFoundError</span><span class="p">(</span><span class="s">&#39;Customer not found: &#39;</span> <span class="o">+</span> <span class="n">documentNumber</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">customer</span>
+</div>
+<div class="viewcode-block" id="CustomerService.newCustomer"><a class="viewcode-back" href="../../helpdev.html#application.service.CustomerService.newCustomer">[docs]</a>    <span class="k">def</span> <span class="nf">newCustomer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dto</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a customer.</span>
+
+<span class="sd">        Create new customer from data transfer object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dto:</span>
+<span class="sd">                Customer data transfer object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A customer identifier from datastore.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            SpecificationError:</span>
+<span class="sd">                A error occurred unsatisfying domain specification.</span>
+<span class="sd">                When customer exists in datastore or provided a invalid</span>
+<span class="sd">                document number.</span>
+<span class="sd">            BadValueError:</span>
+<span class="sd">                A error ocurred creating a customer with bad attributes</span>
+<span class="sd">                value or types.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">customer</span> <span class="o">=</span> <span class="n">Customer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">dto</span><span class="p">)</span>
+        <span class="n">documentNumberSpec</span> <span class="o">=</span> <span class="n">CustomerDocumentNumberSpecification</span><span class="p">()</span>
+        <span class="n">uniqueSpec</span> <span class="o">=</span> <span class="n">CustomerUniqueSpecification</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">documentNumberSpec</span><span class="o">.</span><span class="n">isSatisfiedBy</span><span class="p">(</span><span class="n">customer</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">uniqueSpec</span><span class="o">.</span><span class="n">isSatisfiedBy</span><span class="p">(</span><span class="n">customer</span><span class="p">):</span>
+                <span class="n">customer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_specificCustomer</span><span class="p">(</span><span class="n">customer</span><span class="p">,</span> <span class="n">dto</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_storeCustomer</span><span class="p">(</span><span class="n">customer</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">SpecificationError</span><span class="p">(</span><span class="s">&#39;Customer already exists&#39;</span><span class="p">,</span>
+                                         <span class="n">CustomerUniqueSpecification</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SpecificationError</span><span class="p">(</span><span class="s">&#39;Invalid document number: &#39;</span>
+                                     <span class="o">+</span> <span class="n">customer</span><span class="o">.</span><span class="n">documentNumber</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CustomerService.updateCustomer"><a class="viewcode-back" href="../../helpdev.html#application.service.CustomerService.updateCustomer">[docs]</a>    <span class="k">def</span> <span class="nf">updateCustomer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">dto</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update customer.</span>
+
+<span class="sd">        Update customer info</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            id:</span>
+<span class="sd">                Customer identifier.</span>
+<span class="sd">            dto:</span>
+<span class="sd">                Customer data transfer object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            SpecificationError:</span>
+<span class="sd">                A error occurred providing a invalid document number,</span>
+<span class="sd">                updating a nonexistent customer.</span>
+<span class="sd">            NotFoundError:</span>
+<span class="sd">                A error occurred searching for nonexistent customer.</span>
+<span class="sd">            BadArgumentError:</span>
+<span class="sd">                `id` isn&#39;t integer.</span>
+<span class="sd">            BadValueError:</span>
+<span class="sd">                A error ocurred updating a customer with bad attributes</span>
+<span class="sd">                value or types.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">customer</span> <span class="o">=</span> <span class="n">Customer</span><span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+        <span class="n">documentNumberSpec</span> <span class="o">=</span> <span class="n">CustomerDocumentNumberSpecification</span><span class="p">()</span>
+        <span class="n">uniqueSpec</span> <span class="o">=</span> <span class="n">CustomerUniqueSpecification</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">customer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NotFoundError</span><span class="p">(</span><span class="s">&#39;Customer does not exists: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">id</span><span class="p">)</span>
+
+        <span class="n">customer</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dto</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">documentNumberSpec</span><span class="o">.</span><span class="n">isntSatisfiedBy</span><span class="p">(</span><span class="n">customer</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">SpecificationError</span><span class="p">(</span><span class="s">&#39;Invalid document number: &#39;</span>
+                                     <span class="o">+</span> <span class="n">customer</span><span class="o">.</span><span class="n">documentNumber</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">uniqueSpec</span><span class="o">.</span><span class="n">isSatisfiedBy</span><span class="p">(</span><span class="n">Customer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">dto</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="n">SpecificationError</span><span class="p">(</span><span class="s">&#39;Customer does not exists&#39;</span><span class="p">,</span>
+                                     <span class="n">CustomerUniqueSpecification</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_storeCustomer</span><span class="p">(</span><span class="n">customer</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CustomerService.createDeclaration"><a class="viewcode-back" href="../../helpdev.html#application.service.CustomerService.createDeclaration">[docs]</a>    <span class="k">def</span> <span class="nf">createDeclaration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">declaration_dto</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Customer creates new delcaration.</span>
+
+<span class="sd">        When customer creates a declaration, last declaration attribute</span>
+<span class="sd">        of customer must be updated with the declaration reference.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            id:</span>
+<span class="sd">                Customer identifier.</span>
+<span class="sd">            declaration_dto:</span>
+<span class="sd">                Declaration data transfer object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A declaration entity.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            StoreFailedError:</span>
+<span class="sd">                Storing the declaration.</span>
+<span class="sd">            BadArgumentError:</span>
+<span class="sd">                `id` isn&#39;t integer.</span>
+<span class="sd">            BadValueError:</span>
+<span class="sd">                A error ocurred creating a declaration with bad attributes</span>
+<span class="sd">                value or types.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">declaration</span> <span class="o">=</span> <span class="n">Declaration</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">declaration_dto</span><span class="p">)</span>
+        <span class="n">declaration</span><span class="o">.</span><span class="n">store</span><span class="p">()</span>
+        <span class="n">customer</span> <span class="o">=</span> <span class="n">Customer</span><span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+        <span class="n">customer</span><span class="o">.</span><span class="n">lastDeclaration</span> <span class="o">=</span> <span class="n">declaration</span>
+        <span class="n">customer</span><span class="o">.</span><span class="n">store</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">declaration</span>
+</div>
+<div class="viewcode-block" id="CustomerService.requestLastDeclaration"><a class="viewcode-back" href="../../helpdev.html#application.service.CustomerService.requestLastDeclaration">[docs]</a>    <span class="k">def</span> <span class="nf">requestLastDeclaration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dto</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fetch lastDeclaration attribute from Customer entity.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dto:</span>
+<span class="sd">                Customer data transfer object. It&#39;s use like a filter by</span>
+<span class="sd">                attributes with exactly match.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A declaration entity.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotFoundError:</span>
+<span class="sd">                Searching customer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">customer</span> <span class="o">=</span> <span class="n">Customer</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">dto</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">customer</span><span class="p">:</span> <span class="k">return</span> <span class="n">customer</span><span class="o">.</span><span class="n">lastDeclaration</span>
+        <span class="k">raise</span> <span class="n">NotFoundError</span><span class="p">(</span><span class="s">&#39;Customer not found&#39;</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">_inferDocumentType</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">customer</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Infer passport and alien card from customer entitty.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            customer:</span>
+<span class="sd">                Customer entity.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A document type string.</span>
+
+<span class="sd">        TODO(gcca): Replace by isBusiness, isPerson of customer object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">documentNumber</span> <span class="o">=</span> <span class="n">customer</span><span class="o">.</span><span class="n">documentNumber</span>
+        <span class="n">documentType</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="mi">11</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">documentNumber</span><span class="p">):</span>
+            <span class="n">documentType</span> <span class="o">=</span> <span class="s">&#39;RUC&#39;</span>
+        <span class="k">elif</span> <span class="mi">8</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">documentNumber</span><span class="p">):</span>
+            <span class="n">documentType</span> <span class="o">=</span> <span class="s">&#39;DNI&#39;</span>
+        <span class="k">return</span> <span class="n">documentType</span>
+
+    <span class="k">def</span> <span class="nf">_storeCustomer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">customer</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Common store customer method.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            customer:</span>
+<span class="sd">                Customer entity.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            StoreFailedError:</span>
+<span class="sd">                A error occurred storing entity.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">customer</span><span class="o">.</span><span class="n">store</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">StoreFailedError</span> <span class="k">as</span> <span class="n">storeFailed</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">storeFailed</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">customer</span><span class="o">.</span><span class="n">id</span>
+
+    <span class="k">def</span> <span class="nf">_specificCustomer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">customer</span><span class="p">,</span> <span class="n">dto</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrieve specific customer: person or business.</span>
+
+<span class="sd">        &gt;&gt;&gt; # If dto is Business</span>
+<span class="sd">        &gt;&gt;&gt; customer = Customer.new(dto_business)</span>
+<span class="sd">        &gt;&gt;&gt; self._specificCustomer(customer, dto_business)</span>
+<span class="sd">        ... &lt;object Business at 0x...&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # If dto is Person</span>
+<span class="sd">        &gt;&gt;&gt; customer = Customer.new(dto_person)</span>
+<span class="sd">        &gt;&gt;&gt; self._specificCustomer(customer, dto_person)</span>
+<span class="sd">        ... &lt;object Person at 0x...&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Business</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">dto</span><span class="p">)</span> <span class="k">if</span> <span class="n">customer</span><span class="o">.</span><span class="n">isBusiness</span> <span class="k">else</span> <span class="n">Person</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">dto</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="DeclarationService"><a class="viewcode-back" href="../../helpdev.html#application.service.DeclarationService">[docs]</a><span class="k">class</span> <span class="nc">DeclarationService</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Declaration Service. &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DeclarationService.requestDeclaration"><a class="viewcode-back" href="../../helpdev.html#application.service.DeclarationService.requestDeclaration">[docs]</a>    <span class="k">def</span> <span class="nf">requestDeclaration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trackingId</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fetch declaration from datastore.</span>
+
+<span class="sd">        Retrieve a declaration entity, given a tracking identifier.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            trackingId:</span>
+<span class="sd">                Declaration tracking identifier.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A declaration entity to the corresponding tracking identifier.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            SpecificationError:</span>
+<span class="sd">                A error occurred creating declaration with bad tracking</span>
+<span class="sd">                identifier.</span>
+<span class="sd">            NotFoundError:</span>
+<span class="sd">                An error occurred searching a declaration by tracking</span>
+<span class="sd">                identifier.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">trackingIdSpec</span> <span class="o">=</span> <span class="n">DeclarationTrackingIdSpecification</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">trackingIdSpec</span><span class="o">.</span><span class="n">isSatisfiedBy</span><span class="p">(</span><span class="n">Declaration</span><span class="p">(</span><span class="n">trackingId</span><span class="o">=</span><span class="n">trackingId</span><span class="p">)):</span>
+            <span class="n">declaration</span> <span class="o">=</span> <span class="n">Declaration</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">trackingId</span><span class="o">=</span><span class="n">trackingId</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">declaration</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">NotFoundError</span><span class="p">(</span><span class="s">&#39;Declaration not found: &#39;</span> <span class="o">+</span> <span class="n">trackingId</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">declaration</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SpecificationError</span><span class="p">(</span><span class="s">&#39;Bad trackingId: &#39;</span> <span class="o">+</span> <span class="n">trackingId</span><span class="p">,</span>
+                                     <span class="n">DeclarationTrackingIdSpecification</span><span class="p">)</span>
+</div></div>
+<span class="k">class</span> <span class="nc">DispatchService</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">requestDispatches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fetch dispatches</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dispatches.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Dispatch</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">newDispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dto</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create new disptach.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dto:</span>
+<span class="sd">                Dispatch data transfer object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A dispatch entity.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            StoreFailedError:</span>
+<span class="sd">                A error occurred storing entity.</span>
+<span class="sd">            NotFoundError:</span>
+<span class="sd">                A error occurred searching for nonexistent reference like</span>
+<span class="sd">                customer.</span>
+<span class="sd">            BadValueError:</span>
+<span class="sd">                A error ocurred creating a dispatch with bad attributes</span>
+<span class="sd">                value or types.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dispatch</span> <span class="o">=</span> <span class="n">Dispatch</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">dto</span><span class="p">)</span>
+        <span class="n">dispatch</span><span class="o">.</span><span class="n">store</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">dispatch</span>
+
+    <span class="k">def</span> <span class="nf">updateDispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">dto</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update disptach.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            id:</span>
+<span class="sd">                Disptach integer identifier.</span>
+<span class="sd">            dto:</span>
+<span class="sd">                Dispatch data transfer object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A dispatch entity.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            StoreFailedError:</span>
+<span class="sd">                A error occurred storing entity.</span>
+<span class="sd">            NotFoundError:</span>
+<span class="sd">                A error occurred searching for nonexistent dispatch.</span>
+<span class="sd">            BadValueError:</span>
+<span class="sd">                A error ocurred creating a dispatch with bad attributes</span>
+<span class="sd">                value or types.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dispatch</span> <span class="o">=</span> <span class="n">Dispatch</span><span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dispatch</span><span class="p">:</span>
+            <span class="n">dispatch</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dto</span><span class="p">)</span>
+            <span class="n">dispatch</span><span class="o">.</span><span class="n">store</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NotFoundError</span><span class="p">(</span><span class="s">&#39;Dispatch not found: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">id</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Índice General"
+             >índice</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >módulos</a> |</li>
+        <li><a href="../../index.html">lac 1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, cristHian Gz. (gcca).
+    Created by <a href="https://launchpad.net/~gcca">(gcca)</a>
+    </div>
+  </body>
+</html>

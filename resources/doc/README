@@ -1,0 +1,31 @@
+Documentación
+=============
+
+### Google App Engine (Google Cloud SDK)
+Obtener el SDK desde https://developers.google.com/appengine/downloads
+
+### Desplegar en la Nube
+En consola usar *appcfg.py update /path/to/lac*.
+En GUI hay una opción *Deploy* como botón.
+En ambos casos se debe ingresar la cuenta y contraseña para el despliegue.
+La configuración de la aplicación puede hacerse desde *https://appengine.google.com*.
+
+### Instalar MSYS
+MSYS provee comandos básicos de forma nativa en Windows, para poder trabajar con *bash*.
+Descargar desde *http://sourceforge.net/projects/mingw/files/Installer* descargando el instalador *mingw-get-setup.exe*.
+
+### Compilar Javascript
+Con la consola, desde el directorio */path/to/lac/lac*, ejecutar *../compile all*.
+Es posible compilar cada fichero por separado. Revisar el fichero *compile*.
+
+### Servidor de prueba
+Para ejecutar el servidor de prueba en Windows, clic en la opción Run de la GUI de Google App Engine. Para Linux, escribir *dev_appserver.py .* en el terminal.
+
+### Generar la documentación del proyecto
+En */path/to/lac/doc* ejecutar el comando *make html*. El resultado estará en el directorio *build/html*
+
+### Dependencias
+Agregar a la variable PATH: *C:\Python27\;C:\Python27\Scripts\*
+Abrir una consola y ejecutar:
+- easy_install pip
+- pip install pyexecjs

@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Especificaciones &mdash; lac 1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/gcca.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <link rel="top" title="lac 1 documentation" href="index.html" />
+    <link rel="next" title="Ciclo de desarrollo" href="devcicle.html" />
+    <link rel="prev" title="Descripción de la Aplicación" href="description.html" /><link href='http://fonts.googleapis.com/css?family=Source+Code+Pro|Open+Sans:300italic,400italic,700italic,400,300,700' rel='stylesheet' type='text/css'>
+<link href="_static/solarized-dark.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Índice General"
+             accesskey="I">índice</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >módulos</a> |</li>
+        <li class="right" >
+          <a href="devcicle.html" title="Ciclo de desarrollo"
+             accesskey="N">siguiente</a> |</li>
+        <li class="right" >
+          <a href="description.html" title="Descripción de la Aplicación"
+             accesskey="P">anterior</a> |</li>
+        <li><a href="index.html">lac 1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Contenidos</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Especificaciones</a><ul>
+<li><a class="reference internal" href="#formulario-de-cliente">Formulario de cliente</a></li>
+<li><a class="reference internal" href="#movimientos">Movimientos</a></li>
+<li><a class="reference internal" href="#registro-de-operaciones">Registro de Operaciones</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Tema anterior</h4>
+  <p class="topless"><a href="description.html"
+                        title="Capítulo anterior">Descripción de la Aplicación</a></p>
+  <h4>Próximo tema</h4>
+  <p class="topless"><a href="devcicle.html"
+                        title="Próximo capítulo">Ciclo de desarrollo</a></p>
+  <h3>Esta página</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/specification.txt"
+           rel="nofollow">Enseñar el código</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Búsqueda rápida</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Ir a" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="especificaciones">
+<h1>Especificaciones<a class="headerlink" href="#especificaciones" title="Enlazar permanentemente con este título">¶</a></h1>
+<div class="section" id="formulario-de-cliente">
+<h2>Formulario de cliente<a class="headerlink" href="#formulario-de-cliente" title="Enlazar permanentemente con este título">¶</a></h2>
+<ul class="simple">
+<li>Cada cliente tiene que haber registrado sus datos personales antes de poner generar el movimiento.</li>
+<li>Al generar la declaración jurada del cliente se debe generar, a la vez, el movimiento dentro del sistema.</li>
+</ul>
+</div>
+<div class="section" id="movimientos">
+<h2>Movimientos<a class="headerlink" href="#movimientos" title="Enlazar permanentemente con este título">¶</a></h2>
+<ul class="simple">
+<li>Cada movimiento que supere los 10 000$ deben ser convertidos a operaciones.</li>
+<li>Si hay un conjunto de movimiento que tiene a la misma persona como beneficiario o quien solicita la el movimiento, dicho movimiento debe ser convertido a operación. Esto durante un mes.</li>
+<li>En los casos anteriores, se debe hacer la conversión de moneda de ser necesario.</li>
+<li>Después de un mes, el registro de movimientos será borrado.</li>
+</ul>
+</div>
+<div class="section" id="registro-de-operaciones">
+<h2>Registro de Operaciones<a class="headerlink" href="#registro-de-operaciones" title="Enlazar permanentemente con este título">¶</a></h2>
+<ul class="simple">
+<li>Después de un mes, el registro de operaciones será borrado, depués de pasar los registros existentes al historial de operaciones.</li>
+</ul>
+<div class="figure">
+<img alt="Modelo de Dominio (Detallado)" src="_images/model_dot.svg" width="100%" /></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Índice General"
+             >índice</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >módulos</a> |</li>
+        <li class="right" >
+          <a href="devcicle.html" title="Ciclo de desarrollo"
+             >siguiente</a> |</li>
+        <li class="right" >
+          <a href="description.html" title="Descripción de la Aplicación"
+             >anterior</a> |</li>
+        <li><a href="index.html">lac 1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, cristHian Gz. (gcca).
+    Created by <a href="https://launchpad.net/~gcca">(gcca)</a>
+    </div>
+  </body>
+</html>

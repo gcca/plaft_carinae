@@ -1,0 +1,276 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Descripción de la Aplicación &mdash; lac 1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/gcca.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <link rel="top" title="lac 1 documentation" href="index.html" />
+    <link rel="next" title="Especificaciones" href="specification.html" />
+    <link rel="prev" title="Proyecto LAc" href="index.html" /><link href='http://fonts.googleapis.com/css?family=Source+Code+Pro|Open+Sans:300italic,400italic,700italic,400,300,700' rel='stylesheet' type='text/css'>
+<link href="_static/solarized-dark.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Índice General"
+             accesskey="I">índice</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >módulos</a> |</li>
+        <li class="right" >
+          <a href="specification.html" title="Especificaciones"
+             accesskey="N">siguiente</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Proyecto LAc"
+             accesskey="P">anterior</a> |</li>
+        <li><a href="index.html">lac 1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Contenidos</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Descripción de la Aplicación</a><ul>
+<li><a class="reference internal" href="#usuarios">Usuarios</a></li>
+<li><a class="reference internal" href="#modelo-de-negocio">Modelo de negocio</a></li>
+<li><a class="reference internal" href="#esquema-de-usuarios">Esquema de usuarios</a></li>
+<li><a class="reference internal" href="#mapa-del-proceso">Mapa del proceso</a><ul>
+<li><a class="reference internal" href="#casos-de-uso">Casos de uso</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#flujo-de-informacion">Flujo de información</a></li>
+<li><a class="reference internal" href="#modelo-de-dominio">Modelo de dominio</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Tema anterior</h4>
+  <p class="topless"><a href="index.html"
+                        title="Capítulo anterior">Proyecto LAc</a></p>
+  <h4>Próximo tema</h4>
+  <p class="topless"><a href="specification.html"
+                        title="Próximo capítulo">Especificaciones</a></p>
+  <h3>Esta página</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/description.txt"
+           rel="nofollow">Enseñar el código</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Búsqueda rápida</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Ir a" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="descripcion-de-la-aplicacion">
+<h1>Descripción de la Aplicación<a class="headerlink" href="#descripcion-de-la-aplicacion" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Recabar información de las operaciones que realizan las agencias de aduanas, sus clientes y trabajadores.</p>
+<div class="section" id="usuarios">
+<h2>Usuarios<a class="headerlink" href="#usuarios" title="Enlazar permanentemente con este título">¶</a></h2>
+<dl class="docutils">
+<dt>Principal (Oficial de cumplimiento)</dt>
+<dd>Puede agregar nuevos usuarios y asignar permisos.</dd>
+<dt>Subordinados (A cargo de módulos específicos)</dt>
+<dd>Tienen permisos para ciertos módulos.</dd>
+</dl>
+</div>
+<div class="section" id="modelo-de-negocio">
+<h2>Modelo de negocio<a class="headerlink" href="#modelo-de-negocio" title="Enlazar permanentemente con este título">¶</a></h2>
+<dl class="docutils">
+<dt>User</dt>
+<dd>Base para entidades con acceso a la aplicación.</dd>
+<dt>CustomsBrokerUser</dt>
+<dd>Usuarios asociados a una agencia de aduanas.</dd>
+<dt>CustomsBroker</dt>
+<dd>Datos de la agencia de aduanas.</dd>
+<dt>Movement</dt>
+<dd>Movimiento que es registrado al generar la declaración jurada.
+Previa validación, puede ser convertida en una entidad de tipo <em>Operation</em>.</dd>
+<dt>Operation</dt>
+<dd>Operación que será analizada por el oficial de cumplimiento.</dd>
+<dt>Customer</dt>
+<dd>Clientes de las agencias de aduanas. (Lista única y compartida.)</dd>
+</dl>
+<p class="graphviz">
+<img src="_images/inheritance-7250f079e16f0bb80c0c17c810a77f0e221c2890.png" alt="Inheritance diagram of domain.model" usemap="#inheritancec0be415102" class="inheritance"/>
+<map id="inheritancec0be415102" name="inheritancec0be415102">
+<area shape="rect" id="node1" href="helpdev.html#domain.gz.EntityMixIn" title="EntityMixIn" alt="" coords="114,120,197,145"/>
+<area shape="rect" id="node8" href="helpdev.html#domain.shared.Entity" title="Entity" alt="" coords="241,143,306,168"/>
+</map>
+</p>
+</div>
+<div class="section" id="esquema-de-usuarios">
+<h2>Esquema de usuarios<a class="headerlink" href="#esquema-de-usuarios" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Existe un usuario <em>administrador</em> que puede trabajar con todos los módulos.
+Dicho usuario puede creaer nuevos usuarios y asignarle accesos por módulos.</p>
+<p class="graphviz">
+<img src="_images/inheritance-859addca085aa34c3bc9b4c7f08b296979a59134.png" alt="Inheritance diagram of domain.model.CustomsBrokerUser" usemap="#inheritance95118ff090" class="inheritance"/>
+<map id="inheritance95118ff090" name="inheritance95118ff090">
+<area shape="rect" id="node1" href="helpdev.html#domain.gz.EntityMixIn" title="EntityMixIn" alt="" coords="121,5,209,32"/>
+<area shape="rect" id="node2" href="helpdev.html#domain.shared.Entity" title="Entity" alt="" coords="255,29,325,56"/>
+</map>
+</p>
+</div>
+<div class="section" id="mapa-del-proceso">
+<h2>Mapa del proceso<a class="headerlink" href="#mapa-del-proceso" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="figure">
+<img alt="Mapa del proceso" src="_images/process.svg" width="100%" /></div>
+<div class="figure">
+<img alt="Mapa del proceso 2" src="_images/process2.svg" width="100%" /></div>
+<div class="figure">
+<img alt="Mapa del proceso 3" src="_images/process3.svg" width="100%" /></div>
+<div class="section" id="casos-de-uso">
+<h3>Casos de uso<a class="headerlink" href="#casos-de-uso" title="Enlazar permanentemente con este título">¶</a></h3>
+<dl class="docutils">
+<dt>Solicitud del clientes</dt>
+<dd>El cliente ingresa al formulario (/customer-form) en el cual hace uso de su RUC o DNI para buscar sus datos. Si existe, sus datos aparecen completando los campos en el formulario, de lo contrario, los campos deben ser ingresados.
+Existe una sección de <em>movimiento</em> donde el cliente registra datos como: el monto, referencias del cliente, la agencia de aduana a la cual va dirigida la declaración jurada, entre otros.
+Internamente, la aplicación genera un nuevo movimiento y los analiza para convertirlo en operación, si es pertinente.</dd>
+<dt>Dashboard del oficial de cumplimiento</dt>
+<dd>La pantalla principal del oficial de cumplimiento está orientada a mostrar la lista de las operaciones. Las clasifica: en proceso y terminado. Además hay un link hacia las opciones de edición</dd>
+<dt>Checklist de señales de alerta</dt>
+<dd>En la lista de la operaciones, cada operación tiene un link hacia un pantalla divida en dos partes: la lista de las señales de alerta y los datos requeridos para el análisis.</dd>
+<dt>Registro de empleados</dt>
+<dd>Previo al uso del software, la agencia de aduanas debe registrar a sus empledos; principalmente, a los despachadores. Cada despachador es asociado a alguna operación que se registre.</dd>
+<dt>Opciones por operación</dt>
+<dd><p class="first">En la lista de operaciones cada operación debe tener un esquema similar a:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="26%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="15%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Orden (#)</th>
+<th class="head">Cliente</th>
+<th class="head">&lt;Alertas&gt;</th>
+<th class="head">&lt;Tipo&gt;</th>
+<th class="head">&lt;Estado&gt;</th>
+<th class="head">&lt;Opciones&gt;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>123</td>
+<td>Nestlé</td>
+<td>&lt;Button&gt;</td>
+<td>&lt;Select&gt;</td>
+<td>&lt;Select&gt;</td>
+<td>&lt;Button&gt;</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="last">
+<div><dl class="docutils">
+<dt>Alertas</dt>
+<dd>Botón como link hacia el checklist.</dd>
+<dt>Tipo</dt>
+<dd>Registro, inusual, sospechosa.</dd>
+<dt>Estado</dt>
+<dd>En proceso o pasar terminado.</dd>
+<dt>Opciones</dt>
+<dd>Dropdown para opciones como: reportar a la UIF,
+editar datos, entre otros.</dd>
+</dl>
+</div></blockquote>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Nota</p>
+<p><strong>Diferencia entre operación inusual y sospechosa</strong></p>
+<ul class="last simple">
+<li>Es inusual cuando la operación está fuera de lo límites <em>normales</em> de dinero y solicitudes de servicio.</li>
+<li>Es sospechosa cuando, además de ser inusual, el oficial de cumplimiento considera que la operación puede producir lavado de activos. Por lo cual dicha operación es reportada como sospechosa a la UIF.</li>
+</ul>
+</div>
+<div class="figure">
+<img alt="Customer Form" src="_images/customer-form.png" style="width: 100%;" />
+</div>
+<hr class="docutils" />
+<div class="figure">
+<img alt="Customer Form" src="_images/dashboard.png" style="width: 100%;" />
+</div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="flujo-de-informacion">
+<h2>Flujo de información<a class="headerlink" href="#flujo-de-informacion" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="figure">
+<img alt="Info Flow" src="_images/flujo-de-informacion.svg" width="100%" /></div>
+</div>
+<div class="section" id="modelo-de-dominio">
+<h2>Modelo de dominio<a class="headerlink" href="#modelo-de-dominio" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Esquema inicial de las relaciones entre entidades.</p>
+<div class="figure">
+<img alt="Domain Model" src="_images/model.svg" width="100%" /></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Índice General"
+             >índice</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >módulos</a> |</li>
+        <li class="right" >
+          <a href="specification.html" title="Especificaciones"
+             >siguiente</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Proyecto LAc"
+             >anterior</a> |</li>
+        <li><a href="index.html">lac 1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, cristHian Gz. (gcca).
+    Created by <a href="https://launchpad.net/~gcca">(gcca)</a>
+    </div>
+  </body>
+</html>

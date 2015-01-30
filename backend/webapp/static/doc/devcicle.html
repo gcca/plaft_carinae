@@ -1,0 +1,374 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Ciclo de desarrollo &mdash; lac 1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/gcca.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <link rel="top" title="lac 1 documentation" href="index.html" />
+    <link rel="next" title="Desarrollo" href="helpdev.html" />
+    <link rel="prev" title="Especificaciones" href="specification.html" /><link href='http://fonts.googleapis.com/css?family=Source+Code+Pro|Open+Sans:300italic,400italic,700italic,400,300,700' rel='stylesheet' type='text/css'>
+<link href="_static/solarized-dark.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Índice General"
+             accesskey="I">índice</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >módulos</a> |</li>
+        <li class="right" >
+          <a href="helpdev.html" title="Desarrollo"
+             accesskey="N">siguiente</a> |</li>
+        <li class="right" >
+          <a href="specification.html" title="Especificaciones"
+             accesskey="P">anterior</a> |</li>
+        <li><a href="index.html">lac 1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Contenidos</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Ciclo de desarrollo</a><ul>
+<li><a class="reference internal" href="#detalle-de-tareas">Detalle de tareas</a><ul>
+<li><a class="reference internal" href="#dependecias">Dependecias</a></li>
+<li><a class="reference internal" href="#esfuerzo">Esfuerzo</a></li>
+<li><a class="reference internal" href="#descripcion">Descripción</a></li>
+<li><a class="reference internal" href="#hitos">Hitos</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Tema anterior</h4>
+  <p class="topless"><a href="specification.html"
+                        title="Capítulo anterior">Especificaciones</a></p>
+  <h4>Próximo tema</h4>
+  <p class="topless"><a href="helpdev.html"
+                        title="Próximo capítulo">Desarrollo</a></p>
+  <h3>Esta página</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/devcicle.txt"
+           rel="nofollow">Enseñar el código</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Búsqueda rápida</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Ir a" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="ciclo-de-desarrollo">
+<h1>Ciclo de desarrollo<a class="headerlink" href="#ciclo-de-desarrollo" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Detalle de la fase de desarrollo</p>
+<dl class="glossary docutils">
+<dt id="term-glosario"><span id="term-cliente"></span><em>Glosario</em><br />Cliente</dt>
+<dd>Persona natural o jurídica que solicita los servicios
+del agente de aduanas</dd>
+<dt id="term-movimiento">Movimiento</dt>
+<dd>Paso previo al registro de operación.
+Cuando el cliente genera su declaración, se crea un movimiento.</dd>
+<dt id="term-operacion">Operación</dt>
+<dd>Movimiento que, previa evaluación, pasa al registro de operaciones.
+Mantiene estados: en proceso y terminado.
+Cuando el estado es <em>terminado</em> la operación es declarada
+como inusual o no inusual.</dd>
+</dl>
+<div class="section" id="detalle-de-tareas">
+<h2>Detalle de tareas<a class="headerlink" href="#detalle-de-tareas" title="Enlazar permanentemente con este título">¶</a></h2>
+<ol class="arabic simple">
+<li>Buscar cliente por número de documento de identidad.</li>
+<li>Autocompletar los datos del cliente, si existe.</li>
+<li>Crear/actualizar los datos del cliente.</li>
+<li>Crear el movimiento, asociando al cliente y a la agencia de aduanas.</li>
+<li>Evaluar el movimiento para convertirlo en operación.</li>
+<li>Autenticar usuarios (oficial de cumplimiento &#8211; asistentes).</li>
+<li>Listar operaciones.</li>
+<li>Editar datos de la operación.</li>
+<li>Cambiar estado de la operación.</li>
+<li>Marcar operación como inusual.</li>
+<li>Reporte de operación inusual (afinar formato para la UIF).</li>
+<li>Checklist con las señales de alert</li>
+</ol>
+<div class="section" id="dependecias">
+<h3>Dependecias<a class="headerlink" href="#dependecias" title="Enlazar permanentemente con este título">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="66%" />
+<col width="22%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">N</th>
+<th class="head">Requisito</th>
+<th class="head">Dep.</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Buscar cliente</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Autocompletar</td>
+<td>1</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>Datos de cliente</td>
+<td>1</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+<td>Movimiento</td>
+<td>1</td>
+</tr>
+<tr class="row-even"><td>5</td>
+<td>Evaluación</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>6</td>
+<td>Autenticar</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>7</td>
+<td>Listar operaciones</td>
+<td>4 - 6</td>
+</tr>
+<tr class="row-odd"><td>8</td>
+<td>Editar operación</td>
+<td>4 - 7</td>
+</tr>
+<tr class="row-even"><td>9</td>
+<td>Estado de operación</td>
+<td>4 - 7</td>
+</tr>
+<tr class="row-odd"><td>10</td>
+<td>Operación inusual</td>
+<td>8</td>
+</tr>
+<tr class="row-even"><td>11</td>
+<td>Reporte inusual</td>
+<td>8</td>
+</tr>
+<tr class="row-odd"><td>12</td>
+<td>Checklist</td>
+<td>7 - 8</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="esfuerzo">
+<h3>Esfuerzo<a class="headerlink" href="#esfuerzo" title="Enlazar permanentemente con este título">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="70%" />
+<col width="17%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">N</th>
+<th class="head">Requisito</th>
+<th class="head">D/H</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>Buscar cliente</td>
+<td>3</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>Autocompletar</td>
+<td>2</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>Datos de cliente</td>
+<td>1</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+<td>Movimiento</td>
+<td>1</td>
+</tr>
+<tr class="row-even"><td>5</td>
+<td>Evaluación</td>
+<td>1</td>
+</tr>
+<tr class="row-odd"><td>6</td>
+<td>Autenticar</td>
+<td>1</td>
+</tr>
+<tr class="row-even"><td>7</td>
+<td>Listar operaciones</td>
+<td>2</td>
+</tr>
+<tr class="row-odd"><td>8</td>
+<td>Editar operación</td>
+<td>6</td>
+</tr>
+<tr class="row-even"><td>9</td>
+<td>Estado de operación</td>
+<td>1</td>
+</tr>
+<tr class="row-odd"><td>10</td>
+<td>Operación inusual</td>
+<td>2</td>
+</tr>
+<tr class="row-even"><td>11</td>
+<td>Reporte inusual</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>12</td>
+<td>Checklist</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="descripcion">
+<h3>Descripción<a class="headerlink" href="#descripcion" title="Enlazar permanentemente con este título">¶</a></h3>
+<ol class="arabic simple">
+<li>Buscar cliente por número de documento de identidad.<ol class="arabic">
+<li>Validar si DNI o RUC.</li>
+</ol>
+</li>
+<li>Autocompletar los datos del cliente, si existe.<ol class="arabic">
+<li>Obtener desde BD.</li>
+<li>Consultar a servicio. (por implementar).</li>
+</ol>
+</li>
+<li>Crear/actualizar los datos del cliente.</li>
+<li>Crear el movimiento, asociando al cliente y a la agencia de aduanas.<ol class="arabic">
+<li>Mostrar link a declaracion juarada en PDF.</li>
+</ol>
+</li>
+<li>Evaluar el movimiento para convertirlo en operación.<ol class="arabic">
+<li>Validar por cantidad.</li>
+</ol>
+</li>
+<li>Autenticar usuarios (oficial de cumplimiento &#8211; asistentes).<ol class="arabic">
+<li>Redireccionar a dashboard.</li>
+<li>Dashboard debe mostrar las opciones:<ul>
+<li>listar operaciones,</li>
+<li>nueva operación.</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>Listar operaciones.<ol class="arabic">
+<li>Mostrar:<ul>
+<li>Nombre del cliente,</li>
+<li>Procentaje de avance de ingreso de datos,</li>
+<li>Cambiar de estado,</li>
+<li>Editar.</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>Editar datos de la operación.<ol class="arabic">
+<li>Mostrar los campos relacionados a la operación</li>
+<li>Para agregar al ordenante, declarante, intermediario, tercero, etc,
+se considerará un módulo para asociar personas dinámicamente.
+Cada <em>persona asociada</em> tendrá un <strong>tag</strong> para fijar el rol.</li>
+</ol>
+</li>
+<li>Cambiar estado de la operación.<ol class="arabic">
+<li>Preguntar si será declarado como inusual.</li>
+</ol>
+</li>
+<li>Marcar operación como inusual.<ol class="arabic">
+<li>Identificar con un color rojo si es inusual.</li>
+</ol>
+</li>
+<li>Reporte de operación inusual (afinar formato para la UIF).<ol class="arabic">
+<li>Averiguar el formato, si es PDF u otro formato digital.</li>
+</ol>
+</li>
+<li>Checklist con las señales de alert<ol class="arabic">
+<li>Pasar todas las señales de alerta como checklist.</li>
+<li>Clasificar las señales de alerta según el anexo 1.</li>
+<li>La interfaz del checklist debe estar acompañada con los datos
+que necesita el oficial de cumplimiento para realizar la evaluación.</li>
+</ol>
+</li>
+</ol>
+</div>
+<div class="section" id="hitos">
+<h3>Hitos<a class="headerlink" href="#hitos" title="Enlazar permanentemente con este título">¶</a></h3>
+<ol class="arabic simple">
+<li>Búsqueda cliente y registro del movimiento</li>
+<li>PDF de la declaración jurada</li>
+<li>Dashboard con lista de operaciones</li>
+<li>Cambiar estado de operación</li>
+<li>Panel de edición de operación</li>
+<li>Checklist de señales de la operación</li>
+</ol>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Índice General"
+             >índice</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >módulos</a> |</li>
+        <li class="right" >
+          <a href="helpdev.html" title="Desarrollo"
+             >siguiente</a> |</li>
+        <li class="right" >
+          <a href="specification.html" title="Especificaciones"
+             >anterior</a> |</li>
+        <li><a href="index.html">lac 1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, cristHian Gz. (gcca).
+    Created by <a href="https://launchpad.net/~gcca">(gcca)</a>
+    </div>
+  </body>
+</html>

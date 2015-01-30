@@ -1,0 +1,430 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>domain.shared &mdash; lac 1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/gcca.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/translations.js"></script>
+    <link rel="top" title="lac 1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /><link href='http://fonts.googleapis.com/css?family=Source+Code+Pro|Open+Sans:300italic,400italic,700italic,400,300,700' rel='stylesheet' type='text/css'>
+<link href="../../_static/solarized-dark.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Índice General"
+             accesskey="I">índice</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >módulos</a> |</li>
+        <li><a href="../../index.html">lac 1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Búsqueda rápida</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Ir a" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for domain.shared</h1><div class="highlight"><pre>
+<span class="sd">&#39;&#39;&#39;Pattern interfaces and support code for the domain layer&#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="Entity"><a class="viewcode-back" href="../../helpdev.html#domain.shared.Entity">[docs]</a><span class="k">class</span> <span class="nc">Entity</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; An entity &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="Entity.sameIdentityAs"><a class="viewcode-back" href="../../helpdev.html#domain.shared.Entity.sameIdentityAs">[docs]</a>    <span class="k">def</span> <span class="nf">sameIdentityAs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; (Entity, Entity) -&gt; bool</span>
+
+<span class="sd">        Entities compare by identity, not by attributes</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            other -- The other entity</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `True` if the identities are the same,</span>
+<span class="sd">            regardles of other attributes</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">NotImplemented</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Entity.identity"><a class="viewcode-back" href="../../helpdev.html#domain.shared.Entity.identity">[docs]</a>    <span class="k">def</span> <span class="nf">identity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; (Entity) -&gt; ID</span>
+
+<span class="sd">        Entities have an identity</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The identity of this entity</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_identity</span>
+</div></div>
+<div class="viewcode-block" id="Identity"><a class="viewcode-back" href="../../helpdev.html#domain.shared.Identity">[docs]</a><span class="k">class</span> <span class="nc">Identity</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Every class that inherits from `EntitySupport` must have</span>
+<span class="sd">    exactly one field annotated with this annotation</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="EntitySupport"><a class="viewcode-back" href="../../helpdev.html#domain.shared.EntitySupport">[docs]</a><span class="k">class</span> <span class="nc">EntitySupport</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Base class for entities &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">identityField</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">sameIdentityAs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">other</span> <span class="o">!=</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">identity</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">identity</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">identity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">identityField</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">identityField</span> <span class="o">=</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">identityFieldLazyDetermination</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">identityField</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span>
+
+    <span class="k">def</span> <span class="nf">identityFieldLazyDetermination</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
+        <span class="n">identityField</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">cls</span><span class="o">.</span><span class="n">getDeclaredFields</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">field</span><span class="o">.</span><span class="n">getAnnotation</span><span class="p">(</span><span class="n">Indentity</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">field</span><span class="o">.</span><span class="n">setAccessible</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">identityField</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ReferenceError</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">identityField</span> <span class="o">=</span> <span class="n">field</span>
+
+        <span class="k">if</span> <span class="n">identityField</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cls</span> <span class="ow">is</span> <span class="nb">object</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ReferenceError</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">identityFieldLazyDetermination</span><span class="p">(</span>
+                        <span class="nb">super</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">identityField</span>
+
+    <span class="k">def</span> <span class="nf">hashCode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">identity</span><span class="p">()</span><span class="o">.</span><span class="n">hashCode</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">equals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">o</span><span class="p">:</span> <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">o</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span> <span class="o">==</span> <span class="n">o</span><span class="o">.</span><span class="n">__class__</span><span class="p">:</span> <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sameIdentityAs</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ValueObject"><a class="viewcode-back" href="../../helpdev.html#domain.shared.ValueObject">[docs]</a><span class="k">class</span> <span class="nc">ValueObject</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; A value object &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="ValueObject.sameValueAs"><a class="viewcode-back" href="../../helpdev.html#domain.shared.ValueObject.sameValueAs">[docs]</a>    <span class="k">def</span> <span class="nf">sameValueAs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; (ValueObject, ValueObject) -&gt; bool</span>
+
+<span class="sd">        Value objects compare by the values of their attributes,</span>
+<span class="sd">        they don&#39;t have an identity</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            other -- The other value object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `True` if the given value object&#39;s</span>
+<span class="sd">            and this value object&#39;s attributes are the same</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">NotImplemented</span>
+</div>
+<div class="viewcode-block" id="ValueObject.copy"><a class="viewcode-back" href="../../helpdev.html#domain.shared.ValueObject.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; (ValueObject) -&gt; ValueObject</span>
+
+<span class="sd">        Value objects can be freely copied</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A safe, deep copy of this value object</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">NotImplemented</span>
+</div></div>
+<div class="viewcode-block" id="ValueObjectSupport"><a class="viewcode-back" href="../../helpdev.html#domain.shared.ValueObjectSupport">[docs]</a><span class="k">class</span> <span class="nc">ValueObjectSupport</span><span class="p">(</span><span class="n">ValueObject</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Base class for value objects &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cachedHashCode</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="ValueObjectSupport.sameValueAs"><a class="viewcode-back" href="../../helpdev.html#domain.shared.ValueObjectSupport.sameValueAs">[docs]</a>    <span class="k">def</span> <span class="nf">sameValueAs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            other -- The other value object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `True` if all non-transient fields are equal</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="n">other</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">__class__</span>
+</div>
+<div class="viewcode-block" id="ValueObjectSupport.hashCode"><a class="viewcode-back" href="../../helpdev.html#domain.shared.ValueObjectSupport.hashCode">[docs]</a>    <span class="k">def</span> <span class="nf">hashCode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Using a local variable to ensure that we only do a single</span>
+<span class="sd">        read of the cachedHashCode field, to avoid race conditions.</span>
+<span class="sd">        It doesn&#39;t matter if several threads compute the hash code</span>
+<span class="sd">        and overwrite each other, but it&#39;s important that</span>
+<span class="sd">        we never return 0, which could happen with multiple reads</span>
+<span class="sd">        of the cachedHashCode field.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cachedHashCode</span>
+
+        <span class="k">if</span> <span class="n">h</span><span class="p">:</span>
+            <span class="c"># Lazy initialization of hash code.</span>
+            <span class="c"># Value objects are immutable,</span>
+            <span class="c">#   so the hash code never changes.</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">refelctionHashCode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cachedHashCode</span> <span class="o">=</span> <span class="n">h</span>
+
+        <span class="k">return</span> <span class="n">h</span>
+</div>
+<div class="viewcode-block" id="ValueObjectSupport.equal"><a class="viewcode-back" href="../../helpdev.html#domain.shared.ValueObjectSupport.equal">[docs]</a>    <span class="k">def</span> <span class="nf">equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            o -- other object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">         `True` is other object has the same value as this value object</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">o</span><span class="p">:</span> <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">o</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span> <span class="o">==</span> <span class="n">o</span><span class="o">.</span><span class="n">__class__</span><span class="p">:</span> <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sameValueAs</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+</div></div>
+<div class="viewcode-block" id="DomainEvent"><a class="viewcode-back" href="../../helpdev.html#domain.shared.DomainEvent">[docs]</a><span class="k">class</span> <span class="nc">DomainEvent</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    A domain event is something that is unique, but does not have</span>
+<span class="sd">    a lifecycle.</span>
+<span class="sd">    The identity may be explicit, for example the sequence number</span>
+<span class="sd">    of a payment, or it could be derived from various aspects</span>
+<span class="sd">    of the event such as where, when and what has happened.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="DomainEvent.sameEventAs"><a class="viewcode-back" href="../../helpdev.html#domain.shared.DomainEvent.sameEventAs">[docs]</a>    <span class="k">def</span> <span class="nf">sameEventAs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; (DomainEvent) -&gt; bool</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            other -- The other domain event</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `True` if the given domain event and this event</span>
+<span class="sd">            are regarded as being the same event</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">NotImplemented</span>
+</div></div>
+<div class="viewcode-block" id="Specification"><a class="viewcode-back" href="../../helpdev.html#domain.shared.Specification">[docs]</a><span class="k">class</span> <span class="nc">Specification</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Specification interface</span>
+
+<span class="sd">    Use AbstractSpecification as base for creating specifications,</span>
+<span class="sd">    and only the method isSatisfiedBy(object) must be implemented.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="Specification.isSatisfiedBy"><a class="viewcode-back" href="../../helpdev.html#domain.shared.Specification.isSatisfiedBy">[docs]</a>    <span class="k">def</span> <span class="nf">isSatisfiedBy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; (object) -&gt; bool</span>
+
+<span class="sd">        Check if `object` is satisfied by the specification.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            o -- Object to test</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `True` if `object` satisfies the specification</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">NotImplemented</span>
+</div>
+<div class="viewcode-block" id="Specification.isntSatisfiedBy"><a class="viewcode-back" href="../../helpdev.html#domain.shared.Specification.isntSatisfiedBy">[docs]</a>    <span class="k">def</span> <span class="nf">isntSatisfiedBy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; (object) -&gt; bool</span>
+
+<span class="sd">        Check if `object` is not satisfied by the specification.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            o -- Object to test</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            `True` if `object` does not satisfies the specification</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isSatisfiedBy</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Specification.And"><a class="viewcode-back" href="../../helpdev.html#domain.shared.Specification.And">[docs]</a>    <span class="k">def</span> <span class="nf">And</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specification</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; (Specification) - Specification</span>
+
+<span class="sd">        Creates a new specification that is the AND operation</span>
+<span class="sd">        of `this` specification and another specification.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            specification -- Specification to AND</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A new specification</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">NotImplemented</span>
+</div>
+<div class="viewcode-block" id="Specification.Or"><a class="viewcode-back" href="../../helpdev.html#domain.shared.Specification.Or">[docs]</a>    <span class="k">def</span> <span class="nf">Or</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specification</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; (Specification) - Specification</span>
+
+<span class="sd">        Creates a new specification that is the OR operation</span>
+<span class="sd">        of `this` specification and another specification.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            specification -- Specification to OR</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A new specification</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">NotImplemented</span>
+</div>
+<div class="viewcode-block" id="Specification.Not"><a class="viewcode-back" href="../../helpdev.html#domain.shared.Specification.Not">[docs]</a>    <span class="k">def</span> <span class="nf">Not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specification</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; (Specification) - Specification</span>
+
+<span class="sd">        Creates a new specification that is the NOT operation</span>
+<span class="sd">        of `this` specification.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            specification -- Specification to NOT</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A new specification</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">NotImplemented</span>
+</div></div>
+<div class="viewcode-block" id="AbstractSpecification"><a class="viewcode-back" href="../../helpdev.html#domain.shared.AbstractSpecification">[docs]</a><span class="k">class</span> <span class="nc">AbstractSpecification</span><span class="p">(</span><span class="n">Specification</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Abstract base implementation of composite `Specification` with default</span>
+<span class="sd">    implementations for `and`, `or` and `not`.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">isSatisfiedBy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">NotImplemented</span>
+
+    <span class="k">def</span> <span class="nf">And</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specification</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">AndSpecification</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specification</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">Or</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specification</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">OrSpecification</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specification</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">Not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specification</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">NotSpecification</span><span class="p">(</span><span class="n">specification</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="AndSpecification"><a class="viewcode-back" href="../../helpdev.html#domain.shared.AndSpecification">[docs]</a><span class="k">class</span> <span class="nc">AndSpecification</span><span class="p">(</span><span class="n">AbstractSpecification</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    AND specification, used to create a new specification that is the AND</span>
+<span class="sd">    of two other specifications.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec1</span><span class="p">,</span> <span class="n">spec2</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; (Specification, Specification)</span>
+
+<span class="sd">        Create a new AND specification based on two other spec.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            spec1 -- Specification one</span>
+<span class="sd">            spec2 -- Specification two</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spec1</span> <span class="o">=</span> <span class="n">spec1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spec2</span> <span class="o">=</span> <span class="n">spec2</span>
+
+    <span class="k">def</span> <span class="nf">isSatisfiedBy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec1</span><span class="o">.</span><span class="n">isSatisfiedBy</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec2</span><span class="o">.</span><span class="n">isSatisfiedBy</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="OrSpecification"><a class="viewcode-back" href="../../helpdev.html#domain.shared.OrSpecification">[docs]</a><span class="k">class</span> <span class="nc">OrSpecification</span><span class="p">(</span><span class="n">AbstractSpecification</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    OR specification, used to create a new specification that is the OR</span>
+<span class="sd">    of two other specifications.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec1</span><span class="p">,</span> <span class="n">spec2</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; (Specification, Specification)</span>
+
+<span class="sd">        Create a new OR specification based on two other spec.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            spec1 -- Specification one</span>
+<span class="sd">            spec2 -- Specification two</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spec1</span> <span class="o">=</span> <span class="n">spec1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spec2</span> <span class="o">=</span> <span class="n">spec2</span>
+
+    <span class="k">def</span> <span class="nf">isSatisfiedBy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec1</span><span class="o">.</span><span class="n">isSatisfiedBy</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec2</span><span class="o">.</span><span class="n">isSatisfiedBy</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="NotSpecification"><a class="viewcode-back" href="../../helpdev.html#domain.shared.NotSpecification">[docs]</a><span class="k">class</span> <span class="nc">NotSpecification</span><span class="p">(</span><span class="n">AbstractSpecification</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Not decorator, used to create a new specification that is the inverse</span>
+<span class="sd">    (NOT) the given specification.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec1</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; (Specification, Specification)</span>
+
+<span class="sd">        Create a new NOT specification based on another spec.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            spec1 -- Specification one</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spec1</span> <span class="o">=</span> <span class="n">spec1</span>
+
+    <span class="k">def</span> <span class="nf">isSatisfiedBy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec1</span><span class="o">.</span><span class="n">isSatisfiedBy</span><span class="p">(</span><span class="n">o</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Índice General"
+             >índice</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >módulos</a> |</li>
+        <li><a href="../../index.html">lac 1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, cristHian Gz. (gcca).
+    Created by <a href="https://launchpad.net/~gcca">(gcca)</a>
+    </div>
+  </body>
+</html>
