@@ -3,10 +3,6 @@
  * @author gcca@gcca.tk (cristHian Gz. <gcca>)
  */
 
-/**
- * 2 - 9 - 1 - 8 - 7 - 6 - 3
- */
-
 
 Module = require '../../workspace/module'
 Customer = require '../../customer'
