@@ -162,7 +162,7 @@ def build():
         'opt': 'jsc.jar'
     }
 
-    if 'signin' != args.module or True:
+    if 'signin' != args.module:
         ctx_ls['ext'] = ('--externas'
                          ' zepto,underscore,backbone,bootstrap,typeahead')
 
