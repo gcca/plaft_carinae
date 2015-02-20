@@ -152,7 +152,8 @@ class exports.Form extends Array implements PoolMixin
       .._push "#{gz.Css \col-md-12} #{gz.Css \inline-control}" \
         if _val .&. @@_GRID._inline
       .._push gz.Css \col-md-6 if _val .&. @@_GRID._half
-      .._push 'Not implemented yet' if _val .&. @@_GRID._flush-left
+      .._push gz.Css \col-md-12 if _val .&. @@_GRID._flush-left
+#      .._push 'Not implemented yet' if _val .&. @@_GRID._flush-left
       .._push 'Not implemented yet' if _val .&. @@_GRID._flush-right
       .._push 'BAD GRID' if not __grid-array._length
     __grid-array._join ' '
@@ -167,7 +168,7 @@ class exports.Form extends Array implements PoolMixin
   field: ({_type, _label, _name, _grid, _field-attrs}:_options) ->
     App.dom._new \div
       .._class = "#{gz.Css \form-group} #{__grid _grid}"
-      ..html = "<label>#_label</label>"
+      ..html = "<label class='#{gz.Css \control-label}'>#_label</label>"
       .._append _el = __element-by _options
       @_push ..
 
@@ -213,7 +214,6 @@ class exports.Form extends Array implements PoolMixin
 
   /** @override */
   render: ->
-    @el.html = null
     for el in @ then @el._append el
     @
 

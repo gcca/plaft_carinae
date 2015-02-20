@@ -3,13 +3,15 @@
  * @module dashboard
  */
 
+
 App = require './app'
 
 App.MODULES =
   Welcome      = require './modules/welcome'
-  Income       = require './modules/income'
-  Numeration   = require './modules/numeration'
-  Declarations = require './modules/declarations'
+#  Income       = r equire './modules/income'
+#  Numeration   = r equire './modules/numeration'
+#  Declarations = r equire './modules/declarations'
+  Operation    = require './modules/dispatch'
 
 Workspace = require './workspace'
 Settings = require './settings'

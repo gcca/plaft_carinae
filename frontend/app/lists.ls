@@ -200,7 +200,7 @@ exports <<<
       '20'
       ''
 
-  activity:  # Table 7
+  activity:  # Table 2
     _display:
       'ABOGADO'
       'ACTOR, ACTRIZ, ARTISTA, DIRECTOR DE ESPECTÁCULOS, COREÓGRAFO, MODELO,
@@ -376,8 +376,6 @@ exports <<<
       "Organizaciones y Organos Extraterritoriales"
       "No identificado"
 
-
-
   money_source:
     _display:
       'Efectivo'
@@ -407,6 +405,81 @@ exports <<<
       'NO EFECTIVO'
       'NO EFECTIVO'
 
+  office:
+    _display: #TABLE 3
+      "ALCALDE"
+      "ANALISTA"
+      "APODERADO"
+      "ASESOR / CONSULTOR"
+      "ASISTENTE"
+      "AUDITOR"
+      "AUXILIAR / AYUDANTE"
+      "CONGRESISTA"
+      "CONTRALOR GENERAL"
+      "DECANO"
+      "DIPLOMATICO"
+      "DIRECTIVO DE ASOCIACIÓN DEPORTIVA"
+      "DIRECTOR, SUBDIRECTOR, GERENTE, JEFE DEL SECTOR PRIVADO"
+      "DOCENTE"
+      "INSPECTOR"
+      "INTENDENTE, DIRECTOR, GERENTE, JEFE DE LA ADMINISTRACIÓN PÚBLICA"
+      "INTERVENTOR GENERAL DE ECONOMIA DE LA ADMINISTRACIÓN PÚBLICA"
+      "JUEZ"
+      "NOTARIO PÚBLICO"
+      "PRACTICANTE"
+      "PREFECTO"
+      "PRESIDENTE DE GOBIERNO REGIONAL"
+      "PRESIDENTE DE LA CORTE SUPREMA"
+      "PRESIDENTE DE LA REPÚBLICA"
+      "PRESIDENTE, TRIBUNAL DE JUSTICIA"
+      "MINISTRO / VICEMINISTRO"
+      "PROCURADOR"
+      "PROCURADOR GENERAL"
+      "RECTOR"
+      "REGIDORES DE MUNICIPALIDADES"
+      "SUB-PREFECTO"
+      "SUPERINTENDENTE DE LA ADMINISTRACIÓN PÚBLICA"
+      "VICE-PRESIDENTE DE LA REPÚBLICA"
+      "VOCAL DE LA CORTE SUPERIOR O SUPREMA"
+      "OTRO (señalar)"
+      "NO DECLARA"
+    _code:
+      '001'
+      '002'
+      '003'
+      '004'
+      '005'
+      '006'
+      '007'
+      '008'
+      '009'
+      '010'
+      '011'
+      '012'
+      '013'
+      '014'
+      '015'
+      '016'
+      '017'
+      '018'
+      '019'
+      '020'
+      '021'
+      '022'
+      '023'
+      '024'
+      '025'
+      '026'
+      '027'
+      '028'
+      '029'
+      '030'
+      '031'
+      '032'
+      '033'
+      '034'
+      '035'
+      '036'
 
   ciiu: require './list/ciiu'
 

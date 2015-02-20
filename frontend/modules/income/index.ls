@@ -82,7 +82,7 @@ class Base-se-se extends App.View
           &nbsp;&nbsp;&nbsp;&nbsp;
           <div class='#{gz.Css \radio-inline}'>
             <label>
-              <input type='radio' value='j' checked>
+              <input type='radio' value='j'>
               Jurídico
             </label>
           </div>
@@ -473,7 +473,7 @@ class CodeNameField extends App.View
   /** @private */ _name   : null
   /** @private */ _input  : null
   /** @private */ _span   : null
-  /** @private */ _hdiden : null
+  /** @private */ _hidden : null
 
   /** @override */
   render: ->
