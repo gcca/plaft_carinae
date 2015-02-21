@@ -312,6 +312,9 @@ HTMLCollection::=
   _length:~ -> @\length
 
 
+App.B = Backbone
+
+
 /**
  * {@code DOMTokenList} basic shortcuts.
  */

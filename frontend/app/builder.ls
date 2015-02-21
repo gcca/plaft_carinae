@@ -89,7 +89,9 @@ class exports.Form extends Array implements PoolMixin
    * @return {string}
    * @private
    */
-  __element-by = ({_type = FieldType.kLineEdit, _name, _placeholder = '', \
+  __element-by = ({_type = FieldType.kLineEdit, \
+                   _name, \
+                   _placeholder = '', \
                    _tip = '', _options}:_external) ->
     | _type is FieldType.kLineEdit =>
       App.dom._new \input
@@ -155,6 +157,7 @@ class exports.Form extends Array implements PoolMixin
       .._push gz.Css \col-md-12 if _val .&. @@_GRID._flush-left
 #      .._push 'Not implemented yet' if _val .&. @@_GRID._flush-left
       .._push 'Not implemented yet' if _val .&. @@_GRID._flush-right
+      .._push gz.Css \col-md-12 if _val .&. @@_GRID._full
       .._push 'BAD GRID' if not __grid-array._length
     __grid-array._join ' '
 
@@ -232,6 +235,7 @@ class exports.Form extends Array implements PoolMixin
     _half: 2
     _flush-left: 4
     _flush-right: 8
+    _full: 16
 
   /**
    * Field attribute

@@ -33,6 +33,7 @@ App._void = new Object <<<
   _Object: new Object
   _Array: new Array
   _Function: new Function
+  _SyncOptions: new Object
 
 
 /**
@@ -199,10 +200,10 @@ class App.Model extends BaseModel
   _url: ->
     if @_parent? then "#{@_parent._url!}/#{super!}" else "/api/#{super!}"
 
-  _fetch: (opts = {}) ->
+  _fetch: (opts = App._void._SyncOptions) ->
     super \success : opts._success, \error : opts._error
 
-  _save: (keys, opts = {}) ->
+  _save: (keys, opts = App._void._SyncOptions) ->
     super keys, \success : opts._success, \error : opts._error
 
 
@@ -241,10 +242,12 @@ class App.Collection extends BaseCollection
 
   _url: -> "/api/#{super!}"
 
-  fetch: -> super \success : it._success, \error : it._error
-  _fetch: -> super \success : it._success, \error : it._error
+  fetch: (it = App._void._SyncOptions) ->
+    super \success : it._success, \error : it._error
+  _fetch: (it = App._void._SyncOptions) ->
+    super \success : it._success, \error : it._error
 
-  _save: (keys, opts = {}) ->
+  _save: (keys, opts = App._void._SyncOptions) ->
     super keys, \success : opts._success, \error : opts._error
 
 

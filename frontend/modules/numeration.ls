@@ -32,6 +32,7 @@ class NumerationEdit extends Module
       ..render!
       .._free!
     @el._fromJSON @model._attributes
+
     super!
 
   /** Field list for numeration form. (Array.<FieldOptions>) */
@@ -106,7 +107,7 @@ class DispatchLobby extends App.View
       ..row-model = new Dispatch dispatch
 
   /** @override */
-  initialize: ({@_desktop}) ->
+  initialize: ({@_desktop}) -> super!
 
   /** @override */
   render: ->
@@ -144,6 +145,9 @@ class DispatchLobby extends App.View
       _success: (_, dtos) ~>
         for dto in dtos
           t-body._append @add-row dto
+
+      _error: ->
+        alert 'ERROR!!!! Numeration list'
 
     @el._append t-head
     @el._append t-body

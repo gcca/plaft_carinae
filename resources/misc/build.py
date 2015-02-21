@@ -90,10 +90,13 @@ def make(args, ctx, kind):
     if args.debug:
         cmd += ' --depurar'
 
-    stat = os.stat(dst_fn).st_mtime
-    mods = [src_fn] + check(src_fn, kind)
+    exists_dst = os.path.exists(dst_fn)
 
-    if ((not os.path.exists(dst_fn))
+    if exists_dst:
+        stat = os.stat(dst_fn).st_mtime
+        mods = [src_fn] + check(src_fn, kind)
+
+    if (not exists_dst
             or any(stat <= os.stat(mod).st_mtime for mod in mods)
             or args.force):
         print 'Compilando %s%s' % (args.module, kind)

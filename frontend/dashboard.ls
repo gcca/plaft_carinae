@@ -16,6 +16,15 @@ App.MODULES =
 Workspace = require './workspace'
 Settings = require './settings'
 
+# ---------------- #
+# Only for testing #
+# ---------------- #
+window.App = App
+App.datastore =
+  dispatches: new App.model.Dispatches
+
+App.datastore.dispatches.fetch!
+
 
 /**
  * Dashboard
