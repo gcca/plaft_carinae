@@ -52,6 +52,7 @@ exports <<<
       _options    : null
       _class      : null
       _head       : null
+      _hide       : null #change name
 
   /** @class Pool */
   Pool: class Pool

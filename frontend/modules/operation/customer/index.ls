@@ -19,6 +19,8 @@ class Third extends App.View
   /** @override */
   _tagName: \div
 
+  /** @override */
+  _className: "#{gz.Css \form-group}"
 
   /*
    * @param {Array.<FieldOptions>} _fields
@@ -136,10 +138,13 @@ class Third extends App.View
  * @class Identification
  * @extends View
  */
-class Identification extends App.View
+class exports.Identification extends App.View
 
   /** @override */
   _tagName: \div
+
+  /** @override */
+  _className: "#{gz.Css \form-group}"
 
   /*
    *
@@ -196,25 +201,53 @@ class Identification extends App.View
  * @class Customer
  * @extends View
  */
-class Customer extends App.View
+class exports.Customer extends App.View
 
   /** @override */
   _tagName: \form
 
-  /** @override */
-  initialize: ({@_type}) -> super!
+  on-customer-change: ~>
+    _type = @el.query('[name=customer_type]').selectedIndex
+    @el._last.html = ""
 
-  /** @override */
-  render: ->
+    if _type is @@Type.kPerson
+      @el._append (new Person).render!.el
+
+      @el._last._append ((new Identification).render!.el)
+
+    if _type is @@Type.kBusiness
+      @el._append (new Business).render!.el
+      @el.query('[name=customer_type]').selectedIndex = _type
+      @el._last._append ((new Identification).render!.el)
+
+    @el.query('[name=customer_type]').selectedIndex = _type
+    @el.query('[name=customer_type]').on-change @on-customer-change
+
+  set-customer-type: ->
     if @_type is @@Type.kPerson
       @_customer = new Person
 
     if @_type is @@Type.kBusiness
       @_customer = new Business
 
+  /** @override */
+  initialize: ({@_type}) -> super!
+
+  /** @override */
+  render: ->
+
+    App.builder.Form._new @el, _FIELD_HEAD
+      ..render!
+      .._free!
+
+    @set-customer-type!
+
     @el._append @_customer.render!.el
     new Identification
-      @el._append ..render!.el
+      @el._last._append ..render!.el
+
+    @el.query('[name=customer_type]').on-change @on-customer-change
+
     super!
 
   /** @private */ _type: null
@@ -224,8 +257,25 @@ class Customer extends App.View
     kPerson: 0
     kBusiness: 1
 
-/** @export */
-module.exports = Customer
+  _GRID = App.builder.Form._GRID
 
+  _FIELD_HEAD =
+    * _name: 'customer_type'
+      _label: 'Tipo Persona'
+      _type: FieldType.kComboBox
+      _grid: _GRID._inline
+      _options: <[Natural Juridico]>
+
+    * _name: 'client_type'
+      _label: 'Tipo de cliente'
+      _type: FieldType.kComboBox
+      _options:
+        'Importador frecuente'
+        'Buen contribuyente'
+        'OEA'
+        'Otros'
+
+    * _name: 'validity'
+      _label: 'Vigencia'
 
 # vim: ts=2:sw=2:sts=2:et

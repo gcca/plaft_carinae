@@ -43,8 +43,6 @@ class Declarant extends Panel
    *
    * TODO CHANGE HOW TO INSERT FORM
    @override */
-  eliminar: ~>  @_free!
-
   render: ->
     ret = super!
     # console.log ret
@@ -53,23 +51,44 @@ class Declarant extends Panel
     @_body.html = "<form></form>"
 
     App.builder.Form._new @_body._first, _FIELD_DECLARANT
-      ..render!
-      .._free!
-    @_header._first._first.html= "Declarante"
-    _span = App.dom._new \span
-      .._class = "#{gz.Css \glyphicon}
-                \ #{gz.Css \glyphicon-remove}
-                \ #{gz.Css \pull-right}
-                \ #{gz.Css \toggle}"
-      ..css = ' cursor:pointer;
-                font-size:18px'
-      ..on-click @eliminar
+        _nationality = .._elements'nationality'._element
+        _description = .._elements'activity_description'._element
+        _dposition = .._elements'description_position'._element
+        _number = .._elements'number_document'._element
 
-    @_header._first._append _span
+        .._elements.'document_type'._element.on-change (evt) ~>
+            if evt._target._value is \005
+              _number.attr('placeholder','Numero de DNI')
+              _nationality._value='Peruana'
+              _nationality._disabled = on
+            else
+              _nationality._value=''
+              _nationality._disabled = off
+
+        .._elements.'activity'._element .on-change (evt)~>
+            if evt._target._value is \OTROS
+              _description._parent.css= ""
+            else
+              _description._parent.css= "display:none"
+
+        .._elements.'position'._element .on-change (evt)~>
+            if evt._target._value is 'OTRO (señalar)'
+              _dposition._parent.css= ""
+            else
+              _dposition._parent.css= "display:none"
+
+        ..render!
+        .._free!
+
+    @_panel-heading.set-title-heading 'Declarante'
 
     @overload-for-title!
     @_toggle!
     ret
+
+  /** Local variable for settings. */
+  _GRID = App.builder.Form._GRID
+  _FIELD_ATTR = App.builder.Form._FIELD_ATTR
 
   # FIELDS
   _FIELD_DECLARANT =
@@ -87,7 +106,7 @@ class Declarant extends Panel
         'Residente'
         'No residente'
 
-    * _name: 'type_document'
+    * _name: 'document_type'
       _label: 'Tipo de Documento'
       _type: FieldType.kComboBox
       _options: DOCUMENT_TYPE_PAIR
@@ -116,7 +135,8 @@ class Declarant extends Panel
       _options: App.lists.activity._display
 
     * _name: 'activity_description'
-      _label: 'Descripcion (Otros)'
+      _label: 'Descripcion (Otros) - Ocupación'
+      _hide: on
 
     * _name: 'ciiu'
       _label: 'Codigo CIIU de la ocupación'
@@ -128,56 +148,22 @@ class Declarant extends Panel
       _type: FieldType.kComboBox
       _options: App.lists.office._display
 
+    * _name: 'description_position'
+      _label: 'Descripcion (Otros) - Cargo'
+      _hide: on
+
     * _name: 'address'
       _label: 'Nombre y N&ordm; de la via de la direccion'
 
     * _name: 'ubigeo'
       _label: 'Codigo Ubigeo'
+      _grid: _GRID._complete
 
     * _name: 'phone'
       _label: 'Telefono de la persona'
 
-/**
- * Declarants
- * ----------
- * TODO
- *
- * @class Declarants
- * @extends View
- */
-class Declarants extends PanelGroup
-
-  /** @override */
-  _tagName: \div
-
-  /** @override */
-  initialize: ->
-    super ConcretPanel: Declarant
-
-  /**
-   *
-   *
-   * TODO: SEARCH FOR FUNCTION REMOVE ATTR
-   * @override
-   */
-  render: ->
-    @$el.removeAttr('class')
-    @$el.removeAttr('id')
-
-    @el.html = "<div></div>
-                <button type='button'
-                        class= '#{gz.Css \btn}
-                              \ #{gz.Css \btn-default}'>
-                  Agregar
-                </button>"
-    @root-el = @el._first
-    @el._last.on-click @new-panel
-
-    super!
-
-
 /** @export */
-module.exports = Declarants
+module.exports = Declarant
 
 
 # vim: ts=2:sw=2:sts=2:et

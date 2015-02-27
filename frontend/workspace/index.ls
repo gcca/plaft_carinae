@@ -78,7 +78,6 @@ class Workspace extends App.View
       .._class = gz.Css \col-md-10
       .._append desktop.render!.el
       @el._append ..
-
     menu.on (gz.Css \select), desktop.load-module
 
     @_menu = menu
