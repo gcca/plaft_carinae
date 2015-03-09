@@ -19,38 +19,12 @@ DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
 
 class Declarant extends Panel
 
-  # /*
-  #  *
-  #  * TODO
-  #  * @private
-  #  */
-  overload-for-title: ->
-    _content-title = @_header._first._first
-    _name = @el.query '[name=name]'
-    _father_name = @el.query '[name=father_name]'
-    _mother_name = @el.query '[name=mother_name]'
-
-    _set-title = ~>
-      _content-title.html = _name._value + ' ' \
-                             + _father_name._value + ' ' \
-                             + _mother_name._value
-
-    _name.on-key-up _set-title
-    _father_name.on-key-up _set-title
-    _mother_name.on-key-up _set-title
-
-  /**
-   *
-   * TODO CHANGE HOW TO INSERT FORM
-   @override */
   render: ->
     ret = super!
-    # console.log ret
-    # console.log _form
-    # ret._body._append
-    @_body.html = "<form></form>"
 
-    App.builder.Form._new @_body._first, _FIELD_DECLARANT
+    @_panel-body._get-el!.html = "<form></form>"
+
+    App.builder.Form._new @_panel-body._get-form!, _FIELD_DECLARANT
         _nationality = .._elements'nationality'._element
         _description = .._elements'activity_description'._element
         _dposition = .._elements'description_position'._element
@@ -82,7 +56,7 @@ class Declarant extends Panel
 
     @_panel-heading.set-title-heading 'Declarante'
 
-    @overload-for-title!
+    @_panel-heading.overload-for-title!
     @_toggle!
     ret
 

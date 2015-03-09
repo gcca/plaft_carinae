@@ -3,6 +3,8 @@
 panelgroup = require '../../../app/widgets/panelgroup'
   Panel = ..Panel
   PanelGroup = ..PanelGroup
+  PanelHeadingStakeHolder = ..PanelHeadingStakeHolder
+  PanelBody = ..PanelBody
 
 FieldType = App.builtins.Types.Field
 DOCUMENT_TYPE_PAIR = App.lists.document-type._pair

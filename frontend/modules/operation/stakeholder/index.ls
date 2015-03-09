@@ -4,6 +4,8 @@ Stakeholder = require './stakeholder'
 
 panelgroup = require '../../../app/widgets/panelgroup'
   PanelGroup = ..PanelGroup
+  PanelHeadingStakeHolder = ..PanelHeadingStakeHolder
+  PanelBody = ..PanelBody
 
 /**
  * Stakeholders
@@ -18,6 +20,10 @@ class Stakeholders extends PanelGroup
 
   /** @override */
   _tagName: \div
+
+  overload-new-panel: ~>
+    @new-panel(new PanelBody, new PanelHeadingStakeHolder)
+    @_set-array-for-panels!
 
   /*
    *
@@ -41,7 +47,7 @@ class Stakeholders extends PanelGroup
                   Agregar
                 </button>"
     @root-el = @el._first
-    @el._last.on-click @new-panel
+    @el._last.on-click @overload-new-panel
 
     super!
 

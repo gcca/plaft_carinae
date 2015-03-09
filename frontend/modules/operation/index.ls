@@ -3,6 +3,10 @@
 Module = require '../../workspace/module'
 panelgroup = require '../../app/widgets/panelgroup'
   PanelGroup = ..PanelGroup
+  PanelHeading = ..PanelHeading
+  PanelHeadingClosable = ..PanelHeadingClosable
+  PanelBody = ..PanelBody
+  Testing = ..Testing
 customer = require './customer'
   Customer = ..Customer
 Dispatch = require './dispatch'
@@ -35,15 +39,25 @@ class Operation extends Module
   /** @override */
   render: ->
     @clean!
+
     pnl-group = new PanelGroup
-    @varible = pnl-group.new-panel 'Declaración Jurada'
-      .._body._append (new Customer _type: Customer.Type.kPerson).render!.el
-    pnl-group.new-panel 'Despacho - Operacion'
-      .._body._append (new Dispatch).render!.el
-    pnl-group.new-panel 'Vinculado'
-      .._body._append (new Stakeholder).render!.el
-    pnl-group.new-panel 'Declarante'
-      .._body._append (new Declarant).render!.el
+    pnl-group.new-panel new PanelBody, new PanelHeading
+      .._panel-body._get-el!._append (new Customer _type: Customer.Type.kPerson).render!.el
+      .._panel-heading.set-title-heading 'Declaracion jurada'
+
+    pnl-group.new-panel new PanelBody, new PanelHeading
+      .._panel-body._get-el!._append (new Dispatch).render!.el
+      .._panel-heading.set-title-heading 'Despacho - Operacion'
+
+    pnl-group.new-panel new PanelBody, new PanelHeading
+      .._panel-body._get-el!._append (new Stakeholder).render!.el
+      .._panel-heading.set-title-heading 'Vinculado'
+
+    pnl-group.new-panel new PanelBody, new PanelHeading
+      .._panel-body._get-el!._append (new Declarant).render!.el
+      .._panel-heading.set-title-heading 'Declarante'
+
+    pnl-group._set-array-for-panels!
 
     @el._append pnl-group.render!el
     super!

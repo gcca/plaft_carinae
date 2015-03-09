@@ -2,6 +2,9 @@
 
 panelgroup = require '../../../app/widgets/panelgroup'
   PanelGroup = ..PanelGroup
+  PanelHeadingClosable = ..PanelHeadingClosable
+  PanelHeadingDeclarant = ..PanelHeadingDeclarant
+  PanelBody = ..PanelBody
 Declarant = require './declarant'
 
 /**
@@ -16,6 +19,10 @@ class Declarants extends PanelGroup
 
   /** @override */
   _tagName: \div
+
+  overload-new-panel: ~>
+    @new-panel(new PanelBody, new PanelHeadingDeclarant)
+    @_set-array-for-panels!
 
   /** @override */
   initialize: ->
@@ -38,7 +45,7 @@ class Declarants extends PanelGroup
                   Agregar
                 </button>"
     @root-el = @el._first
-    @el._last.on-click @new-panel
+    @el._last.on-click @overload-new-panel
 
     super!
 

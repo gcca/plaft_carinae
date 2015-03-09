@@ -16,32 +16,6 @@ DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
  */
 class Stakeholder extends Panel
 
-  /*
-   *
-   * TODO
-   * @private
-   */
-  overload-for-title: ->
-    _type = @_type!
-
-    if _type is @@Type.kBusiness
-      @el.query '[name=name]' .on-key-up (evt) ~>
-        @_header._first._first.html = evt._target._value
-
-    if _type is @@Type.kPerson
-      _name = @el.query '[name=name]'
-      _father_name = @el.query '[name=father_name]'
-      _mother_name = @el.query '[name=mother_name]'
-
-      _set-title = ~>
-        @_header._first._first.html = _name._value + ' ' \
-                             + _father_name._value + ' ' \
-                             + _mother_name._value
-
-      _name.on-key-up _set-title
-      _father_name.on-key-up _set-title
-      _mother_name.on-key-up _set-title
-
   /**
    * @param {Array.<FieldOptions>} _fields
    * @param {number} _next-type
@@ -63,7 +37,7 @@ class Stakeholder extends Panel
     @_person-type-html._selected-index = _next-type
     @_person-type-html.on-change @_on-render
 
-    @overload-for-title!
+    @_panel-heading.overload-for-title _next-type
 
   /*
    *
@@ -127,9 +101,9 @@ class Stakeholder extends Panel
   /** @override */
   render: ->
     ret = super!
-    # console.log ret
-    # console.log _form
-    # ret._body._append
+
+    @_body = @_panel-body._get-el!
+
     @_body.html = "<form></form>"
 
     App.builder.Form._new @_body._first, _FIELD_HEAD
@@ -148,12 +122,14 @@ class Stakeholder extends Panel
         _country._parent._first.html  = 'Pais Origen'
       else
         _country._parent._first.html  = 'Pais Destino'
+    @_panel-heading.overload-for-title!
     @_toggle!
     ret
 
 
   /** @private */ _person-type-html: null
   /** @private */ _link-type: null
+  /** @private */ _body: null
 
   /** Local variable for settings. */
   _GRID = App.builder.Form._GRID
