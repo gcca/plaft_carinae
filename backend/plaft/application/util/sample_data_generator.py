@@ -9,13 +9,12 @@
 """
 
 from __future__ import unicode_literals
-from plaft.domain.model import (Officer, Customs, Business, Person,
-                                Document, Stakeholder, Employee, Dispatch,
-                                CodeName)
-
+# from plaft.domain.model import (Officer, Customs, Business, Person,
+#                                 Document, Stakeholder, Employee, Dispatch,
+#                                 CodeName)
+from plaft.domain.model import Officer, Employee, Customer
 
 def users():
-
     offc = Officer(username='gcca@mail.io',
                    password='789',
                    name='Unamuno')
@@ -45,6 +44,27 @@ def users():
                    password='123',
                    name='César Vargas')
     cava.store()
+
+
+
+
+
+    queirolo = Customer(name='SANTIAGO QUEIROLO S.A.C',
+                        document_number='12345678989',  # 20100097746
+                        document_type='ruc')
+    queirolo.store()
+
+    gcca = Customer(
+        name='cristHian Gz. (gcca)',
+        document_number='12345678',  # 20100097746
+        document_type='dni')
+    gcca.store()
+
+
+    return
+
+
+
 
 
     gueco = Customs(name='Gueco', officer=offc.key,

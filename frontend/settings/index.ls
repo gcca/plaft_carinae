@@ -9,7 +9,7 @@ FieldType = App.builtins.Types.Field
 class Employee extends App.Model
 
   /** @override */
-  urlRoot: "officer/#{window.'plaft'.'cu'.\id}/employee"
+#  urlRoot: "officer/#{window.'plaft'.'cu'.\id}/employee"
 
 console.log Employee::urlRoot
 

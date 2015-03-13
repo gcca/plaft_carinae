@@ -26,7 +26,7 @@ window.App = App
 App.datastore =
   dispatches: new App.model.Dispatches
 
-App.datastore.dispatches.fetch!
+# App.datastore.dispatches.fetch!
 
 
 /**
@@ -114,8 +114,7 @@ class Dashboard extends App.View
           </button>
 
           <a href='#' class='#{gz.Css \navbar-brand}'>
-            <!-- PLAFTsw -->
-            #{window'plaft''cu''customs'\name}
+            PLAFTsw
           </a>
         </div>
         <nav class='#{gz.Css \collapse}

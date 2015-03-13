@@ -162,7 +162,7 @@ class Handler(RequestHandler):
         self.write_json(self.JSON.dumps(obj))
 
     @property
-    def json(self):
+    def query(self):
         """Deserialize ``self.body`` (``str`` or ``unicode`` JSON document)
         to a ``dict``."""
         body = self.request.body
@@ -247,9 +247,6 @@ class DirectToController(Handler):
     __args = ''
     """Base str for args."""
 
-    controller = ''
-    """Base controller filename."""
-
     def get(self):
         """GET http method to write controller html."""
         self.write_template()
@@ -262,7 +259,8 @@ class DirectToController(Handler):
         """Write template to reponse-out."""
         if not args:
             args = self._args()
-        self.write(self.__template % {'controller': self.controller,
+        controller = self.__class__.__name__.lower()
+        self.write(self.__template % {'controller': controller,
                                       'args': args})
 
 #    def add_arg(self, name, value):

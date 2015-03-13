@@ -19,18 +19,12 @@ class exports.Customer extends App.Model
     not @is-business!
 
 
-lsDispatch = new App.B\LocalStorage \plaft-dispatch
-
 class exports.Dispatch extends App.Model
-
-  localStorage: lsDispatch
 
 
 class exports.Dispatches extends App.Collection
 
   model: Dispatch
-  localStorage: lsDispatch
-
 
 
 # vim: ts=2:sw=2:sts=2:et
