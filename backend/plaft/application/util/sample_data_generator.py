@@ -14,7 +14,22 @@ from __future__ import unicode_literals
 #                                 CodeName)
 from plaft.domain.model import Officer, Employee, Customer
 
+
+def create_customers():
+    queirolo = Customer(name='SANTIAGO QUEIROLO S.A.C',
+                        document_number='12345678989',  # 20100097746
+                        document_type='ruc')
+    queirolo.store()
+
+    gcca = Customer(
+        name='cristHian Gz. (gcca)',
+        document_number='12345678',  # 20100097746
+        document_type='dni')
+    gcca.store()
+
+
 def users():
+    # Users ################################################################
     offc = Officer(username='gcca@mail.io',
                    password='789',
                    name='Unamuno')
@@ -45,27 +60,20 @@ def users():
                    name='César Vargas')
     cava.store()
 
+    # Customers ############################################################
+    create_customers()
 
+    # Dispatches ###########################################################
 
+    disp1 = Dispatch(order='2014-601')
+    disp1.store()
 
+    disp2 = Dispatch(order='2014-604')
+    disp2.store()
 
-    queirolo = Customer(name='SANTIAGO QUEIROLO S.A.C',
-                        document_number='12345678989',  # 20100097746
-                        document_type='ruc')
-    queirolo.store()
-
-    gcca = Customer(
-        name='cristHian Gz. (gcca)',
-        document_number='12345678',  # 20100097746
-        document_type='dni')
-    gcca.store()
-
-
+    ########################################################################
     return
-
-
-
-
+    ########################################################################
 
     gueco = Customs(name='Gueco', officer=offc.key,
                       employees=[em1.key, em2.key, em3.key])

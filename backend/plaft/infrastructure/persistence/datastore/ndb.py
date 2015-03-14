@@ -10,9 +10,11 @@
 """
 
 from google.appengine.ext.ndb import model as ndb, query as Q, polymodel
+from google.appengine.api.datastore_errors import TransactionFailedError
 from plaft.domain.shared import Entity
 from plaft.application.util import JSONEncoder
 from plaft.infrastructure.support import util
+from types import GeneratorType
 
 
 Boolean = ndb.BooleanProperty
@@ -79,7 +81,10 @@ class Model(Entity, ndb.Model):
 
     def store(self):
         """."""
-        return self.put()
+        try:
+            return self.put()
+        except TransactionFailedError:
+            raise IOError
 
     @property
     def id(self):
@@ -186,6 +191,8 @@ class JSONEncoderNDB(JSONEncoder):
             return o.fetch(666)
         if isinstance(o, ndb.Key):
             return o.get()
+        if isinstance(o, GeneratorType):
+            return list(o)
         return JSONEncoder.default(self, o)
 
 

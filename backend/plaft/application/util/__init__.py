@@ -51,7 +51,10 @@ class JSONEncoder(json.JSONEncoder):
         """Serialize ``obj`` to a JSON formatted ``str``."""
         return unicode(json.dumps(obj,
                                   cls=cls,
-                                  separators=(',', ':'),
+                                  # separators=(',', ':'),
+                                  sort_keys=True,
+                                  indent=4,
+                                  separators=(',', ': '),
                                   check_circular=False)).decode('utf-8')
 
     @classmethod

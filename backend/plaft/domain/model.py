@@ -53,4 +53,13 @@ class Customer(dom.Model):
     document_number = dom.String()
     document_type = dom.String()
 
+
+
+class Dispatch(dom.Model):
+
+  order = dom.String()
+
+  
+
+
 # vim: et:ts=4:sw=4
