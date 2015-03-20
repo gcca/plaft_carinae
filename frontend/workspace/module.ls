@@ -1,6 +1,5 @@
 /** @module workspace */
 
-
 /**
  * Module
  * ------
@@ -25,9 +24,10 @@ class Module extends App.View
   /**
    * (Event) On search from global search form.
    * @param {string} query
+   * @param {string} type
    * @protected
    */
-  on-search: (query) ->
+  on-search: (query,type) ->
 
   /**
    * (Event) On save from global button.
@@ -45,8 +45,8 @@ class Module extends App.View
   initialize: ->
     @clean!
 
-
   /** @protected */ _desktop: null
+  /** @protected */ _modal: null
 
   /** @protected */ @@_caption = ''
   /** @protected */ @@_icon    = ''

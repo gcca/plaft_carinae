@@ -13,6 +13,7 @@
  * TODO(...): Breadcrumb for module on desktop.
  */
 
+Modal = require '../app/widgets/modal'
 
 /**
  * Desktop
@@ -42,7 +43,6 @@ class Desktop extends App.View
     # Sub-module extension
     #---------------------
     @close-last-page! if @_sub-module?
-
     #-------
     # Module
     #-------
@@ -67,10 +67,11 @@ class Desktop extends App.View
   /**
    * On search event to module.
    * @param {string} query
+   * @param {string} type
    * @private
    */
-  on-search: (query) ~>
-    @module.on-search query
+  on-search: (query, type) ~>
+    @module.on-search query, type
 
   /**
    * On save event to module.
@@ -88,6 +89,8 @@ class Desktop extends App.View
   _new: (Module) ->
     @module = Module._new!
       .._desktop = @
+#      TODO
+      .._modal = @modal
 
   #------------------
   # Next page methods
@@ -143,6 +146,7 @@ class Desktop extends App.View
 
   /** @override */
   render: ->
+    @modal = new Modal
     @$el.html "
       <ol class='#{gz.Css \breadcrumb}'>
         <li class='#{gz.Css \active}'>
@@ -150,6 +154,7 @@ class Desktop extends App.View
           &nbsp;
         </li>
       </ol>"
+    @el._append (@modal).render!el
     @$el._append "<div class='#{gz.Css \hidden}'></div>"
     super!
 
@@ -195,6 +200,9 @@ class Desktop extends App.View
    * @private
    */
   _save: null
+
+# TODO
+  modal: null
 
 
 /** @export */
