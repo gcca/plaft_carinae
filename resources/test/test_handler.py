@@ -40,5 +40,46 @@ class HandlerTest(testplaft.TestCase):
 
         self.assertListEqual(customers_request, customers_response)
 
+    def test_update_single(self):
+        customer = Customer(name='Nina Sharp')
+        customer.store()
+
+        uri = '/api/customer/' + str(customer.id)
+        dto = {
+            'document_number': '789',
+            'document_type': 'dni'
+        }
+        response = self.testapp.put_json(uri, dto)
+
+        test_customer = Customer.find(customer.id)
+        dto['name'] = 'Nina Sharp'
+
+        self.assertEqual(dto, customer.dict)
+
+    def test_update_single2(self):
+        customer = list(Customer.all())[0]
+
+        uri = '/api/customer/' + str(customer.id)
+        dto = {
+            'document_number': '789',
+            'document_type': 'dni'
+        }
+        response = self.testapp.put_json(uri, dto)
+
+        test_customer = Customer.find(customer.id)
+
+        self.assertEqual(test_customer.document_number, '789')
+        self.assertEqual(test_customer.document_type, 'dni')
+
+    def test_delete_single(self):
+        customer = list(Customer.all())[0]
+
+        uri = '/api/customer/' + str(customer.id)
+        response = self.testapp.delete(uri)
+
+        query = Customer.find(document_number=customer.document_number)
+
+        self.assertIsNone(query)
+
 
 # vim: et:ts=4:sw=4

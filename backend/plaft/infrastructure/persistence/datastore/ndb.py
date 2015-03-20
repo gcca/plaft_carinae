@@ -86,6 +86,9 @@ class Model(Entity, ndb.Model):
         except TransactionFailedError:
             raise IOError
 
+    def delete(self):
+        self.key.delete()
+
     @property
     def id(self):
         """."""

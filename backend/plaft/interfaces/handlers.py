@@ -47,7 +47,7 @@ class RESTHandler(Handler):
             else:
                 params = self.request.GET.items()
                 params = ', '.join('%s=%s' % pair for pair in params)
-                self.status.NOT_FOUND('Not found with %s"}' % params)
+                self.status.NOT_FOUND('Not found with %s' % params)
 
     def post(self):
         query = self.query
@@ -63,7 +63,7 @@ class RESTHandler(Handler):
                 except IOError:
                     for instance in instances:
                         instance.delete()
-                    self.status.INTERNAL_ERROR('{"e":"Internal store"}')
+                    self.status.INTERNAL_ERROR('Internal store')
                 else:
                     self.render_json(instance.id for instance in instances)
             else:  # create single
@@ -71,17 +71,45 @@ class RESTHandler(Handler):
                 try:
                     instance.store()
                 except IOError:
-                    self.status.INTERNAL_ERROR('{"e":"Internal store"}')
+                    self.status.INTERNAL_ERROR('Internal batch store')
                 else:
                     self.write_json('{"id":%d}' % instance.id)
         else:
-            self.status.BAD_REQUEST('{"e":"No query"}')
+            self.status.BAD_REQUEST('No query')
 
     def put(self, id=None):
-        self.status.INTERNAL_ERROR('No implemented yet.')
+        try:
+            instance = self.__model.find(int(id))
+        except ValueError:
+            self.status.BAD_REQUEST('Bad id %s' % id)
+        else:
+            if instance:
+                query = self.query
+                if query:
+                    instance << query
+                    try:
+                        # instance.store()
+                        pass
+                    except IOError:
+                        self.status.INTERNAL_ERROR('Internal store')
+                    else:
+                        self.write_json('{}')
+                else:
+                    self.status.BAD_REQUEST('No query')
+            else:
+                self.status.NOT_FOUND('Not found by id %s' % id)
+
 
     def delete(self, id=None):
-        self.status.INTERNAL_ERROR('No implemented yet.')
+        try:
+            instance = self.__model.find(int(id))
+        except ValueError:
+            self.status.BAD_REQUEST('Bad id %s' % id)
+        else:
+            if instance:
+                instance.delete()
+            else:
+                self.status.NOT_FOUND('Not found by id %s' % id)
 
 
 class Customer(RESTHandler):
