@@ -1,30 +1,20 @@
-from unittest2 import TestCase
-from google.appengine.ext import ndb
-from google.appengine.ext import testbed
-
-import webtest
-import test
+import testplaft
 
 from plaft.domain.model import Customer
 from plaft.application.util.sample_data_generator import create_customers
 
-from webapp.main import app
 
-
-class HandlerTest(TestCase):
+class HandlerTest(testplaft.TestCase):
 
     def setUp(self):
-        self.testbed = testbed.Testbed()
-        self.testbed.activate()
-        self.testbed.init_datastore_v3_stub()
-        self.testbed.init_memcache_stub()
+        self.bed_activate()
+        self.app_initialize()
         create_customers()
 
-        self.testapp = webtest.TestApp(app)
-
-
-    def tearDown(self):
-        self.testbed.deactivate()
+    def test_query_no_match(self):
+        uri = '/api/customer?document_number=!@#$%^&*()_+'
+        response = self.testapp.get(uri, status=404)
+        #  self.assertEqual(response.status_int, 404)
 
     def test_create_single(self):
         customer_request = Customer(name='abc', document_number='123')
@@ -35,7 +25,6 @@ class HandlerTest(TestCase):
 
         self.assertDictEqual(customer_request.dict,
                              customer_response.dict)
-
 
     def test_create_batch(self):
 

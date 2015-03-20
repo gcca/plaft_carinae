@@ -22,16 +22,7 @@ app = WSGIApplication([
 
     # Handlers
     ('/api/customer', handlers.Customer),
-#     ('/api/customer/by_document', handlers.Customer.by_document),
-
-#     ('/api/dispatch', handlers.Dispatch),
-#     ('/api/dispatch/income', handlers.Dispatch.income),
-#     R('/api/dispatch/income/<id:\d+>', handlers.Dispatch.income),
-#     ('/api/dispatch/find', handlers.Dispatch.find),
-
-#     R('/api/dispatch/numeration/<id:\d+>', handlers.Numeration),
-
-#     R(r'/api/stakeholder/<id:\d+>', handlers.Stakeholder),
+    R('/api/customer/<id:\d+>', handlers.Customer),
 
 #     # Admin
 #     ('/admin/site', admin.views.AdminSite),

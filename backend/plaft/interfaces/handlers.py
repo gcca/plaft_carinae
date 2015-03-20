@@ -33,15 +33,21 @@ class RESTHandler(Handler):
             try:
                 instance = self.__model.find(int(id))
             except ValueError:
-                self.status.BAD_REQUEST('{"e":"Bad id: %s"}' % id)
+                self.status.BAD_REQUEST('Bad id %s' % id)
             else:
                 if instance:
                     self.render_json(instance)
                 else:
-                    self.status.BAD_REQUEST('{"e":"Bad id: %s"}' % id)
+                    self.status.NOT_FOUND('Not found by id %s' % id)
 
         else:
-            self.render_json(self.__model.all(**self.query))
+            instances = list(self.__model.all(**self.query))
+            if instances:
+                self.render_json(instances)
+            else:
+                params = self.request.GET.items()
+                params = ', '.join('%s=%s' % pair for pair in params)
+                self.status.NOT_FOUND('Not found with %s"}' % params)
 
     def post(self):
         query = self.query
@@ -71,6 +77,11 @@ class RESTHandler(Handler):
         else:
             self.status.BAD_REQUEST('{"e":"No query"}')
 
+    def put(self, id=None):
+        self.status.INTERNAL_ERROR('No implemented yet.')
+
+    def delete(self, id=None):
+        self.status.INTERNAL_ERROR('No implemented yet.')
 
 
 class Customer(RESTHandler):

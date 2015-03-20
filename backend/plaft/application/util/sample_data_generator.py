@@ -12,7 +12,7 @@ from __future__ import unicode_literals
 # from plaft.domain.model import (Officer, Customs, Business, Person,
 #                                 Document, Stakeholder, Employee, Dispatch,
 #                                 CodeName)
-from plaft.domain.model import Officer, Employee, Customer
+from plaft.domain.model import Officer, Employee, Customer, Dispatch
 
 
 def create_customers():
