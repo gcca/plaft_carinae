@@ -15,6 +15,7 @@ from plaft.domain import model
 class RESTError(Exception):
     pass
 
+
 class RESTHandler(Handler):
 
     def __init__(self, *args, **kwargs):
@@ -88,7 +89,7 @@ class RESTHandler(Handler):
                 if query:
                     instance << query
                     try:
-                        # instance.store()
+                        instance.store()
                         pass
                     except IOError:
                         self.status.INTERNAL_ERROR('Internal store')
