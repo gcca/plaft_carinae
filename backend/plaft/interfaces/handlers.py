@@ -13,6 +13,7 @@ from plaft.domain import model
 
 
 class RESTError(Exception):
+    """Error on construction RESTHandler."""
     pass
 
 
@@ -54,7 +55,7 @@ class RESTHandler(Handler):
         query = self.query
 
         if query:
-            if type(query) is list:  # create batch
+            if isinstance(query, list):  # create batch
                 instances = []
                 try:
                     for dto in query:
@@ -90,7 +91,6 @@ class RESTHandler(Handler):
                     instance << query
                     try:
                         instance.store()
-                        pass
                     except IOError:
                         self.status.INTERNAL_ERROR('Internal store')
                     else:
@@ -99,7 +99,6 @@ class RESTHandler(Handler):
                     self.status.BAD_REQUEST('No query')
             else:
                 self.status.NOT_FOUND('Not found by id %s' % id)
-
 
     def delete(self, id=None):
         try:
@@ -114,11 +113,11 @@ class RESTHandler(Handler):
 
 
 class Customer(RESTHandler):
-    pass
+    """Customer RESTful."""
 
 
 class Dispatch(RESTHandler):
-    pass
+    """Dispatch RESTful."""
 
 
 # vim: et:ts=4:sw=4

@@ -205,14 +205,13 @@ class DirectToController(Handler):
     Inherited classes need override the method ``json_args`` to print
     a string with json attribtues to client side.
 
-    Also you need set the class attribute ``controller`` with the controller
-    name for this view.
+    Also you need to set the subclass name with the controller name
+    for this view. The lower case string of class name is used by default.
 
     E.g., to create a view for welcome page:
 
     >>> class Welcome(DirectToController):
     ...
-    ...     controller = 'welcome_filename'
     ...
     ...     # if you need print attributes to args
     ...     def _args(self):

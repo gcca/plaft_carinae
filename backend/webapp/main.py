@@ -7,8 +7,18 @@
 
 """
 
-from webapp2 import WSGIApplication, Route as R
+from webapp2 import WSGIApplication, Route
+from webapp2_extras.routes import PathPrefixRoute
 from plaft.interfaces import views, handlers, admin
+
+
+def uri(prefix, handler):
+    prefix = '/' + prefix
+    routes = [
+        Route(prefix, handler),
+        Route(prefix+'/<id:\d+>', handler)
+    ]
+    return PathPrefixRoute('/api', routes)
 
 
 app = WSGIApplication([
@@ -21,8 +31,7 @@ app = WSGIApplication([
     # R('/pdf/<id:\d+>', views.DeclarationPDF),
 
     # Handlers
-    ('/api/customer', handlers.Customer),
-    R('/api/customer/<id:\d+>', handlers.Customer),
+    uri('customer', handlers.Customer),
 
 #     # Admin
 #     ('/admin/site', admin.views.AdminSite),
