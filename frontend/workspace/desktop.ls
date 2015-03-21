@@ -13,7 +13,8 @@
  * TODO(...): Breadcrumb for module on desktop.
  */
 
-Modal = require '../app/widgets/modal'
+Notifier = require './notifier'
+
 
 /**
  * Desktop
@@ -89,8 +90,6 @@ class Desktop extends App.View
   _new: (Module) ->
     @module = Module._new!
       .._desktop = @
-#      TODO
-      .._modal = @modal
 
   #------------------
   # Next page methods
@@ -129,6 +128,7 @@ class Desktop extends App.View
 
   /** @override */
   initialize: ({@_search, @_save}) ->
+    window.d = @
     App._debug._assert @_search
     @_search.on (gz.Css \search), @on-search
     @_save.on (gz.Css \save), @on-save
@@ -144,9 +144,11 @@ class Desktop extends App.View
 
     $ "##{gz.Css \id-navbar-collapse}" ._append  _btn
 
+    # Notifier
+    @notifier = new Notifier
+
   /** @override */
   render: ->
-    @modal = new Modal
     @$el.html "
       <ol class='#{gz.Css \breadcrumb}'>
         <li class='#{gz.Css \active}'>
@@ -154,7 +156,6 @@ class Desktop extends App.View
           &nbsp;
         </li>
       </ol>"
-    @el._append (@modal).render!el
     @$el._append "<div class='#{gz.Css \hidden}'></div>"
     super!
 
@@ -201,8 +202,12 @@ class Desktop extends App.View
    */
   _save: null
 
-# TODO
-  modal: null
+  /**
+   * Notifier view.
+   * @type {View}
+   * @public
+   */
+  notifier: null
 
 
 /** @export */

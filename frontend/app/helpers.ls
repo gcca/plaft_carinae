@@ -360,6 +360,7 @@ $\fn <<<
   typeahead: ref$\typeahead
   _hide: ref$\hide
   _show: ref$\show
+  _remove: ref$\remove
 
 
 /**
