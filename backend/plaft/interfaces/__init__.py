@@ -215,9 +215,19 @@ class DirectToController(Handler):
     ...
     ...     # if you need print attributes to args
     ...     def _args(self):
-    ...         return ('name: "cristHian Gz. (gcca)",'
-    ...                 'email: "gcca@gcca.tk",'
-    ...                 'user_id: "gcca"')
+    ...         self.add_arg('name', 'cristHian Gz. (gcca)')
+    ...         self.add_arg('code', 713)
+    ...         self.add_arg('list', [1, 2, '3'])
+    ...         self.add_arg('obj', {'level': 3, 'partners': ['1', '2']})
+    ...         self.add_arg('variant': [
+    ...             1,
+    ...             '2',
+    ...             {
+    ...                 'name': 'gcca',
+    ...                 'code': 713
+    ...             },
+    ...             [1, 2, '3']
+    ...         ])
 
     """
 
@@ -243,30 +253,30 @@ class DirectToController(Handler):
     )
     """Base template to HTML code."""
 
-    __args = ''
-    """Base str for args."""
-
     def get(self):
         """GET http method to write controller html."""
+        self._args()
         self.write_template()
 
-    def _args(self):
+    def add_arg(self, name, value):
         """Base method to add attributes to controller ``args``."""
-        return self.__args
+        self.args.append((name, value))
+
+    def _args(self):
+        """Callback to add controller args."""
 
     def write_template(self, args=None):
         """Write template to reponse-out."""
         if not args:
-            args = self._args()
+            args = ','.join('"%s":%s' % (k, self.JSON.dumps(v))
+                            for k, v in self.args)
         controller = self.__class__.__name__.lower()
         self.write(self.__template % {'controller': controller,
                                       'args': args})
 
-#    def add_arg(self, name, value):
-
-#    def __init__(self, *args, **kwargs):
-#        self.arglist = None
-#        super(DirectToController, self).__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        self.args = []
+        super(DirectToController, self).__init__(*args, **kwargs)
 
 
 # vim: et:ts=4:sw=4
