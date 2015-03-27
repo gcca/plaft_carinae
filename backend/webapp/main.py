@@ -27,11 +27,15 @@ app = WSGIApplication([
     ('/', views.SignIn),
     ('/dashboard', views.Dashboard),
     ('/debug', views.Debug),
+    uri('pdf', views.DeclarationPDF),
 
-    # R('/pdf/<id:\d+>', views.DeclarationPDF),
+#    ('/pdf/<id:\d+>', views.DeclarationPDF),
 
     # Handlers
     uri('customer', handlers.Customer),
+    uri('dispatch', handlers.Dispatch),
+    uri('linked', handlers.Linked),
+    uri('declarant', handlers.Declarant),
 
 #     # Admin
 #     ('/admin/site', admin.views.AdminSite),

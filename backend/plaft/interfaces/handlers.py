@@ -120,4 +120,12 @@ class Dispatch(RESTHandler):
     """Dispatch RESTful."""
 
 
+class Linked(RESTHandler):
+    """Linked RESTful."""
+
+
+class Declarant(RESTHandler):
+    """Declarant RESTful."""
+
+
 # vim: et:ts=4:sw=4
