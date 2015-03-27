@@ -63,6 +63,7 @@ class Model(Entity, ndb.Model):
                             else ((val[1:2], val[3:]) if '\\' == val[2]
                                   else ((val[1:3], val[4:]) if '\\' == val[3]
                                         else (val, None)))))
+
     @classmethod
     def all(cls, dto=None, **filters):
         """."""

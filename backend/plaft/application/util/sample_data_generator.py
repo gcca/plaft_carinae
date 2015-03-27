@@ -9,8 +9,8 @@
 """
 
 from __future__ import unicode_literals
-from plaft.domain.model import (Officer, Employee, Dispatch, CodeName,
-                                  Customer, Third, Declarant, Linked)
+from plaft.domain.model import (User, Dispatch, CodeName, Declaration,
+                                Customer, Third, Declarant, Linked)
 
 
 def create_sample_data():
@@ -36,10 +36,7 @@ def create_sample_data():
                                  ratio='7')
         ],
         is_obligated = "Si",
-        has_officer = "No",
-        third = Third(identification_type='Si',
-                      third_type='Juridico',
-                      name='IEI Municipal'))
+        has_officer = "No")
     queirolo.store()
 
     gcca = Customer(
@@ -54,32 +51,33 @@ def create_sample_data():
 
 
     ## Users ###############################################################
-    offc = Officer(username='gcca@mail.io',
+    offc = User(username='gcca@mail.io',
                    password='789',
-                   name='Unamuno')
+                   name='Unamuno',
+                   is_officer=True)
     offc.store()
 
-    em1 = Employee(username='E-01-@gueco.io',
+    em1 = User(username='E-01-@gueco.io',
                    password='23',
                    name='Marcos')
     em1.store()
 
-    em2 = Employee(username='M-02-@gueco.io',
+    em2 = User(username='M-02-@gueco.io',
                    password='23',
                    name='Lucas')
     em2.store()
 
-    em3 = Employee(username='P-03-@gueco.io',
+    em3 = User(username='P-03-@gueco.io',
                    password='23',
                    name='Mateo')
     em3.store()
 
-    em4 = Employee(username='L-04-@gueco.io',
+    em4 = User(username='L-04-@gueco.io',
                    password='23',
                    name='Juan')
     em4.store()
 
-    cava = Officer(username='cesarvargas@cavasoft.com',
+    cava = User(username='cesarvargas@cavasoft.com',
                    password='123',
                    name='César Vargas')
     cava.store()
@@ -181,9 +179,15 @@ def create_sample_data():
 
 
     ## Dispatches ##########################################################
+    d = Declaration(customer=queirolo,
+                third=Third(
+                    identification_type='Si',
+                    third_type='Juridico',
+                    name='IEI Municipal'))
+    d.store()
     disp1 = Dispatch(reference='Debe haber una referencia!!!',
                      order='2014-601',
-                     declaration=queirolo,
+                     declaration=d.key,
                      jurisdiction=CodeName(code='947',
                                            name='AEROPUERTO DE TACNA'),
                      regime=CodeName(code='10',
@@ -194,8 +198,10 @@ def create_sample_data():
                      income_date='20/12/1996')
     disp1.store()
 
+    d = Declaration(customer=gcca)
+    d.store()
     disp2 = Dispatch(order='2014-604',
-                     declaration=gcca,
+                     declaration=d.key,
                      jurisdiction=CodeName(code='9',
                                            name='AEROPUERTO CALLAO'),
                      dam='2014-103-8237',
