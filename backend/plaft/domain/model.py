@@ -16,7 +16,6 @@ JSONEncoder = dom.JSONEncoderNDB
 
 
 class User(dom.User, dom.PolyModel):
-
     name = dom.String()
     role = dom.String()
 
@@ -26,7 +25,6 @@ class User(dom.User, dom.PolyModel):
 
 
 class Officer(User):
-
     code = dom.String()
 
     @property
@@ -105,16 +103,16 @@ class Linked(dom.Model):
     position = dom.String()
     ubigeo = dom.String()
     phone = dom.String()
+    represents_to = dom.String()
 
     slug = dom.Computed(lambda s: s.name
-                        if 'Juridica' == s.customer_type
-                        else '%s %s %s' % (s.name,
-                                           s.father_name,
-                                           s.mother_name))
+                                  if 'ruc' == s.document_type
+                                  else '%s %s %s' % (s.name,
+                                                     s.father_name,
+                                                     s.mother_name))
 
 
 class Customer(dom.Model):
-
     name = dom.String()
     document_number = dom.String()
     document_type = dom.String()
@@ -161,6 +159,7 @@ class Customer(dom.Model):
 
 
 class Dispatch(dom.Model):
+    order = dom.String()
     reference = dom.String()
     order = dom.String()
     regime = dom.Structured(CodeName)
@@ -180,5 +179,6 @@ class Dispatch(dom.Model):
     currency = dom.String()
     exchange_rate = dom.String()
     canal = dom.String()
+
 
 # vim: et:ts=4:sw=4

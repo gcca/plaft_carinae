@@ -10,7 +10,7 @@
 """
 
 from plaft.interfaces import Handler, DirectToController
-from plaft.domain.model import User, Dispatch
+from plaft.domain import model
 
 
 class SignIn(DirectToController):
@@ -22,7 +22,7 @@ class SignIn(DirectToController):
         username = self.request.get('username')
         password = self.request.get('password')
 
-        user = User.authenticate(username, password)
+        user = model.User.authenticate(username, password)
 
         if user:
             self.login(user)
@@ -34,6 +34,9 @@ class SignIn(DirectToController):
 class Dashboard(DirectToController):
     """Users dashboard."""
 
+    def _args(self):
+        self.add_arg('a', {stk.slug: stk.id for stk in model.Linked.all()})
+
 
 class Debug(Handler):
     """Only use to handtest."""
@@ -41,7 +44,7 @@ class Debug(Handler):
     def get(self):
         """Create entities."""
         from plaft.application.util import sample_data_generator
-        sample_data_generator.users()
+        sample_data_generator.create_sample_data()
         self.write('Don\'t worry... Be happy.')
 
     def post(self):
