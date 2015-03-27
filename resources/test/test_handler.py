@@ -1,7 +1,6 @@
 import testplaft
 
 from plaft.domain.model import Customer
-from plaft.application.util.sample_data_generator import create_customers
 
 
 class HandlerTest(testplaft.TestCase):
@@ -9,12 +8,12 @@ class HandlerTest(testplaft.TestCase):
     def setUp(self):
         self.bed_activate()
         self.app_initialize()
-        create_customers()
 
     def test_query_no_match(self):
         uri = '/api/customer?document_number=!@#$%^&*()_+'
-        response = self.testapp.get(uri, status=404)
-        #  self.assertEqual(response.status_int, 404)
+        # response = self.testapp.get(uri, status=404)
+        # self.assertEqual(response.status_int, 404)
+        self.testapp.get(uri, status=404)
 
     def test_create_single(self):
         customer_request = Customer(name='abc', document_number='123')
@@ -23,22 +22,30 @@ class HandlerTest(testplaft.TestCase):
 
         customer_response = Customer.find(response.json['id'])
 
-        self.assertDictEqual(customer_request.dict,
-                             customer_response.dict)
+        self.assertEqual(customer_request.name,
+                         customer_response.name)
+
+        self.assertEqual(customer_request.document_number,
+                         customer_response.document_number)
 
     def test_create_batch(self):
 
         customers_request = [Customer(name='abc_'+i,
                                       document_number='123_'+i).dict
-                             for i in map(str, range(1, 11))]
+                             for i in (str(n) for n in range(1, 11))]
 
 
         response = self.testapp.post_json('/api/customer',
-                                           customers_request)
+                                          customers_request)
 
         customers_response = [Customer.find(id).dict for id in response.json]
 
-        self.assertListEqual(customers_request, customers_response)
+        filter_request = [c['name'] + c['document_number']
+                          for c in customers_request]
+        filter_response = [c['name'] + c['document_number']
+                           for c in customers_response]
+
+        self.assertListEqual(filter_request, filter_response)
 
     def test_update_single(self):
         customer = Customer(name='Nina Sharp')
@@ -49,14 +56,20 @@ class HandlerTest(testplaft.TestCase):
             'document_number': '789',
             'document_type': 'dni'
         }
-        response = self.testapp.put_json(uri, dto)
+        self.testapp.put_json(uri, dto)
 
         test_customer = Customer.find(customer.id)
         dto['name'] = 'Nina Sharp'
 
-        self.assertEqual(dto, customer.dict)
+        self.assertEqual(dto['document_number'],
+                         test_customer.document_number)
+        self.assertEqual(dto['document_type'],
+                         test_customer.document_type)
 
     def test_update_single2(self):
+        customer = Customer(name='Nina Sharp')
+        customer.store()
+
         customer = list(Customer.all())[0]
 
         uri = '/api/customer/' + str(customer.id)
@@ -64,7 +77,7 @@ class HandlerTest(testplaft.TestCase):
             'document_number': '789',
             'document_type': 'dni'
         }
-        response = self.testapp.put_json(uri, dto)
+        self.testapp.put_json(uri, dto)
 
         test_customer = Customer.find(customer.id)
 
@@ -72,6 +85,9 @@ class HandlerTest(testplaft.TestCase):
         self.assertEqual(test_customer.document_type, 'dni')
 
     def test_delete_single(self):
+        customer = Customer(name='Nina Sharp')
+        customer.store()
+
         customer = list(Customer.all())[0]
 
         uri = '/api/customer/' + str(customer.id)

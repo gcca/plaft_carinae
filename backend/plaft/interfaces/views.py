@@ -49,14 +49,14 @@ class Debug(Handler):
 
     def post(self):
         """Delete entities."""
-        from plaft.infrastructure.persistence.datastore.ndb import Model
         import google.appengine.ext.ndb as ndb
-        from plaft.domain import model
         ndb.delete_multi(v for m in
                          [getattr(model, i) for i in dir(model)
-                          if type(getattr(model, i)) is ndb.model.MetaModel]
+                          if isinstance(getattr(model, i),
+                                        ndb.model.MetaModel)]
                          for v in m.query().fetch(keys_only=True))
         self.write('The End.')
+
 
 import sys
 import os
@@ -238,4 +238,6 @@ class DeclarationPDF(Handler):
             self.isPerson(story, styles, dispatch)
 
         doc.build(story)
+
+
 # vim: et:ts=4:sw=4

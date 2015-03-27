@@ -118,7 +118,7 @@ class Model(Entity, ndb.Model):
                 elif dtype is Structured and not type(value) is list:
                     svalue = {}
                     for sprop in prop_type._modelclass._properties:
-                        if sprop in value:
+                        if value and sprop in value:
                             svalue[sprop] = value[sprop]
 
                     value = svalue
