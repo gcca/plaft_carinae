@@ -4,12 +4,15 @@
  * |                   |
  * |                   |
  * |___________________|
- * |      notify       |
+ * |   _notification   |
  * |___________________|
  *
  * To notification messages to users about module state.
  */
 
+/**
+ * TODO: Clean memory
+ */
 class Notification extends App.View
 
   /** @override */
@@ -59,10 +62,11 @@ class Notifier
 
 
   __2class = ->
-    | @@kSuccess => gz.Css \alert-success
-    | @@kInfo    => gz.Css \alert-info
-    | @@kWarning => gz.Css \alert-warning
-    | @@kDanger  => gz.Css \alert-danger
+    switch it
+      | @@kSuccess => gz.Css \alert-success
+      | @@kInfo    => gz.Css \alert-info
+      | @@kWarning => gz.Css \alert-warning
+      | @@kDanger  => gz.Css \alert-danger
 
 
   @@kSuccess = 1

@@ -128,7 +128,6 @@ class Desktop extends App.View
 
   /** @override */
   initialize: ({@_search, @_save}) ->
-    window.d = @
     App._debug._assert @_search
     @_search.on (gz.Css \search), @on-search
     @_save.on (gz.Css \save), @on-save
