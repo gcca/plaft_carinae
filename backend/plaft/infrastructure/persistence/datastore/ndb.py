@@ -96,7 +96,7 @@ class Model(Entity, ndb.Model):
         return self.key.id()
 
     @classmethod
-    def _from(cls, payload): # parent_key=None):
+    def _from(cls, payload):  # parent_key=None):
         if isinstance(cls, ndb.Expando):
             return payload
         properties = {}
@@ -108,13 +108,18 @@ class Model(Entity, ndb.Model):
                 value = payload[property]
 
                 if dtype is Key:
-                    if not value: continue
+                    if not value:
+                        continue
                     # TODO(): hot update nested models
                     if type(value) is dict:
-                        value = ndb.Key(prop_type._kind, int(value['id']))
+                        if 'id' in value:
+                            value = ndb.Key(prop_type._kind,
+                                            int(value['id']))
+                        else:
+                            value = ndb.Model._kind_map.get(
+                                prop_type._kind).new(value).store()
                     if type(value) is (int, long):
                         value = ndb.Key(prop_type._kind, value)
-                    continue
 
                 elif dtype is Structured and not type(value) is list:
                     svalue = {}
@@ -233,8 +238,6 @@ class DocumentProperty(ndb.StructuredProperty):
 
     def _from_base_type(self, value):
         return value
-
-
 
 
 # vim: et:ts=4:sw=4

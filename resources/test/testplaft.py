@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import sys
 import unittest2
 
@@ -19,6 +20,10 @@ class TestCase(unittest2.TestCase):
         import webtest
         from webapp.main import app
         self.testapp = webtest.TestApp(app)
+
+    def setUp(self):
+        self.bed_activate()
+        self.app_initialize()
 
     def tearDown(self):
         if self.testbed:

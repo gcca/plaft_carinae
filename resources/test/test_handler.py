@@ -1,13 +1,8 @@
 import testplaft
-
 from plaft.domain.model import Customer
 
 
 class HandlerTest(testplaft.TestCase):
-
-    def setUp(self):
-        self.bed_activate()
-        self.app_initialize()
 
     def test_query_no_match(self):
         uri = '/api/customer?document_number=!@#$%^&*()_+'
@@ -16,7 +11,9 @@ class HandlerTest(testplaft.TestCase):
         self.testapp.get(uri, status=404)
 
     def test_create_single(self):
-        customer_request = Customer(name='abc', document_number='123')
+        customer_request = Customer(name='abc',
+                                    document_type='ruc',
+                                    document_number='123')
         response = self.testapp.post_json('/api/customer',
                                           customer_request.dict)
 
@@ -31,6 +28,7 @@ class HandlerTest(testplaft.TestCase):
     def test_create_batch(self):
 
         customers_request = [Customer(name='abc_'+i,
+                                      document_type='ruc',
                                       document_number='123_'+i).dict
                              for i in (str(n) for n in range(1, 11))]
 
@@ -48,7 +46,7 @@ class HandlerTest(testplaft.TestCase):
         self.assertListEqual(filter_request, filter_response)
 
     def test_update_single(self):
-        customer = Customer(name='Nina Sharp')
+        customer = Customer(name='Nina Sharp', document_type='dni')
         customer.store()
 
         uri = '/api/customer/' + str(customer.id)
@@ -67,7 +65,7 @@ class HandlerTest(testplaft.TestCase):
                          test_customer.document_type)
 
     def test_update_single2(self):
-        customer = Customer(name='Nina Sharp')
+        customer = Customer(name='Nina Sharp', document_type='dni')
         customer.store()
 
         customer = list(Customer.all())[0]
@@ -85,7 +83,7 @@ class HandlerTest(testplaft.TestCase):
         self.assertEqual(test_customer.document_type, 'dni')
 
     def test_delete_single(self):
-        customer = Customer(name='Nina Sharp')
+        customer = Customer(name='Nina Sharp', document_type='dni')
         customer.store()
 
         customer = list(Customer.all())[0]

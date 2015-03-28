@@ -81,7 +81,7 @@ class Customer(dom.Model, dom.PolyModel):
         (Customer, dict) -> Customer<Business, Person>
 
         """
-        if cls is Customer:
+        if cls is Customer and kwargs:
             if 'document_type' not in kwargs:
                 raise AttributeError('Customer needs the attribute'
                                      ' `document_type` to construct'
