@@ -1,6 +1,194 @@
 /** @module modules */
 
 /**
+ * PanelHeading
+ * ------------
+ *
+ * @example
+ * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ * >>> panel-heading = new PanelHeading do
+ * >>>  _title: 'Example-Title'
+ * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ * >>> panel-heading = new PanelHeading
+ * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ *
+ * @class PanelHeading
+ * @extends View
+ * @export
+ */
+class exports.PanelHeading extends App.View
+  /** @override */
+  _tagName: \div
+
+  /** @override */
+  _className: "#{gz.Css \panel-heading}"
+
+  /**
+   * Change title
+   * @param {String} _title
+   */
+  set-title: (_title)->
+    @el._first._first.html = _title
+
+  /**
+   * Remove panel from array-panel
+   */
+  _remove-panel: ~>
+    $ @_panel .remove!
+    @_array-panels.trigger (gz.Css \button), "#{@_id-panel}"
+
+  /**
+   * Setea el valor del array-panel en cada panel-heading
+   * @param {Array.<Panel>} panels
+   */
+  _set-panels: (panels) ~>
+    @_array-panels = panels
+
+  /**
+   * TODO
+   */
+  _add-element: (_element) ->
+    _title = @el._first._first
+    _element.css = "margin-left:40px;"
+    @_btn-group._append _element
+
+  /**
+   * Cambia el modelo de vista del panel-heading
+   * @param {String} _type
+   * @param {String} _href if _type is PDF
+   */
+  _change-type: (_type, _href="") ->
+    @_btn-group.html = ''
+    if _type is \pdf
+      _icon = App.dom._new \i
+        .._class = "#{gz.Css \glyphicon}
+                  \ #{gz.Css \glyphicon-bookmark}"
+      _btn = App.dom._new \a
+        .._class = "#{gz.Css \btn}
+                  \ #{gz.Css \btn-info}
+                  \ #{gz.Css \btn-sm}
+                  \ #{gz.Css \pull-right}"
+        ..href = "api/pdf/#{_href}"
+        ..css = "margin-left:40px"
+        ..target = '_blank'
+        ..html = 'PDF '
+        .._append _icon
+      @_btn-group._append _btn
+    if _type is \close
+      _btn = App.dom._new \button
+        .._class = "btn btn-sm close"
+        ..css = "margin-left:40px"
+        ..html = 'x'
+        ..on-click @_remove-panel
+      @_btn-group._append _btn
+
+
+  /** @override */
+  initialize: (@_options) ->
+    if @_options?
+      @_id-panel = @_options._id-panel
+      @_parent-uid = @_options._parent-uid
+      @_title = @_options._title
+      @_type = @_options._type
+      @_panel = @_options._panel
+    super!
+
+  /** @override */
+  render: ->
+    @el.html = "<div class='#{gz.Css \panel-title}' style='display:inline'>
+                  <a data-toggle='collapse'
+                     data-parent='##{@_parent-uid}'
+                     href='##{@_id-panel}'>
+                   #{if @_title?
+                     then @_title
+                     else 'Por defecto'}
+                  </a>
+                  <span class='#{gz.Css \pull-right}' style='width:600px'>
+                  </span>
+                </div>"
+    @_btn-group =@el.query '.pull-right'
+    if @_type?
+      @_change-type @_type
+    super!
+
+  /** @private */ _options: null
+  /** @private */ _id-panel: null
+  /** @private */ _parent-uid: null
+  /** @private */ _title: null
+  /** @private */ _type: null
+  /** @private */ _panel: null
+  /** @private */ _array-panels: null
+
+
+/**
+ * PanelHeadingClosable
+ * --------------------
+ *
+ * @class PanelHeadingClosable
+ * @extends PanelHeading
+ * @export
+ */
+
+class exports.PanelHeadingClosable extends PanelHeading
+
+  /** @override */
+  render: ->
+    ret = super!
+    @_change-type \close
+    ret
+
+/**
+ * PanelBody
+ * ---------
+ *
+ * @example
+ * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ * >>> panel-body = new PanelBody do
+ * >>>  _element: another-view.render!.el
+ * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ * >>> panel-body = new PanelBody
+ * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ * @class PanelHeading
+ * @extends View
+ * @export
+ */
+class exports.PanelBody extends App.View
+  /** @override */
+  _tagName: \div
+
+  /** @override */
+  _className: "#{gz.Css \panel-collapse} #{gz.Css \collapse}"
+
+  /** Obtener el formulario del PanelBody */
+  _get-form: ->
+    @el.query 'form'
+
+  /** @override */
+  initialize: (@_options) ->
+    if @_options?
+      @_id-content = @_options._id-content
+      @_element = @_options._element
+    super!
+
+  /** @override */
+  render: ->
+    @el._id = @_id-content
+    @el.html="<div class='#{gz.Css \panel-body}'>
+              </div>"
+
+#   TODO: Saber si es HTMLElement o String
+    if @_element?
+      @el._first._append @_element
+
+    super!
+
+  /** @private */ _options: null
+  /** @private */ _element: null
+  /** @private */ _id-content: null
+  /** @private */ _body: null
+
+
+/**
  * Panel
  * -------------
  * TODO: Descripcion
@@ -14,187 +202,68 @@ class exports.Panel extends App.View
   _tagName: \div
 
   /** @override */
-  _className: ~>
-    "#{gz.Css \panel} #{gz.Css @_panel-color}"
+  _className: "#{gz.Css \panel} #{gz.Css \panel-default}"
 
-  _set-color-panel: (color) ~>
-    @el._class._remove @_panel-color
-    @el._class._add color
-    @_panel-color = color
+  /**
+   * Open panel
+   */
+  _open: ->
+    @_collapse._class._add    gz.Css \in
 
+  /**
+   * Close panel
+   */
   _close: ->
     @_collapse._class._remove gz.Css \in
 
+  /**
+   * Change class for panel
+   */
   _toggle: ->
     @_collapse._class._toggle gz.Css \in
 
-  initialize: (_options) ->
-    @_options = _options
-    @_parent-uid = _options._parent-uid
+  /** @override */
+  initialize: (@_options) -> super!
 
   /** @override */
   render: ->
     _id-content = App.utils.uid 'p'
 
-    @el.html = "
-      <div class='#{gz.Css \panel-heading}'>
-
-      </div>
-      <div class='#{gz.Css \panel-collapse} #{gz.Css \collapse} '
-           id='#{_id-content}'>
-      </div>"
-
-
-    @_header = @el.query ".#{gz.Css \panel-heading}"
-    @_collapse = @el.query "##{_id-content}"
-
-    opciones = { _parent-uid: @_parent-uid, _id-content: _id-content,_el-root: @el}
-
-    console.log opciones
-
-    @_panel-heading.set-options opciones
-    @_header._append @_panel-heading.render!.el
-    @el.query "##{_id-content}" ._append @_panel-body.render!.el
-
-    @_set-color-panel 'panel-success'
-
-    super!
-
-  /** @private */   _options: null
-  /** @public */    _body: null
-  /** @public */    _header: null
-  /** @private */   _collapse: null
-  /** @protected */ _panel-heading: null
-  /** @protected */ _panel-body: null
-  /** @public */    _parent-uid: null
-  /** @public */    _panel-color: \panel-default
-
-
-class exports.PanelBody extends App.View
-
-  _tagName: \div
-
-  _className: gz.Css \panel-body
-
-  _get-el: ~>
-    @el
-
-  _get-form: ~>
-    @el.query 'form'
-
-  _get-body: ~>
-    if _.isUndefined @el._first
-      console.log 'Existe'
+#    BUILD PANEL-HEADING
+    if @_options._panel-heading?
+      @_header = @_options._panel-heading
+      @_header._id-panel = _id-content
+      @_header._parent-uid = @_options._parent-uid
+      @_header._panel = @el
     else
-      console.log 'No existe'
+      @_header = new PanelHeading do
+        _title: @_options._title
+        _id-panel: _id-content
+        _parent-uid: @_options._parent-uid
+        _panel: @el
 
-  initialize: (@_options) ->
+#    BUILD PANEL-BODY
+    if @_options._panel-body?
+      @_body = @_options._panel-body
+      @_body._id-content = _id-content
+    else
+      @_body = new PanelBody do
+        _id-content: _id-content
+        _element: @_options._element
+
+
+    @el._append @_header.render!.el
+    @el._append @_body.render!.el
+    @_collapse = @el.query "##{_id-content}"
+    @_toggle!
+
+
     super!
-    @_get-body!
 
-  /** @public */  _form: null
   /** @private */ _options: null
-
-
-class exports.PanelHeading extends App.View
-
-  _tagName: \div
-
-  _remove-panel: ~>
-    $ @_el-root .remove!
-    @_panels_aux.trigger 'update-panels-array', "#{@_options._idContent}"
-
-  _set-panels-aux: (panels) ~>
-    @_panels_aux = panels
-
-  set-options: (options) ~>
-    @_options = options
-    @_el-root = @_options._el-root
-    @_parent-uid = options._parent-uid
-
-  set-title-heading: (title) ~>
-    @el._first._first.html = title
-
-  initialize: (@_options) ->
-    super!
-    @_options-root = @_options
-
-  render: ->
-    @el.html = "<div class='#{gz.Css \panel-title}' style='display:inline'>
-                  <a data-toggle='collapse'
-                     data-parent='##{@_parent-uid}'
-                     href='##{@_options._id-content}' class='ahref'>
-                  </a>
-                  <span class='pull-right btn-group'>
-                  </span>
-                </div>"
-
-    super!
-
-  /** @protected */ _el-root: null
-  /** @protected */ _panels_aux: null
-  /** @protected */ _parent-uid: null
-
-
-class exports.PanelHeadingClosable extends PanelHeading
-
-  render: ->
-    ret = super!
-
-    @el.query '.btn-group'
-      $(..).append "<button class='btn btn-sm btn-danger close'>x</button>"
-    @el.query '.close' .on-click @_remove-panel
-
-    ret
-
-
-class exports.PanelHeadingDeclarant extends PanelHeadingClosable
-
-  overload-for-title: ->
-    _content-title = @el._first._first
-    _name = @_el-root.query '[name=name]'
-    _father_name = @_el-root.query '[name=father_name]'
-    _mother_name = @_el-root.query '[name=mother_name]'
-
-    _set-title = ~>
-      _content-title.html = _name._value + ' ' \
-                             + _father_name._value + ' ' \
-                             + _mother_name._value
-
-    _name.on-key-up _set-title
-    _father_name.on-key-up _set-title
-    _mother_name.on-key-up _set-title
-
-
-class exports.PanelHeadingStakeHolder extends PanelHeadingClosable
-
-  overload-for-title: (_type = @@Type.kBusiness) ->
-    @_type = _type
-
-    _content-title = @el._first._first
-
-    if _type is @@Type.kBusiness
-      @_el-root.query '[name=name]' .on-key-up (evt) ~>
-        _content-title.html = evt._target._value
-
-    if _type is @@Type.kPerson
-      _name = @_el-root.query '[name=name]'
-      _father_name = @_el-root.query '[name=father_name]'
-      _mother_name = @_el-root.query '[name=mother_name]'
-
-      _set-title = ~>
-        _content-title.html = _name._value + ' ' \
-                            + _father_name._value + ' ' \
-                            + _mother_name._value
-
-      _name.on-key-up _set-title
-      _father_name.on-key-up _set-title
-      _mother_name.on-key-up _set-title
-
-  /** @private */ _type: null
-  @@Type =
-    kPerson: 0
-    kBusiness: 1
+  /** @public */  _header: null
+  /** @public */  _body: null
+  /** @private */ _collapse: null
 
 
 /**
@@ -203,9 +272,24 @@ class exports.PanelHeadingStakeHolder extends PanelHeadingClosable
  * TODO: Descripcion
  *
  * @example
+ * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
  * >>> panel-group = new PanelGroup
- * >>> panel-group.new-panel 'header' 'body'
+ * >>> panel-group.new-panel do
+ * >>>  _title: 'Example-Title'
+ * >>>  _element: [HTMLElement || String]
  * >>> another-view.el._append panel-group.render!.el
+ * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ * >>> panel-heading = new PanelHeading || new PanelHeadingClosable do
+ * >>>     _title: 'Example-Title'
+ * >>> panel-body = new PanelBody do
+ * >>>     _element: [HTMLElement || String]
+ * >>> panel-group = new PanelGroup
+ * >>> panel-group.new-panel do
+ * >>>  _panel-heading: panel-heading
+ * >>>  _panel-body: panel-body
+ * >>> another-view.el._append panel-group.render!.el
+ * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
  *
  * @class PanelGroup
  * @extends View
@@ -216,42 +300,67 @@ class exports.PanelGroup extends App.View
   /** @override */
   _tagName: \div
 
-  _set-array-for-panels: ->
-    for @_panels then
-      .._panel-heading._set-panels-aux @_panels
-
-  _delete-panel: (id) ~>
-    @_panels = _.filter(@_panels, (item) -> item._collapse._id !== id)
-    _.extend(@_panels, Backbone.Events);
-    _self = @
-    @_panels.on \update-panels-array (id) -> _self._delete-panel (id)
-    @_set-array-for-panels!
-
+  /**
+   * Close all panels
+   */
   close-all: ->
     for @_panels then .._close!
 
   /**
+   * Open all panels
+   */
+  open-all: ->
+    for @_panels then  .._open!
+
+  /**
+   * Envia el arreglo de paneles a la cabecera.
+   */
+  _array-panels: ->
+    for @_panels then
+      .._header._set-panels @_panels
+
+  /**
+   * Elimina un panel de arreglo de paneles.
+   */
+  _delete-panel: (id) ~>
+    @_panels = _.filter(@_panels, (item) -> item._collapse._id !== id)
+    _.extend(@_panels, Backbone.Events);
+    _self = @
+    @_panels.on (gz.Css \button), (id) -> _self._delete-panel id
+    @_array-panels!
+
+  /**
    * Crea un nuevo panel
    * y lo añade al panel-group.
+   * @param {PanelHeading} _panel-heading
+   * @param {PanelBody} _panel-body
    * @param {string} _title
+   * @param {HTMLElement} _element
    * @return Panel
    */
-
    #cambiarlo tipo-panel a _type
-  new-panel: (tipo-panel, tipo-heading, dto = null) ~>
+  new-panel: ({_panel-heading = null,\
+               _panel-body = null,\
+               _title = null,\
+               _element = null} = App._void._Object) ~>
     @close-all!
-    @ConcretPanel._new _parent-uid: @root-el._id
-        .._panel-body = tipo-panel
-        .._panel-heading = tipo-heading
-        @root-el._append ..render!.el
-        @_panels._push ..
+    _panel = @ConcretPanel._new do
+      _title: _title
+      _parent-uid: @root-el._id
+      _element: _element
+      _panel-heading: _panel-heading
+      _panel-body: _panel-body
+    @root-el._append _panel.render!.el
+    @_panels._push _panel
+    @_array-panels!
 
   /** @override */
-  initialize: ({@root-el = @el, @ConcretPanel = Panel} = {}) ->
+  initialize: ({@root-el = @el, \
+                @ConcretPanel = Panel} = App._void._Object) ->
     @_panels = new Array
     _.extend(@_panels, Backbone.Events);
     _self = @
-    @_panels.on \update-panels-array (id) -> _self._delete-panel (id)
+    @_panels.on (gz.Css \update), (id) -> _self._delete-panel (id)
     super!
 
 

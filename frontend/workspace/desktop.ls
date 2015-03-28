@@ -40,6 +40,7 @@ class Desktop extends App.View
    * @public
    */
   load-module: (@Module) ~>
+    @_search.load-module @Module
     #---------------------
     # Sub-module extension
     #---------------------
@@ -71,8 +72,8 @@ class Desktop extends App.View
    * @param {string} type
    * @private
    */
-  on-search: (query, type) ~>
-    @module.on-search query, type
+  on-search: (query, filter) ~>
+    @module.on-search query, filter
 
   /**
    * On save event to module.
@@ -90,6 +91,7 @@ class Desktop extends App.View
   _new: (Module) ->
     @module = Module._new!
       .._desktop = @
+      ..notifier = @notifier
 
   #------------------
   # Next page methods

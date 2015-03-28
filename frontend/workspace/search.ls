@@ -1,34 +1,50 @@
 /** @module workspace */
 
+/**
+ * Items
+ * ------
+ * Utilizado para el llenado de un DropDown menu.
+ *
+ * @example
+ * >>> item = new Items list-filter: Lista de Valores.
+ * >>> external-container._append item.render!.el
+ *
+ * @class Items
+ * @extends View
+ */
 
-#_option = "
-#  <div class='#{gz.Css \input-group}'>
-#    <input type='text' class='#{gz.Css \form-control}'
-#        placeholder='Buscar'>
-#    <span class='#{gz.Css \input-group-btn}'>
-#      <button class='#{gz.Css \btn} #{gz.Css \btn-default}'>
-#        &nbsp;
-#        <i class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-search}'></i>
-#        &nbsp;
-#      </button>
-#      <button type='button'
-#          class='#{gz.Css \btn}
-#               \ #{gz.Css \btn-default}
-#               \ #{gz.Css \dropdown-toggle}'
-#          data-toggle='dropdown' tabindex='-1'>
-#        &nbsp;
-#        <span class='#{gz.Css \caret}'></span>
-#        <span class='#{gz.Css \sr-only}'>gz</span>
-#        &nbsp;
-#      </button>
-#      <ul class='#{gz.Css \dropdown-menu} #{gz.Css \pull-right}'
-#          role='menu'>
-#        <li class='#{gz.Css \divider}'></li>
-#        <li><a href='/signout'>Salir</a></li>
-#        <li class='#{gz.Css \divider}'></li>
-#      </ul>
-#    </span>
-#  </div>"
+class Items extends App.View
+  /** @override */
+  _tagName: \ul
+
+  /** @override */
+  _className: "#{gz.Css \dropdown-menu}"
+
+  /**
+   * Add new list item.
+   * @param {options-module} module
+   * @return {HTMLElement} <li> element for search.
+   * @private
+   */
+  _add: (filter) ->
+    a = App.dom._new \a
+      ..html = "#{filter._name}"
+
+    li = App.dom._new \li
+      ..on-click ~> @trigger (gz.Css \icon), filter._label, filter._value
+      .._append a
+
+  /** @override */
+  initialize: ({@list-filter}) -> super!
+
+  /** @override */
+  render: ->
+    for filter in @list-filter
+      @el._append @_add filter
+    super!
+
+  /** @private */ list-filter: null
+
 
 
 /**
@@ -60,7 +76,55 @@ class Search extends App.View
      */
     on-submit: (evt) ->
       evt.prevent!
-      @trigger (gz.Css \search), @el._first._first._value
+      @trigger (gz.Css \search), @el._first._first._value, \
+                                 @_filter
+
+  /**
+   * Asigna lista procedente del modulo.
+   * @param {Module} module
+   * @example
+   * @private
+   */
+  load-module: (module) ->
+    if module._list-filter?
+      @render-filter module._list-filter
+    else
+      @_dropdown.html = ""
+
+  /**
+   * Change name from DropDown.
+   * @param {String} _label
+   * @param {Integer} _value
+   * @private
+   */
+  _change-value: (_label, _value) ~>
+    content = @el.query '.content'
+    content.html = _label
+    @_filter = _value
+
+  /**
+   * Render for filter.
+   * @param {Object} _module-list
+   * @private
+   */
+  render-filter: (_module-list) ->
+    $ @_dropdown ._append "<button class='#{gz.Css \btn}
+                                        \ #{gz.Css \btn-default}
+                                        \ #{gz.Css \dropdown-toggle}'
+                                   type='button'
+                                   data-toggle='dropdown'
+                                   aria-expanded='false'>
+                             <span class='#{gz.Css \content}'>
+                              <i class='#{gz.Css \glyphicon}
+                                      \ #{gz.Css \glyphicon}-\
+                                        #{gz.Css \share}'></i>
+                             </span>&nbsp;&nbsp;
+                             <span class='#{gz.Css \caret}'></span>
+                           </button>"
+    new Items list-filter: _module-list
+      ..on (gz.Css \icon), @_change-value
+      @_dropdown._append ..render!.el
+
 
   /** @override */
   render: ->
@@ -74,8 +138,10 @@ class Search extends App.View
         &nbsp;
         <i class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-search}'></i>
         &nbsp;
-      </button>"
-
+      </button>
+      &nbsp;
+      <div class='#{gz.Css \form-group} #{gz.Css \dropdown}'></div>"
+    @_dropdown = @el.query '.dropdown'
     super!
 
 

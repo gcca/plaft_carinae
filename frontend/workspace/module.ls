@@ -27,7 +27,7 @@ class Module extends App.View
    * @param {string} type
    * @protected
    */
-  on-search: (query,type) ->
+  on-search: (query, filter) ->
 
   /**
    * (Event) On save from global button.
@@ -46,8 +46,9 @@ class Module extends App.View
     @clean!
 
   /** @protected */ _desktop: null
-  /** @protected */ _modal: null
+  /** @protected */ notifier: null
 
+  /** @protected */ @@_list-filter = null
   /** @protected */ @@_caption = ''
   /** @protected */ @@_icon    = ''
 

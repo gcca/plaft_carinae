@@ -7,31 +7,31 @@
 /** @export */
 exports.department =
   _display:
-    'DEPARTAMENTO AMAZONAS'
-    'DEPARTAMENTO ANCASH'
-    'DEPARTAMENTO APURIMAC'
-    'DEPARTAMENTO AREQUIPA'
-    'DEPARTAMENTO AYACUCHO'
-    'DEPARTAMENTO CAJAMARCA'
+    'AMAZONAS'
+    'ANCASH'
+    'APURIMAC'
+    'AREQUIPA'
+    'AYACUCHO'
+    'CAJAMARCA'
     'PROV. CONST. DEL CALLAO'
-    'DEPARTAMENTO CUSCO'
-    'DEPARTAMENTO HUANCAVELICA'
-    'DEPARTAMENTO HUANUCO'
-    'DEPARTAMENTO ICA'
-    'DEPARTAMENTO JUNIN'
-    'DEPARTAMENTO LA LIBERTAD'
-    'DEPARTAMENTO LAMBAYEQUE'
-    'DEPARTAMENTO LIMA'
-    'DEPARTAMENTO LORETO'
-    'DEPARTAMENTO MADRE DE DIOS'
-    'DEPARTAMENTO MOQUEGUA'
-    'DEPARTAMENTO PASCO'
-    'DEPARTAMENTO PIURA'
-    'DEPARTAMENTO PUNO'
-    'DEPARTAMENTO SAN MARTIN'
-    'DEPARTAMENTO TACNA'
-    'DEPARTAMENTO TUMBES'
-    'DEPARTAMENTO UCAYALI'
+    'CUSCO'
+    'HUANCAVELICA'
+    'HUANUCO'
+    'ICA'
+    'JUNIN'
+    'LA LIBERTAD'
+    'LAMBAYEQUE'
+    'LIMA'
+    'LORETO'
+    'MADRE DE DIOS'
+    'MOQUEGUA'
+    'PASCO'
+    'PIURA'
+    'PUNO'
+    'SAN MARTIN'
+    'TACNA'
+    'TUMBES'
+    'UCAYALI'
 
   _code:
     '01'
@@ -636,7 +636,7 @@ exports.distrit =
     'HUAYLAS'
     'MATO'
     'PAMPAROMAS'
-    'PUEBLO LIBRE  / 1 '
+    'PUEBLO LIBRE'
     'SANTA CRUZ'
     'SANTO TORIBIO'
     'YURACMARCA'
@@ -4131,42 +4131,43 @@ exports.distrit =
     '250303'
     '250401'
 
+_tokens = new Array
+_pool-display = new Array
+_pool-code = new Array
 
-ubigeo = {}
+departments = exports.department
+provinces = exports.province
+distrits = exports.distrit
+
+for i to departments._code._length - 1
+  department = departments._display[i]
+  department-code = departments._code[i]
+
+  for j to provinces._code._length - 1
+    province = provinces._display[j]
+    province-code = provinces._code[j]
+
+    if department-code is province-code._slice 0 2
+      for k to distrits._code._length - 1
+        distrit = distrits._display[k]
+        ubigeo = distrits._code[k]
+
+        if province-code is ubigeo._slice 0 4
+          _tokens._push do
+            _display: "#{department} #{province} #{distrit}"
+            _code: ubigeo
+          _pool-display._push "#{department} #{province} #{distrit}"
+          _pool-code._push ubigeo
+
+window.token = _tokens
+
+exports._tokens = _tokens
+exports._pool =
+  _display: _pool-display
+  _code: _pool-code
 
 
-dept = exports.department
-dept-length = exports.department._display._length
 
-
-find-distrit = (_code) ->
-  dist = exports.distrit
-  dist-length = exports.distrit._display._length
-
-  _obj = {}
-
-  for i til dist-length
-    if _code == dist._code[i]._slice 0, 4
-      _obj[dist._display[i]] = dist._code[i]
-
-  _obj
-
-find-province = (_code) ->
-  prov = exports.province
-  prov-length = exports.province._display._length
-
-  _obj = {}
-
-  for i til prov-length
-    if _code == prov._code[i]._slice 0, 2
-      _obj[prov._display[i]] = find-distrit prov._code[i]
-
-  _obj
-
-for i til dept-length
-  ubigeo[dept._display[i]] = find-province dept._code[i]
-
-exports._tree = ubigeo
 
 
 # vim: ts=2:sw=2:sts=2:et
