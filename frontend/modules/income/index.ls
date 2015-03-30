@@ -12,6 +12,7 @@ Dispatch = require './dispatch'
 Stakeholder = require './stakeholder'
 Declarant = require './declarant'
 
+
 /**
  * CustomerModel
  * ----------
@@ -20,8 +21,8 @@ Declarant = require './declarant'
  * @extends Model
  */
 class CustomerModel extends App.Model
-
   urlRoot: 'customer'
+
 
 /**
  * DispatchModel
@@ -31,13 +32,13 @@ class CustomerModel extends App.Model
  * @extends Model
  */
 class DispatchModel extends App.Model
-
   urlRoot: 'dispatch'
 
   defaults:
     'declaration': []
     'linked': []
     'declarant': []
+
 
 /**
  * Operation
