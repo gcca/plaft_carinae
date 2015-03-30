@@ -150,6 +150,9 @@ class Operation extends Module
     form-dto.'declaration'.'customer'.'shareholders' = _shareholders
     form-dto.\declarant = @declarant._toJSON!
     form-dto.\linked = @stakeholder._toJSON!
+    # TODO: Mejorar el flujo. {@code customer-model} podría funcionar mejor
+    #   después de manipular a {@code dispatch-model}.
+    form-dto.\customer = @customer-model._id if @customer-model?
     console.log form-dto
     # Save to DispatchModel.
     @dispatch-model._save form-dto, do

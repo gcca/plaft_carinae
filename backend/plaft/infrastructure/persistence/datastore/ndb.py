@@ -118,7 +118,8 @@ class Model(Entity, ndb.Model):
                         else:
                             value = ndb.Model._kind_map.get(
                                 prop_type._kind).new(value).store()
-                    if type(value) is (int, long):
+
+                    if isinstance(value, (int, long)):
                         value = ndb.Key(prop_type._kind, value)
 
                 elif dtype is Structured and not type(value) is list:
