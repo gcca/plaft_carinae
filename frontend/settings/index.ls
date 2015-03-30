@@ -11,8 +11,6 @@ class Employee extends App.Model
   /** @override */
 #  urlRoot: "officer/#{window.'plaft'.'cu'.\id}/employee"
 
-console.log Employee::urlRoot
-
 class EmployeeItem extends App.View
 
   /** @override */

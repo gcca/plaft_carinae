@@ -18,6 +18,7 @@ FieldOptions = builtins.Types.Options
  * ...   * _name: \age
  * ...     _label: 'Age'
  * ...     _type: App.builtins.Types.Field.kLineEdit
+ * ...     _tip: 'Description about age blah, blah, blah, blah.'
  * >>> form-builder = Form._new el, options
  * >>> form-builder.render!  # DOM construction.
  *
@@ -65,8 +66,8 @@ class exports.Form extends Array implements PoolMixin
    * @param {string} _style
    * @public
    */
-  _class: (_style) ->
-    for el in @ then el._class = "#{gz.Css \form-group} #_style"
+#  _class: (_style) ->
+#    for el in @ then el._class = "#{gz.Css \form-group} #_style"
 
   /**
    * From string list to `options` html-tag list.
@@ -82,6 +83,26 @@ class exports.Form extends Array implements PoolMixin
       ["<option value='#{_value}'>#{_option}</option>" \
        for _value, _option of _options]._join ''
     | otherwise => 'Error options'
+
+  /**
+   * Enable tip to input.
+   * TODO: Make a popover
+   * @param {HTMLElement} _input
+   * @param {HTMLElement} span
+   * @private
+   */
+  __enable-tip = (_input, span, _tip='') ->
+    _input.on-focus ~>
+      $ it._target .parents ".#{gz.Css \panel-default}"
+        .css \overflow \visible
+      $ _input .popover title: 'asdsa', content: _tip
+      span.css\display = \inline
+    _input.on-blur ~>
+      $ it._target .parents ".#{gz.Css \panel-default}"
+        .css \overflow \hidden
+      $ _input .popover 'hide'
+      span.css\display = \none
+
 
   /**
    * Create field by field type.
@@ -167,16 +188,35 @@ class exports.Form extends Array implements PoolMixin
    * @param {FieldOptions} _options
    * @return {HTMLElement}
    */
-  field: ({_type, _label, _name, _grid, _field-attrs, _hide}:_options) ->
+  field: ({_type = FieldType.kLineEdit, _label, _name,\
+           _grid, _field-attrs, _tip=''}:_options) ->
+    span = App.dom._new \span
+      .._class = "#{gz.Css \help-inline}"
+      ..html = "#{if _tip then '['+_tip+']' else ''}"
+      ..css = "display:none; word-wrap: break-word;"
+
     App.dom._new \div
       .._class = "#{gz.Css \form-group} #{__grid _grid}"
       ..html = "<label class='#{gz.Css \control-label}'>#_label</label>"
-      ..css = "#{if _hide then 'display:none' else ''}"
+#      TODO: Probando modelo.
+      .._append span
       .._append _el = __element-by _options
       @_push ..
 
       # basic
       @_elements[_name] = _field: .., _element: _el
+
+      if _type is FieldType.kLineEdit
+        ##################################
+        ## Equal _input to div element. ##
+        ## Call a __enable-tip          ##
+        ##################################
+        _input = .._first._next._next
+        __enable-tip _input, span, _tip
+        ##################################
+        ##  End a __enable-tip          ##
+        ##################################
+
       ## TODO(...): Apply only to radios.
       #_element-t = _field: ..
       #Object._properties _element-t, do
@@ -187,7 +227,6 @@ class exports.Form extends Array implements PoolMixin
 
       if _type is FieldType.kView
         @_elements[_name]._view = _options._options
-
       ########################################################
       # TODO: Implement all again to avoid things like this: #
       #       - each field has his own header,               #

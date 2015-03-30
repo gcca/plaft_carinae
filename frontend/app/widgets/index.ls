@@ -78,3 +78,8 @@ class exports.Typeahead extends App.View
    * Bloodhound for source.
    */
   @@Bloudhound = Bloodhound
+
+exports.panelgroup = require './panelgroup'
+exports.codename = require './codename'
+
+# vim: ts=2:sw=2:sts=2:et

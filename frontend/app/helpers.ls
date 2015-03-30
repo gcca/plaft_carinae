@@ -211,7 +211,9 @@ HTMLElement::=
   on-blur     : -> @\onblur     = it
   on-key-up   : -> @\onkeyup    = it
   on-submit   : -> @\onsubmit   = it
-
+  on-focus    : -> @\onfocus    = it
+  mouse-over  : -> @\mouseover  = it
+  mouse-out   : -> @\mouseout   = it
 
 /**
  * {@code Array} and {@code String}  shortcuts.
@@ -275,6 +277,10 @@ HTMLInputElement::=
   _placeholder:~
     (x) -> @\placeholder = x
     -> @\placeholder
+
+  _title:~
+    (x) -> @\title = x
+    -> @\title
 
 HTMLButtonElement::=
   _disabled:~

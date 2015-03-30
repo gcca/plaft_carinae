@@ -40,8 +40,8 @@ exports <<<
      *   _tip: string,
      *   _options: (Object|Array),
      *   _class: string,
-     *   _head: string
-     * }}
+     *   _head: string,
+     *   _hide: boolean
      */
     Options:
       _type       : null
@@ -52,7 +52,7 @@ exports <<<
       _options    : null
       _class      : null
       _head       : null
-      _hide       : null #change name
+      _hide       : null  # change name
 
   /** @class Pool */
   Pool: class Pool

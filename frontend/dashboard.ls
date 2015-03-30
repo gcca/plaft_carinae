@@ -8,11 +8,11 @@ App = require './app'
 
 App.MODULES =
   Welcome      = require './modules/welcome'
-  Operation    = require './modules/operation'
-#  Income       = r equire './modules/income'
+#  Operation   = r equire './modules/operation'
+  Income       = require './modules/income'
 #  Numeration   = r equire './modules/numeration'
 #  Declarations = r equire './modules/declarations'
-# Operation    = r equire './modules/dispatch'
+#  Operation    = r equire './modules/dispatch'
 
 
 
@@ -25,6 +25,11 @@ Settings = require './settings'
 window.App = App
 App.datastore =
   dispatches: new App.model.Dispatches
+
+class Person extends App.Model
+  urlRoot: 'customer'
+
+window.Person = Person
 
 # App.datastore.dispatches.fetch!
 
@@ -153,6 +158,11 @@ class Dashboard extends App.View
 
 
 (new Dashboard).render!
+
+#document.query('.glyphicon-cloud').click()
+#document.query('input').value = '2014-601'
+#document.query('select').value = 'order'
+#document.query('.glyphicon-search').parentNode.click()
 
 # 2 income
 #$ ".#{gz.Css \glyphicon-file}" .parent!.parent!.0.dispatchEvent(

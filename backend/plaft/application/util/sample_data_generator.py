@@ -10,12 +10,12 @@
 
 from __future__ import unicode_literals
 from plaft.domain.model import (User, Dispatch, CodeName, Declaration,
-                                Customer, Third, Declarant, Linked)
+                                Customer, Third, Declarant, Linked, Business)
 
 
 def create_sample_data():
     ## Customers ###########################################################
-    queirolo = Customer(
+    queirolo = Business(
         name='SANTIAGO QUEIROLO S.A.C',
         document_number='12345678989',
         document_type='ruc',  # 20100097746
@@ -26,11 +26,11 @@ def create_sample_data():
         'LIMA / LIMA / PUEBLO LIBRE (MAGDALENA VIEJA)'),
         phone='4631008, 4636503, 4638777, 4616552, 4631008, 4636503',
         shareholders=[
-            Customer.Shareholder(name='Fidel de Santa Cruz',
+            Business.Shareholder(name='Fidel de Santa Cruz',
                                  document_type='dni',
                                  document_number='45678989',
                                  ratio='4'),
-            Customer.Shareholder(name='Artemisa Kalonice',
+            Business.Shareholder(name='Artemisa Kalonice',
                                  document_type='dni',
                                  document_number='69657894',
                                  ratio='7')
@@ -150,7 +150,7 @@ def create_sample_data():
     lnk1 = Linked(name='Manolete',
                   social_object='MANOA',
                   document_type='ruc',
-                  customer_type= 'Juridica')
+                  customer_type= 'Jurídica')
     lnk1.store()
 
     lnk2 = Linked(name='Atlas',
@@ -180,7 +180,7 @@ def create_sample_data():
 
     ## Dispatches ##########################################################
     d = Declaration(customer=queirolo,
-                third=Third(
+                    third=Third(
                     identification_type='Si',
                     third_type='Juridico',
                     name='IEI Municipal'))

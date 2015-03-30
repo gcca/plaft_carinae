@@ -71,6 +71,7 @@ class Customer(dom.Model, dom.PolyModel):
 
     address = dom.String()
     phone = dom.String()
+    ubigeo = dom.Structured(CodeName)
 
     def __new__(cls, **kwargs):
         """Polymorphic creation to implement the factory pattern
@@ -83,6 +84,7 @@ class Customer(dom.Model, dom.PolyModel):
         """
         if cls is Customer and kwargs:
             if 'document_type' not in kwargs:
+                return super(Customer, cls).__new__(Business, **kwargs)
                 raise AttributeError('Customer needs the attribute'
                                      ' `document_type` to construct'
                                      ' a Business or Person.')
@@ -106,6 +108,8 @@ class Customer(dom.Model, dom.PolyModel):
         document_type = dom.String()
         ratio = dom.Text()
 
+    shareholders = dom.Structured(Shareholder, repeated=True)
+
 
 class Person(Customer):
     """."""
@@ -128,11 +132,10 @@ class Business(Customer):
     fiscal_address = dom.String()
     money_source = dom.String()
     ciiu = dom.Structured(CodeName)
-    ubigeo = dom.String()
+    ubigeo = dom.Structured(CodeName)
     is_obligated = dom.String()
     has_officer = dom.String()
     reference = dom.String()
-    shareholders = dom.Structured(Customer.Shareholder, repeated=True)
     social_object = dom.String()
     identification = dom.String()
 
@@ -154,7 +157,7 @@ class Declarant(dom.Model):
     ciiu = dom.Structured(CodeName)
     position = dom.String()
     address = dom.String()
-    ubigeo = dom.String()
+    ubigeo = dom.Structured(CodeName)
     phone = dom.String()
 
     slug = dom.Computed(lambda s: '%s %s %s' % (s.name,
@@ -186,7 +189,7 @@ class Linked(dom.Model):
     employer = dom.String()
     average_monthly_income = dom.String()
     position = dom.String()
-    ubigeo = dom.String()
+    ubigeo = dom.Structured(CodeName)
     phone = dom.String()
     represents_to = dom.String()
 

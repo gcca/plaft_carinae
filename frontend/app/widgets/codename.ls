@@ -1,27 +1,6 @@
 /** @module modules */
 
-class CodeNameField extends App.View
-
-#class
-#    (new App.widget.Typeahead do
-#      el: @el.query '[name=jurisdiction]'
-#      _source:
-#        _display: App.widget.Typeahead.Source.kDisplay
-#        _tokens: App.widget.Typeahead.Source.kTokens
-#      _limit: 9
-#      _collection: [{
-#        _name: _n, \
-#        _code: "<span style='color:#555;font-size:10pt'>#_c</span>", \
-#        _id: _c, \
-#        _display: _n, \
-#        _tokens: _n} \
-#        for _c, _n of JURISDICTION_PAIR]
-#      _template: (p) -> "
-#        <p style='float:right;font-style:italic;margin-left:1em'>
-#          #{p._code}</p>
-#        <p style='font-size:14px;text-align:justify'>#{p._name}</p>")
-#      ..render!
-  /** @override */
+class exports.CodeNameField extends App.View
 
   _tagName: \div
 
@@ -51,27 +30,28 @@ class CodeNameField extends App.View
    */
   changeValue: ~>
     _value = @_input._value
-    if _value._match /\d+/
-      i = @_code._index _value
-      if i is -1
-        @_input._value = 'Código inválido'
-        @_span.html = '000'
-        @_hidden._value = '000'
+    if _value isnt ''
+      if _value._match /\d+/
+        i = @_code._index _value
+        if i is -1
+          @_input._value = 'Código inválido'
+          @_span.html = '000'
+          @_hidden._value = '000'
+        else
+          @_input._value = @_name[i]
+          @_span.html = _value
+          @_hidden._value = _value
       else
-        @_input._value = @_name[i]
-        @_span.html = _value
-        @_hidden._value = _value
-    else
-      _code = @_code[@_name._index _value]
-      @_input._value = _value
-      @_span.html = _code
-      @_hidden._value = _code
+        _code = @_code[@_name._index _value]
+        @_input._value = _value
+        @_span.html = _code
+        @_hidden._value = _code
 
   /**
    * @param {Object.<Array.<string>, Array.<string>, string>}
    * @override
    */
-  initialize: ({@_code, @_name, @_field}) !->
+  initialize: ({@_code, @_name, @_field, @_max-length = 10}) !->
 
   /** @private */ _field  : null
   /** @private */ _code   : null
@@ -79,9 +59,11 @@ class CodeNameField extends App.View
   /** @private */ _input  : null
   /** @private */ _span   : null
   /** @private */ _hidden : null
+  /** @private */ _max-length : null
 
   /** @override */
   render: ->
+    @el.html = ''
     @_input = App.dom._new \input
       .._type = \text
       .._name = "#{@_field}[name]"
@@ -104,13 +86,12 @@ class CodeNameField extends App.View
     @el._append @_hidden
     @el._append @_input
     @el._append @_span
-
     (new App.widget.Typeahead do
       el          : @_input
       _source     :
         _display : App.widget.Typeahead.Source.kDisplay
         _tokens  : App.widget.Typeahead.Source.kTokens
-      _limit      : 10
+      _limit      : @_max-length
       _collection : [{
         _name    : n, \
         _code    : c, \
@@ -126,10 +107,54 @@ class CodeNameField extends App.View
     @_hidden.onChange @changeCode
 
     super!
+/**
+ * NameInput
+ * ----------
+ * TODO
+ *
+ * @class NameInput
+ * @extends View
+ * @export
+ */
+class exports.InputName extends App.View
 
+  /** @override */
+  _tagName: \div
 
-/** @export */
-module.exports = CodeNameField
+  initialize: ({@_name, @_field}) !->
 
+  changeValue: ~>
+    _value = @_input._value
+    @_input._value = _value
+
+  /** @override */
+  render: ->
+    @el.html = ''
+    @_input = App.dom._new \input
+      .._type = \text
+      .._name = "#{@_field}"
+      .._class = gz.Css \form-control
+
+    @el._append @_input
+    (new App.widget.Typeahead do
+      el: @_input
+      _source:
+        _display: App.widget.Typeahead.Source.kDisplay
+        _tokens: App.widget.Typeahead.Source.kTokens
+      _limit: 3
+      _collection: [{
+        _name: n, \
+        _display: n, \
+        _tokens: n} \
+        for n in @_name]
+      _template: (p) -> "
+        <p style='font-size:14px;text-align:justify'>#{p._name}</p>")
+      ..onCursorChanged @changeName
+      ..render!
+    super!
+
+  /** @private */ _field  : null
+  /** @private */ _name   : null
+  /** @private */ _input  : null
 
 # vim: ts=2:sw=2:sts=2:et

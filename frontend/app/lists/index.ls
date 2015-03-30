@@ -69,7 +69,15 @@ exports <<<
       'OTRO'
       'REGISTRO ÚNICO DE CONTRIBUYENTE'
 
-    _code: (gen-seq 7) ++ ['01']
+    _code: #(gen-seq 7) ++ ['01']
+      'ce'
+      'ci'
+      'cc'
+      'cdi'
+      'dni'
+      'pa'
+      'otro'
+      'ruc'
 
 
   jurisdiction: require './jurisdiction'
