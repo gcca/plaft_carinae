@@ -30,7 +30,21 @@ class Shareholder extends App.View
    * (Event) On remove shareholder from list.
    * @private
    */
-  buttonOnRemove: !~> @_free!
+  buttonOnRemove: ~>
+    @$el.remove! #@_free!
+    @_array-share.trigger (gz.Css \drop-share), @el._id
+
+  /**
+   * Get shareholder list.
+   * @public
+   */
+  _array-shareholder: (_shareholders)->
+    @_array-share = _shareholders
+
+  /** @override */
+  initialize: ->
+    @el._id= App.utils.uid!
+    super!
 
   /** @override */
   render: ->
@@ -43,11 +57,14 @@ class Shareholder extends App.View
                    \ #{gz.Css \toggle}'
             style='margin-top:8px;cursor:pointer;font-size:18px'></span>
       </div>"
-    $buttonRemove.0.onClick @buttonOnRemove
+    $buttonRemove.0.on-click @buttonOnRemove
     @$el._append $buttonRemove
 
     @el._fromJSON @model
     super!
+
+  /** @private */ _array-share : null
+  /** @private */ _shareholders: null
 
   /**
    * Shareholder form.
@@ -57,14 +74,14 @@ class Shareholder extends App.View
   template: ->
     "
     <div class='#{gz.Css \form-group} #{gz.Css \col-shareholder-1}'>
-      <select class='#{gz.Css \form-control}' name='document[type]'>
+      <select class='#{gz.Css \form-control}' name='document_type'>
         #_OPTIONS
       </select>
     </div>
 
     <div class='#{gz.Css \form-group} #{gz.Css \col-shareholder-2}'>
       <input type='text' class='#{gz.Css \form-control}'
-          name='document[number]'>
+          name='document_number'>
     </div>
 
     <div class='#{gz.Css \form-group} #{gz.Css \col-shareholder-3}'>
@@ -95,6 +112,24 @@ class Shareholders extends App.View
   _toJSON: -> [.._toJSON! for @shareholders]
 
   /**
+   * Send shareholder list to each shareholder.
+   * @private
+   */
+  _array-share: ->
+    for @shareholders then
+      .._array-shareholder @shareholders
+  /**
+   * Remove shareholder from shareholder list.
+   * @private
+   */
+  _on-share: (id)->
+    @shareholders = _.filter(@shareholders, (item) -> item.el._id isnt id)
+    _.extend(@shareholders, Backbone.Events);
+    slf = @
+    @shareholders.on (gz.Css \drop-share), (id) -> slf._on-share id
+    @_array-share!
+
+  /**
    * (Event) On add shareholder to list.
    * @private
    */
@@ -109,6 +144,7 @@ class Shareholders extends App.View
     shareholder = Shareholder._new model: model
     @shareholders._push shareholder
     @xContainer._append shareholder.render!.el
+    @_array-share!
 
   load-from: (_shareholders) ->
     for model in _shareholders
@@ -125,6 +161,7 @@ class Shareholders extends App.View
      * @private
      */
     @shareholders = new Array
+    _.extend(@shareholders, Backbone.Events);
 
     /**
      * Shareholder JSON list.
@@ -132,6 +169,8 @@ class Shareholders extends App.View
      * @private
      */
 #    @collection = options.shareholders || new Array
+    slf = @
+    @shareholders.on (gz.Css \drop-share), (id) -> slf._on-share id
 
     # Style
     App.dom._write ~> @el.css._marginBottom = '1em'

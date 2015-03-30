@@ -1,5 +1,9 @@
 /** @module modules */
 
+widget = App.widget.codename
+  InputName = ..InputName
+  CodeNameField = ..CodeNameField
+
 Shareholders = require './shareholders'
 
 FieldType = App.builtins.Types.Field
@@ -18,6 +22,7 @@ class Business extends App.View
   /** @override */
   _tagName: \div
 
+  /** @private */
   on-is_obligated-change: ~>
     @_form._elements'has_officer'._element
       _officer-yes = ..query '[value=Sí]'
@@ -30,14 +35,14 @@ class Business extends App.View
       _officer-yes._disabled = off
 
   /** @override */
+  initialize: -> super!
+
+  /** @override */
   render: ->
     @_form = App.builder.Form._new @el, _FIELD_BUSINESS
-              ..render!
-              .._free!
-
-    @_form._elements.'ruc'._element
-      ..attr('maxlength',11)
-
+       @shareholder = .._elements.'shareholders'
+       ..render!
+       .._free!
     @_form._elements.'is_obligated'._element
       ..on-change @on-is_obligated-change
 
@@ -49,27 +54,42 @@ class Business extends App.View
 
   /** FIELD */
   _FIELD_BUSINESS =
-
-    * _name: 'document[type]'
+    * _name: 'document_type'
       _label: 'b) Tipo documento'
       _type: FieldType.kComboBox
       _options: DOCUMENT_TYPE_PAIR
 
-    * _name: 'social'
-      _label: 'a) Razon Social'
+    * _name: 'name'
+      _label: 'a) Denominación o razón social'
 
-    * _name: 'ruc'
-      _label: 'b) RUC'
+    * _name: 'document_number'
+      _label: 'b) N&ordm; RUC'
+
+    * _name: 'legal_identification'
+      _label: 'Representado Legal'
+      _type: FieldType.kComboBox
+      _options:
+        'RL'
+        'Apoderado'
+        'Mand..' #TODO
+        'El mismo'
+
+    * _name: 'condition'
+      _label: 'Condición'
+      _type: FieldType.kComboBox
+      _options:
+        'Residente'
+        'No residente'
 
     * _name: 'social_object'
       _label: 'c) Objeto Social'
 
     * _name: 'activity'
-      _label: 'c1) Actividad Economica'
+      _label: 'Actividad economica principal'
 
     * _name: 'shareholders'
       _label: 'd) Identificacion accionistas'
-      _grid: _GRID._flush-left
+      _grid: _GRID._full
       _type: FieldType.kView
       _options: new Shareholders
 
@@ -82,16 +102,35 @@ class Business extends App.View
     * _name: 'fiscal_address'
       _label: 'g) Domicilio Fiscal'
 
+    * _name: 'phone'
+      _label: 'h) Telefono oficina'
+
+    * _name: 'money_source'
+      _label: 'i) El origen de los fondos'
+      _type: FieldType.kComboBox
+      _options: App.lists.money-source._display
+
+    * _name: 'ciiu'
+      _label: 'Código CIIU de ocupacion'
+      _type: FieldType.kView
+      _options : new CodeNameField do
+                   _code : App.lists.ciiu._code
+                   _name : App.lists.ciiu._display
+                   _field : 'ciiu'
+
     * _name: 'ubigeo'
       _label: 'Código Ubigeo'
-      _grid: _GRID._complete
+      _grid: _GRID._full
+      _type: FieldType.kView
+      _options : new CodeNameField do
+                   _code: App.lists.ubigeo._pool._code
+                   _name: App.lists.ubigeo._pool._display
+                   _max-length: 15
+                   _field: 'ubigeo'
 
-    * _name: 'phone'
-      _label: 'h) Telefono'
-      _grid: _GRID._inline
 
     * _name: 'is_obligated'
-      _label: 'n) Si es Sujeto obligado'
+      _label: 'j) Si es Sujeto obligado'
       _type: FieldType.kRadioGroup
       _options: <[Si No]>
 
@@ -100,15 +139,13 @@ class Business extends App.View
       _type: FieldType.kRadioGroup
       _options: <[Sí No]>
 
-    * _name: 'money_source'
-      _label: 'm) El origen de los fondos'
-      _type: FieldType.kComboBox
-      _options: App.lists.money_source._display
-
     * _name: 'reference'
       _label: 'Ref. Cliente'
+      _grid: _GRID._inline
 
-/** @private */ _form: null
+  /** @private */ _form: null
+  /** @private */ shareholder: null
+
 
 /** @export */
 module.exports = Business

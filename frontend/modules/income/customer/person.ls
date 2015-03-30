@@ -1,5 +1,9 @@
 /** @module modules */
 
+widget = App.widget.codename
+  InputName = ..InputName
+  CodeNameField = ..CodeNameField
+
 FieldType = App.builtins.Types.Field
 DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
 
@@ -39,9 +43,7 @@ class Person extends App.View
 
   /** @override */
   render: ~>
-
     @_form = App.builder.Form._new @el, _FIELD_PERSON
-#      .._elements.'ubigeo'._field._class = "#{gz.Css \form-group} #{gz.Css \col-md-12}"
       ..render!
       .._free!
 
@@ -50,12 +52,6 @@ class Person extends App.View
 
     @_form._elements.'is_obligated'._element
       ..on-change @on-is_obligated-change
-
-    @_form._elements.'ruc'._element
-      ..attr('maxlength',11)
-
-    @_form._elements.'birthday'._element
-      ..attr('maxlength',10)
 
     super!
 
@@ -69,19 +65,38 @@ class Person extends App.View
     * _name: 'name'
       _label: 'a) Nombres'
 
-    * _name: 'father_name'
+    * _name: 'father-name'
       _label: 'Apellido Paterno'
 
-    * _name: 'mother_name'
+    * _name: 'mother-name'
       _label: 'Apellido Materno'
 
-    * _name: 'document[type]'
+    * _name: 'document_type'
       _label: 'b) Tipo documento'
       _type: FieldType.kComboBox
       _options: DOCUMENT_TYPE_PAIR
 
-    * _name: 'document[number]'
+    * _name: 'document_number'
       _label: 'Número documento identidad'
+
+    * _name: 'issuance_country'
+      _label: 'Pais documento emitido extranjero'
+
+    * _name: 'legal_identification'
+      _label: 'Representado Legal'
+      _type: FieldType.kComboBox
+      _options:
+        'RL'
+        'Apoderado'
+        'Mand..'
+        'El mismo'
+
+    * _name: 'condition'
+      _label: 'Condición'
+      _type: FieldType.kComboBox
+      _options:
+        'Residente'
+        'No residente'
 
     * _name: 'ruc'
       _label: 'c) RUC, de ser el caso'
@@ -91,17 +106,12 @@ class Person extends App.View
 
     * _name: 'birthday'
       _label: 'Fecha de nacimiento'
-      _placeholder: 'dd/mm/YYYY'
 
     * _name: 'nationality'
       _label: 'e) Nacionalidad'
 
     * _name: 'address'
       _label: 'f) Domicilio declarado (lugar de residencia)'
-
-    * _name: 'ubigeo'
-      _label: 'Código Ubigeo'
-      _grid: _GRID._complete
 
     * _name: 'fiscal_address'
       _label: 'g) Domicilio fiscal, de ser el caso'
@@ -118,8 +128,10 @@ class Person extends App.View
 
     * _name: 'activity'
       _label: 'j) Profesión u ocupación'
-      _type: FieldType.kComboBox
-      _options: App.lists.activity._display
+      _type: FieldType.kView
+      _options : new InputName do
+                   _name : App.lists.activity._display
+                   _field : 'activity'
 
     * _name: 'civil_state'
       _label: 'k) Estado civil'
@@ -138,6 +150,29 @@ class Person extends App.View
     * _name: 'employment'
       _label: 'l) Cargo o función pública'
 
+    * _name: 'money_source'
+      _label: 'm) El origen de los fondos'
+      _type: FieldType.kComboBox
+      _options: App.lists.money-source._display
+
+    * _name: 'ciiu'
+      _label: 'Código CIIU de ocupacion'
+      _type: FieldType.kView
+      _options : new CodeNameField do
+                   _code : App.lists.ciiu._code
+                   _name : App.lists.ciiu._display
+                   _field : 'ciiu'
+
+    * _name: 'ubigeo'
+      _label: 'Código Ubigeo'
+      _grid: _GRID._full
+      _type: FieldType.kView
+      _options : new CodeNameField do
+                   _code: App.lists.ubigeo._pool._code
+                   _name: App.lists.ubigeo._pool._display
+                   _max-length: 15
+                   _field: 'ubigeo'
+
     * _name: 'is_obligated'
       _label: 'n) Si es Sujeto obligado'
       _type: FieldType.kRadioGroup
@@ -148,16 +183,11 @@ class Person extends App.View
       _type: FieldType.kRadioGroup
       _options: <[Sí No]>
 
-    * _name: 'money_source'
-      _label: 'm) El origen de los fondos'
-      _type: FieldType.kComboBox
-      _options: App.lists.money_source._display
-
     * _name: 'reference'
       _label: 'Ref. Cliente'
+      _grid: _GRID._inline
 
-/** @private */ _form: null
-
+  /** @private */ _form: null
 
 /** @export */
 module.exports = Person

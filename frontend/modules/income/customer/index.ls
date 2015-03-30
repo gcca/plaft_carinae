@@ -19,12 +19,8 @@ class Third extends App.View
   /** @override */
   _tagName: \div
 
-  /** @override */
-  _className: "#{gz.Css \form-group}"
-
   /*
    * @param {Array.<FieldOptions>} _fields
-   * TODO
    * @private
    */
   render-fields: (_fields) ->
@@ -36,7 +32,6 @@ class Third extends App.View
 
   /*
    *
-   * TODO
    * @private
    */
   load-person: ~>
@@ -44,7 +39,6 @@ class Third extends App.View
 
   /*
    *
-   * TODO
    * @private
    */
   load-business: ~>
@@ -52,14 +46,15 @@ class Third extends App.View
 
   /*
    *
-   * TODO
    * @public
    */
   no-change: -> @_free!
 
   /** @override */
+  initialize: ({@third}) -> super!
+
+  /** @override */
   render: ->
-    # Highlight dynamic field
     @el.html = "<div class='#{gz.Css \form-group}
                           \ #{gz.Css \col-md-6}'>
                   <label>Tercero</label>
@@ -70,12 +65,14 @@ class Third extends App.View
     radio-person = App.dom._new \input
       .._name = \third_type
       .._type = \radio
-      ..on-click @load-person
+      ..value = 'Natural'
+      ..on-change @load-person
 
     radio-business = App.dom._new \input
       .._name = \third_type
       .._type = \radio
-      ..on-click @load-business
+      ..value = 'Juridico'
+      ..on-change @load-business
 
     @el._first._first._next
       .._append radio-person
@@ -85,17 +82,25 @@ class Third extends App.View
       .._append radio-business
       .._append App.dom.create-text-node ' Jurídica'
 
+    if @third?
+      if @third.'third_type' is \Juridico
+        radio-business._checked = on
+        @load-business!
+      else
+        radio-person._checked = on
+        @load-person!
+
     super!
 
 
   /** Field list for person form. (Array.<FieldOptions>) */
   _FIELDS_PERSON =
-    * _name: 'document[type]'
+    * _name: 'document_type'
       _label: 'Tipo documento'
       _type: FieldType.kComboBox
       _options: DOCUMENT_TYPE_PAIR
 
-    * _name: 'document[number]'
+    * _name: 'document_number'
       _label: 'Número documento identidad'
 
     * _name: 'father_name'
@@ -107,7 +112,7 @@ class Third extends App.View
     * _name: 'name'
       _label: 'Nombres'
 
-    * _name: 'ok'
+    * _name: 'third_ok'
       _label: 'Persona a favor operacion'
       _type: FieldType.kComboBox
       _options:
@@ -121,7 +126,7 @@ class Third extends App.View
     * _name: 'name'
       _label: 'Razón social'
 
-    * _name: 'ok'
+    * _name: 'third_ok'
       _label: 'Persona a favor operacion'
       _type: FieldType.kComboBox
       _options:
@@ -132,8 +137,7 @@ class Third extends App.View
 
 /**
  * Identification
- * ----------
- * TODO
+ * -------------
  *
  * @class Identification
  * @extends View
@@ -141,28 +145,27 @@ class Third extends App.View
 class exports.Identification extends App.View
 
   /** @override */
-  _tagName: \div
-
-  /** @override */
-  _className: "#{gz.Css \form-group}"
+  _tagName: \form
 
   /*
    *
-   * TODO
    * @private
    */
   load-yes: ~>
-    #@third.change-style "display:inline"
-    @third = Third._new!
+    @third = Third._new third: @th
     @el._append @third.render!el
+
 
   /*
    *
-   * TODO
    * @private
    */
   load-no: ~>
-    @third.no-change!
+    if @third?
+      @third.no-change!
+
+  /** @override */
+  initialize: ({@th}) ->  super!
 
   /** @override */
   render: ->
@@ -171,23 +174,35 @@ class exports.Identification extends App.View
                   <label>Identificacion del Tercero</label>
                   <div></div>
                 </div>"
-    radio-yes = App.dom._new \input
+    @radio-yes = App.dom._new \input
       .._name = \identification_type
       .._type = \radio
-      ..on-click @load-yes
+      ..value = 'Si'
+      ..on-change @load-yes
 
-    radio-no = App.dom._new \input
+    @radio-no = App.dom._new \input
       .._name = \identification_type
       .._type = \radio
-      ..on-click @load-no
+      ..value = 'No'
+      ..on-change @load-no
 
     @el._first._first._next
-      .._append radio-yes
+      .._append @radio-yes
       .._append App.dom.create-text-node ' Si'
       .._append App.dom._new \span
         ..html = '&nbsp;'*8
-      .._append radio-no
+      .._append @radio-no
       .._append App.dom.create-text-node ' No'
+
+    if @th?
+      if @th.'identification_type'?
+        if @th.'identification_type' is \Si
+          @radio-yes._checked = on
+          @load-yes!
+        else
+          @radio-no._checked = on
+
+    @el._fromJSON @th
 
     super!
 
@@ -196,7 +211,6 @@ class exports.Identification extends App.View
 /**
  * Customer
  * ----------
- * TODO
  *
  * @class Customer
  * @extends View
@@ -206,52 +220,81 @@ class exports.Customer extends App.View
   /** @override */
   _tagName: \form
 
+  /** @private */
   on-customer-change: ~>
-    _type = @el.query('[name=customer_type]').selectedIndex
+    @_type = @el.query('[name=customer_type]').selectedIndex
     @el._last.html = ""
 
-    if _type is @@Type.kPerson
-      @el._append (new Person).render!.el
-
-      @el._last._append ((new Identification).render!.el)
-
-    if _type is @@Type.kBusiness
-      @el._append (new Business).render!.el
-      @el.query('[name=customer_type]').selectedIndex = _type
-      @el._last._append ((new Identification).render!.el)
-
-    @el.query('[name=customer_type]').selectedIndex = _type
-    @el.query('[name=customer_type]').on-change @on-customer-change
-
-  set-customer-type: ->
     if @_type is @@Type.kPerson
       @_customer = new Person
+      @el._append (@_customer).render!.el
+      @el._last._append @third.render!.el
 
     if @_type is @@Type.kBusiness
-      @_customer = new Business
+      @_customer = Business._new!
+      @el._append (@_customer).render!.el
+      @_shareholder = @_customer.shareholder
+      @el.query('[name=customer_type]').selectedIndex = @_type
+      @el._last._append @third.render!.el
+
+    @el.query('[name=customer_type]').selectedIndex = @_type
+    @el.query('[name=customer_type]').on-change @on-customer-change
+
+  /** @private */
+  set-customer-type: ->
+    if _type?
+      if @_type is @@Type.kPerson
+        @_customer = new Person
+
+      if @_type is @@Type.kBusiness
+        @_customer = Business._new!
+
+    else
+      if @customer.'document_number'._length is 11
+        @_type = @@Type.kBusiness
+        @_customer = Business._new!
+        @el.query('[name=customer_type]').selectedIndex = @_type
+      else
+        @_type = @@Type.kPerson
+        @_customer = new Person
+        @el.query('[name=customer_type]').selectedIndex = @_type
+
+  /**
+   *
+   * @private
+   */
+  render-dto: !->
+    @_shareholder = @_customer.shareholder
+    if @_shareholder?
+      _shareholder = @customer.'shareholders'
+      console.log @customer
+      console.log _shareholder
+      @_shareholder._view.load-from _shareholder if _shareholder?
+    @_third = new Identification th: @customer.'third'
+    @el._last._append @_third.render!.el
+    @el.query('[name=customer_type]').on-change @on-customer-change
+    @el._fromJSON @customer
 
   /** @override */
-  initialize: ({@_type}) -> super!
+  initialize: ({@customer}) ->  super!
 
   /** @override */
   render: ->
-
     App.builder.Form._new @el, _FIELD_HEAD
       ..render!
       .._free!
 
     @set-customer-type!
-
     @el._append @_customer.render!.el
-    new Identification
-      @el._last._append ..render!.el
-
-    @el.query('[name=customer_type]').on-change @on-customer-change
+    @render-dto!
 
     super!
 
   /** @private */ _type: null
+  /** @private */ customer: null
   /** @private */ _customer: null
+  /** @private */ _shareholder: null
+  /** @private */ _third: null
 
   @@Type =
     kPerson: 0
