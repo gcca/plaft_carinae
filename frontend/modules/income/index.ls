@@ -57,10 +57,10 @@ class Operation extends Module
    */
   on-search: (query, filter) ~>
     if not query._length
-      @notifier.notify @notifier.kDanger, 'Te olvidaste de escribir algo.'
+      @_desktop.notifier.notify @_desktop.notifier.kDanger, 'Te olvidaste de escribir algo.'
       return
     if not filter?
-      @notifier.notify @notifier.kDanger, 'Debes seleccionar el tipo de
+      @_desktop.notifier.notify @_desktop.notifier.kDanger, 'Debes seleccionar el tipo de
                                          \ búqueda que quieres realizar.'
       return
     # FIND BY ORDER
@@ -80,7 +80,7 @@ class Operation extends Module
           @customer-heading._change-type \pdf, @dispatch-model\id
 
       not-found = (e) ~>
-        @notifier.notify @notifier.kDanger, e.'responseJSON'.\e
+        @_desktop.notifier.notify @_desktop.notifier.kDanger, e.'responseJSON'.\e
 
     # FIND BY CUSTOMER
     else if filter is @@_SEARCHENUM.kByCustomer
@@ -96,10 +96,10 @@ class Operation extends Module
 
       not-found = (e) ~>
         if /^\d+$/ is query
-          @notifier.notify @notifier.kDanger, 'No existe persona : ' + query
+          @_desktop.notifier.notify 'No existe persona : ' + query, @_desktop.notifier._TYPE.kDanger
           @load-operation query
         else
-         @notifier.notify @notifier.kDanger, e.'responseJSON'.\e
+         @_desktop.notifier.notify e.'responseJSON'.\e, @_desktop.notifier._TYPE.kDanger
 
     @render-ajax _dto, type-filter, success, not-found
 
@@ -159,10 +159,11 @@ class Operation extends Module
       _success: (dto) ~>
         console.log dto
         @customer-heading._change-type \pdf, dto.id
-        @notifier.notify @notifier.kSuccess, 'Guardado'
+        @_desktop.notifier.notify 'Guardado' @_desktop.notifier.kSuccess
       _error: ~>
-        @notifier.notify @notifier.kDanger, \
-                      'Error: 869171b8-3f8e-11e4-a98f-88252caeb7e8'
+        @_desktop.notifier.notify(
+          'Error: 869171b8-3f8e-11e4-a98f-88252caeb7e8',
+          @_desktop.notifier.kDanger)
 
   /**
    * Sync typeahead completion with panel overflow.

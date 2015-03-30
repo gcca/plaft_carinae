@@ -69,9 +69,7 @@ App.utils =
  */
 NewMixin =
   _new: -> @Pool! if not @pool?;@_new = @_New;@_New ...
-  _New: ->
-    @pool.allocate.apply @pool, &
-      ..el.html = ''
+  _New: -> @pool.allocate.apply @pool, &
   Pool: !-> @pool = new builtins.ObjectPool @
   pool: null
 
@@ -117,7 +115,7 @@ class App.View extends Backbone\View implements FreeMixin
    * Initialize view variables, atributtes, methods, etc.
    * @protected
    */
-  initialize: ->
+  initialize: -> @el.html = ''
 
   /**
    * Method reflection.
@@ -136,7 +134,6 @@ class App.View extends Backbone\View implements FreeMixin
   @@_New = ->
     #TODO: Implement correct inheritance from NewMixin to View.
     @pool.allocate.apply @pool, &
-      ..el.html = ''
       if &.0? then _._extend .., (_._pick &.0, @@base-args)
 
   /**

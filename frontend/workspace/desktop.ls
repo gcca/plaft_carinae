@@ -91,7 +91,6 @@ class Desktop extends App.View
   _new: (Module) ->
     @module = Module._new!
       .._desktop = @
-      ..notifier = @notifier
 
   #------------------
   # Next page methods
