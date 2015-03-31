@@ -46,9 +46,8 @@ class Module extends App.View
     @clean!
 
   /** @protected */ _desktop: null
-  /** @protected */ notifier: null
 
-  /** @protected */ @@_list-filter = null
+  /** @protected */ @@_search-menu = null
   /** @protected */ @@_caption = ''
   /** @protected */ @@_icon    = ''
 

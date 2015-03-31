@@ -1,51 +1,5 @@
 /** @module workspace */
 
-/**
- * Items
- * ------
- * Utilizado para el llenado de un DropDown menu.
- *
- * @example
- * >>> item = new Items list-filter: Lista de Valores.
- * >>> external-container._append item.render!.el
- *
- * @class Items
- * @extends View
- */
-
-class Items extends App.View
-  /** @override */
-  _tagName: \ul
-
-  /** @override */
-  _className: "#{gz.Css \dropdown-menu}"
-
-  /**
-   * Add new list item.
-   * @param {options-module} module
-   * @return {HTMLElement} <li> element for search.
-   * @private
-   */
-  _add: (filter) ->
-    a = App.dom._new \a
-      ..html = "#{filter._name}"
-
-    li = App.dom._new \li
-      ..on-click ~> @trigger (gz.Css \icon), filter._label, filter._value
-      .._append a
-
-  /** @override */
-  initialize: ({@list-filter}) -> super!
-
-  /** @override */
-  render: ->
-    for filter in @list-filter
-      @el._append @_add filter
-    super!
-
-  /** @private */ list-filter: null
-
-
 
 /**
  * Search
@@ -55,7 +9,19 @@ class Items extends App.View
  * @example
  * >>> search = new Search
  * >>> external-container._append search.render!.el
- * >>> search.el._class._add ".you-custom-style"
+ * >>> search.el._class._add ".your-custom-style"
+ * >>> menu-items =
+ * ...   * _caption: 'title 1'
+ * ...     _label: 'menu-item 1'
+ * ...     _value: 1
+ * ...   * _caption: 'title 2'
+ * ...     _label: 'menu-item 2'
+ * ...     _value: 2
+ * ...   ...
+ * ...   * _caption: 'title n'
+ * ...     _label: 'menu-item n'
+ * ...     _value: n
+ * >>> search._menu menu-items
  *
  * @class Search
  * @extends View
@@ -76,73 +42,121 @@ class Search extends App.View
      */
     on-submit: (evt) ->
       evt.prevent!
-      @trigger (gz.Css \search), @el._first._first._value, \
-                                 @_filter
+      @trigger (gz.Css \search), @_input-query._value, \
+                                 @_menu-current-value
 
   /**
-   * Asigna lista procedente del modulo.
-   * @param {Module} module
-   * @example
+   * (Event) On change dropdown value.
+   * @param {Event} evt
    * @private
    */
-  load-module: (module) ->
-    if module._list-filter?
-      @render-filter module._list-filter
-    else
-      @_dropdown.html = ""
+  _on-change-value: (evt) ~>
+    @menu-change-value evt._target._item
 
   /**
-   * Change name from DropDown.
-   * @param {String} _label
-   * @param {Integer} _value
-   * @private
+   * Change current menu value.
+   * @param {Object} _item {_value, _label, _name}
    */
-  _change-value: (_label, _value) ~>
-    content = @el.query '.content'
-    content.html = _label
-    @_filter = _value
+  menu-change-value: (_item) ->
+    @_menu-caption.html = _item._caption
+    @_menu-current-value = _item._value
 
   /**
-   * Render for filter.
-   * @param {Object} _module-list
+   * Enable (disable) menu.
+   * Menu is disabled when {@code _items} is {@code null}
+   * or {@code undefined}.
+   * @param {?Array<Object>} _items [{_value, _label, _name}]
    * @private
    */
-  render-filter: (_module-list) ->
-    $ @_dropdown ._append "<button class='#{gz.Css \btn}
-                                        \ #{gz.Css \btn-default}
-                                        \ #{gz.Css \dropdown-toggle}'
-                                   type='button'
-                                   data-toggle='dropdown'
-                                   aria-expanded='false'>
-                             <span class='#{gz.Css \content}'>
-                              <i class='#{gz.Css \glyphicon}
-                                      \ #{gz.Css \glyphicon}-\
-                                        #{gz.Css \share}'></i>
-                             </span>&nbsp;&nbsp;
-                             <span class='#{gz.Css \caret}'></span>
-                           </button>"
-    new Items list-filter: _module-list
-      ..on (gz.Css \icon), @_change-value
-      @_dropdown._append ..render!.el
+  _menu: (_items) ->
+    if _items? and _items._length  # show menu
+      for _item in _items
+        _a = App.dom._new \a
+          ..html = _item._label
 
+        _li = App.dom._new \li
+          .._item = _item
+          ..on-click @_on-change-value
+          .._append _a
+
+        @_menu-dropdown._append _li
+
+      @_group._append @_menu-btn
+      @_group._append @_menu-dropdown
+
+      # TODO: initial value from user data, divisions, and sub-menus.
+      @menu-change-value _items.0  # value selected menu item
+    else  # hide menu
+      if @_menu-btn._parent?
+        @_group._remove @_menu-btn
+        @_group._remove @_menu-dropdown
+        @_menu-dropdown.html = ''
+
+  /**
+   * Get focus on input query.
+   * @param {?string} _message
+   */
+  _focus: (_message) ->
+    @_input-query._focus!
+
+    if _message?
+      $ @_input-query ._popover do
+        \title   : 'Buscador'
+        \content : _message
+        \placement : \bottom
+      $ @_input-query ._popover \show
+      setTimeout (~> $ @_input-query ._popover \destroy), 2500
 
   /** @override */
   render: ->
-    @el.html = "
-      <div class='#{gz.Css \form-group}'>
-        <input type='text'
-            class='#{gz.Css \form-control}' placeholder='Buscar'>
-      </div>
-      <button type='submit'
-          class='#{gz.Css \btn} #{gz.Css \btn-default}'>
-        &nbsp;
-        <i class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-search}'></i>
-        &nbsp;
-      </button>
-      &nbsp;
-      <div class='#{gz.Css \form-group} #{gz.Css \dropdown}'></div>"
-    @_dropdown = @el.query '.dropdown'
+    @el.html = "<div class='#{gz.Css \form-group}'>
+                  <div class='#{gz.Css \input-group}'>
+                    <input type='text'
+                           class='#{gz.Css \form-control}'
+                           placeholder='Buscar'>
+                    <span class='#{gz.Css \input-group-btn}
+                               \ #{gz.Css \pull-left}'>
+                      <button type='submit'
+                              class='#{gz.Css \btn} #{gz.Css \btn-default}'>
+                        &nbsp;
+                        <i class='#{gz.Css \glyphicon}
+                                \ #{gz.Css \glyphicon-search}'>
+                        </i>
+                        &nbsp;
+                      </button>
+                    </span>
+                  </div>
+                </div>"
+    @_input-query = @el._first._first._first
+    @_group = @el._first._first._last
+
+    # dropdown elements
+    @_menu-btn = App.dom._new \button
+      .._type = \button
+      .._class = "#{gz.Css \btn}
+                \ #{gz.Css \btn-default}
+                \ #{gz.Css \dropdown-toggle}"
+      .._data.'toggle' = 'dropdown'
+      ..html = "<span></span>
+                &nbsp;&nbsp;
+                <span class='#{gz.Css \caret}'></span>"
+      @_menu-caption = .._first
+
+    @_menu-dropdown = App.dom._new \ul
+      .._class = "#{gz.Css \dropdown-menu} #{gz.Css \dropdown-menu-right}"
+      ..css._left = '0'
+      ..attr \role \menu
+
+    @_menu-current-value = null  # clean menu current value
     super!
+
+
+  /** @private */ _input-query: null  # input group
+  /** @private */ _group: null  # input group
+  /** @private */ _menu-btn: null  # button to dropdown
+  /** @private */ _menu-dropdown: null  # dropdown list
+  /** @private */ _menu-current-value: null # current selected option
+  /** @private */ _menu-caption: null  # caption in button
 
 
 /** @export */

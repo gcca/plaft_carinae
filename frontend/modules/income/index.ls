@@ -56,13 +56,17 @@ class Operation extends Module
    * @override
    * @protected
    */
-  on-search: (query, filter) ~>
+  on-search: (query, filter) ->
     if not query._length
-      @_desktop.notifier.notify @_desktop.notifier.kDanger, 'Te olvidaste de escribir algo.'
+      @_desktop.notifier.notify do
+        _message: 'Te olvidaste de escribir algo.'
+        _type: @_desktop.notifier.kDanger
       return
     if not filter?
-      @_desktop.notifier.notify @_desktop.notifier.kDanger, 'Debes seleccionar el tipo de
-                                         \ búqueda que quieres realizar.'
+      @_desktop.notifier.notify do
+        _message: 'Debes seleccionar el tipo de
+                   \ búqueda que quieres realizar.'
+        _type: @_desktop.notifier.kDanger
       return
     # FIND BY ORDER
     if filter is @@_SEARCHENUM.kByOrder
@@ -97,10 +101,10 @@ class Operation extends Module
 
       not-found = (e) ~>
         if /^\d+$/ is query
-          @_desktop.notifier.notify 'No existe persona : ' + query, @_desktop.notifier._TYPE.kDanger
+          @_desktop.notifier.notify 'No existe persona : ' + query, @_desktop.notifier.kDanger
           @load-operation query
         else
-         @_desktop.notifier.notify e.'responseJSON'.\e, @_desktop.notifier._TYPE.kDanger
+         @_desktop.notifier.notify e.'responseJSON'.\e, @_desktop.notifier.kDanger
 
     @render-ajax _dto, type-filter, success, not-found
 
@@ -130,7 +134,7 @@ class Operation extends Module
    * @override
    * @protected
    */
-  on-save: ~>
+  on-save: ->
     # JSON to CustomerModel
     form-cto = @customer.el._toJSON!
     if @customer._shareholder?
@@ -225,6 +229,7 @@ class Operation extends Module
         <i class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-hand-up}'
             style='font-size:20pt'></i>
       </span>"
+    @_desktop._search._focus 'DNI o número de orden'
     super!
 
   /**
@@ -244,14 +249,15 @@ class Operation extends Module
   /** @protected*/ @@_caption = 'OPERACION'
   /** @protected*/ @@_icon    = gz.Css \cloud
   /** @protected*/
-  @@_list-filter =
-    * _label: 'C'
+  @@_search-menu =
+    * _caption: 'C'
+      _label: 'Customer'
       _value: @@_SEARCHENUM.kByCustomer
-      _name: 'Customer'
 
-    * _label: 'O'
+    * _caption: 'O'
+      _label: 'Order'
       _value: @@_SEARCHENUM.kByOrder
-      _name: 'Order'
+
 
 /** @export */
 module.exports = Operation

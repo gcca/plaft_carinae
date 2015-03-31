@@ -63,23 +63,22 @@ class Notification extends App.View
 
 
 /**
- * Notifier
- * --------
+ * Notifier (NotificationManager)
+ * ------------------------------
  * Global and absolute notifier. (Single instance.)
  *
  * @example
  * >>> notifier = new Notifier
  * >>> notifier.notify 'Hello world!'  # info notification by default
- * >>> # success notification
  * >>> notifier.notify do  # type from class
  * ...   _message: 'Hello world!'
  * ...   _type: Notifier.kSuccess
  * >>> notifier.notify do  # type from object
  * ...   _message: 'Hello world!'
- * ...   _type: notifier._TYPE.kSuccess
+ * ...   _type: notifier.kSuccess
  * >>> notifier.notify do # with delay
  * ...   _message: 'Hello world!'
- * ...   _type: notifier._TYPE.kSuccess
+ * ...   _type: notifier.kSuccess
  * ...   _delay: 2000
  *
  *
@@ -93,7 +92,7 @@ class Notifier
    */
   notify: ->
     if it._constructor is String
-      it = _message: it  # default values
+      it = _message: it  # message to object with message
     else
       it._type = __2class it._type if it._type
 
@@ -103,10 +102,11 @@ class Notifier
   /** @constructor */
   ->
     if Notifier::__instance
-      Notifier::__instance
+      return Notifier::__instance
     else
       Notifier::__instance = @
 
+  /** @private */ __instance: null
 
   /**
    * Enum value to alert class.
@@ -121,15 +121,11 @@ class Notifier
       | otherwise  => ''
 
 
-  # Enum: notification type
-  @@kSuccess = 1
-  @@kInfo    = 2
-  @@kWarning = 4
-  @@kDanger  = 8
-
-  # Access to Enum by object
-  _TYPE: @@
-
+  # Enum: notification type and access to Enum by object
+  kSuccess : @@kSuccess = 1
+  kInfo    : @@kInfo    = 2
+  kWarning : @@kWarning = 4
+  kDanger  : @@kDanger  = 8
 
 /** @export */
 module.exports = Notifier

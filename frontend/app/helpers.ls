@@ -178,6 +178,7 @@ HTMLElement::=
     (x) -> @\className = x
 
   _append: ref$\appendChild
+  _remove: ref$\removeChild
 
   _type:~
     -> @\type
@@ -205,6 +206,10 @@ HTMLElement::=
   query: ref$\querySelector
   query-all: ref$\querySelectorAll
 
+  _data:~ -> @\dataset
+
+  _focus: ref$\focus
+
   on-click    : -> @\onclick    = it
   on-dbl-click: -> @\ondblclick = it
   on-change   : -> @\onchange   = it
@@ -214,6 +219,7 @@ HTMLElement::=
   on-focus    : -> @\onfocus    = it
   mouse-over  : -> @\mouseover  = it
   mouse-out   : -> @\mouseout   = it
+
 
 /**
  * {@code Array} and {@code String}  shortcuts.
@@ -339,6 +345,7 @@ Object._properties (CSS2Properties ? CSSStyleDeclaration)::, do
   _font-size: κ \fontSize
   _display: κ \display
   _margin-top: κ \marginTop
+  _left: κ \left
 
 
 /**
@@ -364,6 +371,7 @@ $\fn <<<
   add-class: ref$\addClass
   remove-class: ref$\removeClass
   typeahead: ref$\typeahead
+  _popover: ref$\popover
   _hide: ref$\hide
   _show: ref$\show
   _remove: ref$\remove

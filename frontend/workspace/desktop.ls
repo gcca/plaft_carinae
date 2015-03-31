@@ -40,15 +40,16 @@ class Desktop extends App.View
    * @public
    */
   load-module: (@Module) ~>
-    @_search.load-module @Module
     #---------------------
     # Sub-module extension
     #---------------------
     @close-last-page! if @_sub-module?
+
     #-------
     # Module
     #-------
     @clean-current!
+    @_search._menu @Module._search-menu
     @el._append (@_new Module).render!.el
 
   /**

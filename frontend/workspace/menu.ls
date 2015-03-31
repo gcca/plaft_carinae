@@ -32,7 +32,7 @@ class Modules extends App.View
     @_current._class._toggle (gz.Css \active)
     if not evt?
       evt = _target:
-        @el.query ".#{gz.Css \glyphicon}-#{gz.Css module._icon}"
+        @el.query ".#{gz.Css \glyphicon}-#{module._icon}"
           ._parent._parent
 
     @_current = evt._target
