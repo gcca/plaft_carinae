@@ -190,6 +190,11 @@ class BaseModel extends Backbone\Model
   \sync : -> @_sync ...
 
 
+App.Events = Backbone\Events <<<
+  on  : ref$\on
+  off : ref$\off
+
+
 class App.Model extends BaseModel
 
   @@API = '/api/'

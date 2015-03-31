@@ -32,7 +32,7 @@ class Shareholder extends App.View
    */
   buttonOnRemove: ~>
     @$el.remove! #@_free!
-    @_array-share.trigger (gz.Css \drop-share), @el._id
+    @_array-share.trigger (gz.Css \drop-shareholder), @el._id
 
   /**
    * Get shareholder list.
@@ -122,11 +122,10 @@ class Shareholders extends App.View
    * Remove shareholder from shareholder list.
    * @private
    */
-  _on-share: (id)->
+  _on-share: (id) ->
     @shareholders = _.filter(@shareholders, (item) -> item.el._id isnt id)
-    _.extend(@shareholders, Backbone.Events);
-    slf = @
-    @shareholders.on (gz.Css \drop-share), (id) -> slf._on-share id
+    _._extend(@shareholders, App.Events);
+    @shareholders.on (gz.Css \drop-shareholder), (id) ~> @_on-share id
     @_array-share!
 
   /**
@@ -161,16 +160,13 @@ class Shareholders extends App.View
      * @private
      */
     @shareholders = new Array
-    _.extend(@shareholders, Backbone.Events);
+    _._extend(@shareholders, App.Events);
 
     /**
      * Shareholder JSON list.
-     * @type {Object}
      * @private
      */
-#    @collection = options.shareholders || new Array
-    slf = @
-    @shareholders.on (gz.Css \drop-share), (id) -> slf._on-share id
+    @shareholders.on (gz.Css \drop-shareholder), (id) ~> @_on-share id
 
     # Style
     App.dom._write ~> @el.css._marginBottom = '1em'

@@ -77,7 +77,7 @@ class Stakeholder extends PanelBody
     @render-customer FIELD, TYPE
     @_body._first ._fromJSON @_options.dto
 
-  /*
+  /**
    * Obtiene el codigo de customer_type
    * @private
    */

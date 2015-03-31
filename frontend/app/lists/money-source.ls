@@ -15,7 +15,7 @@ exports._display =
   'Venta Inmueble'
   'Venta de terrenos'
 
-exports.to-payment:
+exports.to-payment =
   'EFECTIVO'
   'EFECTIVO'
   'EFECTIVO'

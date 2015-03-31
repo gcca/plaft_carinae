@@ -35,7 +35,7 @@ class exports.PanelHeading extends App.View
    */
   _remove-panel: ~>
     $ @_panel .remove!
-    @_array-panels.trigger (gz.Css \button), "#{@_id-panel}"
+    @_array-panels.trigger (gz.Css \button), @_id-panel
 
   /**
    * Setea el valor del array-panel en cada panel-heading
@@ -324,9 +324,8 @@ class exports.PanelGroup extends App.View
    */
   _delete-panel: (id) ~>
     @_panels = _.filter(@_panels, (item) -> item._collapse._id !== id)
-    _.extend(@_panels, Backbone.Events);
-    _self = @
-    @_panels.on (gz.Css \button), (id) -> _self._delete-panel id
+    _.extend(@_panels, App.Events);
+    @_panels.on (gz.Css \button), (id) ~> @_delete-panel id
     @_array-panels!
 
   /**
@@ -358,9 +357,8 @@ class exports.PanelGroup extends App.View
   initialize: ({@root-el = @el, \
                 @ConcretPanel = Panel} = App._void._Object) ->
     @_panels = new Array
-    _.extend(@_panels, Backbone.Events);
-    _self = @
-    @_panels.on (gz.Css \update), (id) -> _self._delete-panel (id)
+    _.extend(@_panels, App.Events);
+    @_panels.on (gz.Css \update), (id) ~> @_delete-panel (id)
     super!
 
 

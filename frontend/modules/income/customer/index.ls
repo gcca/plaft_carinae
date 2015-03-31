@@ -19,7 +19,7 @@ class Third extends App.View
   /** @override */
   _tagName: \div
 
-  /*
+  /**
    * @param {Array.<FieldOptions>} _fields
    * @private
    */
@@ -30,21 +30,21 @@ class Third extends App.View
         ..render!
         .._free!
 
-  /*
+  /**
    *
    * @private
    */
   load-person: ~>
     @render-fields _FIELDS_PERSON
 
-  /*
+  /**
    *
    * @private
    */
   load-business: ~>
     @render-fields _FIELDS_BUSINESS
 
-  /*
+  /**
    *
    * @public
    */
@@ -147,7 +147,7 @@ class exports.Identification extends App.View
   /** @override */
   _tagName: \form
 
-  /*
+  /**
    *
    * @private
    */
@@ -156,7 +156,7 @@ class exports.Identification extends App.View
     @el._append @third.render!el
 
 
-  /*
+  /**
    *
    * @private
    */

@@ -18,7 +18,7 @@ class NumerationEdit extends Module
   _tagName: \form
 
   /** @override */
-  on-save: ~>
+  on-save: ->
     @model._save @el._toJSON!, do
       _success: ->
         console.log 'FIN'
