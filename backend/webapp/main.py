@@ -27,9 +27,8 @@ app = WSGIApplication([
     ('/', views.SignIn),
     ('/dashboard', views.Dashboard),
     ('/debug', views.Debug),
-    uri('pdf', views.DeclarationPDF),
 
-#    ('/pdf/<id:\d+>', views.DeclarationPDF),
+    ('/declaration/pdf/(\d+)', views.DeclarationPDF),
 
     # Handlers
     uri('customer', handlers.Customer),

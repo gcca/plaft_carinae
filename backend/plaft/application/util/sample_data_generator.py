@@ -41,6 +41,8 @@ def create_sample_data():
 
     gcca = Customer(
         name='cristHian Gz. (gcca)',
+        partner='Test',
+        civil_state='Conviviente',
         document_number='12345678',
         document_type='dni',  # 20100097746
         birthday='06/06/2006',
@@ -196,7 +198,8 @@ def create_sample_data():
                      declarant=[dcl1,dcl2],
                      linked=[lnk1,lnk2],
                      description='Debe haber una descripcion !!!!',
-                     income_date='20/12/1996')
+                     income_date='20/12/1996',
+                     canal='R')
     disp1.store()
 
     d = Declaration(customer=gcca)
@@ -206,6 +209,8 @@ def create_sample_data():
                      declaration=d.key,
                      jurisdiction=CodeName(code='9',
                                            name='AEROPUERTO CALLAO'),
+                     regime=CodeName(code='13',
+                                     name='Solo Dios sabe'),
                      dam='2014-103-8237',
                      amount='56 874',
                      canal='V')

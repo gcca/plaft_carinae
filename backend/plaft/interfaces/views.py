@@ -35,8 +35,7 @@ class Dashboard(DirectToController):
     """Users dashboard."""
 
     def _args(self):
-        self.add_arg('linked', {stk.slug: stk.id for stk in model.Linked.all()})
-        self.add_arg('declarant', {dcl.slug: dcl.id for dcl in model.Declarant.all()})
+        self.add_arg('a', {stk.slug: stk.id for stk in model.Linked.all()})
 
 
 class Debug(Handler):
@@ -70,6 +69,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, \
                                Table, TableStyle
+import datetime
 
 class DeclarationPDF(Handler):
 
@@ -155,7 +155,8 @@ class DeclarationPDF(Handler):
         self.addParagraph(story, styles, 'd) Lugar y fecha de nacimiento', 4)
 
         dateAndBirthTable = [['Lugar de nacimiento', 'Fecha de nacimiento'],
-                             [self.checkEmpty(customer, 'birthplace'),self.checkEmpty(customer, 'birthday')]]
+                             [self.checkEmpty(customer, 'birthplace'),
+                              self.checkEmpty(customer, 'birthday')]]
         self.addTable(story, dateAndBirthTable, 12)
 
         self.addParagraph(story, styles, 'e) Nacionalidad', 4)
@@ -167,7 +168,8 @@ class DeclarationPDF(Handler):
         self.addParagraph(story, styles, 'h) Número de telefono (fijo y celular)', 4)
 
         homeAndMobilePhoneTable = [['Fijo', 'Celular'],
-                                   [self.checkEmpty(customer, 'phone'), self.checkEmpty(customer, 'mobile')]]
+                                   [self.checkEmpty(customer, 'phone'),
+                                    self.checkEmpty(customer, 'mobile')]]
         self.addTable(story, homeAndMobilePhoneTable, 12)
 
         self.addParagraph(story, styles, 'i) Correo electrónico', 4)
@@ -245,7 +247,7 @@ class DeclarationPDF(Handler):
                                 rightMargin=72,
                                 leftMargin=72,
                                 topMargin=72,
-                                bottomMargin=18)
+                                bottomMargin=72)
 
         story=[]
 
@@ -274,10 +276,29 @@ class DeclarationPDF(Handler):
 
         self.addParagraph(story, styles, 'Por el presente documento, declaro bajo juramento, lo siguiente', 8)
 
+        ## FALTA LA FIRMA
+
         if customer.document_type == 'ruc':
             self.makeBusinessPDF(story, styles, dispatch, customer)
         else:
             self.makePersonPDF(story, styles, dispatch, customer)
+
+        story.append(Spacer(1, 30))
+        ptext = '<font size=10>Afirmo y ratifico todo lo manifestado en la presente declaración jurada, en señal de lo cual</font>'
+        story.append(Paragraph(ptext, styles["Justify"]))
+        story.append(Spacer(1, 1))
+
+        story.append(Paragraph('<font size=10>la firmo, en la fecha que se indica:</font>', styles["Justify"]))
+        story.append(Spacer(1, 30))
+
+        ztime = datetime.datetime.utcnow() -timedelta(hours=5) #declaration.created.utcnow() - timedelta(hours=5)
+        bgdate = ztime.strftime('%d / %m / %Y')
+        bgtime = ztime.strftime('%H:%M')
+
+        data = [['____________________' , 'Fecha :    ' + bgdate],
+                ['               Firma', 'Hora   :    ' +bgtime]]
+        table = Table(data, [3*inch, 2.1*inch], 2*[.2*inch])
+        story.append(table)
 
         doc.build(story)
 
