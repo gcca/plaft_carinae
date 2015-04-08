@@ -109,6 +109,11 @@ class Desktop extends App.View
     @_aux-module = @module
     @module = mod
 
+    ########################################################################
+    # TODO: Integrar submodulos (rehacer).
+    ########################################################################
+    mod._desktop = @
+
   close-last-page: ~>
     if @_sub-module?
       @module = @_aux-module
