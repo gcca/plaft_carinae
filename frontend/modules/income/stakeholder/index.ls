@@ -2,23 +2,20 @@
 
 panelgroup = require '../../../app/widgets/panelgroup'
   PanelGroup = ..PanelGroup
-  PanelHeadingClosable = ..PanelHeadingClosable
+  PanelHeaderClosable = ..PanelHeaderClosable
   Panel = ..Panel
-
-operation-widgets = require '../widget'
-  DTOPanelGroup = ..DTOPanelGroup
+search = require '../widget'
+  SearchByDto = ..SearchByDto
 Stakeholder = require './stakeholder'
 
-widget = require '../../../app/widgets/codename'
-  InputName = ..InputName
 
 /**
  * PanelHeadingStakeholder
- * ---------------------
+ * -----------------------
  * @class PanelHeadingStakeholder
  * @extends PanelHeadingClosable
  */
-class PanelHeadingStakeholder extends PanelHeadingClosable
+class PanelHeadingStakeholder extends PanelHeaderClosable
 
   /**
    * Modifica el titulo segun el evento on-key-up
@@ -37,6 +34,10 @@ class PanelHeadingStakeholder extends PanelHeadingClosable
       _father_name = @_panel.query '[name=father_name]'
       _mother_name = @_panel.query '[name=mother_name]'
 
+      /**
+       * (Event) Modifica el titulo segun el evento.
+       * @private
+       */
       _set-title = ~>
         @set-title _name._value + ' ' \
                             + _father_name._value + ' ' \
@@ -49,6 +50,7 @@ class PanelHeadingStakeholder extends PanelHeadingClosable
   /**
    * Cambia el titulo del Panel-heading.
    * @param {Object} dto
+   * @see parent.set-title
    */
   load-title: (dto) ->
     if dto.'customer_type' is \Natural
@@ -57,6 +59,16 @@ class PanelHeadingStakeholder extends PanelHeadingClosable
                 \ #{dto.'mother_name'}"
     else
       @set-title "#{dto.'name'}"
+
+  /** @override */
+  render: ->
+    ret = super!
+    search = new SearchByDto do
+      _url: 'linked'
+      _items: window.plaft.'linked'
+      _callback: @_callback-dto
+    @_search._append search.render!.el
+    ret
 
   /** @private */ _type: null
 
@@ -85,6 +97,7 @@ class PanelStakeholder extends Panel
 
   /**
    * Carga el dto en el formulario actual.
+   * @see @render-dto
    */
   _take-dto: ~>
     @_body._options.dto = it
@@ -135,6 +148,9 @@ class Stakeholders extends PanelGroup
   _toJSON: ->
     for @_panels then .._body._get-form!._toJSON!
 
+  /**
+   * Mostrar un panel.
+   */
   render-panel: ~>
     _head-stakeholder = new PanelHeadingStakeholder do
       _title: "Vinculado"
@@ -144,20 +160,10 @@ class Stakeholders extends PanelGroup
     @new-panel do
       _panel-heading: _head-stakeholder, _panel-body: _body-stakeholder
 
-    _input = App.dom._new \input
-
-    mandar = ~>
-      App.ajax._get ('/api/linked/' + _input._value), null, do
-        _success: (linked-dto) ~>
-          _head-stakeholder.trigger (gz.Css \button), linked-dto
-
-    _btn = App.dom._new \button
-      ..html = "BUSCAR"
-      ..on-click mandar
-
-    _head-stakeholder._add-element _input
-    _head-stakeholder._add-element _btn
-
+  /**
+   * Carga el panel segun el dto.
+   * @param {Array.<dto>} dto
+   */
   render-dto: (dto) ->
     _head-stakeholder = new PanelHeadingStakeholder do
       _title: "Vinculado"
@@ -165,15 +171,14 @@ class Stakeholders extends PanelGroup
       dto: dto
 
     @new-panel do
-      _panel-heading: _head-stakeholder, _panel-body: _body-stakeholder
+      _panel-heading: _head-stakeholder
+      _panel-body: _body-stakeholder
 
   /** @override */
   initialize: ->
     super ConcretPanel: PanelStakeholder
 
-  /**
-   * @override
-   */
+  /** @override */
   render: ->
     @$el.removeAttr('class')
     @$el.removeAttr('id')

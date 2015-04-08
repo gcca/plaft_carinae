@@ -2,14 +2,13 @@
 
 panelgroup = require '../../../app/widgets/panelgroup'
   PanelGroup = ..PanelGroup
-  PanelHeadingClosable = ..PanelHeadingClosable
+  PanelHeaderClosable = ..PanelHeaderClosable
   Panel = ..Panel
 
 Declarant = require './declarant'
 
-widget = require '../../../app/widgets/codename'
-  InputName = ..InputName
-  Search = ..Search
+search = require '../widget'
+  SearchByDto = ..SearchByDto
 
 
 /**
@@ -18,7 +17,7 @@ widget = require '../../../app/widgets/codename'
  * @class PanelHeadingDeclarant
  * @extends View
  */
-class PanelHeadingDeclarant extends PanelHeadingClosable
+class PanelHeadingDeclarant extends PanelHeaderClosable
 
   /**
    * Modifica el titulo segun el evento on-key-up
@@ -30,6 +29,11 @@ class PanelHeadingDeclarant extends PanelHeadingClosable
     _father_name = @_panel.query '[name=father_name]'
     _mother_name = @_panel.query '[name=mother_name]'
 
+    /**
+     * (Event) Modifica el titulo segun el evento.
+     * @private
+     * @see parent.set-title
+     */
     _set-title = ~>
       @set-title _name._value + ' ' \
                              + _father_name._value + ' ' \
@@ -48,6 +52,17 @@ class PanelHeadingDeclarant extends PanelHeadingClosable
               \ #{dto.'father_name'}
               \ #{dto.'mother_name'}"
 
+  /** @override */
+  render: ->
+    ret = super!
+
+    search = new SearchByDto do
+      _url: 'declarant'
+      _items: window.plaft.'declarant'
+      _callback: @_callback-dto
+    @_search._append search.render!.el
+
+    ret
 
 /**
  * PanelDeclarant
@@ -67,6 +82,7 @@ class PanelDeclarant extends Panel
 
   /**
    * Carga el dto en el formulario actual.
+   * @see @render-dto
    */
   _take-dto: ~>
     @_body._options.dto = it
@@ -100,6 +116,9 @@ class Declarants extends PanelGroup
   _toJSON: ->
     for @_panels then .._body._get-form!._toJSON!
 
+  /**
+   * Mostrar un panel.
+   */
   render-panel: ~>
     _head-declarant = new PanelHeadingDeclarant do
       _title: "Declarant"
@@ -109,20 +128,10 @@ class Declarants extends PanelGroup
     @new-panel do
       _panel-heading: _head-declarant, _panel-body: _body-declarant
 
-    _input = App.dom._new \input
-
-    mandar = ~>
-      App.ajax._get ('/api/declarant/' + _input._value), null, do
-        _success: (declarant-dto) ~>
-          _head-declarant.trigger (gz.Css \button), declarant-dto
-
-    _btn = App.dom._new \button
-      ..html = "BUSCAR"
-      ..on-click mandar
-
-    _head-declarant._add-element _input
-    _head-declarant._add-element _btn
-
+  /**
+   * Carga el panel segun el dto.
+   * @param {Array.<dto>} dto
+   */
   render-dto: (dto) ->
     _head-declarant = new PanelHeadingDeclarant do
       _title: "Declarant"
@@ -130,7 +139,8 @@ class Declarants extends PanelGroup
       dto: dto
 
     @new-panel do
-      _panel-heading: _head-declarant, _panel-body: _body-declarant
+      _panel-heading: _head-declarant
+      _panel-body: _body-declarant
 
   /** @override */
   initialize: ->

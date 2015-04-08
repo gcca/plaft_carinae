@@ -24,6 +24,11 @@ class exports.PanelHeading extends App.View
   _className: "#{gz.Css \panel-heading}"
 
   /**
+   */
+  _callback-dto: (_dto) ~>
+    @trigger (gz.Css \button), _dto
+
+  /**
    * Change title
    * @param {String} _title
    */
@@ -35,7 +40,7 @@ class exports.PanelHeading extends App.View
    */
   _remove-panel: ~>
     $ @_panel .remove!
-    @_array-panels.trigger (gz.Css \button), @_id-panel
+    @_array-panels.trigger (gz.Css \close), @_id-panel
 
   /**
    * Setea el valor del array-panel en cada panel-heading
@@ -45,21 +50,19 @@ class exports.PanelHeading extends App.View
     @_array-panels = panels
 
   /**
-   * TODO
-   */
-  _add-element: (_element) ->
-    _title = @el._first._first
-    _element.css = "margin-left:40px;"
-    @_btn-group._append _element
-
-  /**
    * Cambia el modelo de vista del panel-heading
    * @param {String} _type
    * @param {String} _href if _type is PDF
    */
-  _change-type: (_type, _href="") ->
-    @_btn-group.html = ''
-    if _type is \pdf
+  _change-type: ->
+    if not it._span?
+      it._span = App.dom._new \span
+        .._class = gz.Css \pull-right
+        ..css= "flex:1;margin:3px"
+      @_head._append it._span
+    switch it._type
+    | @@kPDF =>
+      it._span.html = ''
       _icon = App.dom._new \i
         .._class = "#{gz.Css \glyphicon}
                   \ #{gz.Css \glyphicon-bookmark}"
@@ -68,20 +71,22 @@ class exports.PanelHeading extends App.View
                   \ #{gz.Css \btn-info}
                   \ #{gz.Css \btn-sm}
                   \ #{gz.Css \pull-right}"
-        ..href = "api/pdf/#{_href}"
-        ..css = "margin-left:40px"
+        ..href = "api/pdf/#{it._href}"
         ..target = '_blank'
         ..html = 'PDF '
         .._append _icon
-      @_btn-group._append _btn
-    if _type is \close
+
+      it._span._append _btn
+
+    | @@kClose =>
       _btn = App.dom._new \button
-        .._class = "btn btn-sm close"
-        ..css = "margin-left:40px"
+        .._class = "#{gz.Css \btn}
+                  \ #{gz.Css \btn-sm}
+                  \ #{gz.Css \close}
+                  \ #{gz.Css \pull-right}"
         ..html = 'x'
         ..on-click @_remove-panel
-      @_btn-group._append _btn
-
+      it._span._append _btn
 
   /** @override */
   initialize: (@_options) ->
@@ -89,36 +94,35 @@ class exports.PanelHeading extends App.View
       @_id-panel = @_options._id-panel
       @_parent-uid = @_options._parent-uid
       @_title = @_options._title
-      @_type = @_options._type
       @_panel = @_options._panel
     super!
 
   /** @override */
   render: ->
-    @el.html = "<div class='#{gz.Css \panel-title}' style='display:inline'>
+    @el.css = "padding:5px"
+    @el.html = "<div class='#{gz.Css \panel-title}' style='display:flex'>
                   <a data-toggle='collapse'
                      data-parent='##{@_parent-uid}'
-                     href='##{@_id-panel}'>
+                     href='##{@_id-panel}'
+                     style='margin:5px;width:400px;'>
                    #{if @_title?
                      then @_title
                      else 'Por defecto'}
-                  </a>
-                  <span class='#{gz.Css \pull-right}' style='width:600px'>
-                  </span>
+                  </a>&nbsp;
                 </div>"
-    @_btn-group =@el.query '.pull-right'
-    if @_type?
-      @_change-type @_type
+    @_head = @el.query ".#{gz.Css \panel-title}"
     super!
 
   /** @private */ _options: null
   /** @private */ _id-panel: null
   /** @private */ _parent-uid: null
+  /** @private */ _head: null
   /** @private */ _title: null
-  /** @private */ _type: null
   /** @private */ _panel: null
   /** @private */ _array-panels: null
 
+  kPDF   : @@kPDF    = 1
+  kClose : @@kClose  = 2
 
 /**
  * PanelHeadingClosable
@@ -129,13 +133,24 @@ class exports.PanelHeading extends App.View
  * @export
  */
 
-class exports.PanelHeadingClosable extends PanelHeading
+class exports.PanelHeaderClosable extends PanelHeading
 
   /** @override */
   render: ->
     ret = super!
-    @_change-type \close
+    @_search = App.dom._new \span
+      ..css = "width: 200px;margin: 0;padding: 0;flex:4"
+
+    _span = App.dom._new \span
+      .._class = gz.Css \pull-right
+      ..css= "flex:1;margin:5px"
+    @_change-type do
+      _type: @kClose
+      _span: _span
+    @_head._append @_search
+    @_head._append _span
     ret
+  /** @private */_search: null
 
 /**
  * PanelBody
@@ -161,7 +176,7 @@ class exports.PanelBody extends App.View
 
   /** Obtener el formulario del PanelBody */
   _get-form: ->
-    @el.query 'form'
+    @el.query "#{gz.Css \form}"
 
   /** @override */
   initialize: (@_options) ->
@@ -191,7 +206,6 @@ class exports.PanelBody extends App.View
 /**
  * Panel
  * -------------
- * TODO: Descripcion
  * @class Panel
  * @extends View
  * @export
@@ -269,7 +283,6 @@ class exports.Panel extends App.View
 /**
  * PanelGroup
  * ----------
- * TODO: Descripcion
  *
  * @example
  * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -278,18 +291,16 @@ class exports.Panel extends App.View
  * >>>  _title: 'Example-Title'
  * >>>  _element: [HTMLElement || String]
  * >>> another-view.el._append panel-group.render!.el
- * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
- * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ * >>> # with panelheading and panelbody
  * >>> panel-heading = new PanelHeading || new PanelHeadingClosable do
- * >>>     _title: 'Example-Title'
+ * >>>   _title: 'Example-Title'
  * >>> panel-body = new PanelBody do
- * >>>     _element: [HTMLElement || String]
+ * >>>   _element: [HTMLElement || String]
  * >>> panel-group = new PanelGroup
  * >>> panel-group.new-panel do
  * >>>  _panel-heading: panel-heading
  * >>>  _panel-body: panel-body
  * >>> another-view.el._append panel-group.render!.el
- * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
  *
  * @class PanelGroup
  * @extends View
@@ -323,9 +334,9 @@ class exports.PanelGroup extends App.View
    * Elimina un panel de arreglo de paneles.
    */
   _delete-panel: (id) ~>
-    @_panels = _.filter(@_panels, (item) -> item._collapse._id !== id)
-    _.extend(@_panels, App.Events);
-    @_panels.on (gz.Css \button), (id) ~> @_delete-panel id
+    @_panels = [pl for pl in @_panels when pl._collapse._id !== id]
+    _.extend(@_panels, App.Events)
+    @_panels.on (gz.Css \close), @_delete-panel
     @_array-panels!
 
   /**
@@ -337,7 +348,6 @@ class exports.PanelGroup extends App.View
    * @param {HTMLElement} _element
    * @return Panel
    */
-   #cambiarlo tipo-panel a _type
   new-panel: ({_panel-heading = null,\
                _panel-body = null,\
                _title = null,\
@@ -358,9 +368,8 @@ class exports.PanelGroup extends App.View
                 @ConcretPanel = Panel} = App._void._Object) ->
     @_panels = new Array
     _.extend(@_panels, App.Events);
-    @_panels.on (gz.Css \update), (id) ~> @_delete-panel (id)
+    @_panels.on (gz.Css \close), @_delete-panel
     super!
-
 
   /** @public */ _panels: null
 

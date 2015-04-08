@@ -12,9 +12,7 @@ DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
 
 /**
  * Stakeholder
- * ----------
- * TODO
- *
+ * -----------
  * @class Stakeholder
  * @extends View
  */
@@ -22,7 +20,7 @@ class Stakeholder extends PanelBody
 
   /**
    * @param {Array.<FieldOptions>} _fields
-   * @param {number} _next-type
+   * @param {Integer} _next-type
    * @private
    */
   render-customer: (_fields, _next-type) ->
@@ -66,7 +64,10 @@ class Stakeholder extends PanelBody
           _country._parent._first.html = 'Pais Destino'
 
       @trigger (gz.Css \change), _type
-#  TODO: cambiar nombre
+
+  /**
+   * Carga el formulario segun el dto.
+   */
   read-dto: (dto) ->
     if @_options.dto.'customer_type' is \Natural
       FIELD = _FIELD_PERSON

@@ -14,14 +14,15 @@ DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
 /**
  * Declarant
  * ----------
- * TODO
  *
  * @class Declarant
  * @extends View
  */
 class Declarant extends PanelBody
 
-  #  TODO: cambiar nombre
+  /**
+   * Carga el formulario segun el dto.
+   */
   read-dto: (dto) ->
     @_body._first._fromJSON @_options.dto
 
