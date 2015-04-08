@@ -23,6 +23,15 @@ Declarant = require './declarant'
 class CustomerModel extends App.Model
   urlRoot: 'customer'
 
+#  is-business:~
+#    -> @_attributes.'class_'[*-1] is 'Business'
+
+#  is-person:~
+#    -> @_attributes.'class_'[*-1] is 'Person'
+
+
+#  if model.is-person
+#    cargue la persona
 
 /**
  * DispatchModel
@@ -75,17 +84,21 @@ class Operation extends Module
 
       success = (dto) ~>
         @dispatch-model = new DispatchModel dto.0
-        console.log @dispatch-model
         @_customer = @dispatch-model._attributes.'declaration'.'customer'
-#        @customer-model = new CustomerModel _ctsm
-        console.log @_customer.'shareholders'
-        console.log @customer-model
+        @_third = @dispatch-model._attributes.'declaration'.'third'
+        customer-dto = @dispatch-model._attributes.'customer'
+        @customer-model = new CustomerModel customer-dto
+
         @render-operation!
         if dto.0.\id
-          @customer-heading._change-type \pdf, @dispatch-model\id
+          @customer-head._change-type do
+            _type: @customer-head.kPDF
+            _href: @dispatch-model\id
 
       not-found = (e) ~>
-        @_desktop.notifier.notify @_desktop.notifier.kDanger, e.'responseJSON'.\e
+        @_desktop.notifier.notify do
+          _message: e.'responseJSON'.\e
+          _type: @_desktop.notifier.kDanger
 
     # FIND BY CUSTOMER
     else if filter is @@_SEARCHENUM.kByCustomer
@@ -95,16 +108,20 @@ class Operation extends Module
       success = (dto) ~>
         @customer-model = new CustomerModel dto.0
         @_customer = @customer-model._attributes
-        console.log @customer-model
         @dispatch-model = new DispatchModel
         @render-operation!
 
       not-found = (e) ~>
         if /^\d+$/ is query
-          @_desktop.notifier.notify 'No existe persona : ' + query, @_desktop.notifier.kDanger
+          @_desktop.notifier.notify do
+            _message: 'No existe persona : ' + query
+            _type: @_desktop.notifier.kDanger
+
           @load-operation query
         else
-         @_desktop.notifier.notify e.'responseJSON'.\e, @_desktop.notifier.kDanger
+          @_desktop.notifier.notify do
+            _message: e.'responseJSON'.\e
+            _type: @_desktop.notifier.kDanger
 
     @render-ajax _dto, type-filter, success, not-found
 
@@ -120,7 +137,11 @@ class Operation extends Module
       _not-found: not-found
 
 
-  /** @private */
+  /**
+   * Carga el formulario segun el query.
+   * @param {String} _query
+   * @private
+   */
   load-operation: (_query) ->
     dto =
       \document_number : _query
@@ -134,36 +155,25 @@ class Operation extends Module
    * @override
    * @protected
    */
-  on-save: ->
-    # JSON to CustomerModel
-    form-cto = @customer.el._toJSON!
-    if @customer._shareholder?
-      _shareholders = @customer._shareholder._view._toJSON!
-      console.log _shareholders
-      form-cto.\shareholders = @customer._shareholder._view._toJSON!
-      console.log form-cto.\shareholders
-    console.log form-cto
+  on-save: ~>
+    customer-dto = @customer._toJSON!
     # Save to CustomerModel.
-    if @customer-model?
-      @customer-model._save form-cto
-    # JSON to DispatchModel
-    console.log form-cto
-    form-dto = @dispatch.el._toJSON!
-    form-dto.\declaration =
-      'third': @customer._third.el._toJSON!
-      'customer': form-cto
-    form-dto.'declaration'.'customer'.'shareholders' = _shareholders
-    form-dto.\declarant = @declarant._toJSON!
-    form-dto.\linked = @stakeholder._toJSON!
-    # TODO: Mejorar el flujo. {@code customer-model} podría funcionar mejor
-    #   después de manipular a {@code dispatch-model}.
-    form-dto.\customer = @customer-model._id if @customer-model?
-    console.log form-dto
+    @customer-model._save customer-dto
+
+    dispatch-dto = @dispatch.el._toJSON!
+      ..'customer' = @customer-model._id
+      ..'declaration' =
+        'third': @customer._third.el._toJSON!
+        'customer': customer-dto
+      ..'declarant' = @declarant._toJSON!
+      ..'linked' = @stakeholder._toJSON!
+
     # Save to DispatchModel.
-    @dispatch-model._save form-dto, do
+    @dispatch-model._save dispatch-dto, do
       _success: (dto) ~>
-        console.log dto
-        @customer-heading._change-type \pdf, dto.id
+        @customer-head._change-type do
+          _type: @customer-head.kPDF
+          _href: @dispatch-model\id
         @_desktop.notifier.notify 'Guardado' @_desktop.notifier.kSuccess
       _error: ~>
         @_desktop.notifier.notify(
@@ -188,13 +198,14 @@ class Operation extends Module
     @clean!
 
     @dispatch = Dispatch._new dispatch : @dispatch-model._attributes
-    @customer = Customer._new customer : @_customer
+    @customer = Customer._new do
+      customer-dto : @_customer
+      third-dto: @_third
 
     @stakeholder = Stakeholder._new do
       collection : @dispatch-model._attributes\linked
     @declarant = Declarant._new do
       collection : @dispatch-model._attributes\declarant
-
 
     pnl-group = new PanelGroup
 
@@ -202,9 +213,9 @@ class Operation extends Module
       _title: 'Despacho - Operacion'
       _element: (@dispatch).render!.el
 
-    @customer-heading = new PanelHeading _title: 'Declaracion jurada'
+    @customer-head = new PanelHeading _title: 'Declaracion jurada'
     pnl-group.new-panel do
-      _panel-heading: @customer-heading
+      _panel-heading: @customer-head
       _element: (@customer).render!.el
 
     pnl-group.new-panel do

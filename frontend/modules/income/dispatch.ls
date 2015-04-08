@@ -26,13 +26,17 @@ class Dispatch extends App.View
 
   /** @override */
   render: ->
-    @el.html = ""
+    App.builder.Form._new @el, _FIELD_DISPATCH
+      ..render!
+      .._free!
 
-    _FIELD_DISPATCH=
+    @el._fromJSON @dispatch
+
+    super!
+
+  _FIELD_DISPATCH=
       * _name: 'reference'
         _label: 'Ref. cliente'
-        _tip: "REFERENCIAREFERENCIAREFERENCIAREFERENCIAREFERENCIAREFERENCIA \
-              REFERENCIAREFERENCIAREFERENCIAREFERENCIAREFERENCIA"
 
       * _name: 'jurisdiction'
         _label: 'Aduana despacho/ Juridiccion'
@@ -61,15 +65,6 @@ class Dispatch extends App.View
 
       * _name: 'description'
         _label: 'Descripcion mercancia'
-
-    App.builder.Form._new @el, _FIELD_DISPATCH
-      ..render!
-      .._free!
-
-    @el._fromJSON @dispatch
-
-    super!
-
 
 /** @export */
 module.exports = Dispatch

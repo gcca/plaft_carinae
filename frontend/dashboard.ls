@@ -159,10 +159,10 @@ class Dashboard extends App.View
 
 (new Dashboard).render!
 
-#document.query('.glyphicon-cloud').click()
-#document.query('input').value = '2014-601'
+document.query('.glyphicon-cloud').click()
+document.query('input').value = '12345678989'
 #document.query('select').value = 'order'
-#document.query('.glyphicon-search').parentNode.click()
+document.query('.glyphicon-search').parentNode.click()
 
 # 2 income
 #$ ".#{gz.Css \glyphicon-file}" .parent!.parent!.0.dispatchEvent(

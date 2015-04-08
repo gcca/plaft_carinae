@@ -4156,7 +4156,7 @@ for i to departments._code._length - 1
           _tokens._push do
             _display: "#{department} #{province} #{distrit}"
             _code: ubigeo
-          _pool-display._push "#{department} #{province} #{distrit}"
+          _pool-display._push "#{department} - #{province} - #{distrit}"
           _pool-code._push ubigeo
 
 window.token = _tokens
