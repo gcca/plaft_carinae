@@ -40,7 +40,7 @@ class Business extends App.View
   /** @override */
   render: ->
     @_form = App.builder.Form._new @el, _FIELD_BUSINESS
-       @shareholder = .._elements.'shareholders'
+       @shareholder = .._elements.'shareholders'._view
        ..render!
        .._free!
     @_form._elements.'is_obligated'._element

@@ -9,8 +9,6 @@ DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
 /**
  * Third
  * ----------
- * TODO
- *
  * @class Third
  * @extends View
  */
@@ -165,7 +163,7 @@ class exports.Identification extends App.View
       @third.no-change!
 
   /** @override */
-  initialize: ({@th}) ->  super!
+  initialize: ({@th}={}) ->  super!
 
   /** @override */
   render: ->
@@ -207,6 +205,7 @@ class exports.Identification extends App.View
     super!
 
   /** @private */ third: null
+  /** @private */ th: null
 
 /**
  * Customer
@@ -228,14 +227,16 @@ class exports.Customer extends App.View
     if @_type is @@Type.kPerson
       @_customer = new Person
       @el._append (@_customer).render!.el
-      @el._last._append @third.render!.el
+      @_third = new Identification
+      @el._last._append @_third.render!.el
 
     if @_type is @@Type.kBusiness
       @_customer = Business._new!
       @el._append (@_customer).render!.el
       @_shareholder = @_customer.shareholder
       @el.query('[name=customer_type]').selectedIndex = @_type
-      @el._last._append @third.render!.el
+      @_third = new Identification
+      @el._last._append @_third.render!.el
 
     @el.query('[name=customer_type]').selectedIndex = @_type
     @el.query('[name=customer_type]').on-change @on-customer-change
@@ -250,7 +251,7 @@ class exports.Customer extends App.View
         @_customer = Business._new!
 
     else
-      if @customer.'document_number'._length is 11
+      if @customer-dto.'document_number'._length is 11
         @_type = @@Type.kBusiness
         @_customer = Business._new!
         @el.query('[name=customer_type]').selectedIndex = @_type
@@ -260,23 +261,33 @@ class exports.Customer extends App.View
         @el.query('[name=customer_type]').selectedIndex = @_type
 
   /**
-   *
+   * Shareholder list to JSON.
+   * @return {Array.<Shareholder-JSON>} || {}
+   * @override
+   */
+  _toJSON: ->
+    _r = @el._toJSON!
+    if @_type is @@Type.kBusiness
+      _r.'shareholders' = @_shareholder._toJSON!
+    _r
+
+  /**
+   * Carga el dto en el formulario.
    * @private
    */
   render-dto: !->
     @_shareholder = @_customer.shareholder
     if @_shareholder?
-      _shareholder = @customer.'shareholders'
-      console.log @customer
-      console.log _shareholder
-      @_shareholder._view.load-from _shareholder if _shareholder?
-    @_third = new Identification th: @customer.'third'
+      _shareholder = @customer-dto.'shareholders'
+      @_shareholder.load-from _shareholder if _shareholder?
+    @_third = new Identification th: @third-dto
     @el._last._append @_third.render!.el
     @el.query('[name=customer_type]').on-change @on-customer-change
-    @el._fromJSON @customer
+
+    @el._fromJSON @customer-dto
 
   /** @override */
-  initialize: ({@customer}) ->  super!
+  initialize: ({@customer-dto, @third-dto}) ->  super!
 
   /** @override */
   render: ->
@@ -291,7 +302,7 @@ class exports.Customer extends App.View
     super!
 
   /** @private */ _type: null
-  /** @private */ customer: null
+  /** @private */ customer-dto: null
   /** @private */ _customer: null
   /** @private */ _shareholder: null
   /** @private */ _third: null

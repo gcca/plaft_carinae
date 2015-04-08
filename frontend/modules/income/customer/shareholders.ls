@@ -8,6 +8,7 @@ DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
  * Shareholder
  * --------
  *
+ * @example
  * @class Shareholder
  * @extends View
  */
@@ -31,7 +32,7 @@ class Shareholder extends App.View
    * @private
    */
   buttonOnRemove: ~>
-    @$el.remove! #@_free!
+    @$el.remove!
     @_array-share.trigger (gz.Css \drop-shareholder), @el._id
 
   /**
@@ -97,7 +98,14 @@ class Shareholder extends App.View
   _OPTIONS = ["<option value='#k'>#v</option>" \
               for k,v of App.lists.document-type._pair]._join ''
 
-
+/**
+ * Shareholders
+ * ------------
+ *
+ * @example
+ * @class Shareholder
+ * @extends View
+ */
 
 class Shareholders extends App.View
 
@@ -106,7 +114,7 @@ class Shareholders extends App.View
 
   /**
    * Shareholder list to JSON.
-   * @return {Array.<Shareholder-JSON>}
+   * @return {Array.<Shareholder-JSON>} || {}
    * @override
    */
   _toJSON: -> [.._toJSON! for @shareholders]
@@ -122,10 +130,10 @@ class Shareholders extends App.View
    * Remove shareholder from shareholder list.
    * @private
    */
-  _on-share: (id) ->
-    @shareholders = _.filter(@shareholders, (item) -> item.el._id isnt id)
+  _on-share: (id) ~>
+    @shareholders = [sh for sh in @shareholders when sh.el._id !== id]
     _._extend(@shareholders, App.Events);
-    @shareholders.on (gz.Css \drop-shareholder), (id) ~> @_on-share id
+    @shareholders.on (gz.Css \drop-shareholder), @_on-share
     @_array-share!
 
   /**
@@ -166,8 +174,7 @@ class Shareholders extends App.View
      * Shareholder JSON list.
      * @private
      */
-    @shareholders.on (gz.Css \drop-shareholder), (id) ~> @_on-share id
-
+    @shareholders.on (gz.Css \drop-shareholder), @_on-share
     # Style
     App.dom._write ~> @el.css._marginBottom = '1em'
 
@@ -208,12 +215,6 @@ class Shareholders extends App.View
           <label>&nbsp;Acciones (%)</label>
         </div>
       </form>").0
-
-    # TODO: Refactor to load shareholders from here.
-    #       Remove load-shareholders method
-    # # Initial shareholders
-    # for model in @collection
-    #   @addShareholder model
 
     super!
 
