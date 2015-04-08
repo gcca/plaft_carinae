@@ -70,7 +70,7 @@ class Desktop extends App.View
   /**
    * On search event to module.
    * @param {string} query
-   * @param {string} type
+   * @param {string} filter
    * @private
    */
   on-search: (query, filter) ~>

@@ -1,5 +1,24 @@
 /** @module workspace */
 
+/**
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ * TODO: Workspace should be:
+ *
+ *  - - - - - - - - - - - - - -
+ * |          top-bar   search |
+ * |_ _ _ _ _ _ _ _ _ _ _ _ _ _|
+ * |                           |
+ * |                           |
+ * |         workspace         |
+ * |                           |
+ * |                           |
+ * |_ _ _ _ _ _ _ _ _ _ _ _ _ _|
+ * |_ _ _ bottom (footer) _ _ _|
+ *
+ * To easy adding components on topbar.
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ */
+
 Menu = require './menu'
 Desktop = require './desktop'
 Search = require './search'

@@ -15,23 +15,8 @@ App.MODULES =
 #  Operation    = r equire './modules/dispatch'
 
 
-
 Workspace = require './workspace'
 Settings = require './settings'
-
-# ---------------- #
-# Only for testing #
-# ---------------- #
-window.App = App
-App.datastore =
-  dispatches: new App.model.Dispatches
-
-class Person extends App.Model
-  urlRoot: 'customer'
-
-window.Person = Person
-
-# App.datastore.dispatches.fetch!
 
 
 /**
