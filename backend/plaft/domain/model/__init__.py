@@ -116,13 +116,14 @@ class Person(Customer):
     father_name = dom.String()
     mother_name = dom.String()
     civil_state = dom.String()
-    partner = dom.String()  # nombre de la pareja o conviviente
+    partner = dom.String()  # nombre de la pareja o conviviente=dom.
     birthplace = dom.String()
     mobile = dom.String()
     email = dom.String()
     nationality = dom.String()
     issuance_country = dom.String()  # país de emisión
     ruc = dom.String()
+    employment = dom.String()
 
 
 class Business(Customer):

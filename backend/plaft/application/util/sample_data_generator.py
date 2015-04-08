@@ -187,6 +187,7 @@ def create_sample_data():
     d.store()
     disp1 = Dispatch(reference='Debe haber una referencia!!!',
                      order='2014-601',
+                     customer=queirolo.key,
                      declaration=d.key,
                      jurisdiction=CodeName(code='947',
                                            name='AEROPUERTO DE TACNA'),
@@ -201,6 +202,7 @@ def create_sample_data():
     d = Declaration(customer=gcca)
     d.store()
     disp2 = Dispatch(order='2014-604',
+                     customer=gcca.key,
                      declaration=d.key,
                      jurisdiction=CodeName(code='9',
                                            name='AEROPUERTO CALLAO'),

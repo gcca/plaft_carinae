@@ -35,7 +35,8 @@ class Dashboard(DirectToController):
     """Users dashboard."""
 
     def _args(self):
-        self.add_arg('a', {stk.slug: stk.id for stk in model.Linked.all()})
+        self.add_arg('linked', {stk.slug: stk.id for stk in model.Linked.all()})
+        self.add_arg('declarant', {dcl.slug: dcl.id for dcl in model.Declarant.all()})
 
 
 class Debug(Handler):
@@ -82,113 +83,159 @@ class DeclarationPDF(Handler):
                 list.append(['', ''])
         return list
 
-    def checkEmpty(self, value, message = '-'):
-        if value:
-            return value
-        else:
-            return message
+    def checkComplexKey(self, obj, _attr):
+        levels = _attr.split('.')
+        print(levels)
+        for key in levels:
+            if hasattr(obj, key):
+                obj = getattr(obj, key)
+            else:
+                return 'Llave no encontrada'
+        return obj
 
+
+    ### Only obj and value params are required!!
+    # @Param {Model} obj
+    # @Param {String} value
+    def checkEmpty(self, obj, value, message = '-'):
+        if hasattr(obj, value):
+            if getattr(obj, value):
+                return getattr(obj, value)
+            else:
+                return message
+        else:
+            return 'No se encontro informacion'
+
+    # Returns the partners name depending on the marital status
+    # @Param {Model} obj
+    # @Param {String} partner property of the model.
+    # @Param {String} civil_state property of the model.
+    # @Param {String} status string used to compare the civil_state
+    def checkMaritalStatus(self, obj, partner, civil_state, status):
+        if hasattr(obj, partner) and hasattr(obj, civil_state):
+            if getattr(obj, civil_state) == status:
+                return getattr(obj, partner)
+            else:
+                return '-'
+        else: return '-'
+
+    # Adds a paragraph to the pdf file
+    # @Param {list} story
+    # @Param {list} styles
+    # @Param {String} text string used to fill the paragraph
+    # @Param {int} space number used for spacer.
     def addParagraph(self, story, styles, text, space):
         story.append(
             Paragraph('<para>%s</para>' %text, styles['Normal']))
         story.append(Spacer(1, space))
 
-    def addTable(self, story, data, space):
-        table = Table(data, [2.2*inch, 3.5*inch])
-        story.append(table)
-        story.append(Spacer(1, space))
+    def addTable(self, story, data, space, autoColWidths=False):
+        if autoColWidths == False:
+            table = Table(data, [2.2*inch, 3.5*inch])
+            story.append(table)
+            story.append(Spacer(1, space))
+        else:
+            table = Table(data, colWidths='*')
+            table.setStyle(TableStyle([('VALIGN',(0,0),(-1,-1),'TOP')]))
+            story.append(table)
+            story.append(Spacer(1, space))
 
-    def isPerson(self, story, styles, dispatch):
+    # Adds all the paragraphs for the Person class.
+    # @Params self, list, list, model, model
+    def makePersonPDF(self, story, styles, dispatch, customer):
         tab = '&nbsp;'*4
         story.append(Spacer(1, 12))
         self.addParagraph(story, styles, 'a) Nombres y apellidos', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.name), 12)
-        self.addParagraph(story, styles, 'b) Tipo y numero de documento de identidad', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.document_type) +
-                                         tab + self.checkEmpty(dispatch.declaration.document_number), 12)
-        self.addParagraph(story, styles, 'c) Registro unico de contribuyente (RUC), de ser el caso.', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.ruc, 'Sin ruc'), 12)
+        self.addParagraph(story, styles, tab + self.checkEmpty(customer, 'name'), 12)
+        self.addParagraph(story, styles, 'b) Tipo y número de documento de identidad', 4)
+        self.addParagraph(story, styles, tab + self.checkEmpty(customer, 'document_type') +
+                                         tab + self.checkEmpty(customer, 'document_number'), 12)
+        self.addParagraph(story, styles, 'c) Registro único de contribuyente (RUC), de ser el caso.', 4)
+        self.addParagraph(story, styles, tab + self.checkEmpty(customer, 'ruc', 'Sin ruc'), 12)
         self.addParagraph(story, styles, 'd) Lugar y fecha de nacimiento', 4)
 
-        dateAndBirthTableHeader = []
-        dateAndBirthTableHeader.append(['Lugar de nacimiento', 'Fecha de nacimiento'])
-        dateAndBirthTableBody = []
-        dateAndBirthTableBody.append([dispatch.declaration.birthplace, dispatch.declaration.birthday])
-        self.addTable(story, dateAndBirthTableHeader, 0)
-        self.addTable(story, dateAndBirthTableBody, 12)
+        dateAndBirthTable = [['Lugar de nacimiento', 'Fecha de nacimiento'],
+                             [self.checkEmpty(customer, 'birthplace'),self.checkEmpty(customer, 'birthday')]]
+        self.addTable(story, dateAndBirthTable, 12)
 
         self.addParagraph(story, styles, 'e) Nacionalidad', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.nationality), 12)
+        self.addParagraph(story, styles, tab + self.checkEmpty(customer, 'nationality'), 12)
         self.addParagraph(story, styles, 'f) Domicilio declarado (lugar de residencia)', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.address), 12)
-        self.addParagraph(story, styles, 'g) Domicilio fisca, de ser el caso', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.fiscal_address), 12)
-        self.addParagraph(story, styles, 'h) Numero de telefono (fijo y celular)', 4)
+        self.addParagraph(story, styles, tab + self.checkEmpty(customer, 'address'), 12)
+        self.addParagraph(story, styles, 'g) Domicilio fiscal, de ser el caso', 4)
+        self.addParagraph(story, styles, tab + self.checkEmpty(customer, 'fiscal_address'), 12)
+        self.addParagraph(story, styles, 'h) Número de telefono (fijo y celular)', 4)
 
-        homeAndMobilePhoneTableH = []
-        homeAndMobilePhoneTableB = []
-        homeAndMobilePhoneTableH.append(['Fijo', 'Celular'])
-        homeAndMobilePhoneTableB.append([self.checkEmpty(dispatch.declaration.phone),
-                                         self.checkEmpty(dispatch.declaration.mobile)])
-        self.addTable(story, homeAndMobilePhoneTableH, 0)
-        self.addTable(story, homeAndMobilePhoneTableB, 12)
+        homeAndMobilePhoneTable = [['Fijo', 'Celular'],
+                                   [self.checkEmpty(customer, 'phone'), self.checkEmpty(customer, 'mobile')]]
+        self.addTable(story, homeAndMobilePhoneTable, 12)
 
-        self.addParagraph(story, styles, 'i) Correo electronico', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.email), 12)
-        self.addParagraph(story, styles, 'j) Profesion u ocupacion', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.activity), 12)
+        self.addParagraph(story, styles, 'i) Correo electrónico', 4)
+        self.addParagraph(story, styles, tab + self.checkEmpty(customer, 'email'), 12)
+        self.addParagraph(story, styles, 'j) Profesión u ocupación', 4)
+        self.addParagraph(story, styles, tab + self.checkEmpty(customer, 'activity'), 12)
         self.addParagraph(story, styles, 'k) Estado civil', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.civil_state),4)
+        self.addParagraph(story, styles, tab + self.checkEmpty(customer, 'civil_state'),4)
         self.addParagraph(story, styles, tab + '1. Nombre del conyuge, de ser casado: ' +
-                                         tab + (self.checkEmpty(dispatch.declaration.partner) if dispatch.declaration.civil_state == 'Casado' else '-'), 4)
+                                         tab + (self.checkMaritalStatus(customer, 'partner', 'civil_state', 'Casado')), 4)
         self.addParagraph(story, styles, tab + '2. Si declara ser conviviente, consignar nombre: ' +
-                                         tab + (self.checkEmpty(dispatch.declaration.partner) if dispatch.declaration.civil_state == 'Conviviente' else '-'), 12)
-        self.addParagraph(story, styles, 'l) Cargo o funcion publica que desempeña o que haya desempeñado en los ultimos dos (2) años, en el Peru o en el extranjero, indicando el nombre del organismo publico u organizacion internacional', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.employment, 'Sin cargo publico'), 12)
+                                         tab + (self.checkMaritalStatus(customer, 'partner', 'civil_state', 'Conviviente')), 12)
+        self.addParagraph(story, styles, 'l) Cargo o función pública que desempeña o que haya desempeñado en los últimos dos (2) años, ' +
+                                         'en Perú o en el extranjero, indicando el nombre del organismo público u organización internacional', 4)
+        self.addParagraph(story, styles, tab + self.checkEmpty(customer, 'employment', 'Sin cargo publico'), 12)
         self.addParagraph(story, styles, 'm) El origen de los fondos, bienes u otros activos involucrados en dicha transaccion (especifique)', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.money_source), 12)
+        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration, 'money_source'), 12)
         self.addParagraph(story, styles, 'n) Es sujeto obligado informar a la UIF-Peru', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.is_obligated), 12)
+        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration, 'is_obligated'), 12)
         self.addParagraph(story, styles, tab + 'En caso marco SI, indique si designo a su Oficial de Cumplimiento', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.has_officer), 12)
+        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration, 'has_officer'), 12)
         self.addParagraph(story, styles, 'o) Identificacion del tercero, sea persona natural (nombres y apellidos) o persona juridica (razon o denominacion social) por cuyo intermedio se realiza la operacion, de ser el caso', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.third.name) if dispatch.declaration.third else 'Sin tercero', 12)
+        self.addParagraph(story, styles, tab + self.checkComplexKey(dispatch.declaration.get(), 'third.name'), 12)
 
-    def isBusiness(self, story, styles, dispatch):
+    # Adds all the paragraphs for the Business class
+    # @Params self, list, list, model, model
+    def makeBusinessPDF(self, story, styles, dispatch, customer):
         tab = '&nbsp;'*4
         story.append(Spacer(1, 12))
+
         self.addParagraph(story, styles, 'a) Denominacion o razon social', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.name), 12)
+        self.addParagraph(story, styles, tab + self.checkEmpty(customer, 'name'), 12)
         self.addParagraph(story, styles, 'b) Registro Unico de Contribuyentes RUC', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.document_number), 12)
+        self.addParagraph(story, styles, tab + self.checkEmpty(customer, 'document_number'), 12)
         self.addParagraph(story, styles, 'c) Objeto social y actividad economica principal (Comercial, industrial, construccion, etc.)', 4)
-        self.addParagraph(story, styles, tab + 'Objeto social: '+self.checkEmpty(dispatch.declaration.social_object), 4)
-        self.addParagraph(story, styles, tab + 'Actividad economica: '+self.checkEmpty(dispatch.declaration.activity), 12)
+        self.addParagraph(story, styles, tab + 'Objeto social: ' + self.checkEmpty(customer, 'social_object'), 4)
+        self.addParagraph(story, styles, tab + 'Actividad economica: '+ self.checkEmpty(customer, 'activity'), 12)
         self.addParagraph(story, styles, 'd) Identificacion de los accionistas, socios o asociados, que tengan un porcentaje igual o mayor al 5% de las acciones o participaciones', 4)
-        self.addTable(story, self.shareholdersList(dispatch.declaration.shareholders), 12) if dispatch.declaration.shareholders else addParagraph(story, styles, 'Sin accionistas', 12)
+
+        self.addTable(story, self.shareholdersList(customer.shareholders), 12) if customer.shareholders else self.addParagraph(story, styles, 'Sin accionistas', 12)
+
         self.addParagraph(story, styles, 'e) Identificacion del representante legal o de quien comparece con facultades de representacion y/o disposicion de la persona juridica', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.identification), 12)
+        self.addParagraph(story, styles, tab + self.checkEmpty(customer, 'identification'), 12)
         self.addParagraph(story, styles, 'f) Domicilio', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.address), 12) #falta mejorar
+        self.addParagraph(story, styles, tab + self.checkEmpty(customer, 'address'), 12) #falta mejorar
         self.addParagraph(story, styles, 'g) Domicio fiscal', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.fiscal_address), 12)
+        self.addParagraph(story, styles, tab + self.checkEmpty(customer, 'fiscal_address'), 12)
         self.addParagraph(story, styles, 'h) Telefonos fijos de la oficina y/o de la persona de contacto incluyendo el codigo de la ciudad, sea que se trate del local principal, agencia, sucursal u otros locales donde desarrollan actividades propias al giro de su negocio', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.phone), 12)
+        self.addParagraph(story, styles, tab + self.checkEmpty(customer, 'phone'), 12)
         self.addParagraph(story, styles, 'i) El origen de los fondos, bienes u otros activos involucrados en dicha transaccion (especifique)', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.money_source), 12)
+        self.addParagraph(story, styles, tab + self.checkEmpty(customer, 'money_source'), 12)
         self.addParagraph(story, styles, 'j) Es sujeto obligado informar a la UIF-Peru', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.is_obligated), 12)
+        self.addParagraph(story, styles, tab + self.checkEmpty(customer, 'is_obligated'), 12)
         self.addParagraph(story, styles, tab + 'En caso marco SI, indique si designo a su Oficial de Cumplimiento', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.has_officer), 12)
+        self.addParagraph(story, styles, tab + self.checkEmpty(customer, 'has_officer'), 12)
         self.addParagraph(story, styles, 'k) Identificacion del tercero, sea persona natural (nombres y apellidos) o persona juridica (razon o denominacion social) por cuyo intermedio se realiza la operacion, de ser el caso', 4)
-        self.addParagraph(story, styles, tab + self.checkEmpty(dispatch.declaration.third.name) if dispatch.declaration.third else 'Sin tercero', 12)
+        self.addParagraph(story, styles, tab + self.checkComplexKey(dispatch.declaration.get(), 'third.name'), 12)
 
-
-    def get(self,id):
+    def get(self, id):
         self.response.headers['Content-Type'] = 'application/pdf'
 
-        dispatch = Dispatch.find(int(id))
-        print(dispatch)
+        dispatch = model.Dispatch.find(int(id))
+        customer = dispatch.declaration.get().customer
+
+        if customer.document_type == 'ruc':
+            customer = model.Business.new(customer.dict)
+        else:
+            customer = model.Person.new(customer.dict)
 
         styles=getSampleStyleSheet()
         styles.add(ParagraphStyle(name='Justify', alignment=TA_JUSTIFY))
@@ -202,19 +249,13 @@ class DeclarationPDF(Handler):
 
         story=[]
 
-        headerTitle = []
-        headerJurisdiccion = []
-        headerBody = []
+        jurisdiccionTable = [['Código', 'Nombre'],
+                             [self.checkEmpty(dispatch.jurisdiction, 'code'),
+                              self.checkEmpty(dispatch.jurisdiction, 'name')]]
+        headerTable = [['Ref. Cliente', 'N Orden Despacho', 'Jurisdiccion'],
+                       [dispatch.reference, dispatch.order, Table(jurisdiccionTable, colWidths='*')]]
 
-        headerTitle.append(['Ref. Cliente', 'N Orden Despacho', 'Jurisdiccion'])
-        headerJurisdiccion.append([dispatch.jurisdiction.code, dispatch.jurisdiction.name])
-        headerBody.append([dispatch.reference, dispatch.order, Table(headerJurisdiccion, colWidths='*')])
-
-        tabla = Table(headerTitle, colWidths='*')
-        tabla2= Table(headerBody, colWidths='*')
-        story.append(tabla)
-        story.append(tabla2)
-        story.append(Spacer(1, 12))
+        self.addTable(story, headerTable, 12, True)
 
         story.append(
             Paragraph('<para alignment=center><font size=12><b>ANEXO N&ordm;5</b></font></para>',
@@ -225,17 +266,18 @@ class DeclarationPDF(Handler):
             Paragraph('<para alignment=center><font size=12><b>Declaración Jurada De conocimiento del Cliente</b></font></para>',
                       styles['Normal']))
 
-        title = 'Persona Jurídica' if dispatch.declaration.document_type == 'ruc' else 'Persona Natural'
+        title = 'Persona Jurídica' if customer.document_type == 'ruc' else 'Persona Natural'
+
         story.append(
             Paragraph('<para alignment=center><font size=12><b>%s</b></font></para>' %title, styles['Normal']))
         story.append(Spacer(1, 24))
 
         self.addParagraph(story, styles, 'Por el presente documento, declaro bajo juramento, lo siguiente', 8)
 
-        if dispatch.declaration.document_type == 'ruc':
-            self.isBusiness(story, styles, dispatch)
+        if customer.document_type == 'ruc':
+            self.makeBusinessPDF(story, styles, dispatch, customer)
         else:
-            self.isPerson(story, styles, dispatch)
+            self.makePersonPDF(story, styles, dispatch, customer)
 
         doc.build(story)
 
