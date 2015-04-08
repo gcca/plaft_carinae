@@ -62,14 +62,6 @@ class exports.Form extends Array implements PoolMixin
     for el in @ then _callback el
 
   /**
-   * Apply style to form groups.
-   * @param {string} _style
-   * @public
-   */
-#  _class: (_style) ->
-#    for el in @ then el._class = "#{gz.Css \form-group} #_style"
-
-  /**
    * From string list to `options` html-tag list.
    * @param {Array.<string>} _options
    * @return string
@@ -85,24 +77,19 @@ class exports.Form extends Array implements PoolMixin
     | otherwise => 'Error options'
 
   /**
-   * Enable tip to input.
-   * TODO: Make a popover
-   * @param {HTMLElement} _input
-   * @param {HTMLElement} span
+   * Enable tip to label.
+   * @param {HTMLElement} _label
+   * @param {String} _tip
    * @private
    */
-  __enable-tip = (_input, span, _tip='') ->
-    _input.on-focus ~>
-      $ it._target .parents ".#{gz.Css \panel-default}"
-        .css \overflow \visible
-      $ _input .popover title: 'asdsa', content: _tip
-      span.css\display = \inline
-    _input.on-blur ~>
-      $ it._target .parents ".#{gz.Css \panel-default}"
-        .css \overflow \hidden
-      $ _input .popover 'hide'
-      span.css\display = \none
-
+  __enable-tip = (_label, _tip)->
+    _info = App.dom._new \i
+      .._class = "#{gz.Css \glyphicon}
+               \ #{gz.Css \glyphicon}-#{gz.Css \info}-#{gz.Css \sign}
+               \ #{gz.Css \pull-right}
+               \ #{gz.Css \toggle}"
+      ..title = _tip
+    _label._append _info
 
   /**
    * Create field by field type.
@@ -189,33 +176,24 @@ class exports.Form extends Array implements PoolMixin
    * @return {HTMLElement}
    */
   field: ({_type = FieldType.kLineEdit, _label, _name,\
-           _grid, _field-attrs, _tip=''}:_options) ->
-    span = App.dom._new \span
-      .._class = "#{gz.Css \help-inline}"
-      ..html = "#{if _tip then '['+_tip+']' else ''}"
-      ..css = "display:none; word-wrap: break-word;"
+           _grid, _field-attrs, _tip}:_options) ->
+    label = App.dom._new \label
+      .._class = "#{gz.Css \col-md-12}
+                \ #{gz.Css \control-label}
+                \ #{gz.Css \parent-toggle}"
+      ..css = "padding-left:0;
+               padding-right:0"
+      ..html = _label
 
     App.dom._new \div
       .._class = "#{gz.Css \form-group} #{__grid _grid}"
-      ..html = "<label class='#{gz.Css \control-label}'>#_label</label>"
-#      TODO: Probando modelo.
-      .._append span
+      .._append label
       .._append _el = __element-by _options
       @_push ..
 
+
       # basic
       @_elements[_name] = _field: .., _element: _el
-
-      if _type is FieldType.kLineEdit
-        ##################################
-        ## Equal _input to div element. ##
-        ## Call a __enable-tip          ##
-        ##################################
-        _input = .._first._next._next
-        __enable-tip _input, span, _tip
-        ##################################
-        ##  End a __enable-tip          ##
-        ##################################
 
       ## TODO(...): Apply only to radios.
       #_element-t = _field: ..
@@ -238,6 +216,10 @@ class exports.Form extends Array implements PoolMixin
 
       # Field attributes
       _el._disabled = on if _field-attrs .&. @@_FIELD_ATTR._disabled
+
+      # Enable tip
+      if _tip?
+        __enable-tip label, _tip
 
   /**
    * @type Object
