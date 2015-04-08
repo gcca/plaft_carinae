@@ -239,6 +239,7 @@ String::=
   _match: ref$\match
   _slice: ref$\slice
   _substring: ref$\substring
+  _split: ref$\split
 
 
 /**
