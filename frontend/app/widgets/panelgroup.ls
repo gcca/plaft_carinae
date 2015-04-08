@@ -1,16 +1,13 @@
-/** @module modules */
+/** @module app.widget */
 
 /**
  * PanelHeading
  * ------------
  *
  * @example
- * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
  * >>> panel-heading = new PanelHeading do
- * >>>  _title: 'Example-Title'
- * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ * >>>   _title: 'Example-Title'
  * >>> panel-heading = new PanelHeading
- * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
  *
  * @class PanelHeading
  * @extends View
@@ -60,6 +57,9 @@ class exports.PanelHeading extends App.View
         .._class = gz.Css \pull-right
         ..css= "flex:1;margin:3px"
       @_head._append it._span
+
+    # TODO: Quitar esto. La idea es aplicar la herencia para decidir
+    #       qué construir.
     switch it._type
     | @@kPDF =>
       it._span.html = ''
@@ -77,7 +77,6 @@ class exports.PanelHeading extends App.View
         .._append _icon
 
       it._span._append _btn
-
     | @@kClose =>
       _btn = App.dom._new \button
         .._class = "#{gz.Css \btn}
@@ -121,18 +120,24 @@ class exports.PanelHeading extends App.View
   /** @private */ _panel: null
   /** @private */ _array-panels: null
 
+  # TODO: Quitar los enums del prototype.
+  #       No es necesario que esté en prototype.
+  #       En el caso de Notifier se justifica por no ser más compleja
+  #       y facilitar, por ello, el acceso a los enums. Acá no sucede
+  #       lo mismo. Además, Notifier es un singleton.
   kPDF   : @@kPDF    = 1
   kClose : @@kClose  = 2
+
 
 /**
  * PanelHeadingClosable
  * --------------------
  *
+ * TODO(Javier): Falta ejemplo.
  * @class PanelHeadingClosable
  * @extends PanelHeading
  * @export
  */
-
 class exports.PanelHeaderClosable extends PanelHeading
 
   /** @override */
@@ -152,17 +157,15 @@ class exports.PanelHeaderClosable extends PanelHeading
     ret
   /** @private */_search: null
 
+
 /**
  * PanelBody
  * ---------
  *
  * @example
- * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
  * >>> panel-body = new PanelBody do
- * >>>  _element: another-view.render!.el
- * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ * >>>   _element: another-view.render!.el
  * >>> panel-body = new PanelBody
- * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
  * @class PanelHeading
  * @extends View
  * @export
@@ -191,7 +194,7 @@ class exports.PanelBody extends App.View
     @el.html="<div class='#{gz.Css \panel-body}'>
               </div>"
 
-#   TODO: Saber si es HTMLElement o String
+    # TODO: Saber si es HTMLElement o String
     if @_element?
       @el._first._append @_element
 
@@ -219,19 +222,19 @@ class exports.Panel extends App.View
   _className: "#{gz.Css \panel} #{gz.Css \panel-default}"
 
   /**
-   * Open panel
+   * Open panel.
    */
   _open: ->
     @_collapse._class._add    gz.Css \in
 
   /**
-   * Close panel
+   * Close panel.
    */
   _close: ->
     @_collapse._class._remove gz.Css \in
 
   /**
-   * Change class for panel
+   * Toggle panel to open or close.
    */
   _toggle: ->
     @_collapse._class._toggle gz.Css \in
@@ -243,7 +246,7 @@ class exports.Panel extends App.View
   render: ->
     _id-content = App.utils.uid 'p'
 
-#    BUILD PANEL-HEADING
+    # building panel heading
     if @_options._panel-heading?
       @_header = @_options._panel-heading
       @_header._id-panel = _id-content
@@ -256,7 +259,7 @@ class exports.Panel extends App.View
         _parent-uid: @_options._parent-uid
         _panel: @el
 
-#    BUILD PANEL-BODY
+    # building panel body
     if @_options._panel-body?
       @_body = @_options._panel-body
       @_body._id-content = _id-content
@@ -285,11 +288,16 @@ class exports.Panel extends App.View
  * ----------
  *
  * @example
- * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ * TODO(Javier): Mejorar el ejemplo. En los ejemplos se deben usar casos
+ *               concretos. Si el panel-group puede recibir en el atributo
+ *               "_element: [HTMLElement || String]", se debe desarrollar
+ *               ambos casos en el ejemplo, es decir, es código que se
+ *               escribiría si _element fuera un HTMLElement o si fuera un
+ *               string. De manera similar con el resto de casos.
  * >>> panel-group = new PanelGroup
  * >>> panel-group.new-panel do
- * >>>  _title: 'Example-Title'
- * >>>  _element: [HTMLElement || String]
+ * >>>   _title: 'Example-Title'
+ * >>>   _element: [HTMLElement || String]
  * >>> another-view.el._append panel-group.render!.el
  * >>> # with panelheading and panelbody
  * >>> panel-heading = new PanelHeading || new PanelHeadingClosable do
@@ -298,8 +306,8 @@ class exports.Panel extends App.View
  * >>>   _element: [HTMLElement || String]
  * >>> panel-group = new PanelGroup
  * >>> panel-group.new-panel do
- * >>>  _panel-heading: panel-heading
- * >>>  _panel-body: panel-body
+ * >>>   _panel-heading: panel-heading
+ * >>>   _panel-body: panel-body
  * >>> another-view.el._append panel-group.render!.el
  *
  * @class PanelGroup
@@ -364,6 +372,11 @@ class exports.PanelGroup extends App.View
     @_array-panels!
 
   /** @override */
+  # TODO: Quitar el valor por defecto de ConcretPanel a Panel.
+  #       En caso de una clase hija de HijaPanelGroup con su "propio"
+  #       HijaPanel, siempre estaría recibiendo la clase Panel.
+  #       Lo idel es que se pueda definir la clase HijaPanel por defecto,
+  #       de ser lo que se desea.
   initialize: ({@root-el = @el, \
                 @ConcretPanel = Panel} = App._void._Object) ->
     @_panels = new Array
