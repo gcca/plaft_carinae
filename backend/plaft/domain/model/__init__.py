@@ -116,7 +116,7 @@ class Person(Customer):
     father_name = dom.String()
     mother_name = dom.String()
     civil_state = dom.String()
-    partner = dom.String()  # nombre de la pareja o conviviente=dom.
+    partner = dom.String()  # nombre de la pareja o conviviente
     birthplace = dom.String()
     mobile = dom.String()
     email = dom.String()
@@ -155,10 +155,10 @@ class Declarant(dom.Model):
     mother_name = dom.String()
     nationality = dom.String()
     activity = dom.String()
-    ciiu = dom.Structured(CodeName)
+    ciiu = dom.Structured(CodeName)  # TODO: dom.String
     position = dom.String()
     address = dom.String()
-    ubigeo = dom.Structured(CodeName)
+    ubigeo = dom.Structured(CodeName)  # TODO: dom.String
     phone = dom.String()
 
     slug = dom.Computed(lambda s: '%s %s %s' % (s.name,
@@ -223,7 +223,7 @@ class Dispatch(dom.Model):
 
     # Numeration
     dam = dom.String()
-    # diferencia entre el incomedate y el numerationdate
+    # diferencia entre el income_date y el numeration_date
     numeration_date = dom.String()
     amount = dom.String()
     currency = dom.String()

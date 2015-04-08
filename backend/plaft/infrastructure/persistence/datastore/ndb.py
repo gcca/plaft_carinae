@@ -47,12 +47,12 @@ class Model(Entity, ndb.Model):
         """."""
         return self.to_dict()
 
-#    filter_node = staticmethod(
-#        lambda prop, val: Q.FilterNode(  # pylint: disable=I0011,W0142
-#            prop, *(('=', val) if not val or '\\' != val[0]
-#                    else ((val[1:2], val[3:]) if '\\' == val[2]
-#                          else ((val[1:3], val[4:]) if '\\' == val[3]
-#                                else (val, None))))))
+    # filter_node = staticmethod(
+    #     lambda prop, val: Q.FilterNode(  # pylint: disable=I0011,W0142
+    #         prop, *(('=', val) if not val or '\\' != val[0]
+    #                 else ((val[1:2], val[3:]) if '\\' == val[2]
+    #                       else ((val[1:3], val[4:]) if '\\' == val[3]
+    #                             else (val, None))))))
 
     @staticmethod
     def filter_node(prop, val):
@@ -113,8 +113,11 @@ class Model(Entity, ndb.Model):
                     # TODO(): hot update nested models
                     if type(value) is dict:
                         if 'id' in value:
-                            value = ndb.Key(prop_type._kind,
-                                            int(value['id']))
+                            k = ndb.Key(prop_type._kind, int(value['id']))
+                            sub = k.get()
+                            sub << value
+                            sub.store()
+                            value = k
                         else:
                             value = ndb.Model._kind_map.get(
                                 prop_type._kind).new(value).store()
@@ -132,14 +135,13 @@ class Model(Entity, ndb.Model):
 
                 elif dtype is Structured and type(value) is list:
                     _list = value
-#                    for value in _list:
-#                        svalue = {}
-#                        for sprop in prop_type._modelclass._properties:
-#                            if sprop in value:
-#                                svalue[sprop] = value[sprop]
-#                        _list.append(svalue)
-#                    value = _list
-
+                    # for value in _list:
+                    #     svalue = {}
+                    #     for sprop in prop_type._modelclass._properties:
+                    #         if sprop in value:
+                    #             svalue[sprop] = value[sprop]
+                    #     _list.append(svalue)
+                    # value = _list
                 else:
                     value = payload[property]
                 properties.update({property: value})
