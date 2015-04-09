@@ -59,7 +59,6 @@ class NumerationEdit extends Module
 
   /** @override */
   render: ->
-    console.log @_desktop
     App.builder.Form._new @el, _FIELDS
       .._class = gz.Css \col-md-6
       ..render!
@@ -107,7 +106,6 @@ class Numeration extends Module
 
   /** @override */
   render: ->
-    console.log @_desktop
     _labels =
       'J. Aduana'
       'N Orden'
@@ -133,7 +131,13 @@ class Numeration extends Module
         _label-type = if it is 'V' then gz.Css \label-success
                       else if it is 'N' then gz.Css \label-warning
                       else if it is 'R' then gz.Css \label-danger
-                      else throw 'Esto es una bestialidad.'
+                      else ''
+        if _label-type is ''
+          ##################################################################
+          # TODO: Crear métodos de debugging
+          ##################################################################
+          console.log 'CANAL VACIO'
+
         "<span class='#{gz.Css \label} #{_label-type}'>
            #{it}
          </span>"
