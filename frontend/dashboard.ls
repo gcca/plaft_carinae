@@ -7,13 +7,10 @@
 App = require './app'
 
 App.MODULES =
-  Welcome      = require './modules/welcome'
-#  Operation   = r equire './modules/operation'
-  Income       = require './modules/income'
-#  Numeration   = r equire './modules/numeration'
-#  Declarations = r equire './modules/declarations'
-#  Operation    = r equire './modules/dispatch'
-
+  Welcome    = require './modules/welcome'
+  Income     = require './modules/income'
+  Numeration = require './modules/numeration'
+  Operation  = require './modules/operation'
 
 Workspace = require './workspace'
 Settings = require './settings'
