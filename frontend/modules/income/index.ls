@@ -5,6 +5,7 @@ Module = require '../../workspace/module'
 panelgroup = require '../../app/widgets/panelgroup'
   PanelGroup = ..PanelGroup
   PanelHeading = ..PanelHeading
+  PanelHeaderPDF = ..PanelHeaderPDF
   PanelBody = ..PanelBody
 customer = require './customer'
   Customer = ..Customer
@@ -91,9 +92,8 @@ class Operation extends Module
 
         @render-operation!
         if dto.0.\id
-          @customer-head._change-type do
-            _type: @customer-head.kPDF
-            _href: @dispatch-model\id
+          @customer-head._show do
+            _href: "/declaration/pdf/#{@dispatch-model\id}"
 
       not-found = (e) ~>
         @_desktop.notifier.notify do
@@ -171,9 +171,8 @@ class Operation extends Module
     # Save to DispatchModel.
     @dispatch-model._save dispatch-dto, do
       _success: (dto) ~>
-        @customer-head._change-type do
-          _type: @customer-head.kPDF
-          _href: @dispatch-model\id
+        @customer-head._show do
+          _href:  "/declaration/pdf/#{@dispatch-model\id}"
         @_desktop.notifier.notify 'Guardado' @_desktop.notifier.kSuccess
       _error: ~>
         @_desktop.notifier.notify(
@@ -213,7 +212,7 @@ class Operation extends Module
       _title: 'Despacho - Operacion'
       _element: (@dispatch).render!.el
 
-    @customer-head = new PanelHeading _title: 'Declaracion jurada'
+    @customer-head = new PanelHeaderPDF _title: 'Declaracion jurada'
     pnl-group.new-panel do
       _panel-heading: @customer-head
       _element: (@customer).render!.el

@@ -56,11 +56,12 @@ class PanelHeadingDeclarant extends PanelHeaderClosable
   render: ->
     ret = super!
 
-    search = new SearchByDto do
+    _search = new SearchByDto do
       _url: 'declarant'
       _items: window.plaft.'declarant'
       _callback: @_callback-dto
-    @_search._append search.render!.el
+
+    @_show _search
 
     ret
 
