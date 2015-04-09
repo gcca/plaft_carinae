@@ -28,9 +28,11 @@ class OperationEdit extends Module
 
     @model._save @el._toJSON!, do
       _success: ->
-        console.log 'Notificar'
+        @_desktop.notifier.notify do
+          _message : 'Se actualizó correctamente los datos'
+          _type    : @_desktop.notifier.kSuccess
       _error: ->
-        console.log 'ERROR: e746ae94-5a3a-11e4-9a1d-88252caeb7e8'
+        alert 'ERROR: e746ae94-5a3a-11e4-9a1d-88252caeb7e8'
 
   /** @override */
   render: ->
@@ -152,9 +154,13 @@ class Operations extends Module
       'declaration.customer.name'
       'dam'
       'numeration_date'
-      'Aqui va una funcion'
+      'diro'
 
-    _dto-list = new Array
+    _templates =
+      'diro': ->
+        "<span class='#{gz.Css \label} #{gz.Css \label-success}'>
+           pendiente
+         </span>"
 
     dispatches = new Dispatches
     dispatches._fetch do
@@ -162,6 +168,7 @@ class Operations extends Module
         _tabla = new Table do
                       _attributes: _attributes
                       _labels: _labels
+                      _templates: _templates
                       on-dblclick-row: (evt) ~>
                         @_desktop.load-next-page OperationEdit, model: evt._target._model
 
