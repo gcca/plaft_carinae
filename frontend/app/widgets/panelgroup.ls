@@ -14,6 +14,7 @@
  * @export
  */
 class exports.PanelHeading extends App.View
+
   /** @override */
   _tagName: \div
 
@@ -58,35 +59,6 @@ class exports.PanelHeading extends App.View
         ..css= "flex:1;margin:3px"
       @_head._append it._span
 
-    # TODO: Quitar esto. La idea es aplicar la herencia para decidir
-    #       qué construir.
-    switch it._type
-    | @@kPDF =>
-      it._span.html = ''
-      _icon = App.dom._new \i
-        .._class = "#{gz.Css \glyphicon}
-                  \ #{gz.Css \glyphicon-bookmark}"
-      _btn = App.dom._new \a
-        .._class = "#{gz.Css \btn}
-                  \ #{gz.Css \btn-info}
-                  \ #{gz.Css \btn-sm}
-                  \ #{gz.Css \pull-right}"
-        ..href = "api/pdf/#{it._href}"
-        ..target = '_blank'
-        ..html = 'PDF '
-        .._append _icon
-
-      it._span._append _btn
-    | @@kClose =>
-      _btn = App.dom._new \button
-        .._class = "#{gz.Css \btn}
-                  \ #{gz.Css \btn-sm}
-                  \ #{gz.Css \close}
-                  \ #{gz.Css \pull-right}"
-        ..html = 'x'
-        ..on-click @_remove-panel
-      it._span._append _btn
-
   /** @override */
   initialize: (@_options) ->
     if @_options?
@@ -120,25 +92,29 @@ class exports.PanelHeading extends App.View
   /** @private */ _panel: null
   /** @private */ _array-panels: null
 
-  # TODO: Quitar los enums del prototype.
-  #       No es necesario que esté en prototype.
-  #       En el caso de Notifier se justifica por no ser más compleja
-  #       y facilitar, por ello, el acceso a los enums. Acá no sucede
-  #       lo mismo. Además, Notifier es un singleton.
-  kPDF   : @@kPDF    = 1
-  kClose : @@kClose  = 2
 
 
 /**
  * PanelHeadingClosable
  * --------------------
- *
- * TODO(Javier): Falta ejemplo.
+ * @example
+ * >>> panel-close = new PanelHeaderClosable _title 'Example Title'
+ * # Show search.
+ * >>> panel-close._show do
+ * >>>   _view: view-search [module.income.widget]
  * @class PanelHeadingClosable
  * @extends PanelHeading
  * @export
  */
 class exports.PanelHeaderClosable extends PanelHeading
+
+  /**
+   * Muestra la seccion search en el panelHeader.
+   * @param {view-search} _view
+   */
+  _show: (_view) ->
+    @_search.html = ''
+    @_search._append _view.render!.el
 
   /** @override */
   render: ->
@@ -146,16 +122,71 @@ class exports.PanelHeaderClosable extends PanelHeading
     @_search = App.dom._new \span
       ..css = "width: 200px;margin: 0;padding: 0;flex:4"
 
+    _btn = App.dom._new \button
+        .._class = "#{gz.Css \btn}
+                  \ #{gz.Css \btn-sm}
+                  \ #{gz.Css \close}
+                  \ #{gz.Css \pull-right}"
+        ..html = 'x'
+        ..on-click @_remove-panel
+
     _span = App.dom._new \span
       .._class = gz.Css \pull-right
       ..css= "flex:1;margin:5px"
-    @_change-type do
-      _type: @kClose
-      _span: _span
+      .._append _btn
+
     @_head._append @_search
     @_head._append _span
     ret
+
   /** @private */_search: null
+
+/**
+ * PanelHeaderPDF
+ * --------------------
+ * @example
+ * >>> panel-pdf = new PanelHeaderPDF _title 'Example Title'
+ * >>> panel-pdf._show do
+ * >>>   _href: Refencia del PDF.
+ * @class PanelHeaderPDF
+ * @extends PanelHeading
+ * @export
+ */
+class exports.PanelHeaderPDF extends PanelHeading
+
+  /**
+   * Agrega el boton PDF en el panelHeader.
+   * @param {String} _href
+   */
+  _show: ->
+    @_span.html = ''
+    _icon = App.dom._new \i
+      .._class = "#{gz.Css \glyphicon}
+                  \ #{gz.Css \glyphicon-bookmark}"
+
+    _btn = App.dom._new \a
+      .._class = "#{gz.Css \btn}
+                \ #{gz.Css \btn-info}
+                \ #{gz.Css \btn-sm}
+                \ #{gz.Css \pull-right}"
+      ..href = "#{it._href}"
+      ..target = '_blank'
+      ..html = 'PDF '
+      .._append _icon
+
+    @_span._append _btn
+    @_span.css.\display = ''
+
+  /** @override */
+  render: ->
+    ret = super!
+
+    @_span = App.dom._new \span
+      .._class = gz.Css \pull-right
+      ..css= "flex:1;margin:5px;display:-webkit-inline-box"
+
+    @_head._append @_span
+    ret
 
 
 /**
@@ -288,26 +319,34 @@ class exports.Panel extends App.View
  * ----------
  *
  * @example
- * TODO(Javier): Mejorar el ejemplo. En los ejemplos se deben usar casos
- *               concretos. Si el panel-group puede recibir en el atributo
- *               "_element: [HTMLElement || String]", se debe desarrollar
- *               ambos casos en el ejemplo, es decir, es código que se
- *               escribiría si _element fuera un HTMLElement o si fuera un
- *               string. De manera similar con el resto de casos.
  * >>> panel-group = new PanelGroup
  * >>> panel-group.new-panel do
- * >>>   _title: 'Example-Title'
- * >>>   _element: [HTMLElement || String]
- * >>> another-view.el._append panel-group.render!.el
+ * ...   _title: 'Example-Title'
+ * ...   _element: 'Example contenido'
  * >>> # with panelheading and panelbody
- * >>> panel-heading = new PanelHeading || new PanelHeadingClosable do
- * >>>   _title: 'Example-Title'
+ * >>> panel-heading = new PanelHeading do
+ * ...   _title: 'Example-Title'
  * >>> panel-body = new PanelBody do
- * >>>   _element: [HTMLElement || String]
- * >>> panel-group = new PanelGroup
+ * ...   _element: another-view.render!.el
  * >>> panel-group.new-panel do
- * >>>   _panel-heading: panel-heading
- * >>>   _panel-body: panel-body
+ * ...   _panel-heading: panel-heading
+ * ...   _panel-body: panel-body
+ * >>> another-view.el._append panel-group.render!.el
+ * >>> # with panelbody
+ * >>> _div = App.dom._new \div
+ * ...   ..html = 'Example'
+ * >>> panel-body = new PanelBody do
+ * ...   _element: _div
+ * >>> panel-group.new-panel do
+ * ...   _title: 'Example Title'
+ * ...   _panel-body: panel-body
+ * >>> another-view.el._append panel-group.render!.el
+ * >>> # with panelheading
+ * >>> panel-heading = new PanelHeading do
+ * ...   _title: 'Example-Title'
+ * >>> panel-group.new-panel do
+ * ...   _panel-heading: panel-heading
+ * ...   _element: another-view.render!.el
  * >>> another-view.el._append panel-group.render!.el
  *
  * @class PanelGroup
@@ -375,7 +414,7 @@ class exports.PanelGroup extends App.View
   # TODO: Quitar el valor por defecto de ConcretPanel a Panel.
   #       En caso de una clase hija de HijaPanelGroup con su "propio"
   #       HijaPanel, siempre estaría recibiendo la clase Panel.
-  #       Lo idel es que se pueda definir la clase HijaPanel por defecto,
+  #       Lo ideal es que se pueda definir la clase HijaPanel por defecto,
   #       de ser lo que se desea.
   initialize: ({@root-el = @el, \
                 @ConcretPanel = Panel} = App._void._Object) ->
