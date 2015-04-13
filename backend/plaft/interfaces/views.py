@@ -38,7 +38,6 @@ class Dashboard(DirectToController):
         self.add_arg('linked', {stk.slug: stk.id for stk in model.Linked.all()})
         self.add_arg('declarant', {dcl.slug: dcl.id for dcl in model.Declarant.all()})
         self.add_arg('user', self.user)
-        self.add_arg('datastore', self.user.customs_agency.get().datastore)
 
 
 class Debug(Handler):

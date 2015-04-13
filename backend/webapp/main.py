@@ -36,6 +36,10 @@ app = WSGIApplication([
     uri('linked', handlers.Linked),
     uri('declarant', handlers.Declarant),
 
+    # Handler methods
+    ('/pending_dispatches', handlers.pending_dispatches),
+
+
 #     # Admin
 #     ('/admin/site', admin.views.AdminSite),
 #     R('/api/admin/customs/<customs_id:\d+>/officer',
