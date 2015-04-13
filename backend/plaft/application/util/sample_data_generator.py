@@ -10,10 +10,18 @@
 
 from __future__ import unicode_literals
 from plaft.domain.model import (User, Dispatch, CodeName, Declaration,
-                                Customer, Third, Declarant, Linked, Business)
+                                Customer, Third, Declarant, Linked, Business,
+                                Datastore, CustomsAgency)
 
 
 def create_sample_data():
+    ## Customs Agency ######################################################
+    ca = CustomsAgency(
+        code= '123',
+        name= 'Agencia testing')
+    ca.store()
+
+
     ## Customers ###########################################################
     queirolo = Business(
         name='SANTIAGO QUEIROLO S.A.C',
@@ -56,7 +64,8 @@ def create_sample_data():
     offc = User(username='gcca@mail.io',
                    password='789',
                    name='Unamuno',
-                   is_officer=True)
+                   is_officer=True,
+                   customs_agency = ca.key)
     offc.store()
 
     em1 = User(username='E-01-@gueco.io',
@@ -199,7 +208,8 @@ def create_sample_data():
                      linked=[lnk1,lnk2],
                      description='Debe haber una descripcion !!!!',
                      income_date='20/12/1996',
-                     canal='R')
+                     canal='R',
+                     customs_agency=ca.key)
     disp1.store()
 
     d = Declaration(customer=gcca)
@@ -213,8 +223,16 @@ def create_sample_data():
                                      name='Solo Dios sabe'),
                      dam='2014-103-8237',
                      amount='56 874',
-                     canal='V')
+                     canal='V',
+                     customs_agency=ca.key)
     disp2.store()
+
+
+    ## Datastore ###########################################################
+    datastore = Datastore(customs_agency=ca.key,
+                          pending=[disp1.key, disp2.key])
+    datastore.store()
+
 
     ########################################################################
     return

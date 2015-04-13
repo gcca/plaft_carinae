@@ -24,6 +24,10 @@ class CustomsAgency(dom.Model):
     code = dom.String()  # código otorgado por la UIF
     name = dom.String()  # Nombre de la agencia de aduanas
 
+    @property
+    def datastore(self):
+        return Datastore.query(Datastore.customs_agency == self.key).get()
+
 
 # Usuarios
 
@@ -238,7 +242,11 @@ class Dispatch(dom.Model):
 class Datastore(dom.Model):
     """."""
     customs_agency = dom.Key(CustomsAgency)
-    dispatches = dom.Key(Dispatch, repeated=True)
+    pending = dom.Key(Dispatch, repeated=True)
+    accepting = dom.Key(Dispatch, repeated=True)
 
-
+class Operation(dom.Model):
+    """
+        TODO: FALTA DEFINIR ATRIBUTOS
+    """
 # vim: et:ts=4:sw=4
