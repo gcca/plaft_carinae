@@ -234,7 +234,6 @@ class Dispatch(dom.Model):
     exchange_rate = dom.String()
     canal = dom.String()
     customs_agency = dom.Key(CustomsAgency)
-    # TODO:cambiar nombre de las variables en el frontend (module operation)
     country_source = dom.String()
     country_target = dom.String()
 

@@ -3,7 +3,9 @@ import plaft.application.dispatch
 from plaft.domain.model import Dispatch, Customer, CustomsAgency, \
                                Datastore, Declaration
 
-
+#que recibe
+#que le hace
+#que devuelve
 class ApplicationDispatchTest(testplaft.TestCase):
 
     def test_create_with_customer(self):
@@ -113,6 +115,23 @@ class ApplicationDispatchTest(testplaft.TestCase):
         self.assertEqual(dispatch_test.country_target, country_target)
 
         dispatch.delete()
+
+    def test_register2(self):
+        dispatch = Dispatch(order='111')
+        dispatch.store()
+
+        # use case
+        country_source = 'Peru'
+        country_target = 'Colombia'
+
+        plaft.application.dispatch.register(dispatch,
+                                            country_source,
+                                            country_target)
+
+        # test
+        dispatch_test = Dispatch.find(order='111')
+        self.assertEqual(dispatch_test.country_source, country_source)
+        self.assertEqual(dispatch_test.country_target, country_target)
 
 
 # vim: et:ts=4:sw=4
