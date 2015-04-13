@@ -1,7 +1,7 @@
 from plaft.domain.model import Dispatch
 
 
-def create(dispatch, customer, customs_agency):
+def create(dispatch, customs_agency, customer=None):
     """Crea despacho y lo agrega a la lista de pendientes.
 
     Cuando se crea el despacho, se verifica que el numero de
@@ -13,7 +13,7 @@ def create(dispatch, customer, customs_agency):
     Args:
         dispatch (Dispatch): Instancia del Despacho.
         customer (Customer): Instancia del Customer.
-        customs_agency (Customs): Instancia de la Agencia.
+        customs_agency ?(Customs): Instancia de la Agencia.
 
     Returns:
         None
@@ -43,9 +43,8 @@ def numerate(dispatch, **args):
         None
 
     """
-    if not dispatch.dam:
-        # dispatch << **args
-        dispatch.store()
+    dispatch << args
+    dispatch.store()
 
 
 def register(dispatch, country_source, country_target):
@@ -77,7 +76,7 @@ def pending(customs_agency):
     Raises:
 
   """
-  dispatches = model.dispatch.find(customs_agency.id)
+  dispatches = Dispatch.find(customs_agency=customs_agency.key)
   return dispatches
 
 
