@@ -389,5 +389,4 @@ def handler_method(method='get'):
     return type('HandlerMethod', (Handler,), {'get': method})
 
 
-
 # vim: et:ts=4:sw=4
