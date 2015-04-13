@@ -26,7 +26,7 @@ class CustomsAgency(dom.Model):
 
     @property
     def datastore(self):
-        return Datastore.query(Datastore.customs_agency == self.key).get()
+        return Datastore.find(customs_agency=self.key)
 
 
 # Usuarios

@@ -65,7 +65,7 @@ class Model(Entity, ndb.Model):
                                         else (val, None)))))
 
     @classmethod
-    def all(cls, dto=None, **filters):
+    def __all(cls, dto, **filters):
         """."""
         if dto:
             filters = dto
@@ -74,11 +74,16 @@ class Model(Entity, ndb.Model):
                                     for item in filters.items()))
 
     @classmethod
+    def all(cls, dto=None, **filters):
+        """."""
+        return cls.__all(dto, **filters).fetch(666)
+
+    @classmethod
     def find(cls, dto_or_id=None, **filters):
         """."""
         return (cls.get_by_id(dto_or_id)
                 if isinstance(dto_or_id, (int, long))
-                else cls.all(dto_or_id, **filters).get())
+                else cls.__all(dto_or_id, **filters).get())
 
     def store(self):
         """."""
