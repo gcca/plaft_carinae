@@ -1,6 +1,53 @@
 from plaft.domain.model import Dispatch
 
 
+def create(dispatch, customer, customs_agency):
+    """Crea despacho y lo agrega a la lista de pendientes.
+
+    Cuando se crea el despacho, se verifica que el numero de
+    order sea unico.
+
+    Se agrega el despacho en la lista de despachos pendientes
+    en el datastore.
+
+    Args:
+        dispatch (Dispatch): Instancia del Despacho.
+        customer (Customer): Instancia del Customer.
+        customs_agency (Customs): Instancia de la Agencia.
+
+    Returns:
+        None
+
+    """
+    dispatch.customs_agency = customs_agency.key
+    dispatch.customer = customer.key
+    dispatch.store()
+
+    datastore = customs_agency.datastore
+    datastore.pending.append(dispatch.key)
+    datastore.store()
+
+
+def numerate(dispatch, **args):
+    """ Enumera el despacho.
+
+    Se verifica en el despacho que el dam no exista.
+
+    Se modifica el despacho.
+
+    Args:
+        dispatch (Dispatch): Instancia del Despacho.
+        **args: Argumentos para modificar el despacho.
+
+    Returns:
+        None
+
+    """
+    if not dispatch.dam:
+        # dispatch << **args
+        dispatch.store()
+
+
 def register(dispatch, country_source, country_target):
   """
     Arg:
@@ -32,54 +79,6 @@ def pending(customs_agency):
   """
   dispatches = model.dispatch.find(customs_agency.id)
   return dispatches
-
-
-def create(dispatch, customer, customs_agency):
-    """Crea despacho y lo agrega a la lista de pendientes.
-
-    Cuando se crea el despacho, se verifica que el numero de
-    order sea unico.
-
-    Se agrega el despacho en la lista de despachos pendientes
-    en el datastore.
-
-    Args:
-        dispatch (Dispatch): Instancia del Despacho.
-        customer (Customer): Instancia del Customer.
-        customs_agency (Customs): Instancia de la Agencia.
-
-    Returns:
-        None
-
-    """
-    if not Dispatch.filter(order=dispatch.order):
-        dispatch.customs_agency = customs_agency
-        dispatch.customer = customer
-        dispatch.store()
-
-        datastore = customs_agency.datastore
-        datastore.pending.append(dispatch.key)
-        datastore.store()
-
-
-def numerate(dispatch, **args):
-    """ Enumera el despacho.
-
-    Se verifica en el despacho que el dam no exista.
-
-    Se modifica el despacho.
-
-    Args:
-        dispatch (Dispatch): Instancia del Despacho.
-        **args: Argumentos para modificar el despacho.
-
-    Returns:
-        None
-
-    """
-    if not dispatch.dam:
-        dispatch << **args
-        dispatch.store()
 
 
 # vim: et:ts=4:sw=4
