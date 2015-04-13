@@ -245,8 +245,9 @@ class Datastore(dom.Model):
     pending = dom.Key(Dispatch, repeated=True)
     accepting = dom.Key(Dispatch, repeated=True)
 
+
 class Operation(dom.Model):
-    """
-        TODO: FALTA DEFINIR ATRIBUTOS
-    """
+    """TODO: FALTA DEFINIR ATRIBUTOS."""
+
+
 # vim: et:ts=4:sw=4
