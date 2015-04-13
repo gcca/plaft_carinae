@@ -237,17 +237,17 @@ class Dispatch(dom.Model):
     customs_agency = dom.Key(CustomsAgency)
 
 
+class Operation(dom.Model):
+    """TODO: FALTA DEFINIR ATRIBUTOS."""
+
+
 # Datos globales por agencia
 
 class Datastore(dom.Model):
-    """."""
+    """Pseudo-ValueObject for dispatch-operation transitions."""
     customs_agency = dom.Key(CustomsAgency)
     pending = dom.Key(Dispatch, repeated=True)
     accepting = dom.Key(Dispatch, repeated=True)
-
-
-class Operation(dom.Model):
-    """TODO: FALTA DEFINIR ATRIBUTOS."""
 
 
 # vim: et:ts=4:sw=4

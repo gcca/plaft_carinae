@@ -35,8 +35,10 @@ class Dashboard(DirectToController):
     """Users dashboard."""
 
     def _args(self):
-        self.add_arg('linked', {stk.slug: stk.id for stk in model.Linked.all()})
-        self.add_arg('declarant', {dcl.slug: dcl.id for dcl in model.Declarant.all()})
+        self.add_arg('linked',
+                     {stk.slug: stk.id for stk in model.Linked.all()})
+        self.add_arg('declarant',
+                     {dcl.slug: dcl.id for dcl in model.Declarant.all()})
         self.add_arg('user', self.user)
 
 
