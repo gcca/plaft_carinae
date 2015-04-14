@@ -75,7 +75,7 @@ def numerate(dispatch, **args):
 
 
 def register(dispatch, country_source, country_target):
-  """
+    """
     Arg:
       param1 (Dispatch): El despacho a actualizar
       param2 (String): El pais de origen
@@ -86,14 +86,14 @@ def register(dispatch, country_source, country_target):
 
     Raises:
       None
-  """
-  dispatch.country_source = country_source
-  dispatch.country_target = country_target
-  dispatch.store()
+    """
+    dispatch.country_source = country_source
+    dispatch.country_target = country_target
+    dispatch.store()
 
 
 def pending(customs_agency):
-  """
+    """
     Arg:
       param1 (CustomsAgency): Agencia de aduana
 
@@ -102,8 +102,7 @@ def pending(customs_agency):
 
     Raises:
 
-  """
-  return customs_agency.datastore.pending
-
+    """
+    return [d.get() for d in customs_agency.datastore.pending]
 
 # vim: et:ts=4:sw=4

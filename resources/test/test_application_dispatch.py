@@ -3,9 +3,7 @@ import plaft.application.dispatch
 from plaft.domain.model import Dispatch, Customer, CustomsAgency, \
                                Datastore, Declaration
 
-#que recibe
-#que le hace
-#que devuelve
+
 class ApplicationDispatchTest(testplaft.TestCase):
 
     def test_create_with_customer(self):
@@ -93,7 +91,7 @@ class ApplicationDispatchTest(testplaft.TestCase):
         dispatch2.customs_agency = customs_agency.key
         dispatch2.store()
 
-        datastore = Datastore(customs_agency = customs_agency.key)
+        datastore = Datastore(customs_agency=customs_agency.key)
         datastore.pending = [dispatch1.key, dispatch2.key]
         datastore.store()
 
