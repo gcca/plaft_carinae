@@ -21,6 +21,11 @@ def create_sample_data():
         name= 'Agencia testing')
     ca.store()
 
+    ca2 = CustomsAgency(
+        code= '345',
+        name= 'Testing agency')
+    ca2.store()
+
 
     ## Customers ###########################################################
     queirolo = Business(
@@ -63,10 +68,17 @@ def create_sample_data():
     ## Users ###############################################################
     offc = User(username='gcca@mail.io',
                    password='789',
-                   name='Unamuno',
+                   name='Unamuno reloaded',
                    is_officer=True,
                    customs_agency = ca.key)
     offc.store()
+
+    offc2 = User(username='gcca2@mail.io',
+                   password='123',
+                   name='Unamuno',
+                   is_officer=True,
+                   customs_agency = ca2.key)
+    offc2.store()
 
     em1 = User(username='E-01-@gueco.io',
                    password='23',
@@ -224,14 +236,18 @@ def create_sample_data():
                      dam='2014-103-8237',
                      amount='56 874',
                      canal='V',
-                     customs_agency=ca.key)
+                     customs_agency=ca2.key)
     disp2.store()
 
 
     ## Datastore ###########################################################
     datastore = Datastore(customs_agency=ca.key,
-                          pending=[disp1.key, disp2.key])
+                          pending=[disp1.key])
     datastore.store()
+
+    datastore2 = Datastore(customs_agency=ca.key,
+                          pending=[disp2.key])
+    datastore2.store()
 
 
     ########################################################################
