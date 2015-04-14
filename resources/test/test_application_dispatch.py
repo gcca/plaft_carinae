@@ -20,9 +20,17 @@ class ApplicationDispatchTest(testplaft.TestCase):
         customer = Customer()
         customer.store()
 
-        dispatch = Dispatch(order='666-666')
+        dispatch_dto = {
+            'order': '666-666',
+            'declaration': {
+                'customer': {
+                    'document_number': '12312312',
+                    'document_type': 'dni'
+                }
+            }
+        }
 
-        plaft.application.dispatch.create(dispatch,
+        plaft.application.dispatch.create(dispatch_dto,
                                           customs_agency,
                                           customer)
 
@@ -34,11 +42,6 @@ class ApplicationDispatchTest(testplaft.TestCase):
         datastore_test = customs_agency.datastore
         self.assertIn(dispatch_test.key, datastore_test.pending)
 
-        customs_agency.delete()
-        datastore.delete()
-        customer.delete()
-        dispatch.delete()
-
     def test_create_without_customer(self):
         # premises
         customs_agency = CustomsAgency()
@@ -48,15 +51,20 @@ class ApplicationDispatchTest(testplaft.TestCase):
         datastore.store()
 
         # use case
-        customer = Customer(document_number='123123123')
-        declaration = Declaration(customer=customer)
-        declaration.store()
-        dispatch = Dispatch(order='666-666', declaration=declaration.key)
+        dispatch_dto = {
+            'order': '666-666',
+            'declaration': {
+                'customer': {
+                    'document_number': '12312312',
+                    'document_type': 'dni'
+                }
+            }
+        }
 
-        plaft.application.dispatch.create(dispatch, customs_agency)
+        plaft.application.dispatch.create(dispatch_dto, customs_agency)
 
         # test creation
-        customer = Customer.find(document_number='123123123')
+        customer = Customer.find(document_number='12312312')
         self.assertIsNotNone(customer)
 
     def test_numerate(self):

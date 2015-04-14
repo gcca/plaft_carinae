@@ -1,24 +1,49 @@
-from plaft.domain.model import Dispatch
+from plaft.domain.model import Dispatch, Customer, Declaration
 
 
-def create(dispatch, customs_agency, customer=None):
+def create(payload, customs_agency, customer=None):
     """Crea despacho y lo agrega a la lista de pendientes.
 
     Cuando se crea el despacho, se verifica que el numero de
     order sea unico.
 
-    Se agrega el despacho en la lista de despachos pendientes
-    en el datastore.
+    Se verifica si el customer existe, si no existe se procede
+    a crear dependiendo del payload.
+
+    Se agrega el despacho creado en la lista de despachos pendientes
+    del datastore.
 
     Args:
-        dispatch (Dispatch): Instancia del Despacho.
-        customer (Customer): Instancia del Customer.
-        customs_agency ?(Customs): Instancia de la Agencia.
+        payload (dict): Diccionario de datos del Despacho.
+        example:
+            {'order': '123-123',
+             'declaration': {
+                'customer': {
+                    'document_number': '12341234',
+                    'document_type': 'dni'
+                }
+             },
+             'description': 'Example'
+            }
+
+        customs_agency (Customs): Instancia de la Agencia.
+        customer ?(Customer): Instancia del Customer.
 
     Returns:
-        None
+        dispatch: Instancia del modelo Despacho.
+
+    Raises:
+        IOError: Cuando se intente guardar alguna entidad.
 
     """
+    declaration = Declaration.new(payload['declaration'])
+    declaration.store()
+
+    if not customer:
+        customer = Customer.new(payload['declaration']['customer'])
+        customer.store()
+
+    dispatch = Dispatch.new(payload)
     dispatch.customs_agency = customs_agency.key
     dispatch.customer = customer.key
     dispatch.store()
@@ -27,9 +52,11 @@ def create(dispatch, customs_agency, customer=None):
     datastore.pending.append(dispatch.key)
     datastore.store()
 
+    return dispatch
+
 
 def numerate(dispatch, **args):
-    """ Enumera el despacho.
+    """ Numera el despacho.
 
     Se verifica en el despacho que el dam no exista.
 

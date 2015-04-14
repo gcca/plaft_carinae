@@ -35,16 +35,17 @@ def pending_dispatches(handler):
 
 @handler_method('post')
 def create_dispatch(handler):
-    q = handler.query
+    payload = handler.query
 
     customs_agency = handler.user.customs_agency.get()
-    dispatch = Dispatch.new(q)
 
     customer = None
-    if q['customer']:
-        customer = Customer.find(q['customer'])
+    if payload['customer']:
+        customer = Customer.find(payload['customer'])
 
-    application.dispatch.create(dispatch, customs_agency, customer)
+    dispatch = application.dispatch.create(payload,
+                                           customs_agency,
+                                           customer)
 
     handler.render_json({
         'id': dispatch.id,
