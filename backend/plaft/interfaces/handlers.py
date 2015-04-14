@@ -30,7 +30,11 @@ class Declarant(RESTHandler):
 
 @handler_method
 def pending_dispatches(handler):
-    handler.render_json(handler.user.customs_agency.get().datastore.pending)
+    user = handler.user
+    if user:
+        handler.render_json(user.customs_agency.get().datastore.pending)
+    else:
+        handler.status.NOT_FOUND('No hay usuario')
 
 
 @handler_method('post')
@@ -51,6 +55,21 @@ def create_dispatch(handler):
         'id': dispatch.id,
         'customer': customer.id
     })
+
+
+@handler_method('post')
+def register(handler, dispatch_id):
+    q = handler.query
+
+    dispatch = Dispatch.find(int(dispatch_id))
+    if dispatch:
+        plaft.application.dispatch.register(dispatch,
+                                            q['country_source'],
+                                            q['country_target'])
+        handler.write_json('{}')
+    else:
+        handler.status.NOT_FOUND('No existe el despacho con el id: '
+                                 + dispatch_id)
 
 
 # vim: et:ts=4:sw=4
