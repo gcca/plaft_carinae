@@ -38,7 +38,7 @@ app = WSGIApplication([
 
     # Handler methods
     ('/pending_dispatches', handlers.pending_dispatches),
-
+    ('/api/dispatch/create', handlers.create_dispatch),
 
 #     # Admin
 #     ('/admin/site', admin.views.AdminSite),

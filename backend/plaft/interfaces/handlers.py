@@ -10,7 +10,7 @@
 
 from plaft.interfaces import RESTHandler, handler_method
 from plaft.domain import model
-
+from plaft import application
 
 class Customer(RESTHandler):
     """Customer RESTful."""
@@ -45,7 +45,7 @@ def create_dispatch(handler):
 
     customer = None
     if payload['customer']:
-        customer = Customer.find(payload['customer'])
+        customer = model.Customer.find(payload['customer'])
 
     dispatch = application.dispatch.create(payload,
                                            customs_agency,
@@ -63,9 +63,9 @@ def register(handler, dispatch_id):
 
     dispatch = Dispatch.find(int(dispatch_id))
     if dispatch:
-        plaft.application.dispatch.register(dispatch,
-                                            q['country_source'],
-                                            q['country_target'])
+        application.dispatch.register(dispatch,
+                                      q['country_source'],
+                                      q['country_target'])
         handler.write_json('{}')
     else:
         handler.status.NOT_FOUND('No existe el despacho con el id: '
