@@ -103,8 +103,7 @@ def pending(customs_agency):
     Raises:
 
   """
-  dispatches = Dispatch.find(customs_agency=customs_agency.key)
-  return dispatches
+  return customs_agency.datastore.pending
 
 
 # vim: et:ts=4:sw=4

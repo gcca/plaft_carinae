@@ -93,6 +93,10 @@ class ApplicationDispatchTest(testplaft.TestCase):
         dispatch2.customs_agency = customs_agency.key
         dispatch2.store()
 
+        datastore = Datastore(customs_agency = customs_agency.key)
+        datastore.pending = [dispatch1.key, dispatch2.key]
+        datastore.store()
+
         # use case
         dispatches = plaft.application.dispatch.pending(customs_agency)
 
@@ -140,6 +144,8 @@ class ApplicationDispatchTest(testplaft.TestCase):
         dispatch_test = Dispatch.find(order='111')
         self.assertEqual(dispatch_test.country_source, country_source)
         self.assertEqual(dispatch_test.country_target, country_target)
+
+        dispatch.delete()
 
 
 # vim: et:ts=4:sw=4
