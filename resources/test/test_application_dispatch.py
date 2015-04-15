@@ -78,7 +78,7 @@ class ApplicationDispatchTest(testplaft.TestCase):
 
         dispatch.delete()
 
-    def test_pending(self):
+    def test_dispatches_by_customs_agency(self):
         # premises
         customs_agency = CustomsAgency()
         customs_agency.store()
