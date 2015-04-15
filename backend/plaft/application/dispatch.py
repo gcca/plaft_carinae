@@ -76,6 +76,12 @@ def numerate(dispatch, **args):
 
 def register(dispatch, country_source, country_target):
     """
+    Actualiza los campos del despacho enviado.
+    Los campos a actualizar del despacho son:
+      country_source y country_target
+
+    Se modifica ambos campos en el despacho
+
     Arg:
       param1 (Dispatch): El despacho a actualizar
       param2 (String): El pais de origen
@@ -92,17 +98,27 @@ def register(dispatch, country_source, country_target):
     dispatch.store()
 
 
-def pending(customs_agency):
+def dispatches_by_customs_agency(customs_agency):
     """
+    Verifica que la agencia aduanas exista
+
+    Regresa un diccionario conteniendo 2 listas:
+      Lista de despachos pendientes de una agencia y
+      lista de despachos aceptados de una agencia
+
     Arg:
       param1 (CustomsAgency): Agencia de aduana
 
     Returns:
-      Lista de despachos
+      Diccionario de despachos
+      p -> Representa la lista de despachos pendientes
+      a -> Representa la lista de despachos aceptados
 
     Raises:
 
     """
-    return [d.get() for d in customs_agency.datastore.pending]
+    return {'p': [d.get() for d in customs_agency.datastore.pending],
+            'a': [d.get() for d in customs_agency.datastore.accepting]}
+
 
 # vim: et:ts=4:sw=4

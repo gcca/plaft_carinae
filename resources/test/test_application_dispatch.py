@@ -96,10 +96,11 @@ class ApplicationDispatchTest(testplaft.TestCase):
         datastore.store()
 
         # use case
-        dispatches = plaft.application.dispatch.pending(customs_agency)
+        dispatch = plaft.application.dispatch
+        dispatches = dispatch.dispatches_by_customs_agency(customs_agency)
 
         # test
-        self.assertListEqual([dispatch1, dispatch2], dispatches)
+        self.assertDictEqual({'p':[dispatch1, dispatch2], 'a':[]}, dispatches)
 
         dispatch1.delete()
         dispatch2.delete()
