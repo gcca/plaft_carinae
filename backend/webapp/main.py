@@ -37,9 +37,11 @@ app = WSGIApplication([
     uri('declarant', handlers.Declarant),
 
     # Handler methods
+    ('/api/income/create', handlers.create), # change name
+    ('/api/income/create/(\d+)', handlers.update),
+    ('/api/dispatch/(\d+)/numerate', handlers.numerate),
     ('/api/customs_agency/(\d+)/list_dispatches',
                 handlers.dispatches_by_customs_agency),
-    ('/api/dispatch/create', handlers.create_dispatch),
 
     # # Admin
     # ('/admin/site', admin.views.AdminSite),

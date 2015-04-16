@@ -7,10 +7,10 @@
 
 
 """
-
+import plaft.application
 from plaft.interfaces import RESTHandler, handler_method
 from plaft.domain import model
-from plaft import application
+
 
 
 class Customer(RESTHandler):
@@ -28,7 +28,6 @@ class Linked(RESTHandler):
 class Declarant(RESTHandler):
     """Declarant RESTful."""
 
-
 @handler_method
 def dispatches_by_customs_agency(handler):
     user = handler.user
@@ -39,32 +38,75 @@ def dispatches_by_customs_agency(handler):
 
 
 @handler_method('post')
-def create_dispatch(handler):
+def create(handler): # change name.
     payload = handler.query
 
     customs_agency = handler.user.customs_agency.get()
 
     customer = None
-    if payload['customer']:
-        customer = model.Customer.find(payload['customer'])
+    if 'customer' in payload:
+        customer_id = payload['customer']
+        customer = model.Customer.find(customer_id)
+        if not customer:
+            handler.status.BAD_REQUEST('No existe el cliente: '
+                                       + customer_id)
+            return
 
-    dispatch = application.dispatch.create(payload,
-                                           customs_agency,
-                                           customer)
 
+    dispatch = plaft.application.dispatch.create(payload,
+                                                 customs_agency,
+                                                 customer)
     handler.render_json({
-        'id': dispatch.id,
-        'customer': customer.id
+    'id': dispatch.id,
+    'customer': dispatch.customer.id()
     })
+
+
+@handler_method('put')
+def update(handler, dispatch_id=None): # change name.
+    payload = handler.query
+
+    customs_agency = handler.user.customs_agency.get()
+
+    customer = None
+    if 'customer' in payload:
+        customer_id = payload['customer']
+        customer = model.Customer.find(customer_id)
+        if not customer:
+            handler.status.BAD_REQUEST('No existe el cliente: '
+                                       + customer_id)
+            return
+
+    dispatch = model.Dispatch.find(int(dispatch_id))
+    if dispatch:
+        plaft.application.dispatch.update(dispatch, payload, customer)
+        handler.write_json('{}')
+    else:
+        handler.status.NOT_FOUND('No existe el despacho con el id: '
+                                 + dispatch_id)
+
+
+@handler_method('post')
+def numerate(handler, dispatch_id):
+    playload = handler.query
+
+    dispatch = model.Dispatch.find(int(dispatch_id))
+    if dispatch:
+        plaft.application.dispatch.numerate(dispatch, **playload)
+
+        handler.write_json('{}')
+    else:
+        handler.status.NOT_FOUND('No existe el despacho con el id: '
+                                 + dispatch_id)
 
 
 @handler_method('post')
 def register(handler, dispatch_id):
     q = handler.query
 
-    dispatch = Dispatch.find(int(dispatch_id))
+    dispatch = model.Dispatch.find(int(dispatch_id))
     if dispatch:
-        application.dispatch.register(dispatch,
+        plaft.application.dispatch.register(dispatch,
                                       q['country_source'],
                                       q['country_target'])
         handler.write_json('{}')
