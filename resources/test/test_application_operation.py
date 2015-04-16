@@ -18,7 +18,7 @@ class ApplicationOperationTest(testplaft.TestCase):
         dispatch = Dispatch(order='666-666', customer=customer.key)
         dispatch.store()
 
-        operation = plaft.application.operation.accept_dispatch(dispatch)
+        operation = plaft.application.operation.accept(dispatch)
 
         self.assertIsNotNone(operation)
 

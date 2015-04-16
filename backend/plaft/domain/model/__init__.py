@@ -245,6 +245,8 @@ class Dispatch(dom.Model):
 
     operation = dom.Key(kind='Operation')
 
+    exclude = ['operation']
+
 
 class Operation(dom.Model):
     """Operación SBS.

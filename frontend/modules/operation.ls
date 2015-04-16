@@ -34,9 +34,54 @@ class OperationEdit extends Module
       _error: ->
         alert 'ERROR: e746ae94-5a3a-11e4-9a1d-88252caeb7e8'
 
+  /**
+   * (Event) Accept dispatch (to operation).
+   * @private
+   */
+  on-accept: ~>
+    App.ajax._post "/api/dispatch/#{@model._id}/accept", null, do
+      _success: ~>
+        alert 'ACEPTADO'
+      _bad-request: ~>
+        alert 'DENEGADO (Error)'
+
   /** @override */
   render: ->
-    App.builder.Form._new @el, _FIELDS
+    @el.html = "
+    <div class='#{gz.Css \col-md-11}' style='padding:0'>
+    </div>
+    <div class='#{gz.Css \col-md-1}' style='padding:0'>
+      <div class='#{gz.Css \col-md-12}
+                \ #{gz.Css \col-sm-6}'
+           style='padding:0'>
+        <button type='button'
+                class='#{gz.Css \btn}
+                     \ #{gz.Css \btn-success'}'>
+          Aceptar
+        </button>
+      </div>
+      <div class='#{gz.Css \col-md-12}
+                \ #{gz.Css \hidden-sm}'
+           style='padding:0'>
+        &nbsp;
+      </div>
+      <div class='#{gz.Css \col-md-12}
+                \ #{gz.Css \col-sm-6}'
+           style='padding:0'>
+        <button type='button'
+                class='#{gz.Css \btn}
+                     \ #{gz.Css \btn-info'}'>
+          Generar
+        </button>
+      </div>
+    </div>"
+
+    btn-accept = @el.query ".#{gz.Css \btn-success}"
+    # btn-generate = @el.query ".#{gz.Css \btn-info}"  # TODO
+
+    btn-accept.on-click @on-accept
+
+    App.builder.Form._new @el._first, _FIELDS
       .._class = gz.Css \col-md-6
       ..render!
       .._free!

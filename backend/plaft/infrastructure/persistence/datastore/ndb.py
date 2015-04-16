@@ -101,10 +101,15 @@ PolyModel = polymodel.PolyModel
 class Model(Entity, ndb.Model):
     """."""
 
+    exclude = []
+
     @property
     def dict(self):
         """."""
-        return self.to_dict()
+        dict = self.to_dict()
+        for key in self.exclude:
+            del dict[key]
+        return dict
 
     # filter_node = staticmethod(
     #     lambda prop, val: Q.FilterNode(  # pylint: disable=I0011,W0142

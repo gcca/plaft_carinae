@@ -1,7 +1,7 @@
 from plaft.domain.model import Operation
 
 
-def accept_dispatch(dispatch):
+def accept(dispatch):
     """Dipsatch to operation."""
     operation = Operation(dispatches=[dispatch.key],
                           customs_agency=dispatch.customs_agency,
@@ -10,6 +10,11 @@ def accept_dispatch(dispatch):
 
     dispatch.operation = operation.key
     dispatch.store()
+
+    datastore = dispatch.customs_agency.get().datastore
+    datastore.pending.remove(dispatch.key)
+    datastore.accepting.append(dispatch.key)
+    datastore.store()
 
     return operation
 

@@ -43,6 +43,8 @@ app = WSGIApplication([
     ('/api/customs_agency/(\d+)/list_dispatches',
                 handlers.dispatches_by_customs_agency),
 
+    ('/api/dispatch/(\d+)/accept', handlers.accept_dispatch),
+
     # # Admin
     # ('/admin/site', admin.views.AdminSite),
     # R('/api/admin/customs/<customs_id:\d+>/officer',

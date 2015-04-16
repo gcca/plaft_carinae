@@ -115,4 +115,14 @@ def register(handler, dispatch_id):
                                  dispatch_id)
 
 
+@handler_method('post')
+def accept_dispatch(handler, id=None):
+    dispatch = model.Dispatch.find(int(id))
+    if dispatch:
+        operation = plaft.application.operation.accept(dispatch)
+        handler.write_json('{"id":%s}' % operation.id)
+    else:
+        handler.status.NOT_FOUND('No se halló el desapcho ' + id)
+
+
 # vim: et:ts=4:sw=4

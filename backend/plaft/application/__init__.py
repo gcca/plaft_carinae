@@ -7,6 +7,7 @@
 
 """
 import dispatch
+import operation
 
 
 # vim: et:ts=4:sw=4

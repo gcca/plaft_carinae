@@ -283,10 +283,10 @@ def create_sample_data():
                           accepting=[])
     datastore.store()
 
-    datastore2 = Datastore(customs_agency=ca.key,
-                          pending=[disp2.key, disp3.key],
-                          accepting=[])
-    datastore2.store()
+    # datastore2 = Datastore(customs_agency=ca.key,
+    #                       pending=[disp2.key, disp3.key],
+    #                       accepting=[])
+    # datastore2.store()
 
 
     ########################################################################
