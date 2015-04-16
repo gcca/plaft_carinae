@@ -1,5 +1,38 @@
 /** @module modules */
 
+/**
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ * Module Operation
+ *
+ *  - - - - - - - - - - - - - - - - -  <- PanelGroup
+ * |     Dispatch [PanelHeading]    |
+ * |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ |
+ * |                                |
+ * |        [PanelBody]             |
+ * |                                |
+ * |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ |
+ * |   Customer [PanelHeaderPDF]    |
+ * |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ |
+ * |                                |
+ * |        [PanelBody]             |
+ * |                                |
+ * |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ |
+ * |    Stakeholder [PanelHeading]  |
+ * |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ |
+ * |                                |
+ * |        [PanelBody]             |
+ * |                                |
+ * |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ |
+ * |    Declarant [PanelHeading]    |
+ * |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ |
+ * |                                |
+ * |        [PanelBody]             |
+ * |                                |
+ * |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ |
+ *
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ */
+
 Module = require '../../workspace/module'
 
 panelgroup = require '../../app/widgets/panelgroup'
@@ -13,7 +46,6 @@ Dispatch = require './dispatch'
 Stakeholder = require './stakeholder'
 Declarant = require './declarant'
 
-
 /**
  * CustomerModel
  * ----------
@@ -24,25 +56,15 @@ Declarant = require './declarant'
 class CustomerModel extends App.Model
   urlRoot: 'customer'
 
-#  is-business:~
-#    -> @_attributes.'class_'[*-1] is 'Business'
-
-#  is-person:~
-#    -> @_attributes.'class_'[*-1] is 'Person'
-
-
-#  if model.is-person
-#    cargue la persona
-
 /**
- * DispatchModel
+ * IncomeModel
  * ----------
  *
- * @class DispatchModel
+ * @class IncomeModel
  * @extends Model
  */
-class DispatchModel extends App.Model
-  urlRoot: 'dispatch'
+class IncomeModel extends App.Model
+  urlRoot: 'income/create'
 
   defaults:
     'declaration': []
@@ -84,16 +106,18 @@ class Operation extends Module
       _dto = 'order' : query
 
       success = (dto) ~>
-        @dispatch-model = new DispatchModel dto.0
-        @_customer = @dispatch-model._attributes.'declaration'.'customer'
-        @_third = @dispatch-model._attributes.'declaration'.'third'
-        customer-dto = @dispatch-model._attributes.'customer'
+        @income-model = new IncomeModel dto.0
+
+        @_customer = @income-model._attributes.'declaration'.'customer'
+        @_third = @income-model._attributes.'declaration'.'third'
+
+        customer-dto = @income-model._attributes.'customer'
         @customer-model = new CustomerModel customer-dto
 
         @render-operation!
         if dto.0.\id
           @customer-head._show do
-            _href: "/declaration/pdf/#{@dispatch-model\id}"
+            _href: "/declaration/pdf/#{@income-model\id}"
 
       not-found = (e) ~>
         @_desktop.notifier.notify do
@@ -108,7 +132,7 @@ class Operation extends Module
       success = (dto) ~>
         @customer-model = new CustomerModel dto.0
         @_customer = @customer-model._attributes
-        @dispatch-model = new DispatchModel
+        @income-model = new IncomeModel
         @render-operation!
 
       not-found = (e) ~>
@@ -146,8 +170,9 @@ class Operation extends Module
     dto =
       \document_number : _query
     @customer-model = new CustomerModel dto
-    @dispatch-model = new DispatchModel
+    @income-model = new IncomeModel
     @_customer = @customer-model._attributes
+    @_third = null
     @render-operation!
 
   /**
@@ -157,8 +182,6 @@ class Operation extends Module
    */
   on-save: ~>
     customer-dto = @customer._toJSON!
-    # Save to CustomerModel.
-    @customer-model._save customer-dto
 
     dispatch-dto = @dispatch.el._toJSON!
       ..'customer' = @customer-model._id
@@ -167,17 +190,19 @@ class Operation extends Module
         'customer': customer-dto
       ..'declarant' = @declarant._toJSON!
       ..'linked' = @stakeholder._toJSON!
-
-    # Save to DispatchModel.
-    @dispatch-model._save dispatch-dto, do
+    console.log dispatch-dto
+    # Save to IncomeModel.
+    @income-model._save dispatch-dto, do
       _success: (dto) ~>
         @customer-head._show do
-          _href:  "/declaration/pdf/#{@dispatch-model\id}"
-        @_desktop.notifier.notify 'Guardado' @_desktop.notifier.kSuccess
+          _href:  "/declaration/pdf/#{@income-model\id}"
+        @_desktop.notifier.notify do
+          _message: 'Guardado'
+          _type: @_desktop.notifier.kSuccess
       _error: ~>
-        @_desktop.notifier.notify(
-          'Error: 869171b8-3f8e-11e4-a98f-88252caeb7e8',
-          @_desktop.notifier.kDanger)
+        @_desktop.notifier.notify do
+          _message: 'Error: 869171b8-3f8e-11e4-a98f-88252caeb7e8'
+          _type: @_desktop.notifier.kDanger
 
   /**
    * Sync typeahead completion with panel overflow.
@@ -196,15 +221,15 @@ class Operation extends Module
   render-operation: ->
     @clean!
 
-    @dispatch = Dispatch._new dispatch : @dispatch-model._attributes
+    @dispatch = Dispatch._new dispatch : @income-model._attributes
     @customer = Customer._new do
       customer-dto : @_customer
       third-dto: @_third
 
     @stakeholder = Stakeholder._new do
-      collection : @dispatch-model._attributes\linked
+      collection : @income-model._attributes\linked
     @declarant = Declarant._new do
-      collection : @dispatch-model._attributes\declarant
+      collection : @income-model._attributes\declarant
 
     pnl-group = new PanelGroup
 
@@ -250,7 +275,7 @@ class Operation extends Module
     kByOrder: 1
 
   /** @private */ customer-model: null
-  /** @private */ dispatch-model: null
+  /** @private */ income-model: null
   /** @private */ stakeholder: null
   /** @private */ customer: null
   /** @private */ dispatch: null
