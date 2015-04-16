@@ -26,7 +26,6 @@ class HandlerTest(testplaft.TestCase):
                          customer_response.document_number)
 
     def test_create_batch(self):
-
         customers_request = [Customer(name='abc_'+i,
                                       document_type='ruc',
                                       document_number='123_'+i).dict
