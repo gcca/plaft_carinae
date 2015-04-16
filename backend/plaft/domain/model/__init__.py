@@ -245,7 +245,7 @@ class Dispatch(dom.Model):
 
     operation = dom.Key(kind='Operation')
 
-    exclude = ['operation']
+    static_keys = ['operation']
 
 
 class Operation(dom.Model):

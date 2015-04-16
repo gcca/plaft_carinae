@@ -101,14 +101,15 @@ PolyModel = polymodel.PolyModel
 class Model(Entity, ndb.Model):
     """."""
 
-    exclude = []
+    static_keys = []
 
     @property
     def dict(self):
         """."""
         dict = self.to_dict()
-        for key in self.exclude:
-            del dict[key]
+        for key in self.static_keys:
+            if dict[key]:
+                dict[key] = dict[key].id()
         return dict
 
     # filter_node = staticmethod(
