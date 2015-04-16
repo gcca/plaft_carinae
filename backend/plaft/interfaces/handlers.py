@@ -12,6 +12,7 @@ from plaft.interfaces import RESTHandler, handler_method
 from plaft.domain import model
 from plaft import application
 
+
 class Customer(RESTHandler):
     """Customer RESTful."""
 
@@ -68,8 +69,8 @@ def register(handler, dispatch_id):
                                       q['country_target'])
         handler.write_json('{}')
     else:
-        handler.status.NOT_FOUND('No existe el despacho con el id: '
-                                 + dispatch_id)
+        handler.status.NOT_FOUND('No existe el despacho con el id: ' +
+                                 dispatch_id)
 
 
 # vim: et:ts=4:sw=4

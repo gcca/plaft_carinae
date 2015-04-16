@@ -279,7 +279,7 @@ class DirectToController(Handler):
         super(DirectToController, self).__init__(*args, **kwargs)
 
 
-## RESTful
+# RESTful
 
 class RESTError(Exception):
     """Error on construction RESTHandler."""

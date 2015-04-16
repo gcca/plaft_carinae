@@ -40,20 +40,20 @@ app = WSGIApplication([
     ('/pending_dispatches', handlers.pending_dispatches),
     ('/api/dispatch/create', handlers.create_dispatch),
 
-#     # Admin
-#     ('/admin/site', admin.views.AdminSite),
-#     R('/api/admin/customs/<customs_id:\d+>/officer',
-#         admin.handlers.Officer),
-#     R('/api/admin/customs/<customs_id:\d+>/officer/<id:\d+>',
-#         admin.handlers.Officer),
-#     R('/api/admin/customs/<customs_id:\d+>/employee',
-#         admin.handlers.Employee),
-#     R('/api/admin/customs/<customs_id:\d+>/employee/<id:\d+>',
-#         admin.handlers.Employee),
-#     R('/api/admin/customs',
-#         admin.handlers.Customs),
-#     R('/api/admin/customs/<id:\d+>',
-#         admin.handlers.Customs)
+    # # Admin
+    # ('/admin/site', admin.views.AdminSite),
+    # R('/api/admin/customs/<customs_id:\d+>/officer',
+    #     admin.handlers.Officer),
+    # R('/api/admin/customs/<customs_id:\d+>/officer/<id:\d+>',
+    #     admin.handlers.Officer),
+    # R('/api/admin/customs/<customs_id:\d+>/employee',
+    #     admin.handlers.Employee),
+    # R('/api/admin/customs/<customs_id:\d+>/employee/<id:\d+>',
+    #     admin.handlers.Employee),
+    # R('/api/admin/customs',
+    #     admin.handlers.Customs),
+    # R('/api/admin/customs/<id:\d+>',
+    #     admin.handlers.Customs)
  ], debug=True)
 
 

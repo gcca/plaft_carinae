@@ -237,9 +237,20 @@ class Dispatch(dom.Model):
     country_source = dom.String()
     country_target = dom.String()
 
+    operation = dom.Key(kind='Operation')
+
 
 class Operation(dom.Model):
-    """TODO: FALTA DEFINIR ATRIBUTOS."""
+    """Operación SBS.
+
+    Una vez el `Dispatch` cumple su ciclo de vida en la agencia de aduanas,
+    se debe 'convertir' en una operación que irá al registro de operaciones
+    (tal vez incluyendo su notificación a la UIF).
+
+    """
+    dispatches = dom.Key(Dispatch, repeated=True)
+    customs_agency = dom.Key(CustomsAgency)
+    customer = dom.Key(Customer)
 
 
 # Datos globales por agencia

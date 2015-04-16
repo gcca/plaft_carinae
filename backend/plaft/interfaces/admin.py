@@ -57,7 +57,6 @@ class Officer(Handler):
             self.write_json('{}')
 
 
-
 class Employee(Handler):
 
     def post(self, customs_id):
@@ -83,7 +82,6 @@ class Employee(Handler):
             self.write_json('{}')
 
 
-
 class Customs(Handler):
 
     def post(self):
@@ -104,7 +102,6 @@ class Customs(Handler):
             self.status.INTERNAL_ERROR('Store error: 78RT4.')
         else:
             self.write_json('{"id":%s}' % customs.id)
-
 
 
 class handlers(object):

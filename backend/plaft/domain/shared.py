@@ -38,16 +38,16 @@ class Repository(object):
         return NotImplemented
 
     def delete(self):
-
         return NotImplemented
+
 
 class ValueObject(object):
     pass
 
 
-
 class Singleton(object):
     pass
+
 
 class Factory(object):
     pass

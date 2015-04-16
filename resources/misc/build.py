@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/env python2
 
 """Module for generating <plaft> build files.
 
@@ -96,9 +96,9 @@ def make(args, ctx, kind):
         stat = os.stat(dst_fn).st_mtime
         mods = [src_fn] + check(src_fn, kind)
 
-    if (not exists_dst
-            or any(stat <= os.stat(mod).st_mtime for mod in mods)
-            or args.force):
+    if (not exists_dst or
+            any(stat <= os.stat(mod).st_mtime for mod in mods) or
+            args.force):
         print 'Compilando %s%s' % (args.module, kind)
         os.system(cmd)
 
@@ -128,11 +128,26 @@ def get_paths(name, sdir, kind):
     return ''.join(chunks)
 
 
+def check_pep8():
+    srcs = []
+    for (dpath, dnames, fnames) in os.walk('../../backend'):
+        if 'support' in dpath:
+            continue
+        for fn in fnames:
+            if fn.endswith('.py'):
+                srcs.append(os.path.join(dpath, fn))
+    import pep8
+    pep8style = pep8.StyleGuide()
+    result = pep8style.check_files(srcs)
+
+
 def build():
     """Generate PLAFT build file."""
-    parser = argparse.ArgumentParser(description='PLAFT build system.',
-                                     epilog='By cristHian Gz. (gcca)'
-                                            ' <gcca@gcca.tk> http://gcca.tk')
+    parser = argparse.ArgumentParser(
+        description='PLAFT build system.',
+        epilog='By cristHian Gz. (gcca)'
+               ' <gcca@gcca.tk> http://gcca.tk'
+               ' http://cristhiangz.wordpress.com')
 
     parser.add_argument('--force', '-f', nargs='?', const='',
                         choices=['ls', 'less', ''],
@@ -149,7 +164,14 @@ def build():
                         version='%(prog)s 2.0')
     parser.add_argument('module', nargs='?', help='to compile')
 
+    parser.add_argument('--syntax', '-s', action='store_true',
+                        help='Check PEP8.')
+
     args = parser.parse_args()
+
+    if args.syntax:
+        check_pep8()
+        return
 
     ctx_less = {
         'out': DST_DIR,

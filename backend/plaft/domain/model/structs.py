@@ -6,8 +6,9 @@ from plaft.infrastructure.persistence.datastore import ndb as dom
 
 
 class Document(dom.Model):
-  number = dom.String()
-  type = dom.String()
+    number = dom.String()
+    type = dom.String()
+
 
 class CodeName(dom.Model):
     """Estructura para los campos que requieren de valores compuestos."""
@@ -25,8 +26,6 @@ class Third(dom.Model):
     third_ok = dom.String()
     father_name = dom.String()
     mother_name = dom.String()
-
-
 
 
 # vim: et:ts=4:sw=4
