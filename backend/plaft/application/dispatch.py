@@ -10,6 +10,8 @@ def create(payload, customs_agency, customer=None):
     Se verifica si el customer existe, si no existe se procede
     a crear dependiendo del payload.
 
+    De la agencia de aduanas se extraer el datastore.
+
     Se agrega el despacho creado en la lista de despachos pendientes
     del datastore.
 
@@ -27,10 +29,11 @@ def create(payload, customs_agency, customer=None):
             }
 
         customs_agency (Customs): Instancia de la Agencia.
-        customer ?(Customer): Instancia del Customer.
+        customer ?(Customer): El customer que se va a crear.
+                             (Instancia del customer)
 
     Returns:
-        dispatch: Instancia del modelo Despacho.
+        dispatch: Despacho generado(Instancia del modelo Despacho.)
 
     Raises:
         IOError: Cuando se intente guardar alguna entidad.
@@ -46,11 +49,63 @@ def create(payload, customs_agency, customer=None):
     dispatch = Dispatch.new(payload)
     dispatch.customs_agency = customs_agency.key
     dispatch.customer = customer.key
+    dispatch.declaration = declaration.key
     dispatch.store()
 
     datastore = customs_agency.datastore
     datastore.pending.append(dispatch.key)
     datastore.store()
+
+    return dispatch
+
+
+def update(dispatch, payload, customer=None):
+    """Modifica el despacho.
+
+    Modifica la declaracion y lo guarda.
+
+    Se verifica si el customer existe, si no existe se procede
+    a buscar dependiendo del payload.
+
+    Args:
+        dispatch (Dispatch): El despacho a modificar(Instancia del despacho.)
+        payload (dict): Diccionario de datos del Despacho.
+        example:
+            {'order': '123-123',
+             'declaration': {
+                'customer': {
+                    'document_number': '12341234',
+                    'document_type': 'dni'
+                }
+             },
+             'description': 'Example'
+            }
+
+        customer ?(Customer): El customer que se va a modificar.
+                             (Instancia del customer)
+
+    Returns:
+        dispatch: Despacho modificado(Instancia del modelo Despacho.)
+
+    Raises:
+        IOError: Cuando se intente guardar alguna entidad.
+
+    """
+    declaration = dispatch.declaration.get()
+    declaration << payload['declaration']
+    declaration.store()
+
+    if not customer:
+        document_number = payload['declaration']['customer']['document_number']
+        customer = Customer.find(document_number=document_number)
+
+    customer << payload['declaration']['customer']
+    customer.store()
+
+    dispatch.customer = customer.key
+    del payload['declaration']
+    dispatch << payload
+    dispatch.store()
 
     return dispatch
 
@@ -63,8 +118,10 @@ def numerate(dispatch, **args):
     Se modifica el despacho.
 
     Args:
-        dispatch (Dispatch): Instancia del Despacho.
-        **args: Argumentos para modificar el despacho.
+        dispatch (Dispatch): Despacho a modificar (Instancia del Despacho).
+
+    Kargs:
+        args: Argumentos(atributos) para modificar el despacho.
 
     Returns:
         None

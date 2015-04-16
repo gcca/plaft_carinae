@@ -65,6 +65,37 @@ class ApplicationDispatchTest(testplaft.TestCase):
         customer = Customer.find(document_number='12312312')
         self.assertIsNotNone(customer)
 
+    def test_update(self):
+        # premises
+
+        customer = Customer(document_number='12312312',document_type='dni')
+        customer.store()
+
+        declaration = Declaration()
+        declaration.customer = customer
+        declaration.store()
+
+        dispatch2 = Dispatch(order='456-456')
+        dispatch2.declaration = declaration.key
+        dispatch2.store()
+
+        # use case
+        dispatch_dto = {
+            'order': '456-456',
+            'declaration': {
+                'customer': {
+                    'document_number': '12312312',
+                    'document_type': 'dni'
+                },
+            },
+        }
+
+        dispatch1 = plaft.application.dispatch.update(dispatch2, dispatch_dto)
+        d_dto = dispatch1.dict
+
+        customer = Customer.find(document_number='12312312')
+        self.assertEqual(customer.key, dispatch1.customer)
+
     def test_numerate(self):
         # premises
         dispatch = Dispatch(order='123-123')
