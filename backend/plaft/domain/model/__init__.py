@@ -233,6 +233,12 @@ class Dispatch(dom.Model):
     currency = dom.String()
     exchange_rate = dom.String()
     canal = dom.String()
+    ##Campos para la Numeracion.##
+    exchange_rate = dom.String()
+    ammount_soles = dom.String()
+    uif_last_day = dom.String()
+    expire_date_RO = dom.String()
+    ##############################
     customs_agency = dom.Key(CustomsAgency)
     country_source = dom.String()
     country_target = dom.String()
