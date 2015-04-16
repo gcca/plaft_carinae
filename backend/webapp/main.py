@@ -37,7 +37,8 @@ app = WSGIApplication([
     uri('declarant', handlers.Declarant),
 
     # Handler methods
-    ('/pending_dispatches', handlers.pending_dispatches),
+    ('/api/customs_agency/(\d+)/list_dispatches',
+                handlers.dispatches_by_customs_agency),
     ('/api/dispatch/create', handlers.create_dispatch),
 
     # # Admin

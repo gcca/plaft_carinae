@@ -68,14 +68,14 @@ def create_sample_data():
     ## Users ###############################################################
     offc = User(username='gcca@mail.io',
                    password='789',
-                   name='Unamuno reloaded',
+                   name='Unamuno',
                    is_officer=True,
                    customs_agency = ca.key)
     offc.store()
 
     offc2 = User(username='gcca2@mail.io',
                    password='123',
-                   name='Unamuno',
+                   name='Unamuno reloaded',
                    is_officer=True,
                    customs_agency = ca2.key)
     offc2.store()
@@ -202,6 +202,21 @@ def create_sample_data():
 
 
     ## Dispatches ##########################################################
+    d = Declaration(customer=gcca)
+    d.store()
+    disp0 = Dispatch(order='2014-597',
+                     customer=gcca.key,
+                     declaration=d.key,
+                     jurisdiction=CodeName(code='9',
+                                           name='AEROPUERTO CALLAO'),
+                     regime=CodeName(code='13',
+                                     name='Solo Dios sabe'),
+                     dam='2014-103-8012',
+                     amount='56 874',
+                     canal='V',
+                     customs_agency=ca.key)
+    disp0.store()
+
     d = Declaration(customer=queirolo,
                     third=Third(
                     identification_type='Si',
@@ -239,14 +254,38 @@ def create_sample_data():
                      customs_agency=ca2.key)
     disp2.store()
 
+    d = Declaration(customer=queirolo,
+                    third=Third(
+                    identification_type='Si',
+                    third_type='Juridico',
+                    name='Muni'))
+    d.store()
+    disp3 = Dispatch(reference='Referencia 3',
+                     order='2014-607',
+                     customer=queirolo.key,
+                     declaration=d.key,
+                     jurisdiction=CodeName(code='947',
+                                           name='AEROPUERTO DE TACNA'),
+                     regime=CodeName(code='10',
+                                     name='Importacion para el Consumo'),
+                     declarant=[dcl1,dcl2],
+                     linked=[lnk1,lnk2],
+                     description='AQUI DESCRIPCION',
+                     income_date='20/12/1996',
+                     canal='R',
+                     customs_agency=ca2.key)
+    disp3.store()
+
 
     ## Datastore ###########################################################
     datastore = Datastore(customs_agency=ca.key,
-                          pending=[disp1.key])
+                          pending=[disp0.key, disp1.key],
+                          accepting=[])
     datastore.store()
 
     datastore2 = Datastore(customs_agency=ca.key,
-                          pending=[disp2.key])
+                          pending=[disp2.key, disp3.key],
+                          accepting=[])
     datastore2.store()
 
 

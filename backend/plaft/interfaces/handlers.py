@@ -30,12 +30,12 @@ class Declarant(RESTHandler):
 
 
 @handler_method
-def pending_dispatches(handler):
+def dispatches_by_customs_agency(handler):
     user = handler.user
     if user:
         handler.render_json(user.customs_agency.get().datastore.pending)
     else:
-        handler.status.NOT_FOUND('No hay usuario')
+        handler.status.FORBIDDEN('No hay usuario')
 
 
 @handler_method('post')
