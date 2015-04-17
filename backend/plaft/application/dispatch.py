@@ -127,6 +127,7 @@ def numerate(dispatch, **args):
         None
 
     """
+    print(args)
     dispatch << args
     dispatch.store()
 
@@ -155,7 +156,7 @@ def register(dispatch, country_source, country_target):
     dispatch.store()
 
 
-def dispatches_by_customs_agency(customs_agency):
+def pending_and_accepting(customs_agency):
     """
     Verifica que la agencia aduanas exista
 
@@ -174,8 +175,10 @@ def dispatches_by_customs_agency(customs_agency):
     Raises:
 
     """
-    return {'p': [d.get() for d in customs_agency.datastore.pending],
-            'a': [d.get() for d in customs_agency.datastore.accepting]}
+    return {
+        'pending': [d.get() for d in customs_agency.datastore.pending],
+        'accepting': [d.get() for d in customs_agency.datastore.accepting]
+    }
 
 
 # vim: et:ts=4:sw=4

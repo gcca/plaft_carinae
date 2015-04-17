@@ -130,5 +130,10 @@ class InterfaceJSONDispatchTest(testplaft.TestCase):
 
         resp = self.testapp.post_json(_url, dto)
 
+     def test_pending_and_accepting(self):
+        #creando despachos
+        # TODO(gcca)
+        pass
+
 
 # vim: et:ts=4:sw=4

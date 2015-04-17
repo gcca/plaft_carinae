@@ -109,7 +109,7 @@ class ApplicationDispatchTest(testplaft.TestCase):
 
         dispatch.delete()
 
-    def test_dispatches_by_customs_agency(self):
+    def test_pending_and_accepting(self):
         # premises
         customs_agency = CustomsAgency()
         customs_agency.store()
@@ -128,10 +128,13 @@ class ApplicationDispatchTest(testplaft.TestCase):
 
         # use case
         dispatch = plaft.application.dispatch
-        dispatches = dispatch.dispatches_by_customs_agency(customs_agency)
+        dispatches = dispatch.pending_and_accepting(customs_agency)
 
         # test
-        self.assertDictEqual({'p':[dispatch1, dispatch2], 'a':[]}, dispatches)
+        self.assertDictEqual({
+            'pending': [dispatch1, dispatch2],
+            'accepting': [dispatch3]
+        }, dispatches)
 
         dispatch1.delete()
         dispatch2.delete()
