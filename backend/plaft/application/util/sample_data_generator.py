@@ -11,7 +11,7 @@
 from __future__ import unicode_literals
 from plaft.domain.model import (User, Dispatch, CodeName, Declaration,
                                 Customer, Third, Declarant, Linked, Business,
-                                Datastore, CustomsAgency)
+                                Datastore, CustomsAgency, Operation)
 
 
 def create_sample_data():
@@ -288,6 +288,20 @@ def create_sample_data():
     #                       accepting=[])
     # datastore2.store()
 
+    operation = Operation(dispatches=[disp2.key],
+                          customs_agency=ca2.key,
+                          customer=gcca.key)
+    operation.store()
+
+    operation1 = Operation(dispatches=[disp0.key,disp1.key,disp2.key,disp3.key],
+                          customs_agency=ca2.key,
+                          customer=queirolo.key)
+    operation1.store()
+
+    operation2 = Operation(dispatches=[disp0.key,disp1.key,disp2.key,disp3.key],
+                          customs_agency=ca2.key,
+                          customer=queirolo.key)
+    operation2.store()
 
     ########################################################################
     return

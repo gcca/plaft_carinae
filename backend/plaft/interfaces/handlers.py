@@ -29,6 +29,18 @@ class Declarant(RESTHandler):
     """Declarant RESTful."""
 
 
+class Operation(RESTHandler):
+    """Operation RESTful."""
+
+
+@handler_method
+def dispatches_by_customs_agency(handler):
+    user = handler.user
+    if user:
+        handler.render_json(user.customs_agency.get().datastore.pending)
+    else:
+        handler.status.FORBIDDEN('No hay usuario')
+
 @handler_method
 def pending(handler):
     customs_agency = handler.user.customs_agency.get()

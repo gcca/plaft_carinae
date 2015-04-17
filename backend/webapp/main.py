@@ -35,6 +35,7 @@ app = WSGIApplication([
     uri('dispatch', handlers.Dispatch),
     uri('linked', handlers.Linked),
     uri('declarant', handlers.Declarant),
+    uri('operation', handlers.Operation),
 
     # Handler methods
     ('/api/income/create', handlers.create), # change name
