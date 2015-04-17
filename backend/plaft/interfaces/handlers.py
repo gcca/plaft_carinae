@@ -10,7 +10,7 @@
 import plaft.application
 from plaft.interfaces import RESTHandler, handler_method
 from plaft.domain import model
-
+# from plaft import application
 
 
 class Customer(RESTHandler):
@@ -28,13 +28,29 @@ class Linked(RESTHandler):
 class Declarant(RESTHandler):
     """Declarant RESTful."""
 
+
 @handler_method
-def dispatches_by_customs_agency(handler):
-    user = handler.user
-    if user:
-        handler.render_json(user.customs_agency.get().datastore.pending)
-    else:
-        handler.status.FORBIDDEN('No hay usuario')
+def pending(handler):
+    customs_agency = handler.user.customs_agency.get()
+    handler.render_json(
+        plaft.application.dispatch.pending_and_accepting(customs_agency)['pending']
+    )
+
+
+@handler_method
+def accepting(handler):
+    customs_agency = handler.user.customs_agency.get()
+    handler.render_json(
+        plaft.application.dispatch.pending_and_accepting(customs_agency)['accepting']
+    )
+
+
+@handler_method
+def pending_and_accepting(handler):
+    customs_agency = handler.user.customs_agency.get()
+    handler.render_json(
+        plaft.application.dispatch.pending_and_accepting(customs_agency)
+    )
 
 
 @handler_method('post')
@@ -89,6 +105,8 @@ def update(handler, dispatch_id=None): # change name.
 @handler_method('post')
 def numerate(handler, dispatch_id):
     playload = handler.query
+    print('*********************************')
+    print(playload)
 
     dispatch = model.Dispatch.find(int(dispatch_id))
     if dispatch:

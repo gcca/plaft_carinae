@@ -20,7 +20,7 @@ class Dispatch extends App.Model
 * @extends Collection
 */
 class Dispatches extends App.Collection
-  urlRoot: \dispatch
+  urlRoot: 'customs_agency/pending'
   model: Dispatch
 
 /**
@@ -49,12 +49,13 @@ class NumerationEdit extends Module
       delete declarant.'slug'
     ########################################################################
 
-    @model._save @el._toJSON!, do
+    App.ajax._post "/api/dispatch/#{@model._id}/numerate", @el._toJSON!, do
       _success: ~>
+        @model._save @el._toJSON!
         @_desktop.notifier.notify do
           _message : 'Se actualizó correctamente los datos'
           _type    : @_desktop.notifier.kSuccess
-      _error: ->
+      _bad-request: ~>
         alert 'ERROR: e746ae94-5a3a-11e4-9a1d-88252caeb7e8'
 
   /** @override */
@@ -113,8 +114,8 @@ class Numeration extends Module
       'Razon social'
       'N DAM'
       'Fecha numeracion'
-      'Canal'
       'FOB $'
+      'Canal'
 
     _attributes =
       'jurisdiction.code'

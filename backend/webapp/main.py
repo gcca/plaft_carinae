@@ -40,10 +40,10 @@ app = WSGIApplication([
     ('/api/income/create', handlers.create), # change name
     ('/api/income/create/(\d+)', handlers.update),
     ('/api/dispatch/(\d+)/numerate', handlers.numerate),
-    ('/api/customs_agency/(\d+)/list_dispatches',
-                handlers.dispatches_by_customs_agency),
-
     ('/api/dispatch/(\d+)/accept', handlers.accept_dispatch),
+    ('/api/customs_agency/list_dispatches', handlers.pending_and_accepting),
+    ('/api/customs_agency/accepting', handlers.accepting),
+    ('/api/customs_agency/pending', handlers.pending),
 
     # # Admin
     # ('/admin/site', admin.views.AdminSite),
