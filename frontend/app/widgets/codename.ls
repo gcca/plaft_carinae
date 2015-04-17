@@ -110,7 +110,6 @@ class exports.CodeNameField extends App.View
 /**
  * NameInput
  * ----------
- * TODO
  *
  * @class NameInput
  * @extends View
@@ -121,6 +120,7 @@ class exports.InputName extends App.View
   /** @override */
   _tagName: \div
 
+  /** @override */
   initialize: ({@_name, @_field}) !->
 
   changeValue: ~>
@@ -156,5 +156,6 @@ class exports.InputName extends App.View
   /** @private */ _field  : null
   /** @private */ _name   : null
   /** @private */ _input  : null
+
 
 # vim: ts=2:sw=2:sts=2:et

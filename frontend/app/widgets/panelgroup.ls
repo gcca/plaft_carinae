@@ -72,14 +72,14 @@ class exports.PanelHeading extends App.View
   render: ->
     @el.css = "padding:5px"
     @el.html = "<div class='#{gz.Css \panel-title}' style='display:flex'>
-                  <a data-toggle='collapse'
+                  <span data-toggle='collapse'
                      data-parent='##{@_parent-uid}'
                      href='##{@_id-panel}'
-                     style='margin:5px;width:400px;'>
+                     style='margin:5px;width:400px;cursor:pointer'>
                    #{if @_title?
                      then @_title
                      else 'Por defecto'}
-                  </a>&nbsp;
+                  </span>&nbsp;
                 </div>"
     @_head = @el.query ".#{gz.Css \panel-title}"
     super!
@@ -299,7 +299,6 @@ class exports.Panel extends App.View
         _id-content: _id-content
         _element: @_options._element
 
-
     @el._append @_header.render!.el
     @el._append @_body.render!.el
     @_collapse = @el.query "##{_id-content}"
@@ -322,7 +321,7 @@ class exports.Panel extends App.View
  * >>> panel-group = new PanelGroup
  * >>> panel-group.new-panel do
  * ...   _title: 'Example-Title'
- * ...   _element: 'Example contenido'
+ * ...   _element: 'Example contenido' TODO: Falta implementar solo texto.
  * >>> # with panelheading and panelbody
  * >>> panel-heading = new PanelHeading do
  * ...   _title: 'Example-Title'
@@ -409,6 +408,7 @@ class exports.PanelGroup extends App.View
     @root-el._append _panel.render!.el
     @_panels._push _panel
     @_array-panels!
+    _panel
 
   /** @override */
   # TODO: Quitar el valor por defecto de ConcretPanel a Panel.

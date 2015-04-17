@@ -150,7 +150,7 @@ class Operation extends Module
     @render-ajax _dto, type-filter, success, not-found
 
   /**
-   * @param {} _dto
+   * @param {Object} _dto
    * @param {String} type-filter
    * @param {Function} success
    * @param {Function} not-found
@@ -190,12 +190,13 @@ class Operation extends Module
         'customer': customer-dto
       ..'declarant' = @declarant._toJSON!
       ..'linked' = @stakeholder._toJSON!
-    console.log dispatch-dto
+
     # Save to IncomeModel.
     @income-model._save dispatch-dto, do
       _success: (dto) ~>
         @customer-head._show do
           _href:  "/declaration/pdf/#{@income-model\id}"
+
         @_desktop.notifier.notify do
           _message: 'Guardado'
           _type: @_desktop.notifier.kSuccess

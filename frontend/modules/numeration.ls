@@ -90,13 +90,13 @@ class NumerationEdit extends Module
     * _name: 'exchange_rate'
       _label: 'Tipo de cambio'
 
-    * _name: 'ammount-soles'
+    * _name: 'ammount_soles'
       _label: 'Monto operacion Nuevos soles'
 
-    * _name: 'uif-last-day'
+    * _name: 'uif_last_day'
       _label: 'UIF OS Ultimo dia'
 
-    * _name: 'expire-date-RO'
+    * _name: 'expire_date_RO'
       _label: 'Vigencia RO 5 años'
 
 /**
@@ -173,4 +173,3 @@ module.exports = Numeration
 
 
 /* vim: ts=2 sw=2 sts=2 et: */
-
