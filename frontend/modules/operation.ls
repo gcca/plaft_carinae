@@ -174,8 +174,17 @@ class Dispatch extends App.Model
 * @Class Dispatches
 * @extends Collection
 */
-class Dispatches extends App.Collection
-  urlRoot: \dispatch
+class DispatchesA extends App.Collection
+  urlRoot: 'customs_agency/accepting'
+  model: Dispatch
+
+
+/**
+* @Class Dispatches
+* @extends Collection
+*/
+class DispatchesP extends App.Collection
+  urlRoot: 'customs_agency/pending'
   model: Dispatch
 
 
@@ -207,18 +216,35 @@ class Operations extends Module
            pendiente
          </span>"
 
-    dispatches = new Dispatches
-    dispatches._fetch do
+    dispatchesP = new DispatchesP
+    dispatchesP._fetch do
       _success: (dispatches) ~>
-        _tabla = new Table do
+        _tablaP = new Table do
                       _attributes: _attributes
                       _labels: _labels
                       _templates: _templates
                       on-dblclick-row: (evt) ~>
                         @_desktop.load-next-page OperationEdit, model: evt._target._model
 
+        _tablaP.set-rows dispatches
+
+        @$el._append 'Lista de despachos pendientes'
+        @el._append _tablaP.render!.el
+
+      _error: ->
+        alert 'Error!!! NumerationP list'
+
+    dispatches = new DispatchesA
+    dispatches._fetch do
+      _success: (dispatches) ~>
+        _tabla = new Table do
+                      _attributes: _attributes
+                      _labels: _labels
+                      _templates: _templates
+
         _tabla.set-rows dispatches
 
+        @$el._append 'Lista de despachos aceptados'
         @el._append _tabla.render!.el
 
       _error: ->
