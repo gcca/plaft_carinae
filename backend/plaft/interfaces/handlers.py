@@ -34,14 +34,6 @@ class Operation(RESTHandler):
 
 
 @handler_method
-def dispatches_by_customs_agency(handler):
-    user = handler.user
-    if user:
-        handler.render_json(user.customs_agency.get().datastore.pending)
-    else:
-        handler.status.FORBIDDEN('No hay usuario')
-
-@handler_method
 def pending(handler):
     customs_agency = handler.user.customs_agency.get()
     handler.render_json(
@@ -153,6 +145,41 @@ def accept_dispatch(handler, id=None):
         handler.write_json('{"id":%s}' % operation.id)
     else:
         handler.status.NOT_FOUND('No se halló el desapcho ' + id)
+
+
+@handler_method
+def reporte_operaciones(handler):
+    import StringIO
+    import xlsxwriter
+
+    operations = model.Operation.all()
+    filas = 0
+
+    output = StringIO.StringIO()
+    workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+    worksheet = workbook.add_worksheet()
+
+    for operation in operations:
+        worksheet.write(filas, 0, 'Order')
+        worksheet.write(filas, 1, 'Nombre/ Razon social')
+        worksheet.write(filas, 2, 'Cantidad de despachos')
+        worksheet.write(filas+1, 0, str(operation.id))
+        worksheet.write(filas+1, 1, operation.customer.get().name)
+        worksheet.write(filas+1, 2, operation.dispatches.__len__())
+        worksheet.write(filas+2, 1, 'Lista de despachos')
+        worksheet.write(filas+3, 1, 'N. Order')
+        worksheet.write(filas+3, 2, 'N. Dam')
+        filas = filas + 4
+        for despacho in operation.dispatches:
+            worksheet.write(filas, 1, despacho.get().order)
+            worksheet.write(filas, 2, despacho.get().dam)
+            filas = filas+1
+
+    workbook.close()
+    output.seek(0)
+    handler.response.headers['Content-Type'] = 'application/octotet-stream'
+    handler.response.headers['Content-Disposition'] = 'attachment; filename="reporte_operaciones.xlsx"'
+    handler.write(output.read())
 
 
 # vim: et:ts=4:sw=4

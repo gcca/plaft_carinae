@@ -45,6 +45,7 @@ app = WSGIApplication([
     ('/api/customs_agency/list_dispatches', handlers.pending_and_accepting),
     ('/api/customs_agency/accepting', handlers.accepting),
     ('/api/customs_agency/pending', handlers.pending),
+    ('/api/reporte_operaciones', handlers.reporte_operaciones)
 
     # # Admin
     # ('/admin/site', admin.views.AdminSite),

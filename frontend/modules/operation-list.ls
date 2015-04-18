@@ -149,6 +149,10 @@ class OperationList extends Module
         alert 'Error!!! Numeration list'
 
     @el._append pnl-group.render!el
+    @$el._append "<a class='#{gz.Css \btn} #{gz.Css \btn-success}'
+                     href='api/reporte_operaciones'>
+                    Generar reporte
+                  </a>"
 
     super!
 
