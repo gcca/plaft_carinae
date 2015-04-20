@@ -88,7 +88,7 @@ class Person extends App.View
       _options:
         'RL'
         'Apoderado'
-        'Mand..'
+        'Mandatario'
         'El mismo'
 
     * _name: 'condition'

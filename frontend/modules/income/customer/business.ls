@@ -71,7 +71,7 @@ class Business extends App.View
       _options:
         'RL'
         'Apoderado'
-        'Mand..' #TODO
+        'Mandatario' #TODO
         'El mismo'
 
     * _name: 'condition'

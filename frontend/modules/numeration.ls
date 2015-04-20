@@ -51,7 +51,6 @@ class NumerationEdit extends Module
 
     App.ajax._post "/api/dispatch/#{@model._id}/numerate", @el._toJSON!, do
       _success: ~>
-        @model._save @el._toJSON!
         @_desktop.notifier.notify do
           _message : 'Se actualizó correctamente los datos'
           _type    : @_desktop.notifier.kSuccess

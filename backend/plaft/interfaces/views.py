@@ -280,7 +280,6 @@ class DeclarationPDF(Handler):
 
         self.addParagraph(story, styles, 'Por el presente documento, declaro bajo juramento, lo siguiente', 8)
 
-        ## FALTA LA FIRMA
 
         if customer.document_type == 'ruc':
             self.makeBusinessPDF(story, styles, dispatch, customer)

@@ -12,7 +12,7 @@
 from google.appengine.ext.ndb import model as ndb, query as Q, polymodel
 from google.appengine.api.datastore_errors import TransactionFailedError
 from plaft.domain.shared import Entity
-#from plaft.application.util import JSONEncoder
+# from plaft.application.util import JSONEncoder
 from plaft.infrastructure.support import util
 from types import GeneratorType
 
@@ -72,9 +72,6 @@ class JSONEncoder(json.JSONEncoder):
         """Deserialize ``s`` (a ``str`` or ``unicode`` instance containing
         a JSON document) to a Python object."""
         return json.loads(s, 'utf-8')
-
-
-
 
 Boolean = ndb.BooleanProperty
 Integer = ndb.IntegerProperty

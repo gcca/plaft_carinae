@@ -80,13 +80,18 @@ class OperationList extends Module
       'N DAM'
 
     _attributes =
-      'country_source' # TODO:buscar una manera para darle un espacio en blanco.
+      '**' # TODO:buscar una manera para darle un espacio en blanco.
       'order'
       'dam'
+
+    _templates =
+      '**': ->
+        " "
 
     _tabla = new Table do
                   _attributes: _attributes
                   _labels: _labels
+                  _templates: _templates
 
     for _dispatch in _dispatches
       _model-dispatch = new DispatchModel _dispatch
