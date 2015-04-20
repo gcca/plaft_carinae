@@ -181,4 +181,11 @@ def pending_and_accepting(customs_agency):
     }
 
 
+def anexo_seis(dispatch, **args):
+    """."""
+    from pprint import pprint
+    pprint(args)
+    dispatch << args
+    dispatch.store()
+
 # vim: et:ts=4:sw=4

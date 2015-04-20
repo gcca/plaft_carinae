@@ -37,7 +37,8 @@ class Operation(RESTHandler):
 def pending(handler):
     customs_agency = handler.user.customs_agency.get()
     handler.render_json(
-        plaft.application.dispatch.pending_and_accepting(customs_agency)['pending']
+        plaft.application.dispatch.\
+        pending_and_accepting(customs_agency)['pending']
     )
 
 
@@ -45,7 +46,8 @@ def pending(handler):
 def accepting(handler):
     customs_agency = handler.user.customs_agency.get()
     handler.render_json(
-        plaft.application.dispatch.pending_and_accepting(customs_agency)['accepting']
+        plaft.application.dispatch.\
+        pending_and_accepting(customs_agency)['accepting']
     )
 
 
@@ -58,7 +60,7 @@ def pending_and_accepting(handler):
 
 
 @handler_method('post')
-def create(handler): # change name.
+def create(handler):
     payload = handler.query
 
     customs_agency = handler.user.customs_agency.get()
@@ -68,22 +70,21 @@ def create(handler): # change name.
         customer_id = payload['customer']
         customer = model.Customer.find(customer_id)
         if not customer:
-            handler.status.BAD_REQUEST('No existe el cliente: '
-                                       + customer_id)
+            handler.status.\
+            BAD_REQUEST('No existe el cliente: ' + customer_id)
             return
-
 
     dispatch = plaft.application.dispatch.create(payload,
                                                  customs_agency,
                                                  customer)
     handler.render_json({
-    'id': dispatch.id,
-    'customer': dispatch.customer.id()
+        'id': dispatch.id,
+        'customer': dispatch.customer.id()
     })
 
 
 @handler_method('put')
-def update(handler, dispatch_id=None): # change name.
+def update(handler, dispatch_id=None):
     payload = handler.query
 
     customs_agency = handler.user.customs_agency.get()
@@ -93,8 +94,8 @@ def update(handler, dispatch_id=None): # change name.
         customer_id = payload['customer']
         customer = model.Customer.find(customer_id)
         if not customer:
-            handler.status.BAD_REQUEST('No existe el cliente: '
-                                       + customer_id)
+            handler.status.\
+            BAD_REQUEST('No existe el cliente: ' + customer_id)
             return
 
     dispatch = model.Dispatch.find(int(dispatch_id))
@@ -102,15 +103,13 @@ def update(handler, dispatch_id=None): # change name.
         plaft.application.dispatch.update(dispatch, payload, customer)
         handler.write_json('{}')
     else:
-        handler.status.NOT_FOUND('No existe el despacho con el id: '
-                                 + dispatch_id)
+        handler.status.\
+        NOT_FOUND('No existe el despacho con el id: ' + dispatch_id)
 
 
 @handler_method('post')
 def numerate(handler, dispatch_id):
     playload = handler.query
-    print('*********************************')
-    print(playload)
 
     dispatch = model.Dispatch.find(int(dispatch_id))
     if dispatch:
@@ -118,8 +117,8 @@ def numerate(handler, dispatch_id):
 
         handler.write_json('{}')
     else:
-        handler.status.NOT_FOUND('No existe el despacho con el id: '
-                                 + dispatch_id)
+        handler.status.\
+        NOT_FOUND('No existe el despacho con el id: ' + dispatch_id)
 
 
 @handler_method('post')
@@ -129,8 +128,8 @@ def register(handler, dispatch_id):
     dispatch = model.Dispatch.find(int(dispatch_id))
     if dispatch:
         plaft.application.dispatch.register(dispatch,
-                                      q['country_source'],
-                                      q['country_target'])
+                                            q['country_source'],
+                                            q['country_target'])
         handler.write_json('{}')
     else:
         handler.status.NOT_FOUND('No existe el despacho con el id: ' +
@@ -145,6 +144,20 @@ def accept_dispatch(handler, id=None):
         handler.write_json('{"id":%s}' % operation.id)
     else:
         handler.status.NOT_FOUND('No se halló el desapcho ' + id)
+
+
+@handler_method('post')
+def anexo_seis(handler, dispatch_id):
+    playload = handler.query
+
+    dispatch = model.Dispatch.find(int(dispatch_id))
+    if dispatch:
+        plaft.application.dispatch.anexo_seis(dispatch, **playload)
+
+        handler.write_json('{}')
+    else:
+        handler.status.\
+        NOT_FOUND('No existe el despacho con el id: ' + dispatch_id)
 
 
 @handler_method
@@ -180,6 +193,7 @@ def reporte_operaciones(handler):
     handler.response.headers['Content-Type'] = 'application/octotet-stream'
     handler.response.headers['Content-Disposition'] = 'attachment; filename="reporte_operaciones.xlsx"'
     handler.write(output.read())
+
 
 
 # vim: et:ts=4:sw=4
