@@ -96,6 +96,8 @@ exports <<<
 
   ubigeo: require './ubigeo'
 
+  alerts: require './alerts'
+
 
 # Generate {@code _pair} attribute
 for , _obj of exports
