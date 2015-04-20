@@ -233,12 +233,27 @@ class Dispatch(dom.Model):
     currency = dom.String()
     exchange_rate = dom.String()
     canal = dom.String()
-    ##Campos para la Numeracion.##
+    # Campos para la Numeracion.
     exchange_rate = dom.String()
     ammount_soles = dom.String()
     uif_last_day = dom.String()
     expire_date_RO = dom.String()
-    ##############################
+
+    # Campos para el anexo 6
+    operation_description = dom.String()
+    is_suspects = dom.String()
+    ros = dom.String()
+    suspects_description = dom.String()
+
+    class Signal(dom.Model):
+        """."""
+        id_signal = dom.String()
+        signal = dom.String()
+        font_signal = dom.String()
+        description_font_signal = dom.String()
+
+    signal_alerts = dom.Structured(Signal, repeated=True)
+
     customs_agency = dom.Key(CustomsAgency)
     country_source = dom.String()
     country_target = dom.String()
