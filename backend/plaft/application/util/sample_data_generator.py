@@ -26,18 +26,21 @@ def create_sample_data():
         name= 'Testing agency')
     ca2.store()
 
-    cavasoft = CustomsAgency(name='CavaSoft SAC', officer=cava.key)
+    cavasoft = CustomsAgency(name='CavaSoft SAC')
     cavasoft.store()
 
     datastore_cava = Datastore(customs_agency=cavasoft.key)
     datastore_cava.store()
 
-    officer_cava = Officer(username='cesarvargas@cavasoftsac.com',
+    officer_cava = User(username='cesarvargas@cavasoftsac.com',
                            password='123',
                            name='César Vargas',
                            is_officer=True,
                            customs_agency=cavasoft.key)
     officer_cava.store()
+
+    cavasoft.officer = officer_cava.key
+    cavasoft.store()
 
     ## Customers ###########################################################
     queirolo = Business(
