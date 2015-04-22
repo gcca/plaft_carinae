@@ -53,13 +53,19 @@ class OperationList extends Module
     _title = "<table class='#{gz.Css \table}' style='margin:0'>
                 <tbody>
                   <tr>
-                    <td style='border-top-style:none;margin:auto;width:162px'>
+                    <td style='border-top-style:none;
+                               margin:auto;
+                               width:162px'>
                     #{_dto.id}
                     </td>
-                    <td style='border-top-style:none;margin:auto;width:400px'>
+                    <td style='border-top-style:none;
+                               margin:auto;
+                               width:400px'>
                     #{_dto.customer.name}
                     </td>
-                    <td style='border-top-style:none;margin:auto;width:413px'>
+                    <td style='border-top-style:none;
+                               margin:auto;
+                               width:413px'>
                     #{_dto.dispatches.length}
                     </td>
                   </tr>
@@ -130,13 +136,13 @@ class OperationList extends Module
     @el.html = "<table class='#{gz.Css \table}' style='margin:0'>
                   <thead>
                     <tr>
-                      <th style='border-top-style: none; margin: auto;'>
+                      <th style='border-top-style:none;margin:auto;'>
                       ORDER
                       </th>
-                      <th style='border-top-style: none; margin: auto;'>
+                      <th style='border-top-style:none;margin:auto;'>
                       Nombre/Razon Social
                       </th>
-                      <th style='border-top-style: none; margin: auto;'>
+                      <th style='border-top-style:none;margin:auto;'>
                       Cantidad de Despacho
                       </th>
                     </tr>
