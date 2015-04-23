@@ -80,11 +80,10 @@ class DeclarationPDF(Handler):
     def shareholdersList(self, shareholders):
         list = []
         for s in shareholders:
-            if int(s.ratio) >= 5:
-                list.append(['    Nombre', s.name])
-                list.append(['    Documento', s.document_type])
-                list.append(['    Número', s.document_number])
-                list.append(['', ''])
+            list.append(['    Nombre', s.name])
+            list.append(['    Documento', s.document_type])
+            list.append(['    Número', s.document_number])
+            list.append(['', ''])
         return list
 
     def checkComplexKey(self, obj, _attr):
@@ -95,7 +94,7 @@ class DeclarationPDF(Handler):
                 obj = getattr(obj, key)
             else:
                 return 'Llave no encontrada'
-        return obj
+        return obj if obj else '-'
 
 
     ### Only obj and value params are required!!
