@@ -215,6 +215,7 @@ HTMLElement::=
   on-change   : -> @\onchange   = it
   on-blur     : -> @\onblur     = it
   on-key-up   : -> @\onkeyup    = it
+  on-key-press: -> @\onkeypress = it
   on-submit   : -> @\onsubmit   = it
   on-focus    : -> @\onfocus    = it
   mouse-over  : -> @\mouseover  = it
@@ -229,10 +230,13 @@ Array::=
   _pop   : ref$\pop
   _join  : ref$\join
   _index : ref$\indexOf
+  _splice : ref$\splice
 
   _length:~
     -> @\length
     (x) -> @\length = x
+
+  _remove: -> @splice (@indexOf it), 1
 
 String::=
   _length:~ -> @\length
@@ -240,6 +244,7 @@ String::=
   _slice: ref$\slice
   _substring: ref$\substring
   _split: ref$\split
+  _index : ref$\indexOf
 
 
 /**
@@ -360,6 +365,7 @@ _ <<<
   _object: _\object
   _keys: _\keys
   _values: _\values
+  _without: _\without
 
 
 /**

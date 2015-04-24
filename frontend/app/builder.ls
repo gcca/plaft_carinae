@@ -191,7 +191,6 @@ class exports.Form extends Array implements PoolMixin
       .._append _el = __element-by _options
       @_push ..
 
-
       # basic
       @_elements[_name] = _field: .., _element: _el
 

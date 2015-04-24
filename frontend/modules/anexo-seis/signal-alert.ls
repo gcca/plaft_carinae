@@ -106,7 +106,6 @@ class SignalAlert extends App.View
  * @class SignalAlerts
  * @extends View
  */
-
 class SignalAlerts extends App.View
 
   /** @override */

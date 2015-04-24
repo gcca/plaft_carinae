@@ -12,7 +12,8 @@ App.MODULES =
   Numeration    = require './modules/numeration'
   Operation     = require './modules/operation'
   OperationList = require './modules/operation-list'
-  Anexo6        = require './modules/anexo-seis'
+#  Anexo6        = r equire './modules/anexo-seis'
+  Alerts        = require './modules/alerts'
 
 Workspace = require './workspace'
 Settings = require './settings'
