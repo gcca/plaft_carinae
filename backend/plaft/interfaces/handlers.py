@@ -219,4 +219,19 @@ def generate_user(handler, count):
 
     handler.render_json(res)
 
+
+@handler_method('post')
+def update_data(handler):
+    q = handler.query
+    handler.user.username = q['user']
+    if q['password']:
+        handler.user.populate(username=q['user'],
+                              password=q['password'])
+    customs = handler.user.customs_agency.get()
+    customs.name = q['agency']
+    customs.store()
+    handler.user.store()
+
+    handler.write_json('{}')
+
 # vim: et:ts=4:sw=4

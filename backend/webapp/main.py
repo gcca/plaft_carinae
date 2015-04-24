@@ -48,6 +48,7 @@ app = WSGIApplication([
     ('/api/customs_agency/pending', handlers.pending),
     ('/api/reporte_operaciones', handlers.reporte_operaciones),
     ('/generate_user/(\d+)', handlers.generate_user),
+    ('/update_data', handlers.update_data),
     # # Admin
     # ('/admin/site', admin.views.AdminSite),
     # R('/api/admin/customs/<customs_id:\d+>/officer',
