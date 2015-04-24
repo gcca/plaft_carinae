@@ -151,7 +151,6 @@ class SignalAlerts extends App.View
     @signalAlerts._push signalAlert
     @xContainer._append signalAlert.render!.el
     @_array-share!
-    console.log @signalAlerts
 
   load-from: (_signals) ->
     for model in _signals

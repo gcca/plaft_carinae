@@ -12,7 +12,7 @@ App.MODULES =
   Numeration    = require './modules/numeration'
   Operation     = require './modules/operation'
   OperationList = require './modules/operation-list'
-#  Anexo6        = r equire './modules/anexo-seis'
+  Anexo6        = require './modules/anexo-seis'
   Alerts        = require './modules/alerts'
 
 Workspace = require './workspace'
@@ -104,7 +104,7 @@ class Dashboard extends App.View
           </button>
 
           <a href='#' class='#{gz.Css \navbar-brand}'>
-            PLAFTsw
+            #{window.'plaft'.'user'.'customs_agency'.'name'}
           </a>
         </div>
         <nav class='#{gz.Css \collapse}

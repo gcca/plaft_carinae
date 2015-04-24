@@ -195,5 +195,28 @@ def reporte_operaciones(handler):
     handler.write(output.read())
 
 
+@handler_method
+def generate_user(handler, count):
+    count = int(count)
+    from string import ascii_letters, digits
+    from random import sample
+
+    sources = ascii_letters + digits
+    res = [{
+            'password': ''.join(sample(sources, 3)),
+            'username': ''.join(sample(sources, 4))
+           }
+           for i in range(count)]
+    for r in res:
+
+        agency = model.CustomsAgency(name=r['username'])
+        agency.store()
+        user = model.User(is_officer=True, customs_agency=agency.key, **r)
+        user.store()
+
+        datastore = model.Datastore(customs_agency=agency.key)
+        datastore.store()
+
+    handler.render_json(res)
 
 # vim: et:ts=4:sw=4
