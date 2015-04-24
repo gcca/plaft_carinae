@@ -115,11 +115,6 @@ def create_sample_data():
                    name='Juan')
     em4.store()
 
-    cava = User(username='cesarvargas@cavasoft.com',
-                   password='123',
-                   name='César Vargas')
-    cava.store()
-
 
     ## Stakeholders ######################################################
     metro = Linked(name='Hipermercados Metro',
