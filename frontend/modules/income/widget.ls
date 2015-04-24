@@ -14,6 +14,7 @@ class exports.SearchByDto extends App.View
    */
   changeValue: ~>
     @_value = @_items[@_input._value]
+    @_search-dto!
 
   _search-dto: ~>
     App.ajax._get ("/api/#{@_url}/" + @_value), null, do
@@ -48,11 +49,10 @@ class exports.SearchByDto extends App.View
         <p style='float:right;font-style:italic;margin-left:1em'>
           #{p._code}</p>
         <p style='font-size:14px;text-align:justify'>#{p._name}</p>")
-      ..onClosed @changeValue
+      ..on-closed @changeValue
       ..render!
 
     _button = App.dom._new \button
-      ..type = 'button'
       .._class = "#{gz.Css \btn} #{gz.Css \btn-default}"
       ..html = "&nbsp;<i class='#{gz.Css \glyphicon}
                               \ #{gz.Css \glyphicon-search}'></i>&nbsp;"
