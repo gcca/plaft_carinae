@@ -2,6 +2,7 @@
 
 customer = require './customer'
   Identification = ..Identification
+
 widget = App.widget.codename
   CodeNameField = ..CodeNameField
 

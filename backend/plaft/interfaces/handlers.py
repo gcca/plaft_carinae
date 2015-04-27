@@ -69,8 +69,8 @@ def create(handler):
         customer_id = payload['customer']
         customer = model.Customer.find(customer_id)
         if not customer:
-            handler.status.\
-            BAD_REQUEST('No existe el cliente: ' + customer_id)
+            handler.status.BAD_REQUEST('No existe el cliente: ' +
+                                       customer_id)
             return
 
     dispatch = plaft.application.dispatch.create(payload,

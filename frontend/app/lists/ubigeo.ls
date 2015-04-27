@@ -4131,7 +4131,7 @@ exports.distrit =
     '250303'
     '250401'
 
-_tokens = new Array
+
 _pool-display = new Array
 _pool-code = new Array
 
@@ -4153,15 +4153,9 @@ for i to departments._code._length - 1
         ubigeo = distrits._code[k]
 
         if province-code is ubigeo._slice 0 4
-          _tokens._push do
-            _display: "#{department} #{province} #{distrit}"
-            _code: ubigeo
           _pool-display._push "#{department} - #{province} - #{distrit}"
           _pool-code._push ubigeo
 
-window.token = _tokens
-
-exports._tokens = _tokens
 exports._pool =
   _display: _pool-display
   _code: _pool-code

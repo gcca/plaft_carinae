@@ -72,5 +72,4 @@ class exports.SearchByDto extends App.View
   /** @private */ _value  : null
 
 
-
 # vim: ts=2:sw=2:sts=2:et

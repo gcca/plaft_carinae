@@ -52,7 +52,7 @@ gen-pair = ->
  * @private
  */
 gen-sbs-pair = ->
-  _._object @_sbs-code, @_sbs-display
+  _._object @_sbs
     @gen-sbs-pair = -> ..
 
 
@@ -66,8 +66,8 @@ exports <<<
       'CÉDULA DIPLOMATICA DE IDENTIDAD'
       'DOCUMENTO NACIONAL DE IDENTIDAD'
       'PASAPORTE'
-      'OTRO'
       'REGISTRO ÚNICO DE CONTRIBUYENTE'
+      'OTRO'
 
     _code: #(gen-seq 7) ++ ['01']
       'ce'
@@ -76,9 +76,21 @@ exports <<<
       'cdi'
       'dni'
       'pa'
-      'otro'
       'ruc'
+      'otro'
 
+    _short:
+      'CE'
+      'CI'
+      'CC'
+      'CDI'
+      'DNI'
+      'PA'
+      'RUC'
+      'OTRO'
+
+    _sbs:
+      (gen-seq 6) ++ ['01']
 
   jurisdiction: require './jurisdiction'
 

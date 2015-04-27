@@ -40,11 +40,13 @@ def create(payload, customs_agency, customer=None):
 
     """
     declaration = Declaration.new(payload['declaration'])
-    declaration.store()
+    mm = declaration.store()
 
     if not customer:
         customer = Customer.new(payload['declaration']['customer'])
         customer.store()
+
+    del payload['declaration']
 
     dispatch = Dispatch.new(payload)
     dispatch.customs_agency = customs_agency.key
@@ -103,7 +105,9 @@ def update(dispatch, payload, customer=None):
     customer.store()
 
     dispatch.customer = customer.key
+
     del payload['declaration']
+
     dispatch << payload
     dispatch.store()
 
