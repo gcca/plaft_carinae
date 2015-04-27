@@ -90,6 +90,13 @@ document.body.innerHTML = "
 <div class='#{gz.Css \jumbotron}'>
 
   <div class='#{gz.Css \container}'>
+    #{
+      if location.'href'.'indexOf' 'restricted-access' isnt -1
+      then '<span style=\'color:red\'>
+              Es necesario estar autenticado para usar la aplicación.
+            </span>'
+      else ''
+    }
     <h1>
       PLAFT<small>sw</small>
     </h1>

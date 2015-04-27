@@ -16,7 +16,37 @@ from plaft.domain import model
 from plaft.infrastructure.support import util
 
 
+def login_required(m, msg='Intento de ingreso no autorizado'):
+    return lambda s, *a, **k: (
+        m(s, *a, **k) if s.user
+        else (s.status.FORBIDDEN('restricted-access')
+              if '/api/' in s.request.url
+              else s.redirect('/?restricted-access')))
+
+
+class LoginRequired(type):
+
+    def __new__(cls, name, bases, dct):
+        # TODO: Improve method to decide when apply login validation
+        #       to a concret handler.
+        if name == 'SignIn':  # (-o-) HARDCODE: SignIn
+            def without_user(self, *args, **kwargs):
+                super(DirectToController, self).initialize(*args, **kwargs)
+                self.user = True
+            dct['initialize'] = without_user
+
+        if name not in ('Handler', 'Debug'):  # (-o-) HARDCODE: Debug
+            for method in ('get', 'post', 'put', 'delete'):
+                if method in dct:
+                    dct[method] = login_required(dct[method])
+
+        return super(LoginRequired, cls).__new__(cls, name, bases, dct)
+
+
 class Handler(RequestHandler):
+
+    __metaclass__ = LoginRequired
+
     """Base handler for resquest.
 
     Implement basic operations to read request and write response data.
