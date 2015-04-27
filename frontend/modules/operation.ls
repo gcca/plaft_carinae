@@ -215,6 +215,28 @@ class Operations extends Module
         "<span class='#{gz.Css \label} #{gz.Css \label-success}'>
            pendiente
          </span>"
+    ########################################################################
+    # TODO: Usar el servicio que devuelva ambas lista en un solo
+    #       request.
+    ########################################################################
+
+
+    dispatches = new DispatchesA
+    dispatches._fetch do
+      _success: (dispatches) ~>
+        _tabla = new Table do
+                      _attributes: _attributes
+                      _labels: _labels
+                      _templates: _templates
+
+        _tabla.set-rows dispatches
+
+        @$el._append 'Lista de despachos aceptados'
+        @el._append _tabla.render!.el
+
+      _error: ->
+        alert 'Error!!! Numeration list'
+
 
     dispatchesP = new DispatchesP
     dispatchesP._fetch do
@@ -234,26 +256,12 @@ class Operations extends Module
       _error: ->
         alert 'Error!!! NumerationP list'
 
-    dispatches = new DispatchesA
-    dispatches._fetch do
-      _success: (dispatches) ~>
-        _tabla = new Table do
-                      _attributes: _attributes
-                      _labels: _labels
-                      _templates: _templates
 
-        _tabla.set-rows dispatches
-
-        @$el._append 'Lista de despachos aceptados'
-        @el._append _tabla.render!.el
-
-      _error: ->
-        alert 'Error!!! Numeration list'
 
     super!
 
 
-  /** @protected */ @@_caption = 'OPERACIONES'
+  /** @protected */ @@_caption = 'ANEXO 2'
   /** @protected */ @@_icon    = gz.Css \flash
 
 
@@ -262,4 +270,3 @@ module.exports = Operations
 
 
 /* vim: ts=2 sw=2 sts=2 et: */
-

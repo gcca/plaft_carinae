@@ -233,7 +233,7 @@ class Alerts extends Module
     super!
 
   /** @protected */ @@_caption = 'ALERTAS'
-  /** @protected */ @@_icon    = gz.Css \alert
+  /** @protected */ @@_icon    = gz.Css \record
   _dto: null
 
 /** @export */

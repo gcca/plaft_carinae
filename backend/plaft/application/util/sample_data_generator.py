@@ -18,12 +18,12 @@ def create_sample_data():
     ## Customs Agency ######################################################
     ca = CustomsAgency(
         code= '123',
-        name= 'Agencia testing')
+        name= 'Massive Dynamic')
     ca.store()
 
     ca2 = CustomsAgency(
         code= '345',
-        name= 'Testing agency')
+        name= 'Cyberdine')
     ca2.store()
 
     cavasoft = CustomsAgency(name='CavaSoft SAC')
@@ -87,13 +87,6 @@ def create_sample_data():
                    is_officer=True,
                    customs_agency = ca.key)
     offc.store()
-
-    offc2 = User(username='gcca2@mail.io',
-                   password='123',
-                   name='Unamuno reloaded',
-                   is_officer=True,
-                   customs_agency = ca2.key)
-    offc2.store()
 
     em1 = User(username='E-01-@gueco.io',
                    password='23',
@@ -299,17 +292,17 @@ def create_sample_data():
     # datastore2.store()
 
     operation = Operation(dispatches=[disp2.key],
-                          customs_agency=ca2.key,
+                          customs_agency=ca.key,
                           customer=gcca.key)
     operation.store()
 
     operation1 = Operation(dispatches=[disp0.key,disp1.key,disp2.key,disp3.key],
-                          customs_agency=ca2.key,
+                          customs_agency=ca.key,
                           customer=queirolo.key)
     operation1.store()
 
     operation2 = Operation(dispatches=[disp0.key,disp1.key,disp2.key,disp3.key],
-                          customs_agency=ca2.key,
+                          customs_agency=ca.key,
                           customer=queirolo.key)
     operation2.store()
 
