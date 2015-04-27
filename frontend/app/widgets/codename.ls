@@ -158,4 +158,80 @@ class exports.InputName extends App.View
   /** @private */ _input  : null
 
 
+class exports.DisplaySelect extends App.View
+
+  /** @override */
+  _tagName: \div
+
+  /** @override */
+  _className: gz.Css \input-group
+
+  _on-change-value: (evt) ~>
+    @_change-value evt._target._item
+
+  _change-value: (i) ->
+    @_menu-short.html = @_list._short[i]
+    @_hidden._value = @_list._code[i]
+
+  /** @override */
+  initialize: ({@_list, @_name, @_value}) -> super!
+
+  /** @override */
+  render: ->
+    @el.html = ''
+
+    @_hidden = App.dom._new \input
+      .._type = \hidden
+      .._name = @_name
+      # .._value = @_value  # Se obvia porque es asignado al invocar
+      #                     # el metodo {@code _fromJSON}.
+
+    _select-btn = App.dom._new \button
+      .._type = \button
+      .._class = "#{gz.Css \btn}
+                \ #{gz.Css \btn-default}
+                \ #{gz.Css \dropdown-toggle}"
+      .._data.'toggle' = 'dropdown'
+      ..html = "<span></span>
+                &nbsp;&nbsp;
+                <span class='#{gz.Css \caret}'></span>"
+
+      @_menu-short = .._first
+
+    _dropdown = App.dom._new \ul
+      .._class = "#{gz.Css \dropdown-menu}"
+
+    _current-index = @_list._code._index @_value
+
+    if @_value?
+      if _current-index isnt -1
+        @_change-value _current-index
+      else
+        # Data corrupta de la base de datos, o
+        # brutalidad.
+        throw 'c214cd1e-ed23-11e4-a9e7-0014a48224a1'
+
+    for _display in @_list._display
+      _a = App.dom._new \a
+        ..html = _display
+
+      _li = App.dom._new \li
+        .._item = @_list._display._index _display
+        ..on-click @_on-change-value
+        .._append _a
+
+      _dropdown._append _li
+
+    @el._append @_hidden
+    @el._append _select-btn
+    @el._append _dropdown
+    super!
+
+
+  /** @private */ _list: null
+  /** @private */ _display: null
+  /** @private */ _code: null
+  /** @private */ _short: null
+  /** @private */ _menu-short: null
+
 # vim: ts=2:sw=2:sts=2:et

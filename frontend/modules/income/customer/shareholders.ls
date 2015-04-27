@@ -4,6 +4,9 @@
 FieldType = App.builtins.Types.Field
 DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
 
+widget = App.widget.codename
+  DisplaySelect = ..DisplaySelect
+
 /**
  * Shareholder
  * --------
@@ -39,11 +42,11 @@ class Shareholder extends App.View
    * Get shareholder list.
    * @public
    */
-  _array-shareholder: (_shareholders)->
-    @_array-share = _shareholders
+   _array-shareholder: (_shareholders)->
+     @_array-share = _shareholders
 
   /** @override */
-  initialize: ->
+  initialize: ({@dto=App._void._Object}=App._void._Object) ->
     @el._id= App.utils.uid!
     super!
 
@@ -61,11 +64,20 @@ class Shareholder extends App.View
     $buttonRemove.0.on-click @buttonOnRemove
     @$el._append $buttonRemove
 
-    @el._fromJSON @model
+    _select = new DisplaySelect do
+                _list : App.lists.document-type
+                _name : 'document_type'
+                _value : @dto.'document_type'
+
+    _document = @el.query ".#{gz.Css \col-shareholder-1}"
+    _document._append _select.render!.el
+
+    @el._fromJSON @dto
     super!
 
   /** @private */ _array-share : null
   /** @private */ _shareholders: null
+  /** @private */ dto: null
 
   /**
    * Shareholder form.
@@ -75,9 +87,6 @@ class Shareholder extends App.View
   template: ->
     "
     <div class='#{gz.Css \form-group} #{gz.Css \col-shareholder-1}'>
-      <select class='#{gz.Css \form-control}' name='document_type'>
-        #_OPTIONS
-      </select>
     </div>
 
     <div class='#{gz.Css \form-group} #{gz.Css \col-shareholder-2}'>
@@ -94,9 +103,6 @@ class Shareholder extends App.View
       <input type='text' class='#{gz.Css \form-control}'
           name='ratio'>
     </div>"
-
-  _OPTIONS = ["<option value='#k'>#v</option>" \
-              for k,v of App.lists.document-type._pair]._join ''
 
 /**
  * Shareholders
@@ -117,7 +123,9 @@ class Shareholders extends App.View
    * @return {Array.<Shareholder-JSON>} || {}
    * @override
    */
-  _toJSON: -> [.._toJSON! for @shareholders]
+  _toJSON: ->
+    _r =[.._toJSON! for @shareholders]
+      console.log ..
 
   /**
    * Send shareholder list to each shareholder.
@@ -144,24 +152,25 @@ class Shareholders extends App.View
 
   /**
    * Add shareholder to list.
-   * @param {Object} model Shareholder DTO.
+   * @param {Object} dto Shareholder.
    * @private
    */
-  addShareholder: (model) !->
-    shareholder = Shareholder._new model: model
+  addShareholder: (dto) !->
+    shareholder = Shareholder._new dto: dto
     @shareholders._push shareholder
     @xContainer._append shareholder.render!.el
-    @_array-share!
+#    @_array-share!
 
   load-from: (_shareholders) ->
-    for model in _shareholders
-      @addShareholder model
+    @shareholders._length = 0
+    for dto in _shareholders
+      @addShareholder dto
 
   /**
    * @param {Object} options {@code options.shareholders} collection.
    * @override
    */
-  initialize: (options) !->
+  initialize: ->
     /**
      * Shareholder views.
      * @type {Shareholder}
