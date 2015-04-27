@@ -10,7 +10,6 @@
 import plaft.application
 from plaft.interfaces import RESTHandler, handler_method
 from plaft.domain import model
-# from plaft import application
 
 
 class Customer(RESTHandler):
@@ -233,5 +232,15 @@ def update_data(handler):
     handler.user.store()
 
     handler.write_json('{}')
+
+
+@handler_method
+def list_operation(handler):
+    customs_agency = handler.user.customs_agency.get()
+    print customs_agency
+    handler.render_json(
+        plaft.application.dispatch.list_operations(customs_agency)
+    )
+
 
 # vim: et:ts=4:sw=4

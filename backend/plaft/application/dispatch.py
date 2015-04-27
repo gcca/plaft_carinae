@@ -1,4 +1,4 @@
-from plaft.domain.model import Dispatch, Customer, Declaration
+from plaft.domain.model import Dispatch, Customer, Declaration, Operation
 
 
 def create(payload, customs_agency, customer=None):
@@ -187,5 +187,13 @@ def anexo_seis(dispatch, **args):
     pprint(args)
     dispatch << args
     dispatch.store()
+
+
+def list_operations(customs_agency):
+    """."""
+    return [operation
+             for operation
+             in Operation.all(customs_agency=customs_agency.key)]
+
 
 # vim: et:ts=4:sw=4

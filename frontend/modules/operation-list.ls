@@ -26,7 +26,6 @@ class DispatchModel extends App.Model
  * @extends Model
  */
 class Operation extends App.Model
-  urlRoot: 'operation'
 
 
 /**
@@ -34,7 +33,7 @@ class Operation extends App.Model
  * @extends Collection
  */
 class Operations extends App.Collection
-  urlRoot: \operation
+  urlRoot: 'operation/list'
   model: Operation
 
 
