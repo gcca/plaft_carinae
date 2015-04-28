@@ -205,10 +205,10 @@ def create_sample_data():
 
 
     ## Dispatches ##########################################################
-    d = Declaration(customer=gcca)
+    d = Declaration(customer=queirolo)
     d.store()
     disp0 = Dispatch(order='2014-597',
-                     customer=gcca.key,
+                     customer=queirolo.key,
                      declaration=d.key,
                      jurisdiction=CodeName(code='9',
                                            name='AEROPUERTO CALLAO'),
@@ -242,10 +242,10 @@ def create_sample_data():
                      customs_agency=ca.key)
     disp1.store()
 
-    d = Declaration(customer=gcca)
+    d = Declaration(customer=queirolo)
     d.store()
     disp2 = Dispatch(order='2014-604',
-                     customer=gcca.key,
+                     customer=queirolo.key,
                      declaration=d.key,
                      jurisdiction=CodeName(code='9',
                                            name='AEROPUERTO CALLAO'),
@@ -291,20 +291,26 @@ def create_sample_data():
     #                       accepting=[])
     # datastore2.store()
 
-    operation = Operation(dispatches=[disp2.key],
-                          customs_agency=ca.key,
-                          customer=gcca.key)
-    operation.store()
+#    operation = Operation(dispatches=[disp2.key],
+#                          customs_agency=ca.key,
+#                          customer=gcca.key)
+#    operation.store()
 
     operation1 = Operation(dispatches=[disp0.key,disp1.key,disp2.key,disp3.key],
                           customs_agency=ca.key,
                           customer=queirolo.key)
     operation1.store()
 
-    operation2 = Operation(dispatches=[disp0.key,disp1.key,disp2.key,disp3.key],
-                          customs_agency=ca.key,
-                          customer=queirolo.key)
-    operation2.store()
+    for dispatch in [disp0,disp1,disp2,disp3]:
+        dispatch.operation = operation1.key
+        dispatch.store()
+
+#    operation2 = Operation(dispatches=[disp0.key,disp1.key,disp2.key,disp3.key],
+#                          customs_agency=ca.key,
+#                          customer=queirolo.key)
+#    operation2.store()
+
+
 
     ########################################################################
     return
