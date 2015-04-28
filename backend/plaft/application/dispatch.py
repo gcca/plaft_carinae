@@ -131,7 +131,6 @@ def numerate(dispatch, **args):
         None
 
     """
-    print(args)
     dispatch << args
     dispatch.store()
 

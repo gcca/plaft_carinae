@@ -19,6 +19,9 @@ RC =
 /** @export */
 exports <<<
   _get: (_url, _data, _options) ->
+    if not _options?
+      _options = _data
+      _data = null
     $\ajax do
       \url        : _url
       \data       : _data
