@@ -91,7 +91,7 @@ document.body.innerHTML = "
 
   <div class='#{gz.Css \container}'>
     #{
-      if location.'href'.'indexOf' 'restricted-access' isnt -1
+      if (location.'href'.'indexOf' 'restricted-access') isnt -1
       then '<span style=\'color:red\'>
               Es necesario estar autenticado para usar la aplicación.
             </span>'
