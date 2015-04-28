@@ -42,8 +42,8 @@ class Shareholder extends App.View
    * Get shareholder list.
    * @public
    */
-   _array-shareholder: (_shareholders)->
-     @_array-share = _shareholders
+  _array-shareholder: (_shareholders)->
+    @_array-share = _shareholders
 
   /** @override */
   initialize: ({@dto=App._void._Object}=App._void._Object) ->
