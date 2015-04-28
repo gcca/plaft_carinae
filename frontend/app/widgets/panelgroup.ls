@@ -37,32 +37,13 @@ class exports.PanelHeading extends App.View
    * Remove panel from array-panel
    */
   _remove-panel: ~>
+    @trigger (gz.Css \close), @_panel
     $ @_panel .remove!
-    @_array-panels.trigger (gz.Css \close), @_id-panel
-
-  /**
-   * Setea el valor del array-panel en cada panel-heading
-   * @param {Array.<Panel>} panels
-   */
-  _set-panels: (panels) ~>
-    @_array-panels = panels
-
-  /**
-   * Cambia el modelo de vista del panel-heading
-   * @param {String} _type
-   * @param {String} _href if _type is PDF
-   */
-  _change-type: ->
-    if not it._span?
-      it._span = App.dom._new \span
-        .._class = gz.Css \pull-right
-        ..css= "flex:1;margin:3px"
-      @_head._append it._span
 
   /** @override */
   initialize: (@_options) ->
     if @_options?
-      @_id-panel = @_options._id-panel
+      @_id-content = @_options._id-content
       @_parent-uid = @_options._parent-uid
       @_title = @_options._title
       @_panel = @_options._panel
@@ -74,7 +55,7 @@ class exports.PanelHeading extends App.View
     @el.html = "<div class='#{gz.Css \panel-title}' style='display:flex'>
                   <span data-toggle='collapse'
                      data-parent='##{@_parent-uid}'
-                     href='##{@_id-panel}'
+                     href='##{@_id-content}'
                      style='margin:5px;width:400px;cursor:pointer'>
                    #{if @_title?
                      then @_title
@@ -85,12 +66,11 @@ class exports.PanelHeading extends App.View
     super!
 
   /** @private */ _options: null
-  /** @private */ _id-panel: null
+  /** @private */ _id-content: null
   /** @private */ _parent-uid: null
   /** @private */ _head: null
   /** @private */ _title: null
   /** @private */ _panel: null
-  /** @private */ _array-panels: null
 
 
 
@@ -280,7 +260,7 @@ class exports.Panel extends App.View
     # building panel heading
     if @_options._panel-heading?
       @_header = @_options._panel-heading
-      @_header._id-panel = _id-content
+      @_header._id-content = _id-content
       @_header._parent-uid = @_options._parent-uid
       @_header._panel = @el
     else
@@ -364,26 +344,18 @@ class exports.PanelGroup extends App.View
     for @_panels then .._close!
 
   /**
+   * @see @new-panel
+   */
+  drop-panel: (panel) ~>
+    @_panels._remove panel
+    if @_panels._length is 1
+      @open-all!
+
+  /**
    * Open all panels
    */
   open-all: ->
     for @_panels then  .._open!
-
-  /**
-   * Envia el arreglo de paneles a la cabecera.
-   */
-  _array-panels: ->
-    for @_panels then
-      .._header._set-panels @_panels
-
-  /**
-   * Elimina un panel de arreglo de paneles.
-   */
-  _delete-panel: (id) ~>
-    @_panels = [pl for pl in @_panels when pl._collapse._id !== id]
-    _.extend(@_panels, App.Events)
-    @_panels.on (gz.Css \close), @_delete-panel
-    @_array-panels!
 
   /**
    * Crea un nuevo panel
@@ -406,21 +378,14 @@ class exports.PanelGroup extends App.View
       _panel-heading: _panel-heading
       _panel-body: _panel-body
     @root-el._append _panel.render!.el
+    _panel._header.on (gz.Css \close), @drop-panel
     @_panels._push _panel
-    @_array-panels!
     _panel
 
   /** @override */
-  # TODO: Quitar el valor por defecto de ConcretPanel a Panel.
-  #       En caso de una clase hija de HijaPanelGroup con su "propio"
-  #       HijaPanel, siempre estaría recibiendo la clase Panel.
-  #       Lo ideal es que se pueda definir la clase HijaPanel por defecto,
-  #       de ser lo que se desea.
   initialize: ({@root-el = @el, \
                 @ConcretPanel = Panel} = App._void._Object) ->
     @_panels = new Array
-    _.extend(@_panels, App.Events);
-    @_panels.on (gz.Css \close), @_delete-panel
     super!
 
   /** @public */ _panels: null

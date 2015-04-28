@@ -32,15 +32,8 @@ class SignalAlert extends App.View
    * @private
    */
   buttonOnRemove: ~>
+    @trigger (gz.Css \drop-signal), @
     @$el.remove!
-    @_array-share.trigger (gz.Css \drop-signal), @el._id
-
-  /**
-   * Get signalAlert list.
-   * @public
-   */
-  _array-signalAlert: (_signals)->
-    @_array-share = _signals
 
   /** @override */
   initialize: ->
@@ -119,21 +112,10 @@ class SignalAlerts extends App.View
   _toJSON: -> [.._toJSON! for @signalAlerts]
 
   /**
-   * Send signalAlert list to each signal.
-   * @private
+   * @see addShareholder
    */
-  _array-share: ->
-    for @signalAlerts then
-      .._array-signalAlert @signalAlerts
-  /**
-   * Remove signal from signalAlert list.
-   * @private
-   */
-  _on-share: (id) ~>
-    @signalAlerts = [sh for sh in @signalAlerts when sh.el._id !== id]
-    _._extend(@signalAlerts, App.Events);
-    @signalAlerts.on (gz.Css \drop-signal), @_on-share
-    @_array-share!
+  on-drop: (signal) ~>
+    @signalAlerts._remove signal
 
   /**
    * (Event) On add signalAlert to list.
@@ -148,9 +130,9 @@ class SignalAlerts extends App.View
    */
   addSignal: (model) !->
     signalAlert = SignalAlert._new model: model
+    signalAlert.on (gz.Css \drop-signal), @on-drop
     @signalAlerts._push signalAlert
     @xContainer._append signalAlert.render!.el
-    @_array-share!
 
   load-from: (_signals) ->
     for model in _signals
@@ -167,13 +149,7 @@ class SignalAlerts extends App.View
      * @private
      */
     @signalAlerts = new Array
-    _._extend(@signalAlerts, App.Events);
 
-    /**
-     * SignalAlert JSON list.
-     * @private
-     */
-    @signalAlerts.on (gz.Css \drop-signal), @_on-share
     # Style
     App.dom._write ~> @el.css._marginBottom = '1em'
 

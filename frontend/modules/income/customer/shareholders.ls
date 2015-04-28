@@ -35,19 +35,11 @@ class Shareholder extends App.View
    * @private
    */
   buttonOnRemove: ~>
+    @trigger (gz.Css \drop-shareholder), @ # TODO:
     @$el.remove!
-    @_array-share.trigger (gz.Css \drop-shareholder), @el._id
-
-  /**
-   * Get shareholder list.
-   * @public
-   */
-  _array-shareholder: (_shareholders)->
-    @_array-share = _shareholders
 
   /** @override */
   initialize: ({@dto=App._void._Object}=App._void._Object) ->
-    @el._id= App.utils.uid!
     super!
 
   /** @override */
@@ -128,21 +120,10 @@ class Shareholders extends App.View
       console.log ..
 
   /**
-   * Send shareholder list to each shareholder.
-   * @private
+   * @see addShareholder
    */
-  _array-share: ->
-    for @shareholders then
-      .._array-shareholder @shareholders
-  /**
-   * Remove shareholder from shareholder list.
-   * @private
-   */
-  _on-share: (id) ~>
-    @shareholders = [sh for sh in @shareholders when sh.el._id !== id]
-    _._extend(@shareholders, App.Events);
-    @shareholders.on (gz.Css \drop-shareholder), @_on-share
-    @_array-share!
+  on-drop: (shareholder) ~>
+    @shareholders._remove shareholder
 
   /**
    * (Event) On add shareholder to list.
@@ -157,9 +138,9 @@ class Shareholders extends App.View
    */
   addShareholder: (dto) !->
     shareholder = Shareholder._new dto: dto
+    shareholder.on (gz.Css \drop-shareholder), @on-drop
     @shareholders._push shareholder
     @xContainer._append shareholder.render!.el
-#    @_array-share!
 
   load-from: (_shareholders) ->
     @shareholders._length = 0
@@ -177,13 +158,7 @@ class Shareholders extends App.View
      * @private
      */
     @shareholders = new Array
-    _._extend(@shareholders, App.Events);
 
-    /**
-     * Shareholder JSON list.
-     * @private
-     */
-    @shareholders.on (gz.Css \drop-shareholder), @_on-share
     # Style
     App.dom._write ~> @el.css._marginBottom = '1em'
 
