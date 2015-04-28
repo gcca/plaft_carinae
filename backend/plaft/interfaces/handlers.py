@@ -28,27 +28,6 @@ class Declarant(RESTHandler):
     """Declarant RESTful."""
 
 
-class Operation(RESTHandler):
-    """Operation RESTful."""
-
-
-@handler_method
-def pending(handler):
-    customs_agency = handler.user.customs_agency.get()
-    handler.render_json(
-        plaft.application.dispatch.\
-        pending_and_accepting(customs_agency)['pending']
-    )
-
-
-@handler_method
-def accepting(handler):
-    customs_agency = handler.user.customs_agency.get()
-    handler.render_json(
-        plaft.application.dispatch.\
-        pending_and_accepting(customs_agency)['accepting']
-    )
-
 
 @handler_method
 def pending_and_accepting(handler):

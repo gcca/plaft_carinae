@@ -43,12 +43,11 @@ app = WSGIApplication([
     ('/api/dispatch/(\d+)/accept', handlers.accept_dispatch),
     ('/api/dispatch/(\d+)/anexo_seis', handlers.anexo_seis),
     ('/api/customs_agency/list_dispatches', handlers.pending_and_accepting),
-    ('/api/customs_agency/accepting', handlers.accepting),
-    ('/api/customs_agency/pending', handlers.pending),
     ('/api/operation/list', handlers.list_operation),
     ('/api/reporte_operaciones', handlers.reporte_operaciones),
     ('/generate_user/(\d+)', handlers.generate_user),
     ('/update_data', handlers.update_data),
+
 ], debug=True)
 
 

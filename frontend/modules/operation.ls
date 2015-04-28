@@ -169,13 +169,11 @@ class OperationEdit extends Module
 class Dispatch extends App.Model
   urlRoot: 'dispatch'
 
-
 /**
 * @Class Dispatches
 * @extends Collection
 */
 class DispatchesA extends App.Collection
-  urlRoot: 'customs_agency/accepting'
   model: Dispatch
 
 
@@ -184,7 +182,6 @@ class DispatchesA extends App.Collection
 * @extends Collection
 */
 class DispatchesP extends App.Collection
-  urlRoot: 'customs_agency/pending'
   model: Dispatch
 
 
@@ -210,49 +207,45 @@ class Operations extends Module
       'numeration_date'
       'diro'
 
-    _templates =
+    _template-pending =
       'diro': ->
-        "<span class='#{gz.Css \label} #{gz.Css \label-success}'>
+        "<span class='#{gz.Css \label} #{gz.Css \label-danger}'>
            pendiente
          </span>"
-    ########################################################################
-    # TODO: Usar el servicio que devuelva ambas lista en un solo
-    #       request.
-    ########################################################################
 
+    _template-accepting =
+      'diro': ->
+        "<span class='#{gz.Css \label} #{gz.Css \label-success}'>
+           aceptado
+         </span>"
 
-    dispatches = new DispatchesA
-    dispatches._fetch do
+    App.ajax._get '/api/customs_agency/list_dispatches', do
       _success: (dispatches) ~>
-        _tabla = new Table do
+        _pending = new DispatchesP dispatches.'pending'
+        _accepting = new DispatchesA dispatches.'accepting'
+
+        _table-pending = new Table do
                       _attributes: _attributes
                       _labels: _labels
-                      _templates: _templates
-
-        _tabla.set-rows dispatches
-
-        @$el._append 'Lista de despachos aceptados'
-        @el._append _tabla.render!.el
-
-      _error: ->
-        alert 'Error!!! Numeration list'
-
-
-    dispatchesP = new DispatchesP
-    dispatchesP._fetch do
-      _success: (dispatches) ~>
-        _tablaP = new Table do
-                      _attributes: _attributes
-                      _labels: _labels
-                      _templates: _templates
+                      _templates: _template-pending
                       on-dblclick-row: (evt) ~>
                         @_desktop.load-next-page OperationEdit, model: evt._target._model
 
-        _tablaP.set-rows dispatches
+        _table-pending.set-rows _pending
 
-        @$el._append 'Lista de despachos pendientes'
-        @el._append _tablaP.render!.el
+        _table-accepting = new Table do
+                      _attributes: _attributes
+                      _labels: _labels
+                      _templates: _template-accepting
 
+        _table-accepting.set-rows _accepting
+
+        @$el._append '<h2>Lista de despachos pendientes</h2>'
+        @el._append _table-pending.render!.el
+
+
+        @$el._append '<h2>Lista de despachos aceptados</h2>'
+        @el._append _table-accepting.render!.el
       _error: ->
         alert 'Error!!! NumerationP list'
 

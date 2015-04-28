@@ -145,9 +145,9 @@ class Operations extends Module
            </span>
          </span>"
 
-    dispatches = new Dispatches
-    dispatches._fetch do
+    App.ajax._get '/api/customs_agency/list_dispatches', do
       _success: (dispatches) ~>
+        _pending = new Dispatches dispatches.'pending'
         _tablaP = new Table do
                       _attributes: _attributes
                       _labels: _labels
@@ -155,7 +155,7 @@ class Operations extends Module
                       on-dblclick-row: (evt) ~>
                         @_desktop.load-next-page OperationEdit, model: evt._target._model
 
-        _tablaP.set-rows dispatches
+        _tablaP.set-rows _pending
 
         @el._append _tablaP.render!.el
 

@@ -20,7 +20,6 @@ class Dispatch extends App.Model
 * @extends Collection
 */
 class Dispatches extends App.Collection
-  urlRoot: 'customs_agency/pending'
   model: Dispatch
 
 /**
@@ -142,9 +141,9 @@ class Numeration extends Module
            #{it}
          </span>"
 
-    dispatches = new Dispatches
-    dispatches._fetch do
+    App.ajax._get '/api/customs_agency/list_dispatches', do
       _success: (dispatches) ~>
+        _pending = new Dispatches dispatches.'pending'
         _tabla = new Table  do
                       _attributes: _attributes
                       _labels: _labels
@@ -152,7 +151,7 @@ class Numeration extends Module
                       on-dblclick-row: (evt) ~>
                         @_desktop.load-next-page NumerationEdit, model: evt._target._model
 
-        _tabla.set-rows dispatches
+        _tabla.set-rows _pending
 
         @el._append _tabla.render!.el
 
