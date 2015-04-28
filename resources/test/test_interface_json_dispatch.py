@@ -40,7 +40,7 @@ class InterfaceJSONDispatchTest(testplaft.TestCase):
             'customer': self.customer.id
         }
 
-        resp = self.testapp.put_json('/api/dispatch/create', dto)
+        resp = self.testapp.post_json('/api/income/create', dto)
 
         dispatch_test = Dispatch.find(order='666-666')
 
@@ -58,7 +58,7 @@ class InterfaceJSONDispatchTest(testplaft.TestCase):
             }
         }
 
-        resp = self.testapp.put_json('/api/dispatch/create', dto)
+        resp = self.testapp.post_json('/api/income/create', dto)
 
         dispatch_test = Dispatch.find(order='666-666')
 
@@ -86,7 +86,7 @@ class InterfaceJSONDispatchTest(testplaft.TestCase):
         dispatch.declaration = declaration.key
         dispatch.store()
 
-        _url = "/api/dispatch/create/%d" % dispatch.id
+        _url = "/api/income/create/%d" % dispatch.id
 
         resp = self.testapp.put_json(_url, dto)
 
@@ -110,7 +110,7 @@ class InterfaceJSONDispatchTest(testplaft.TestCase):
         dispatch.declaration = declaration.key
         dispatch.store()
 
-        _url = "/api/dispatch/create/%d" % dispatch.id
+        _url = "/api/income/create/%d" % dispatch.id
 
         resp = self.testapp.put_json(_url, dto)
 
@@ -130,10 +130,10 @@ class InterfaceJSONDispatchTest(testplaft.TestCase):
 
         resp = self.testapp.post_json(_url, dto)
 
-     def test_pending_and_accepting(self):
+    # def test_pending_and_accepting(self):
         #creando despachos
         # TODO(gcca)
-        pass
+       # pass
 
 
 # vim: et:ts=4:sw=4

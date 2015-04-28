@@ -122,8 +122,13 @@ class ApplicationDispatchTest(testplaft.TestCase):
         dispatch2.customs_agency = customs_agency.key
         dispatch2.store()
 
+        dispatch3 = Dispatch(order='456-456')
+        dispatch3.customs_agency = customs_agency.key
+        dispatch3.store()
+
         datastore = Datastore(customs_agency=customs_agency.key)
         datastore.pending = [dispatch1.key, dispatch2.key]
+        datastore.accepting = [dispatch3.key]
         datastore.store()
 
         # use case
