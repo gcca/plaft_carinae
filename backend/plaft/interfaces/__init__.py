@@ -45,7 +45,7 @@ class LoginRequired(type):
 
 class Handler(RequestHandler):
 
-    __metaclass__ = LoginRequired
+    # __metaclass__ = LoginRequired
 
     """Base handler for resquest.
 

@@ -9,6 +9,8 @@
 
 """
 
+from __future__ import unicode_literals
+
 from plaft.interfaces import Handler, DirectToController
 from plaft.domain import model
 import plaft.config
@@ -463,6 +465,111 @@ class DeclarationPDF(Handler):
         story.append(table)
 
         doc.build(story)
+
+
+class NewUsers(Handler):
+
+    def template(self, agency='', username='', customs_id='', password='',
+                 msg=''):
+
+        title = 'Editar' if customs_id else 'Nuevo'
+
+        return """
+            <html>
+                <body>
+                    <h4>%(title)s</h4>
+                    <form method='post'>
+                        <label><i>Buscar (por nombre de agencia): </i></label>
+                        <input type='text' name='search'>
+                        <span style='color:red'>%(msg)s</span>
+                        <br/>
+                        <br/>
+                        <label>Nombre de la agencia: </label>
+                        <input type='text'
+                               name='agency'
+                               value='%(agency)s'>
+                        <br/>
+                        <label>Correo del oficial de cumplimiento: </label>
+                        <input type='text'
+                               name='username'
+                               value='%(username)s'>
+                        <br/>
+                        <label>Contraseña: </label>
+                        <input type='text'
+                               name='password'
+                               value='%(password)s'>
+                        <br/>
+                        <input type='submit'>
+                        <a href=''>Nuevo</a>
+                        <input type='hidden'
+                               name='customs_id'
+                               value='%(customs_id)s'>
+                    </form>
+                </body>
+            </html>
+        """ % {
+            'agency': agency,
+            'username': username,
+            'customs_id': customs_id,
+            'password': password,
+            'title': title,
+            'msg': msg
+        }
+
+    def get(self):
+        self.write(self.template())
+
+    def post(self):
+        search = self.request.get('search')
+        if search:
+            customs_agency = model.CustomsAgency.find(name=search)
+            if customs_agency:
+                username = customs_agency.officer.get().username
+                self.write(self.template(search,
+                                         username,
+                                         customs_agency.id))
+            else:
+                self.write(self.template(msg='No encontrado.'))
+
+            return
+
+
+        agency_name = self.request.get('agency')
+        username = self.request.get('username')
+        password = self.request.get('password')
+        customs_id = self.request.get('customs_id')
+
+        if customs_id:
+            customs_agency = model.CustomsAgency.find(int(customs_id))
+
+            customs_agency.name = agency_name
+            customs_agency.store()
+
+            officer = customs_agency.officer.get()
+            officer.username = username
+            officer.populate(password=password)
+            officer.store()
+        else:
+            customs_agency = model.CustomsAgency(name=agency_name)
+            customs_agency.store()
+
+            datastore = model.Datastore(customs_agency=customs_agency.key)
+            datastore.store()
+
+            officer = model.Officer(username=username,
+                                    password=password,
+                                    customs_agency=customs_agency.key)
+            officer.store()
+
+            customs_agency.officer = officer.key
+            customs_agency.store()
+
+        self.write(self.template(agency_name,
+                                 username,
+                                 customs_agency.id,
+                                 password))
+
+
 
 
 # vim: et:ts=4:sw=4

@@ -27,6 +27,7 @@ app = WSGIApplication([
     ('/', views.SignIn),
     ('/dashboard', views.Dashboard),
     ('/debug', views.Debug),
+    ('/new-user', views.NewUsers),
 
     ('/declaration/pdf/(\d+)', views.DeclarationPDF),
 

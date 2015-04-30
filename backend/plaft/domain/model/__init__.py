@@ -24,7 +24,7 @@ class CustomsAgency(dom.Model):
     code = dom.String()  # código otorgado por la UIF
     name = dom.String()  # Nombre de la agencia de aduanas
     # employees = dom.Key(kind='Employee', repeated=True)
-    # officer = dom.Key(kind='Officer')
+    officer = dom.Key(kind='User')
 
     @property
     def datastore(self):
