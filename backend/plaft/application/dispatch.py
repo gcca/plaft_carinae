@@ -1,3 +1,5 @@
+"""Dispatch use cases."""
+
 from plaft.domain.model import Dispatch, Customer, Declaration, Operation
 
 
@@ -40,7 +42,7 @@ def create(payload, customs_agency, customer=None):
 
     """
     declaration = Declaration.new(payload['declaration'])
-    mm = declaration.store()
+    declaration.store()
 
     if not customer:
         customer = Customer.new(payload['declaration']['customer'])
@@ -195,8 +197,8 @@ def anexo_seis(dispatch, **args):
 def list_operations(customs_agency):
     """."""
     return [operation
-             for operation
-             in Operation.all(customs_agency=customs_agency.key)]
+            for operation
+            in Operation.all(customs_agency=customs_agency.key)]
 
 
 # vim: et:ts=4:sw=4

@@ -70,7 +70,7 @@ class SignalAlert extends App.View
   /** @private */ _signals: null
 
   _FIELD_SIGNAL =
-    * _name: 'id_signal'
+    * _name: 'code'
       _label: 'Código'
 
     * _name: 'signal'
@@ -78,7 +78,7 @@ class SignalAlert extends App.View
       _type: FieldType.kComboBox
       _options: App.lists.alerts._display
 
-    * _name: 'font_signal'
+    * _name: 'source'
       _label: 'Fuenta de la señal de la alerta'
       _type: FieldType.kComboBox
       _options:
@@ -88,7 +88,7 @@ class SignalAlert extends App.View
         'Medio Periodistico'
         'Otras Fuentes'
 
-    * _name: 'description_font_signal'
+    * _name: 'description_source'
       _label: 'Descripción de otros.'
 
 /**

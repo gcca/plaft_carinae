@@ -23,6 +23,8 @@ class CustomsAgency(dom.Model):
 
     code = dom.String()  # código otorgado por la UIF
     name = dom.String()  # Nombre de la agencia de aduanas
+    # employees = dom.Key(kind='Employee', repeated=True)
+    # officer = dom.Key(kind='Officer')
 
     @property
     def datastore(self):
@@ -54,8 +56,8 @@ class Officer(User):
     """Oficial de cumplimiento."""
 
 
-class Assistant(User):
-    """Asistente."""
+class Employee(User):
+    """."""
 
 
 # Clientes (de la agencia de aduanas)
@@ -247,10 +249,10 @@ class Dispatch(dom.Model):
 
     class Signal(dom.Model):
         """."""
-        id_signal = dom.String()
+        code = dom.String()
         signal = dom.String()
-        font_signal = dom.String()
-        description_font_signal = dom.String()
+        source = dom.String()
+        description_source = dom.String()
 
     signal_alerts = dom.Structured(Signal, repeated=True)
 

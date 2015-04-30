@@ -28,9 +28,15 @@ class Declarant(RESTHandler):
     """Declarant RESTful."""
 
 
-
 @handler_method
 def pending_and_accepting(handler):
+    """ (Handler) -> None
+
+    => {
+        'pending': [Dispatch],
+        'accepting': [Dispatch]
+    }
+    """
     customs_agency = handler.user.customs_agency.get()
     handler.render_json(
         plaft.application.dispatch.pending_and_accepting(customs_agency)
@@ -39,6 +45,15 @@ def pending_and_accepting(handler):
 
 @handler_method('post')
 def create(handler):
+    """ (Handler) -> None
+
+    => {
+        'id': int,
+        'customer': int
+    }
+
+    ~> BAD_REQUEST: No ID cliente.
+    """
     payload = handler.query
 
     customs_agency = handler.user.customs_agency.get()
@@ -63,17 +78,23 @@ def create(handler):
 
 @handler_method('put')
 def update(handler, dispatch_id=None):
-    payload = handler.query
+    """ (Handler) -> None
 
-    customs_agency = handler.user.customs_agency.get()
+    => {}
+
+    ~>
+        BAD_REQUEST: No existe cliente.
+        NOT_FOUND: No existe despacho.
+    """
+    payload = handler.query
 
     customer = None
     if 'customer' in payload:
         customer_id = payload['customer']
         customer = model.Customer.find(customer_id)
         if not customer:
-            handler.status.\
-            BAD_REQUEST('No existe el cliente: ' + customer_id)
+            handler.status.BAD_REQUEST('No existe el cliente: ' +
+                                       customer_id)
             return
 
     dispatch = model.Dispatch.find(int(dispatch_id))
@@ -81,12 +102,18 @@ def update(handler, dispatch_id=None):
         plaft.application.dispatch.update(dispatch, payload, customer)
         handler.write_json('{}')
     else:
-        handler.status.\
-        NOT_FOUND('No existe el despacho con el id: ' + dispatch_id)
+        handler.status.NOT_FOUND('No existe el despacho con el id: ' +
+                                 dispatch_id)
 
 
 @handler_method('post')
 def numerate(handler, dispatch_id):
+    """ (Handler) -> None
+
+    => {}
+
+    ~> NOT_FOUND: No existe despacho.
+    """
     playload = handler.query
 
     dispatch = model.Dispatch.find(int(dispatch_id))
@@ -95,19 +122,25 @@ def numerate(handler, dispatch_id):
 
         handler.write_json('{}')
     else:
-        handler.status.\
-        NOT_FOUND('No existe el despacho con el id: ' + dispatch_id)
+        handler.status.NOT_FOUND('No existe el despacho con el id: ' +
+                                 dispatch_id)
 
 
 @handler_method('post')
 def register(handler, dispatch_id):
-    q = handler.query
+    """ (Handler) -> None
+
+    => {}
+
+    ~> NOT_FOUND: No existe despacho.
+    """
+    query = handler.query
 
     dispatch = model.Dispatch.find(int(dispatch_id))
     if dispatch:
         plaft.application.dispatch.register(dispatch,
-                                            q['country_source'],
-                                            q['country_target'])
+                                            query['country_source'],
+                                            query['country_target'])
         handler.write_json('{}')
     else:
         handler.status.NOT_FOUND('No existe el despacho con el id: ' +
@@ -115,17 +148,29 @@ def register(handler, dispatch_id):
 
 
 @handler_method('post')
-def accept_dispatch(handler, id=None):
-    dispatch = model.Dispatch.find(int(id))
+def accept_dispatch(handler, dispatch_id=None):
+    """ (Handler) -> None
+
+    => {'id': int}
+
+    ~> NOT_FOUND: No existe despacho.
+    """
+    dispatch = model.Dispatch.find(int(dispatch_id))
     if dispatch:
         operation = plaft.application.operation.accept(dispatch)
         handler.write_json('{"id":%s}' % operation.id)
     else:
-        handler.status.NOT_FOUND('No se halló el desapcho ' + id)
+        handler.status.NOT_FOUND('No se halló el despacho ' + dispatch_id)
 
 
 @handler_method('post')
 def anexo_seis(handler, dispatch_id):
+    """ (Handler) -> None
+
+    => {}
+
+    ~> NOT_FOUND: No existe despacho.
+    """
     playload = handler.query
 
     dispatch = model.Dispatch.find(int(dispatch_id))
@@ -134,12 +179,17 @@ def anexo_seis(handler, dispatch_id):
 
         handler.write_json('{}')
     else:
-        handler.status.\
-        NOT_FOUND('No existe el despacho con el id: ' + dispatch_id)
+        handler.status.NOT_FOUND('No existe el despacho con el id: ' +
+                                 dispatch_id)
 
 
 @handler_method
 def reporte_operaciones(handler):
+    """ (Handler) -> None
+
+    => StringIO
+
+    """
     import StringIO
     import xlsxwriter
 
@@ -169,27 +219,36 @@ def reporte_operaciones(handler):
     workbook.close()
     output.seek(0)
     handler.response.headers['Content-Type'] = 'application/octotet-stream'
-    handler.response.headers['Content-Disposition'] = 'attachment; filename="reporte_operaciones.xlsx"'
+    handler.response.headers['Content-Disposition'] = 'attachment;\
+                                        filename="reporte_operaciones.xlsx"'
     handler.write(output.read())
 
 
 @handler_method
 def generate_user(handler, count):
+    """ (Handler, str) -> None
+
+    => [{
+        'password': str,
+        'username': str
+    }]
+
+    """
     count = int(count)
     from string import ascii_letters, digits
     from random import sample
 
     sources = ascii_letters + digits
-    res = [{
-            'password': ''.join(sample(sources, 3)),
-            'username': ''.join(sample(sources, 4))
-           }
-           for i in range(count)]
-    for r in res:
+    res = [{'password': ''.join(sample(sources, 3)),
+            'username': ''.join(sample(sources, 4))}
+           for _ in range(count)]
 
-        agency = model.CustomsAgency(name=r['username'])
+    for usr in res:
+        agency = model.CustomsAgency(name=usr['username'])
         agency.store()
-        user = model.User(is_officer=True, customs_agency=agency.key, **r)
+        user = model.User(is_officer=True,
+                          customs_agency=agency.key,
+                          **usr)
         user.store()
 
         datastore = model.Datastore(customs_agency=agency.key)
@@ -200,13 +259,18 @@ def generate_user(handler, count):
 
 @handler_method('post')
 def update_data(handler):
-    q = handler.query
-    handler.user.username = q['user']
-    if q['password']:
-        handler.user.populate(username=q['user'],
-                              password=q['password'])
+    """ (Handler) -> None
+
+    => {}
+
+    """
+    query = handler.query
+    handler.user.username = query['user']
+    if query['password']:
+        handler.user.populate(username=query['user'],
+                              password=query['password'])
     customs = handler.user.customs_agency.get()
-    customs.name = q['agency']
+    customs.name = query['agency']
     customs.store()
     handler.user.store()
 
@@ -215,8 +279,12 @@ def update_data(handler):
 
 @handler_method
 def list_operation(handler):
+    """ (Handler) -> None
+
+    => [Operation]
+
+    """
     customs_agency = handler.user.customs_agency.get()
-    print customs_agency
     handler.render_json(
         plaft.application.dispatch.list_operations(customs_agency)
     )
