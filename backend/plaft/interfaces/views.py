@@ -51,6 +51,7 @@ class Dashboard(DirectToController):
         self.add_arg('declarant',
                      {dcl.slug: dcl.id for dcl in model.Declarant.all()})
         self.add_arg('user', self.user)
+        self.add_arg('us', self.user.customs_agency.get().employees)
 
 
 class Debug(Handler):
@@ -533,7 +534,6 @@ class NewUsers(Handler):
 
             return
 
-
         agency_name = self.request.get('agency')
         username = self.request.get('username')
         password = self.request.get('password')
@@ -568,8 +568,6 @@ class NewUsers(Handler):
                                  username,
                                  customs_agency.id,
                                  password))
-
-
 
 
 # vim: et:ts=4:sw=4

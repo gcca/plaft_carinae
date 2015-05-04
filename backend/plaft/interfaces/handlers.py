@@ -28,6 +28,10 @@ class Declarant(RESTHandler):
     """Declarant RESTful."""
 
 
+class Operation(RESTHandler):
+    """Operation RESTful."""
+
+
 @handler_method
 def pending_and_accepting(handler):
     """ (Handler) -> None

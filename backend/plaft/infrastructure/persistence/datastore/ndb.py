@@ -95,19 +95,43 @@ Structured = ndb.StructuredProperty
 PolyModel = polymodel.PolyModel
 
 
+def convert_keys(dct, hist):
+
+    for k in (k for k in dct if type(dct[k]) is ndb.Key):
+        nkey = dct[k]
+        if nkey in hist:
+            dct[k] = nkey.id()
+        else:
+            obj = nkey.get().to_dict()
+            convert_keys(obj, hist+(nkey,))
+            dct[k] = obj
+
+    for k in (k for k in dct
+              if type(dct[k]) is list and dct[k] and
+              type(dct[k][0]) is ndb.Key):
+        value = dct[k]
+        i = 0
+        for nkey in value:
+            obj = nkey.get().to_dict()
+            convert_keys(obj, hist+(nkey,))
+            dct[k][i] = obj
+            i += 1
+
+
 class Model(Entity, ndb.Model):
     """."""
 
-    static_keys = []
+    def to_dict(self):
+        dct = super(Model, self).to_dict()
+        dct['id'] = self.id
+        return dct
 
     @property
     def dict(self):
         """."""
-        dict = self.to_dict()
-        for key in self.static_keys:
-            if dict[key]:
-                dict[key] = dict[key].id()
-        return dict
+        dct = self.to_dict()
+        convert_keys(dct, (self.key,))
+        return dct
 
     # filter_node = staticmethod(
     #     lambda prop, val: Q.FilterNode(  # pylint: disable=I0011,W0142
@@ -268,8 +292,6 @@ class JSONEncoderNDB(JSONEncoder):
             return d
         if isinstance(o, Q.Query):
             return o.fetch(666)
-        if isinstance(o, ndb.Key):
-            return o.get()
         if isinstance(o, GeneratorType):
             return list(o)
         return JSONEncoder.default(self, o)

@@ -9,12 +9,24 @@
 """
 
 from __future__ import unicode_literals
+import random
 from plaft.domain.model import (User, Dispatch, CodeName, Declaration,
                                 Customer, Third, Declarant, Linked,
                                 Business, Datastore, CustomsAgency,
-                                Operation, Officer)
-import random
+                                Operation, Officer, Employee)
 
+
+def create_employees(agency, j=7):
+    from string import ascii_lowercase
+
+    j = random.randint(2, j)
+    while j:
+        username = ''.join(random.sample(ascii_lowercase, 3))
+        employee = Employee(username=username, password='123')
+        employee.store()
+        agency.employees.append(employee.key)
+        j -= 1
+    agency.store()
 
 
 def create_dispatches(agency, datastore, customers, n=25):
@@ -69,8 +81,10 @@ def create_operation(agency, dstp_operation, datastore):
         dispatch.store()
 
     operation.store()
-    datastore.pending = list(set(datastore.pending).difference(dstp_operation))
+    datastore.pending = list(
+        set(datastore.pending).difference(dstp_operation))
     datastore.store()
+
 
 def operations(agency, list_dispatches, datastore):
     dispatch_set = set(random.sample(list_dispatches,
@@ -82,9 +96,10 @@ def operations(agency, list_dispatches, datastore):
 
         dstp_operation = set([dispatch])
         if is_multiple:
-            dstp_operation = set([dstp
-                                  for dstp in list(dispatch_set)
-                                  if dstp.get().customer == dispatch.get().customer])
+            dstp_operation = set(
+                [dstp
+                 for dstp in list(dispatch_set)
+                 if dstp.get().customer == dispatch.get().customer])
 
         create_operation(agency, dstp_operation, datastore)
 
@@ -136,7 +151,7 @@ def create_sample_data():
         Data('Massive Dynamic',
              'Nina Sharp',
              'gcca@mail.io',
-             '123'),
+             '789'),
         Data('Cyberdine',
              'Mice Dyson',
              'mice@cd.io',
@@ -150,6 +165,8 @@ def create_sample_data():
     for data in init_data:
         agency = CustomsAgency(name=data.customs_agency)
         agency.store()
+
+        create_employees(agency)
 
         datastore = Datastore(customs_agency=agency.key)
         datastore.store()
@@ -165,324 +182,6 @@ def create_sample_data():
 
         list_dispatches = create_dispatches(agency, datastore, customers)
         operations(agency, list_dispatches, datastore)
-
-    return
-    # Customs Agency ######################################################
-    ca = CustomsAgency(code='123', name='Massive Dynamic')
-    ca.store()
-
-    ca2 = CustomsAgency(code='345', name='Cyberdine')
-    ca2.store()
-
-    cavasoft = CustomsAgency(name='CavaSoft SAC')
-    cavasoft.store()
-
-    datastore_cava = Datastore(customs_agency=cavasoft.key)
-    datastore_cava.store()
-
-    officer_cava = User(username='cesarvargas@cavasoftsac.com',
-                        password='123',
-                        name='César Vargas',
-                        is_officer=True,
-                        customs_agency=cavasoft.key)
-    officer_cava.store()
-
-    cavasoft.officer = officer_cava.key
-    cavasoft.store()
-
-    # Customers ###########################################################
-    queirolo = Business(
-        name='SANTIAGO QUEIROLO S.A.C',
-        document_number='12345678989',
-        document_type='ruc',  # 20100097746
-        birthday='25/01/1960',
-        social_object='ELABORACION DE VINOS',
-        activity='IMPORTADOR/EXPORTADOR',
-        address=('AV. AVENIDA SAN MARTIN #1062 '
-                 'LIMA / LIMA / PUEBLO LIBRE (MAGDALENA VIEJA)'),
-        phone='4631008, 4636503, 4638777, 4616552, 4631008, 4636503',
-        shareholders=[
-            Business.Shareholder(name='Fidel de Santa Cruz',
-                                 document_type='dni',
-                                 document_number='45678989',
-                                 ratio='4'),
-            Business.Shareholder(name='Artemisa Kalonice',
-                                 document_type='dni',
-                                 document_number='69657894',
-                                 ratio='7')
-        ],
-        is_obligated="Si",
-        has_officer="No")
-    queirolo.store()
-
-    gcca = Customer(
-        name='cristHian Gz. (gcca)',
-        partner='Test',
-        civil_state='Conviviente',
-        document_number='12345678',
-        document_type='dni',  # 20100097746
-        birthday='06/06/2006',
-        activity='Ingeniero',
-        address=('Atrás del mar'),
-        phone='555 5555')
-    gcca.store()
-
-    # Users ###############################################################
-    offc = User(username='gcca@mail.io',
-                password='789',
-                name='Unamuno',
-                is_officer=True,
-                customs_agency=ca.key)
-    offc.store()
-
-    em1 = User(username='E-01-@gueco.io',
-               password='23',
-               name='Marcos')
-    em1.store()
-
-    em2 = User(username='M-02-@gueco.io',
-               password='23',
-               name='Lucas')
-    em2.store()
-
-    em3 = User(username='P-03-@gueco.io',
-               password='23',
-               name='Mateo')
-    em3.store()
-
-    em4 = User(username='L-04-@gueco.io',
-               password='23',
-               name='Juan')
-    em4.store()
-
-    # Stakeholders ######################################################
-    metro = Linked(name='Hipermercados Metro',
-                   document_type='ruc',
-                   customer_type='Jurídica')
-    metro.store()
-
-    inter = Linked(name='Interbank',
-                   document_type='ruc',
-                   customer_type='Jurídica')
-    inter.store()
-
-    edel = Linked(name='Edelnor',
-                  document_type='ruc',
-                  customer_type='Jurídica')
-    edel.store()
-
-    gas = Linked(name='Transportadora de gas del Perú',
-                 document_type='ruc',
-                 customer_type='Jurídica')
-    gas.store()
-
-    l56 = Linked(name='Pluspetrol lote 56',
-                 document_type='ruc',
-                 customer_type='Jurídica')
-    l56.store()
-
-    maestro = Linked(name='Maestro Perú',
-                     document_type='ruc',
-                     customer_type='Jurídica')
-    maestro.store()
-
-    perpe = Linked(name='Peruana de Petróleo',
-                   document_type='ruc',
-                   link_type='Destinatario',
-                   customer_type='Jurídica',
-                   social_object='- ¿¿¿...??? -',
-                   address='- ¿¿¿...??? -',
-                   phone='669 7898',
-                   country='Perú')
-    perpe.store()
-
-    won = Linked(name='Supermercados Wong',
-                 document_type='ruc',
-                 customer_type='Jurídica')
-    won.store()
-
-    losu = Linked(name='Supermercados peruanos',
-                  document_type='ruc',
-                  customer_type='Jurídica')
-    losu.store()
-
-    capo = Linked(represents_to='Beneficiario',
-                  customer_type='Natural',
-                  residence_status='No residente',
-                  document_type='dni',
-                  document_number='78945612',
-                  issuance_country='Italia',
-                  father_name='Gabriel',
-                  mother_name='Capone',
-                  name='Alphonse',
-                  nationality='Estadounidense',
-                  activity='Gánster')
-
-    lnk1 = Linked(name='Manolete',
-                  social_object='MANOA',
-                  document_type='ruc',
-                  customer_type='Jurídica')
-    lnk1.store()
-
-    lnk2 = Linked(name='Atlas',
-                  document_type='dni',
-                  document_number='69657894',
-                  father_name='NI idae',
-                  mother_name='Elberto',
-                  customer_type='Natural')
-    lnk2.store()
-
-    # Declarants ##########################################################
-    dcl1 = Declarant(name='Manolete',
-                     document_type='dni',
-                     document_number='45678989',
-                     father_name='Sebastian',
-                     mother_name='MOndragon')
-    dcl1.store()
-
-    dcl2 = Declarant(name='Atlas',
-                     document_type='dni',
-                     document_number='69657894',
-                     father_name='NI idae',
-                     mother_name='Elberto')
-    dcl2.store()
-
-    # Dispatches ##########################################################
-    d = Declaration(customer=queirolo)
-    d.store()
-    disp0 = Dispatch(order='2014-597',
-                     customer=queirolo.key,
-                     declaration=d.key,
-                     jurisdiction=CodeName(code='9',
-                                           name='AEROPUERTO CALLAO'),
-                     regime=CodeName(code='13',
-                                     name='Solo Dios sabe'),
-                     dam='2014-103-8012',
-                     amount='56 874',
-                     canal='V',
-                     customs_agency=ca.key)
-    disp0.store()
-
-    d = Declaration(customer=queirolo,
-                    third=Third(identification_type='Si',
-                                third_type='Juridico',
-                                name='IEI Municipal'))
-    d.store()
-    disp1 = Dispatch(reference='Debe haber una referencia!!!',
-                     order='2014-601',
-                     customer=queirolo.key,
-                     declaration=d.key,
-                     jurisdiction=CodeName(code='947',
-                                           name='AEROPUERTO DE TACNA'),
-                     regime=CodeName(code='10',
-                                     name='Importacion para el Consumo'),
-                     declarant=[dcl1, dcl2],
-                     linked=[lnk1, lnk2],
-                     description='Debe haber una descripcion !!!!',
-                     income_date='20/12/1996',
-                     canal='R',
-                     customs_agency=ca.key)
-    disp1.store()
-
-    d = Declaration(customer=queirolo)
-    d.store()
-    disp2 = Dispatch(order='2014-604',
-                     customer=queirolo.key,
-                     declaration=d.key,
-                     jurisdiction=CodeName(code='9',
-                                           name='AEROPUERTO CALLAO'),
-                     regime=CodeName(code='13',
-                                     name='Solo Dios sabe'),
-                     dam='2014-103-8237',
-                     amount='56 874',
-                     canal='V',
-                     customs_agency=ca2.key)
-    disp2.store()
-
-    d = Declaration(customer=queirolo,
-                    third=Third(identification_type='Si',
-                                third_type='Juridico',
-                                name='Muni'))
-    d.store()
-    disp3 = Dispatch(reference='Referencia 3',
-                     order='2014-607',
-                     customer=queirolo.key,
-                     declaration=d.key,
-                     jurisdiction=CodeName(code='947',
-                                           name='AEROPUERTO DE TACNA'),
-                     regime=CodeName(code='10',
-                                     name='Importacion para el Consumo'),
-                     declarant=[dcl1, dcl2],
-                     linked=[lnk1, lnk2],
-                     description='AQUI DESCRIPCION',
-                     income_date='20/12/1996',
-                     canal='R',
-                     customs_agency=ca2.key)
-    disp3.store()
-
-    # Datastore ###########################################################
-    datastore = Datastore(customs_agency=ca.key,
-                          pending=[disp0.key, disp1.key],
-                          accepting=[])
-    datastore.store()
-
-    # datastore2 = Datastore(customs_agency=ca.key,
-    #                       pending=[disp2.key, disp3.key],
-    #                       accepting=[])
-    # datastore2.store()
-
-#    operation = Operation(dispatches=[disp2.key],
-#                          customs_agency=ca.key,
-#                          customer=gcca.key)
-#    operation.store()
-
-    operation1 = Operation(dispatches=[disp0.key, disp1.key,
-                                       disp2.key, disp3.key],
-                           customs_agency=ca.key,
-                           customer=queirolo.key)
-    operation1.store()
-
-    for dispatch in [disp0, disp1, disp2, disp3]:
-        dispatch.operation = operation1.key
-        dispatch.store()
-
-    ########################################################################
-    return
-    ########################################################################
-
-    gueco = Customs(name='Gueco', officer=offc.key,
-                    employees=[em1.key, em2.key, em3.key])
-    gueco.store()
-
-    cavasoft = Customs(name='CavaSoft SAC', officer=cava.key)
-    cavasoft.store()
-
-    choice = Customs(name='Choice')
-    choice.store()
-
-    capo.store()
-
-    disp1 = Dispatch(order='2014-601',
-                     customs=gueco.key,
-                     customer=queirolo.key,
-                     jurisdiction=CodeName(code='947',
-                                           name='AEROPUERTO DE TACNA'),
-                     regime=CodeName(code='10',
-                                     name='Importacion para el Consumo'),
-                     dam='2014-100-8697',
-                     numeration_date='18/10/2014',
-                     amount='10 890,69')
-    disp1.store()
-
-    disp2 = Dispatch(order='2014-604',
-                     customs=gueco.key,
-                     customer=gcca.key,
-                     jurisdiction=CodeName(code='154',
-                                           name='AREQUIPA'),
-                     regime=CodeName(code='40',
-                                     name='Exportacion Definitiva'),
-                     amount='56 874')
-    disp2.store()
 
 
 # vim: et:ts=4:sw=4

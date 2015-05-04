@@ -23,7 +23,7 @@ class CustomsAgency(dom.Model):
 
     code = dom.String()  # código otorgado por la UIF
     name = dom.String()  # Nombre de la agencia de aduanas
-    # employees = dom.Key(kind='Employee', repeated=True)
+    employees = dom.Key(kind='User', repeated=True)
     officer = dom.Key(kind='User')
 
     @property
@@ -261,8 +261,6 @@ class Dispatch(dom.Model):
     country_target = dom.String()
 
     operation = dom.Key(kind='Operation')
-
-    static_keys = ['operation']
 
 
 class Operation(dom.Model):
