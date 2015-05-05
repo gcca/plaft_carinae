@@ -90,6 +90,9 @@ def make(args, ctx, kind):
     if args.debug:
         cmd += ' --depurar'
 
+    if args.test:
+        cmd += ' --test'
+
     exists_dst = os.path.exists(dst_fn)
 
     if exists_dst:
@@ -160,6 +163,8 @@ def build():
                         help='optimize generated code slightly')
     parser.add_argument('--debug', '-D', action='store_true',
                         help='debug optimized code')
+    parser.add_argument('--test', '-t', action='store_true',
+                        help='Test optimized code')
     parser.add_argument('--version', '-v', action='version',
                         version='%(prog)s 2.0')
     parser.add_argument('module', nargs='?', help='to compile')
