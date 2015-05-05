@@ -100,26 +100,47 @@ def convert_keys(dct, hist):
     for k in (k for k in dct if type(dct[k]) is ndb.Key):
         nkey = dct[k]
         if nkey in hist:
-            dct[k] = nkey.id()
+            del dct[k]
+            dct[k[:-4]] = nkey.id()
         else:
             obj = nkey.get().to_dict()
             convert_keys(obj, hist+(nkey,))
-            dct[k] = obj
+            del dct[k]
+            dct[k[:-4]] = obj
 
     for k in (k for k in dct
               if type(dct[k]) is list and dct[k] and
               type(dct[k][0]) is ndb.Key):
-        value = dct[k]
+        dct[k[:-4]] = dct[k]
+        del dct[k]
+        value = dct[k[:-4]]
         i = 0
         for nkey in value:
             obj = nkey.get().to_dict()
             convert_keys(obj, hist+(nkey,))
-            dct[k][i] = obj
+            print dct[k[:-4]][i]
+            dct[k[:-4]][i] = obj
             i += 1
+
+
+class KeyAccessor(ndb.MetaModel):
+
+    def __new__(cls, name, bases, dct):
+        for k, v in dct.items():
+            if type(v) is ndb.KeyProperty:
+                if v._repeated:
+                    accessor = (lambda k: lambda self: [m.get()
+                                             for m in getattr(self, k)])(k)
+                else:
+                    accessor = (lambda k: lambda self: getattr(self, k).get())(k)
+                dct[k[:-4]] = property(accessor)
+        return super(KeyAccessor, cls).__new__(cls, name, bases, dct)
 
 
 class Model(Entity, ndb.Model):
     """."""
+
+    __metaclass__ = KeyAccessor
 
     def to_dict(self):
         dct = super(Model, self).to_dict()
@@ -228,7 +249,7 @@ class Model(Entity, ndb.Model):
                 elif dtype is Structured and type(value) is list:
                     _list = value
                     # for value in _list:
-                    #     svalue = {}
+                    #     svalue = {}list_dispatches
                     #     for sprop in prop_type._modelclass._properties:
                     #         if sprop in value:
                     #             svalue[sprop] = value[sprop]
@@ -293,6 +314,8 @@ class JSONEncoderNDB(JSONEncoder):
             return d
         if isinstance(o, Q.Query):
             return o.fetch(666)
+        if isinstance(o, ndb.Key):
+            return 'XXXXXXXXXXX'
         if isinstance(o, GeneratorType):
             return list(o)
         return JSONEncoder.default(self, o)
