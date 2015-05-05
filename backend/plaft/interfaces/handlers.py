@@ -32,6 +32,10 @@ class Operation(RESTHandler):
     """Operation RESTful."""
 
 
+class Datastore(RESTHandler):
+    """Datastore RESTful."""
+
+
 @handler_method
 def pending_and_accepting(handler):
     """ (Handler) -> None
