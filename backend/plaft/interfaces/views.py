@@ -9,8 +9,6 @@
 
 """
 
-from __future__ import unicode_literals
-
 from plaft.interfaces import Handler, DirectToController
 from plaft.domain import model
 import plaft.config
@@ -475,7 +473,7 @@ class NewUsers(Handler):
 
         title = 'Editar' if customs_id else 'Nuevo'
 
-        return """
+        return u"""
             <html>
                 <body>
                     <h4>%(title)s</h4>
@@ -521,7 +519,7 @@ class NewUsers(Handler):
         self.write(self.template())
 
     def post(self):
-        search = self.request.get('search')
+        search = unicode(self.request.get('search'))
         if search:
             customs_agency = model.CustomsAgency.find(name=search)
             if customs_agency:
@@ -534,10 +532,10 @@ class NewUsers(Handler):
 
             return
 
-        agency_name = self.request.get('agency')
-        username = self.request.get('username')
-        password = self.request.get('password')
-        customs_id = self.request.get('customs_id')
+        agency_name = unicode(self.request.get('agency'))
+        username = unicode(self.request.get('username'))
+        password = unicode(self.request.get('password'))
+        customs_id = unicode(self.request.get('customs_id'))
 
         if customs_id:
             customs_agency = model.CustomsAgency.find(int(customs_id))
