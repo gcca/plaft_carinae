@@ -10,6 +10,7 @@
 from webapp2 import WSGIApplication, Route
 from webapp2_extras.routes import PathPrefixRoute
 from plaft.interfaces import views, handlers, admin
+import plaft.config
 
 
 def uri(prefix, handler):
@@ -21,14 +22,12 @@ def uri(prefix, handler):
     return PathPrefixRoute('/api', routes)
 
 
-app = WSGIApplication([
-
+urls = [
     # Views
     ('/', views.SignIn),
     ('/dashboard', views.Dashboard),
-    ('/debug', views.Debug),
-    ('/new-user', views.NewUsers),
 
+    # Views (no html-json.)
     ('/declaration/pdf/(\d+)', views.DeclarationPDF),
 
     # Handlers
@@ -36,7 +35,6 @@ app = WSGIApplication([
     uri('dispatch', handlers.Dispatch),
     uri('linked', handlers.Linked),
     uri('declarant', handlers.Declarant),
-    uri('operation', handlers.Operation),
 
     # Handler methods
     ('/api/income/create', handlers.create),
@@ -49,8 +47,22 @@ app = WSGIApplication([
     ('/api/reporte_operaciones', handlers.reporte_operaciones),
     ('/generate_user/(\d+)', handlers.generate_user),
     ('/update_data', handlers.update_data),
+]
 
-], debug=True)
+
+if plaft.config.DEBUG:
+    urls += [
+        # Views
+        ('/debug', views.Debug),
+        ('/new-user', views.NewUsers),
+
+        # Handlers
+        uri('operation', handlers.Operation),
+        uri('datastore', handlers.Datastore),
+    ]
+
+
+app = WSGIApplication(urls, debug=plaft.config.DEBUG)
 
 
 # vim: ts=4:sw=4:sts=4:et
