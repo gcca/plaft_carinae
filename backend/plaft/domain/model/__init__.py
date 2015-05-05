@@ -78,6 +78,10 @@ class Customer(dom.Model, dom.PolyModel):
     address = dom.String()
     phone = dom.String()
     ubigeo = dom.Structured(CodeName)
+    is_obligated = dom.String()
+    has_officer = dom.String()
+    identification = dom.String()
+    fiscal_address = dom.String()
 
     def __new__(cls, **kwargs):
         """Polymorphic creation to implement the factory pattern
@@ -97,7 +101,7 @@ class Customer(dom.Model, dom.PolyModel):
 
             document_type = kwargs['document_type']
 
-            if 'ruc' == document_type:
+            if document_type == 'ruc':
                 return super(Customer, cls).__new__(Business, **kwargs)
 
             if document_type in ('dni', 'pa', 'ce'):
@@ -136,15 +140,11 @@ class Business(Customer):
     """."""
     legal_identification = dom.String()
     condition = dom.String()
-    fiscal_address = dom.String()
     money_source = dom.String()
     ciiu = dom.Structured(CodeName)
     ubigeo = dom.Structured(CodeName)
-    is_obligated = dom.String()
-    has_officer = dom.String()
     reference = dom.String()
     social_object = dom.String()
-    identification = dom.String()
 
 
 # Involucrados
