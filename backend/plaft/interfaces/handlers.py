@@ -91,19 +91,9 @@ def update(handler, dispatch_id=None):
         NOT_FOUND: No existe despacho.
     """
     payload = handler.query
-
-    customer = None
-    if 'customer' in payload:
-        customer_id = payload['customer']
-        customer = model.Customer.find(customer_id)
-        if not customer:
-            handler.status.BAD_REQUEST('No existe el cliente: ' +
-                                       customer_id)
-            return
-
     dispatch = model.Dispatch.find(int(dispatch_id))
     if dispatch:
-        plaft.application.dispatch.update(dispatch, payload, customer)
+        dd = plaft.application.dispatch.update(dispatch, payload)
         handler.write_json('{}')
     else:
         handler.status.NOT_FOUND('No existe el despacho con el id: ' +

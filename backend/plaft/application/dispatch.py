@@ -1,6 +1,33 @@
 """Dispatch use cases."""
 
-from plaft.domain.model import Dispatch, Customer, Declaration, Operation
+from plaft.domain.model import (Dispatch, Customer, Declaration, Operation,
+                                Declarant, Linked)
+
+
+def update_stakeholders(dispatch):
+    customer = dispatch.customer.get()
+    customer << dispatch.declaration.get().dict['customer']
+    customer.store()
+
+    for linked in dispatch.linked:
+        new_linked = Linked.find(slug=linked.slug)
+        if not new_linked:
+            new_linked = Linked()
+        dct = linked.dict
+        del dct['slug']
+        new_linked << dct
+        new_linked.store()
+
+    for dcl in dispatch.declarant:
+        new_dcl = Declarant.find(slug=dcl.slug)
+        if not new_dcl:
+            new_dcl = Declarant()
+        dct = dcl.dict
+        del dct['slug']
+        new_dcl << dct
+        new_dcl.store()
+
+
 
 
 def create(payload, customs_agency, customer=None):
@@ -56,6 +83,9 @@ def create(payload, customs_agency, customer=None):
     dispatch.declaration = declaration.key
     dispatch.store()
 
+    update_stakeholders(dispatch)
+
+
     datastore = customs_agency.datastore
     datastore.pending.append(dispatch.key)
     datastore.store()
@@ -63,7 +93,7 @@ def create(payload, customs_agency, customer=None):
     return dispatch
 
 
-def update(dispatch, payload, customer=None):
+def update(dispatch, payload):
     """Modifica el despacho.
 
     Modifica la declaracion y lo guarda.
@@ -99,19 +129,12 @@ def update(dispatch, payload, customer=None):
     declaration << payload['declaration']
     declaration.store()
 
-    if not customer:
-        document_number = payload['declaration']['customer']['document_number']
-        customer = Customer.find(document_number=document_number)
-
-    customer << payload['declaration']['customer']
-    customer.store()
-
-    dispatch.customer = customer.key
-
     del payload['declaration']
-
+    del payload['customs_agency']
     dispatch << payload
     dispatch.store()
+
+    update_stakeholders(dispatch)
 
     return dispatch
 
@@ -188,8 +211,6 @@ def pending_and_accepting(customs_agency):
 
 def anexo_seis(dispatch, **args):
     """."""
-    from pprint import pprint
-    pprint(args)
     dispatch << args
     dispatch.store()
 
