@@ -468,10 +468,21 @@ class DeclarationPDF(Handler):
 
 class NewUsers(Handler):
 
+    @staticmethod
+    def to_li(agency):
+        officer = agency.officer.get()
+        return (
+            '<tr>'
+            '<td style="padding:4px 14px">%s</td>'
+            '<td style="padding:4px 14px">%s</td>'
+            '<td style="padding:4px 14px">&times;</td>'
+            '</tr>') % (agency.name, officer.username)
+
     def template(self, agency='', username='', customs_id='', password='',
-                 msg=''):
+                 msg='', mode='create'):
 
         title = 'Editar' if customs_id else 'Nuevo'
+        agencies = ''.join(self.to_li(a) for a in model.CustomsAgency.all())
 
         return u"""
             <html>
@@ -503,8 +514,15 @@ class NewUsers(Handler):
                         <input type='hidden'
                                name='customs_id'
                                value='%(customs_id)s'>
+                        <input type='hidden'
+                               name='mode'
+                               value='s'>
                     </form>
                 </body>
+                <hr>
+                <table>
+                  %(agencies)s
+                </table>
             </html>
         """ % {
             'agency': agency,
@@ -512,7 +530,8 @@ class NewUsers(Handler):
             'customs_id': customs_id,
             'password': password,
             'title': title,
-            'msg': msg
+            'msg': msg,
+            'agencies': agencies
         }
 
     def get(self):
