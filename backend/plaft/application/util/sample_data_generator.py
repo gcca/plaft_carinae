@@ -16,6 +16,52 @@ from plaft.domain.model import (User, Dispatch, CodeName, Declaration,
                                 Operation, Officer, Employee)
 
 
+def create_autocomplate():
+    from collections import namedtuple
+
+    DLinked = namedtuple('DLinked',
+                         'name document_type')
+
+    init_customers = [
+        DLinked('Sony',
+                'ruc'),
+        DLinked('Coca Cola',
+                'ruc'),
+        DLinked('Microsoft',
+                'ruc'),
+        DLinked('Javier Huaman',
+                'dni'),
+        DLinked('Cristhian Gonzales',
+                'dni'),
+        DLinked('Antonio Adama',
+                'dni'),
+    ]
+
+    type2number = {
+        'ruc': 11,
+        'dni': 8
+    }
+
+    type2customer = {
+        'ruc': 'Jurídica',
+        'dni': 'Natural'
+    }
+
+    for data in init_customers:
+        document_number = ''.join(
+            random.sample(['0', '1', '2', '3', '4',
+                           '5', '6', '7', '8', '9',
+                           '0', '1', '2', '3', '4',
+                           '5', '6', '7', '8', '9'],
+                          type2number[data.document_type]))
+
+        linked = Linked(name=data.name,
+                        document_type=data.document_type,
+                        document_number=document_number,
+                        customer_type=type2customer[data.document_type])
+        linked.store()
+
+
 def create_employees(agency, j=7):
     from string import ascii_lowercase
 
@@ -182,6 +228,8 @@ def create_sample_data():
 
         list_dispatches = create_dispatches(agency, datastore, customers)
         operations(agency, list_dispatches, datastore)
+
+    create_autocomplate()
 
 
 # vim: et:ts=4:sw=4
