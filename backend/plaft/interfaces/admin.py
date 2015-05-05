@@ -39,7 +39,7 @@ class Officer(Handler):
         officer = model.Officer.new(self.json)
         try:
             officer.store()
-            customs.officer = officer.key
+            customs.officer_key = officer.key
             customs.store()
         except:
             self.status.INTERNAL_ERROR('Store error: 167SDQBE.')
@@ -64,7 +64,7 @@ class Employee(Handler):
         officer = model.Employee.new(self.json)
         try:
             officer.store()
-            customs.employees.append(officer.key)
+            customs.employees_key.append(officer.key)
             customs.store()
         except:
             self.status.INTERNAL_ERROR('Store error: 167SDQBE.')

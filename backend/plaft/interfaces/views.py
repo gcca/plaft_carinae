@@ -45,11 +45,11 @@ class Dashboard(DirectToController):
 
     def _args(self):
         self.add_arg('linked',
-                     {stk.slug: stk.id for stk in model.Linked.all()})
+                     {stk.slug: stk.id for stk in model.Stakeholder.all()})
         self.add_arg('declarant',
                      {dcl.slug: dcl.id for dcl in model.Declarant.all()})
         self.add_arg('user', self.user)
-        self.add_arg('us', self.user.customs_agency.get().employees)
+        self.add_arg('us', self.user.customs_agency.employees_key)
 
 
 class Debug(Handler):
@@ -253,7 +253,7 @@ class DeclarationPDF(Handler):
                           4)
         self.addParagraph(story, styles,
                           tab +
-                          self.checkComplexKey(dispatch.declaration.get(),
+                          self.checkComplexKey(dispatch.declaration,
                                                'third.name'),
                           12)
 
@@ -364,7 +364,7 @@ class DeclarationPDF(Handler):
                           4)
         self.addParagraph(story, styles,
                           tab +
-                          self.checkComplexKey(dispatch.declaration.get(),
+                          self.checkComplexKey(dispatch.declaration,
                                                'third.name'),
                           12)
 
@@ -372,7 +372,7 @@ class DeclarationPDF(Handler):
         self.response.headers['Content-Type'] = 'application/pdf'
 
         dispatch = model.Dispatch.find(int(id))
-        customer = dispatch.declaration.get().customer
+        customer = dispatch.declaration.customer
 
         if customer.document_type == 'ruc':
             customer = model.Business.new(customer.dict)
@@ -542,7 +542,7 @@ class NewUsers(Handler):
         if search:
             customs_agency = model.CustomsAgency.find(name=search)
             if customs_agency:
-                username = customs_agency.officer.get().username
+                username = customs_agency.officer_key.username
                 self.write(self.template(search,
                                          username,
                                          customs_agency.id))
@@ -562,7 +562,7 @@ class NewUsers(Handler):
             customs_agency.name = agency_name
             customs_agency.store()
 
-            officer = customs_agency.officer.get()
+            officer = customs_agency.officer_key
             officer.username = username
             officer.populate(password=password)
             officer.store()
@@ -570,15 +570,15 @@ class NewUsers(Handler):
             customs_agency = model.CustomsAgency(name=agency_name)
             customs_agency.store()
 
-            datastore = model.Datastore(customs_agency=customs_agency.key)
+            datastore = model.Datastore(customs_agency_key=customs_agency.key)
             datastore.store()
 
             officer = model.Officer(username=username,
                                     password=password,
-                                    customs_agency=customs_agency.key)
+                                    customs_agency_key=customs_agency.key)
             officer.store()
 
-            customs_agency.officer = officer.key
+            customs_agency.officer_key = officer.key
             customs_agency.store()
 
         self.write(self.template(agency_name,

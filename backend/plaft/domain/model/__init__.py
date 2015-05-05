@@ -11,7 +11,7 @@
 
 from __future__ import unicode_literals
 from plaft.infrastructure.persistence.datastore import ndb as dom
-from plaft.domain.model.structs import CodeName, Third
+from plaft.domain.model.structs import CodeName, Third, Document
 
 JSONEncoder = dom.JSONEncoderNDB
 
@@ -23,13 +23,12 @@ class CustomsAgency(dom.Model):
 
     code = dom.String()  # código otorgado por la UIF
     name = dom.String()  # Nombre de la agencia de aduanas
-    employees = dom.Key(kind='User', repeated=True)
-    officer = dom.Key(kind='User')
+    employees_key = dom.Key(kind='User', repeated=True)
+    officer_key = dom.Key(kind='User')
 
     @property
     def datastore(self):
-        return Datastore.find(customs_agency=self.key)
-
+        return Datastore.find(customs_agency_key=self.key)
 
 # Usuarios
 
@@ -47,9 +46,8 @@ class User(dom.User, dom.PolyModel):
 
     """
     name = dom.String()
-    role = dom.String()
-    is_officer = dom.Boolean(default=False)
-    customs_agency = dom.Key(CustomsAgency)
+    is_officer = dom.Boolean(default=False)  # (-o-) Retirar.
+    customs_agency_key = dom.Key(CustomsAgency)
 
 
 class Officer(User):
@@ -66,8 +64,11 @@ class Customer(dom.Model, dom.PolyModel):
     """Cliente."""
     name = dom.String()  # nombre o razón social del cliente
 
+    # (-o-) A los dos.
     document_number = dom.String()
     document_type = dom.String()  # tipo de documento: ruc, dni, etc.
+
+    document = dom.Structured(Document)
 
     activity = dom.String()  # actividad (jurídica)
     # o profesión-ocupación (natural)
@@ -77,11 +78,10 @@ class Customer(dom.Model, dom.PolyModel):
 
     address = dom.String()
     phone = dom.String()
-    ubigeo = dom.Structured(CodeName)
-    is_obligated = dom.String()
-    has_officer = dom.String()
-    identification = dom.String()
-    fiscal_address = dom.String()
+    ubigeo = dom.Structured(CodeName)  # (-o-) to string
+    is_obligated = dom.String()  # (-o-) boolean
+    has_officer = dom.String()  # (-o-) boolean
+    condition = dom.String()  # residencia
 
     def __new__(cls, **kwargs):
         """Polymorphic creation to implement the factory pattern
@@ -111,18 +111,7 @@ class Customer(dom.Model, dom.PolyModel):
         else:
             return super(Customer, cls).__new__(cls, **kwargs)
 
-    class Shareholder(dom.Model):
-        """."""
-        name = dom.String()
-        document_number = dom.String()
-        document_type = dom.String()
-        ratio = dom.Text()
-
-    shareholders = dom.Structured(Shareholder, repeated=True)
-
-
-class Person(Customer):
-    """."""
+    # PERSON
     father_name = dom.String()
     mother_name = dom.String()
     civil_state = dom.String()
@@ -133,18 +122,35 @@ class Person(Customer):
     nationality = dom.String()
     issuance_country = dom.String()  # país de emisión
     ruc = dom.String()
-    employment = dom.String()
+    employment = dom.String()  # cargo público
 
-
-class Business(Customer):
-    """."""
-    legal_identification = dom.String()
-    condition = dom.String()
+    # BUSINESS
     money_source = dom.String()
     ciiu = dom.Structured(CodeName)
     ubigeo = dom.Structured(CodeName)
     reference = dom.String()
     social_object = dom.String()
+    legal = dom.String()  # Representante legal
+    legal_type = dom.String()
+    fiscal_address = dom.String()
+
+    class Shareholder(dom.Model):
+        """."""
+        name = dom.String()
+        # (-o-) A los dos.
+        document_number = dom.String()
+        document_type = dom.String()
+        ratio = dom.Text()
+
+    shareholders = dom.Structured(Shareholder, repeated=True)
+
+
+class Person(Customer):
+    """."""
+
+
+class Business(Customer):
+    """."""
 
 
 # Involucrados
@@ -153,18 +159,20 @@ class Declarant(dom.Model):
     """."""
     represents_to = dom.String()
     residence_status = dom.String()
+    # (-o-) A los dos.
     document_type = dom.String()
     document_number = dom.String()
+
     issuance_country = dom.String()
     name = dom.String()
     father_name = dom.String()
     mother_name = dom.String()
     nationality = dom.String()
     activity = dom.String()
-    ciiu = dom.Structured(CodeName)  # TODO: dom.String
+    ciiu = dom.Structured(CodeName)  # (-o-) dom.String
     position = dom.String()
     address = dom.String()
-    ubigeo = dom.Structured(CodeName)  # TODO: dom.String
+    ubigeo = dom.Structured(CodeName)  # (-o-) dom.String
     phone = dom.String()
 
     slug = dom.Computed(lambda s: '%s %s %s' % (s.name,
@@ -172,31 +180,32 @@ class Declarant(dom.Model):
                                                 s.mother_name))
 
 
-class Linked(dom.Model):
+class Stakeholder(dom.Model):
     """."""
-    link_type = dom.String()
-    customer_type = dom.String()
+    link_type = dom.String()  # Proveedor o destinatario
+    # (-o-) A los dos.
     document_type = dom.String()
     document_number = dom.String()
-    issuance_country = dom.String()
+
+    issuance_country = dom.String()  # país de emisión
     social_object = dom.String()
     country = dom.String()
     residence_status = dom.String()
-    is_pep = dom.String()
-    pep_position = dom.String()
-    birthday = dom.String()
+    is_pep = dom.String()  # (-o-) boolean
+    pep_position = dom.String()  # cargo público que ocupa u ocupó.
+    birthday = dom.String()  # (-o-) date
     name = dom.String()
     father_name = dom.String()
     mother_name = dom.String()
     nationality = dom.String()
     activity = dom.String()
-    ciiu = dom.Structured(CodeName)
+    ciiu = dom.Structured(CodeName)  # (-o-) str
     position = dom.String()
     address = dom.String()
     employer = dom.String()
     average_monthly_income = dom.String()
-    position = dom.String()
-    ubigeo = dom.Structured(CodeName)
+    position = dom.String()  # cargo que ocupa
+    ubigeo = dom.Structured(CodeName)  # (-o-) str
     phone = dom.String()
     represents_to = dom.String()
 
@@ -221,31 +230,26 @@ class Dispatch(dom.Model):
     regime = dom.Structured(CodeName)
     jurisdiction = dom.Structured(CodeName)
     description = dom.String()
-    income_date = dom.String()
-    customer = dom.Key(Customer)
-    declaration = dom.Key(Declaration)
-    declarant = dom.Structured(Declarant, repeated=True)
-    linked = dom.Structured(Linked, repeated=True)
+    income_date = dom.String()  # (-o-) date
+    customer_key = dom.Key(Customer)
+    declaration_key = dom.Key(Declaration)
+    declarants = dom.Structured(Declarant, repeated=True)
+    stakeholders = dom.Structured(Stakeholder, repeated=True)
 
     # Numeration
     dam = dom.String()
     # diferencia entre el income_date y el numeration_date
-    numeration_date = dom.String()
+    numeration_date = dom.String()  # (-o-) date
     amount = dom.String()
     currency = dom.String()
-    exchange_rate = dom.String()
-    canal = dom.String()
+    channel = dom.String()
     # Campos para la Numeracion.
     exchange_rate = dom.String()
-    ammount_soles = dom.String()
-    uif_last_day = dom.String()
-    expire_date_RO = dom.String()
 
     # Campos para el anexo 6
-    operation_description = dom.String()
+    description = dom.String()
     is_suspects = dom.String()
-    ros = dom.String()
-    suspects_description = dom.String()
+    suspects_by = dom.String()
 
     class Signal(dom.Model):
         """."""
@@ -256,11 +260,11 @@ class Dispatch(dom.Model):
 
     signal_alerts = dom.Structured(Signal, repeated=True)
 
-    customs_agency = dom.Key(CustomsAgency)
+    customs_agency_key = dom.Key(CustomsAgency)
     country_source = dom.String()
     country_target = dom.String()
 
-    operation = dom.Key(kind='Operation')
+    operation_key = dom.Key(kind='Operation')
 
 
 class Operation(dom.Model):
@@ -271,18 +275,20 @@ class Operation(dom.Model):
     (tal vez incluyendo su notificación a la UIF).
 
     """
-    dispatches = dom.Key(Dispatch, repeated=True)
-    customs_agency = dom.Key(CustomsAgency)
-    customer = dom.Key(Customer)
+    dispatches_key = dom.Key(Dispatch, repeated=True)
+    customs_agency_key = dom.Key(CustomsAgency)
+    customer_key = dom.Key(Customer)
+    country_source = dom.String()
+    country_target = dom.String()
 
 
 # Datos globales por agencia
 
 class Datastore(dom.Model):
     """Pseudo-ValueObject for dispatch-operation transitions."""
-    customs_agency = dom.Key(CustomsAgency)
-    pending = dom.Key(Dispatch, repeated=True)
-    accepting = dom.Key(Dispatch, repeated=True)
+    customs_agency_key = dom.Key(CustomsAgency)
+    pending_key = dom.Key(Dispatch, repeated=True)
+    accepting_key = dom.Key(Dispatch, repeated=True)
 
 
 # vim: et:ts=4:sw=4

@@ -1,24 +1,24 @@
 """Dispatch use cases."""
 
 from plaft.domain.model import (Dispatch, Customer, Declaration, Operation,
-                                Declarant, Linked)
+                                Declarant, Stakeholder as Stakeholder)
 
 
 def update_stakeholders(dispatch):
-    customer = dispatch.customer.get()
-    customer << dispatch.declaration.get().dict['customer']
+    customer = dispatch.customer
+    customer << dispatch.declaration.dict['customer']
     customer.store()
 
-    for linked in dispatch.linked:
-        new_linked = Linked.find(slug=linked.slug)
-        if not new_linked:
-            new_linked = Linked()
-        dct = linked.dict
+    for stakeholder in dispatch.stakeholders:
+        new_stakeholder = Stakeholder.find(slug=stakeholder.slug)
+        if not new_stakeholder:
+            new_stakeholder = Stakeholder()
+        dct = stakeholder.dict
         del dct['slug']
-        new_linked << dct
-        new_linked.store()
+        new_stakeholder << dct
+        new_stakeholder.store()
 
-    for dcl in dispatch.declarant:
+    for dcl in dispatch.declarants:
         new_dcl = Declarant.find(slug=dcl.slug)
         if not new_dcl:
             new_dcl = Declarant()
@@ -78,9 +78,9 @@ def create(payload, customs_agency, customer=None):
     del payload['declaration']
 
     dispatch = Dispatch.new(payload)
-    dispatch.customs_agency = customs_agency.key
-    dispatch.customer = customer.key
-    dispatch.declaration = declaration.key
+    dispatch.customs_agency_key = customs_agency.key
+    dispatch.customer_key = customer.key
+    dispatch.declaration_key = declaration.key
     dispatch.store()
 
     update_stakeholders(dispatch)
@@ -125,12 +125,11 @@ def update(dispatch, payload):
         IOError: Cuando se intente guardar alguna entidad.
 
     """
-    declaration = dispatch.declaration.get()
+    declaration = dispatch.declaration
     declaration << payload['declaration']
     declaration.store()
 
     del payload['declaration']
-    del payload['customs_agency']
     dispatch << payload
     dispatch.store()
 
@@ -204,8 +203,8 @@ def pending_and_accepting(customs_agency):
 
     """
     return {
-        'pending': [d.get() for d in customs_agency.datastore.pending],
-        'accepting': [d.get() for d in customs_agency.datastore.accepting]
+        'pending': [d for d in customs_agency.datastore.pending],
+        'accepting': [d for d in customs_agency.datastore.accepting]
     }
 
 
@@ -219,7 +218,7 @@ def list_operations(customs_agency):
     """."""
     return [operation
             for operation
-            in Operation.all(customs_agency=customs_agency.key)]
+            in Operation.all(customs_agency_key=customs_agency.key)]
 
 
 # vim: et:ts=4:sw=4

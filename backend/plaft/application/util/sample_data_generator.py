@@ -11,7 +11,7 @@
 from __future__ import unicode_literals
 import random
 from plaft.domain.model import (User, Dispatch, CodeName, Declaration,
-                                Customer, Third, Declarant, Linked,
+                                Customer, Third, Declarant, Stakeholder,
                                 Business, Datastore, CustomsAgency,
                                 Operation, Officer, Employee)
 
@@ -19,21 +19,21 @@ from plaft.domain.model import (User, Dispatch, CodeName, Declaration,
 def create_autocomplate():
     from collections import namedtuple
 
-    DLinked = namedtuple('DLinked',
+    DStakeholder = namedtuple('DStakeholder',
                          'name document_type')
 
     init_customers = [
-        DLinked('Sony',
+        DStakeholder('Sony',
                 'ruc'),
-        DLinked('Coca Cola',
+        DStakeholder('Coca Cola',
                 'ruc'),
-        DLinked('Microsoft',
+        DStakeholder('Microsoft',
                 'ruc'),
-        DLinked('Javier Huaman',
+        DStakeholder('Javier Huaman',
                 'dni'),
-        DLinked('Cristhian Gonzales',
+        DStakeholder('Cristhian Gonzales',
                 'dni'),
-        DLinked('Antonio Adama',
+        DStakeholder('Antonio Adama',
                 'dni'),
     ]
 
@@ -55,11 +55,10 @@ def create_autocomplate():
                            '5', '6', '7', '8', '9'],
                           type2number[data.document_type]))
 
-        linked = Linked(name=data.name,
+        stakeholder = Stakeholder(name=data.name,
                         document_type=data.document_type,
-                        document_number=document_number,
-                        customer_type=type2customer[data.document_type])
-        linked.store()
+                        document_number=document_number)
+        stakeholder.store()
 
 
 def create_employees(agency, j=7):
@@ -70,7 +69,7 @@ def create_employees(agency, j=7):
         username = ''.join(random.sample(ascii_lowercase, 3))
         employee = Employee(username=username, password='123')
         employee.store()
-        agency.employees.append(employee.key)
+        agency.employees_key.append(employee.key)
         j -= 1
     agency.store()
 
@@ -97,38 +96,37 @@ def create_dispatches(agency, datastore, customers, n=25):
         jurisdiction = random.choice(init_codename)
         regime = random.choice(init_codename)
         dispatch = Dispatch(order=order,
-                            customer=customer.key,
-                            declaration=declaration.key,
-                            customs_agency=agency.key,
+                            customer_key=customer.key,
+                            declaration_key=declaration.key,
+                            customs_agency_key=agency.key,
                             jurisdiction=jurisdiction,
                             regime=regime)
         dispatch.store()
-        datastore.pending.append(dispatch.key)
+        datastore.pending_key.append(dispatch.key)
         datastore.store()
         list_dispatches.append(dispatch.key)
         n -= 1
 
     return [d for d in list_dispatches
-            if d.get().customs_agency == agency.key]
+            if d.get().customs_agency_key == agency.key]
 
 
 def create_operation(agency, dstp_operation, datastore):
-    operation = Operation(customs_agency=agency.key)
+    operation = Operation(customs_agency_key=agency.key)
     operation.store()
 
     for dispatch_key in list(dstp_operation):
-        operation.dispatches.append(dispatch_key)
+        operation.dispatches_key.append(dispatch_key)
 
         dispatch = dispatch_key.get()
 
-        operation.customer = dispatch.customer
-        datastore.accepting.append(dispatch_key)
-        dispatch.operation = operation.key
+        operation.customer_key = dispatch.customer_key
+        datastore.accepting_key.append(dispatch_key)
+        dispatch.operation_key = operation.key
         dispatch.store()
-
     operation.store()
-    datastore.pending = list(
-        set(datastore.pending).difference(dstp_operation))
+    datastore.pending_key = list(
+        set(datastore.pending_key).difference(dstp_operation))
     datastore.store()
 
 
@@ -147,9 +145,10 @@ def operations(agency, list_dispatches, datastore):
                  for dstp in list(dispatch_set)
                  if dstp.get().customer == dispatch.get().customer])
 
-        create_operation(agency, dstp_operation, datastore)
 
+        create_operation(agency, dstp_operation, datastore)
         dispatch_set = dispatch_set.difference(dstp_operation)
+
 
 
 def create_sample_data():
@@ -214,16 +213,16 @@ def create_sample_data():
 
         create_employees(agency)
 
-        datastore = Datastore(customs_agency=agency.key)
+        datastore = Datastore(customs_agency_key=agency.key)
         datastore.store()
 
         officer = Officer(name=data.officer,
                           username=data.username,
                           password=data.password,
-                          customs_agency=agency.key)
+                          customs_agency_key=agency.key)
         officer.store()
 
-        agency.officer = officer.key
+        agency.officer_key = officer.key
         agency.store()
 
         list_dispatches = create_dispatches(agency, datastore, customers)

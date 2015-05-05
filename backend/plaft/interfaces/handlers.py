@@ -20,8 +20,8 @@ class Dispatch(RESTHandler):
     """Dispatch RESTful."""
 
 
-class Linked(RESTHandler):
-    """Linked RESTful."""
+class Stakeholder(RESTHandler):
+    """Stakeholder RESTful."""
 
 
 class Declarant(RESTHandler):
@@ -41,7 +41,7 @@ def pending_and_accepting(handler):
         'accepting': [Dispatch]
     }
     """
-    customs_agency = handler.user.customs_agency.get()
+    customs_agency = handler.user.customs_agency
     handler.render_json(
         plaft.application.dispatch.pending_and_accepting(customs_agency)
     )
@@ -60,7 +60,7 @@ def create(handler):
     """
     payload = handler.query
 
-    customs_agency = handler.user.customs_agency.get()
+    customs_agency = handler.user.customs_agency
 
     customer = None
     if 'customer' in payload:
@@ -76,7 +76,7 @@ def create(handler):
                                                  customer)
     handler.render_json({
         'id': dispatch.id,
-        'customer': dispatch.customer.id()
+        'customer': dispatch.customer_key.id()
     })
 
 
@@ -199,15 +199,15 @@ def reporte_operaciones(handler):
         worksheet.write(filas, 1, 'Nombre/ Razon social')
         worksheet.write(filas, 2, 'Cantidad de despachos')
         worksheet.write(filas+1, 0, str(operation.id))
-        worksheet.write(filas+1, 1, operation.customer.get().name)
+        worksheet.write(filas+1, 1, operation.customer.name)
         worksheet.write(filas+1, 2, operation.dispatches.__len__())
         worksheet.write(filas+2, 1, 'Lista de despachos')
         worksheet.write(filas+3, 1, 'N. Order')
         worksheet.write(filas+3, 2, 'N. Dam')
         filas = filas + 4
         for despacho in operation.dispatches:
-            worksheet.write(filas, 1, despacho.get().order)
-            worksheet.write(filas, 2, despacho.get().dam)
+            worksheet.write(filas, 1, despacho.order)
+            worksheet.write(filas, 2, despacho.dam)
             filas = filas+1
 
     workbook.close()
@@ -263,7 +263,7 @@ def update_data(handler):
     if query['password']:
         handler.user.populate(username=query['user'],
                               password=query['password'])
-    customs = handler.user.customs_agency.get()
+    customs = handler.user.customs_agency
     customs.name = query['agency']
     customs.store()
     handler.user.store()
@@ -278,7 +278,7 @@ def list_operation(handler):
     => [Operation]
 
     """
-    customs_agency = handler.user.customs_agency.get()
+    customs_agency = handler.user.customs_agency
     handler.render_json(
         plaft.application.dispatch.list_operations(customs_agency)
     )
