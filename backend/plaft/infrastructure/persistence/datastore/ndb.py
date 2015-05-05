@@ -123,7 +123,8 @@ class Model(Entity, ndb.Model):
 
     def to_dict(self):
         dct = super(Model, self).to_dict()
-        dct['id'] = self.id
+        if self.key:
+            dct['id'] = self.id
         return dct
 
     @property
