@@ -344,7 +344,7 @@ class DateProperty(ndb.DateProperty):
 
     def _to_base_type(self, value):
         if isinstance(value, datetime.date):
-             return value
+            return value
         elif isinstance(value, basestring):
             day, month, year = value.split('/')
             value = datetime.date(int(year), int(month), int(day))
