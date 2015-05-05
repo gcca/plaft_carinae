@@ -48,7 +48,6 @@ class OperationEdit extends Module
     for declarant in _dto.'declarant'
       delete declarant.'slug'
     ########################################################################
-    console.log @_toJSON!
     App.ajax._post "/api/dispatch/#{@model._id}/anexo_seis", @_toJSON!, do
       _success: ~>
         @_desktop.notifier.notify do

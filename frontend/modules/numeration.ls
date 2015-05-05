@@ -135,7 +135,7 @@ class Numeration extends Module
           ##################################################################
           # TODO: Crear métodos de debugging
           ##################################################################
-          console.log 'CANAL VACIO'
+          console.log 'CANAL VACIO'  # vale.
 
         "<span class='#{gz.Css \label} #{_label-type}'>
            #{it}

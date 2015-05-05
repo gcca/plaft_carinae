@@ -287,11 +287,11 @@ class Operation extends Module
   /** @protected*/
   @@_search-menu =
     * _caption: 'C'
-      _label: 'Customer'
+      _label: 'DNI/RUC'
       _value: @@_SEARCHENUM.kByCustomer
 
     * _caption: 'O'
-      _label: 'Order'
+      _label: 'Número de Orden'
       _value: @@_SEARCHENUM.kByOrder
 
 

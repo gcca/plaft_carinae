@@ -266,7 +266,7 @@ class exports.Panel extends App.View
     else
       @_header = new PanelHeading do
         _title: @_options._title
-        _id-panel: _id-content
+        _id-content: _id-content
         _parent-uid: @_options._parent-uid
         _panel: @el
 

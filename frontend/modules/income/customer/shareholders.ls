@@ -117,7 +117,6 @@ class Shareholders extends App.View
    */
   _toJSON: ->
     _r =[.._toJSON! for @shareholders]
-      console.log ..
 
   /**
    * @see addShareholder
