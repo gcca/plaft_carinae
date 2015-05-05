@@ -9,16 +9,16 @@
 
 """
 
+import datetime
+import abc
+import json
+from types import GeneratorType
+
 from google.appengine.ext.ndb import model as ndb, query as Q, polymodel
 from google.appengine.api.datastore_errors import TransactionFailedError
 from plaft.domain.shared import Entity
 # from plaft.application.util import JSONEncoder
 from plaft.infrastructure.support import util
-from types import GeneratorType
-
-
-import abc
-import json
 
 
 class JSONEncoder(json.JSONEncoder):
@@ -328,6 +328,29 @@ class DocumentProperty(ndb.StructuredProperty):
 
     def _to_base_type(self, value):
         return value
+
+    def _from_base_type(self, value):
+        return value
+
+
+class DateProperty(ndb.DateProperty):
+
+    import re
+    RE_DATE = re.compile(r'\d{2}/\d{2}/\d{4}')
+
+    def _validate(self, value):
+        if isinstance(value, basestring) and self.RE_DATE.match(value):
+            return value
+
+    def _to_base_type(self, value):
+        if isinstance(value, datetime.date):
+             return value
+        elif isinstance(value, basestring):
+            day, month, year = value.split('/')
+            value = datetime.date(int(year), int(month), int(day))
+            return value
+        else:
+            raise TypeError('Bad value type: ' + type(value))
 
     def _from_base_type(self, value):
         return value

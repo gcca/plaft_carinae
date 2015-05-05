@@ -134,7 +134,8 @@ class Handler(RequestHandler):
         def _default(self, o):
             """Serialize ``o``."""
             if isinstance(o, date):
-                return '%i-%i-%i' % (o.year, o.month, o.day)
+                return '%s/%s/%s' % (o.day, o.month, o.year)
+
             if isinstance(o, datetime):
                 return '%i-%i-%i %s:%s:%s' % (o.year, o.month, o.day,
                                               o.hour, o.minute, o.second)
