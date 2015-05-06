@@ -90,7 +90,6 @@ class Third extends App.View
 
     super!
 
-
   /** Field list for person form. (Array.<FieldOptions>) */
   _FIELDS_PERSON =
     * _name: 'document_type'
@@ -152,7 +151,6 @@ class exports.Identification extends App.View
   load-yes: ~>
     @third = Third._new third: @th
     @el._append @third.render!el
-
 
   /**
    *

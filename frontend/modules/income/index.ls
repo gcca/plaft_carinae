@@ -160,7 +160,6 @@ class Operation extends Module
       _success: success
       _not-found: not-found
 
-
   /**
    * Carga el formulario segun el query.
    * @param {String} _query
