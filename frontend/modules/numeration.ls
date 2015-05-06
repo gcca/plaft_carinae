@@ -56,13 +56,96 @@ class NumerationEdit extends Module
       _bad-request: ~>
         alert 'ERROR: e746ae94-5a3a-11e4-9a1d-88252caeb7e8'
 
+  _calculate-working-days: (d) ->
+    if d isnt ''
+      dt = d.split('/')
+      _date = new Date (parseInt dt[2]), (parseInt dt[1])-1, (parseInt dt[0])
+      days = 15
+      while days
+        _date.set-date _date.get-date! + 1
+        if _date.get-day! not in [0, 6]
+          days -= 1
+      _month = _date.get-month! + 1
+      _month = if _month <= 9 then "0#{_month}" else "#{_month}"
+      @_last-day.html = "#{_date.get-date!}/
+                         #{_month}/
+                         #{_date.get-full-year!}"
+    else
+      @_last-day.html = ''
+
+  _calculate-storage-years: (d) ->
+    if d isnt ''
+      dt = d.split('/')
+      @_five-years.html = "#{dt[0]}/
+                           #{dt[1]}/
+                           #{(parseInt dt[2])+5}"
+    else
+      @_five-years.html = ''
+
+  _calculate-ammount-soles: (amount) ->
+    _amount-soles = @el.query '#_ammount-soles'
+    dollar = @el.query '[name=exchange_rate]' ._value
+    if amount is '' or isNaN amount
+      _amount-soles.html = ""
+    else
+      _amount-soles.html = "#{(parseFloat dollar)*(parseFloat amount)}"
+
+  load-amount-soles: ~>
+    _value = it._target._value
+    @_calculate-ammount-soles _value
+
+  load-dates: ~>
+    ExpReg = /^(0?[1-9]|[12][0-9]|3[01])[\/](0?[1-9]|1[012])[/\\/](19|20)\d{2}$/
+    _value = it._target._value
+    if ExpReg.test _value
+      @_calculate-working-days _value
+      @_calculate-storage-years _value
+    else
+      @_last-day.html = ''
+      @_five-years.html = ''
+
+
   /** @override */
   render: ->
     App.builder.Form._new @el, _FIELDS
-      .._class = gz.Css \col-md-6
       ..render!
       .._free!
     @el._fromJSON @model._attributes
+
+    _template = "
+    <div class='#{gz.Css \form-group} #{gz.Css \col-md-12}'>
+    <div class='#{gz.Css \form-group} #{gz.Css \col-md-4}'>
+      <label class='#{gz.Css \col-md-12} #{gz.Css \control-label}'
+             style='padding-left: 0px; padding-right: 0px;'>
+      Monto en Soles
+      </label></br>
+      <label id='_ammount-soles'
+             style='font-size: 20px; font-weight: 500;'></label>
+    </div>
+    <div class='#{gz.Css \form-group} #{gz.Css \col-md-4}'>
+      <label class='#{gz.Css \col-md-12} #{gz.Css \control-label}'
+             style='padding-left: 0px; padding-right: 0px;'>
+      Último dia UIF
+      </label></br>
+      <label id='_last-days'
+             style='font-size: 20px; font-weight: 500;'></label>
+    </div>
+    <div class='#{gz.Css \form-group} #{gz.Css \col-md-4}'>
+      <label class='#{gz.Css \col-md-12} #{gz.Css \control-label}'
+             style='padding-left: 0px; padding-right: 0px;'>
+      Vigencia de RO 5 años
+      </label></br>
+      <label id='_five-years'
+             style='font-size: 20px; font-weight: 500;'></label>
+    </div>
+    </div>
+    "
+
+    @$el._append _template
+
+    @_five-years = @el.query '#_five-years'
+    @_last-day = @el.query '#_last-days'
+
 
     _exchange-rate = @model._attributes.'exchange_rate'
     if not _exchange-rate or _exchange-rate is ''
@@ -70,7 +153,17 @@ class NumerationEdit extends Module
         _success: (_res) ~>
           @el.query '[name=exchange_rate]' ._value = _res.'rate'
 
+    @el.query '[name=numeration_date]'
+      ..on-blur @load-dates
+      @_calculate-working-days .._value
+      @_calculate-storage-years .._value
+    @el.query '[name=amount]'
+      ..on-blur @load-amount-soles
+      @_calculate-ammount-soles .._value
     super!
+
+  _five-years: null
+  _last-day: null
 
   /** Field list for numeration form. (Array.<FieldOptions>) */
   _FIELDS =
@@ -90,19 +183,8 @@ class NumerationEdit extends Module
         'V'
         'N'
         'R'
-
     * _name: 'exchange_rate'
       _label: 'Tipo de cambio'
-
-    * _name: ''
-      _label: 'Monto operacion Nuevos soles'
-
-    * _name: ''
-      _label: 'UIF OS Ultimo dia'
-
-    * _name: ''
-      _label: 'Vigencia RO 5 años'
-
 /**
  * @class Numeration
  * @extends Module
@@ -129,10 +211,10 @@ class Numeration extends Module
       'dam'
       'numeration_date'
       'amount'
-      'canal'
+      'channel'
 
     _templates =
-      'canal': ->
+      'channel': ->
         _label-type = if it is 'V' then gz.Css \label-success
                       else if it is 'N' then gz.Css \label-warning
                       else if it is 'R' then gz.Css \label-danger
