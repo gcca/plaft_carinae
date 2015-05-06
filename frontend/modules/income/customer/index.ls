@@ -229,6 +229,7 @@ class exports.Customer extends App.View
       @el._append (@_customer).render!.el
       @_third = new Identification
       @el._last._append @_third.render!.el
+      @el.query '[name=document_type]' ._value = 'dni'
 
     if @_type is @@Type.kBusiness
       @_customer = Business._new!
@@ -237,6 +238,7 @@ class exports.Customer extends App.View
       @el.query('[name=customer_type]').selectedIndex = @_type
       @_third = new Identification
       @el._last._append @_third.render!.el
+      @el.query '[name=document_type]' ._value = 'ruc'
 
     @el.query('[name=customer_type]').selectedIndex = @_type
     @el.query('[name=customer_type]').on-change @on-customer-change
@@ -285,6 +287,11 @@ class exports.Customer extends App.View
     @el.query('[name=customer_type]').on-change @on-customer-change
 
     @el._fromJSON @customer-dto
+
+    @el.query '[name=document_type]' ._value = \
+      if @_type is @@Type.kBusiness then 'ruc'
+      else if @_type is @@Type.kPerson then 'dni'
+      else alert 'ERROR: 75f2dfac-f412-11e4-bf73-001d7d7379f5'
 
   /** @override */
   initialize: ({@customer-dto, @third-dto}) ->  super!
