@@ -1,7 +1,17 @@
 """Dispatch use cases."""
 
 from plaft.domain.model import (Dispatch, Customer, Declaration, Operation,
-                                Declarant, Stakeholder as Stakeholder)
+                                Declarant, Stakeholder)
+from plaft.domain.model.dispatch import UniqueSpecification
+
+
+def it_satisfies(specs, *args):
+    for spec in specs:
+        if not spec.is_satisfied_by(args[0]):
+            raise spec.error
+
+
+create_pre = [UniqueSpecification]
 
 
 def update_stakeholders(dispatch):
@@ -26,8 +36,6 @@ def update_stakeholders(dispatch):
         del dct['slug']
         new_dcl << dct
         new_dcl.store()
-
-
 
 
 def create(payload, customs_agency, customer=None):
@@ -68,6 +76,8 @@ def create(payload, customs_agency, customer=None):
         IOError: Cuando se intente guardar alguna entidad.
 
     """
+    # it_satisfies(create_pre, payload)
+
     declaration = Declaration.new(payload['declaration'])
     declaration.store()
 
@@ -84,7 +94,6 @@ def create(payload, customs_agency, customer=None):
     dispatch.store()
 
     update_stakeholders(dispatch)
-
 
     datastore = customs_agency.datastore
     datastore.pending.append(dispatch.key)

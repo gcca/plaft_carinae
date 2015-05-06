@@ -33,7 +33,7 @@ urls = [
     # Handlers
     uri('customer', handlers.Customer),
     uri('dispatch', handlers.Dispatch),
-    uri('linked', handlers.Linked),
+    uri('stakeholder', handlers.Stakeholder),
     uri('declarant', handlers.Declarant),
 
     # Handler methods
