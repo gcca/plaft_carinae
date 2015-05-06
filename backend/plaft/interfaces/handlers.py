@@ -288,4 +288,29 @@ def list_operation(handler):
     )
 
 
+@handler_method
+def utils_exchange_rate(handler):
+    """ (Handler) -> None
+
+    => {'rate': int}
+
+    """
+    from urllib2 import build_opener
+    opener = build_opener()
+    opener.addheaders = [
+        ('User-agent',
+         'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36'
+         ' (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36'),
+        ('Host',
+         'ww1.sunat.gob.pe')]
+    response = opener.open('http://ww1.sunat.gob.pe'
+                           '/cl-at-ittipcam/tcS01Alias')
+    html = response.read().replace('\t', '')
+
+    chunks = [s.strip() for s in html.split('\r\n') if s.strip()]
+    rate = chunks[chunks.index('</table>', chunks.index('</table>') + 1) - 2]
+
+    handler.write_json('{"rate":%s}' % rate)
+
+
 # vim: et:ts=4:sw=4

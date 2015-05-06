@@ -64,6 +64,12 @@ class NumerationEdit extends Module
       .._free!
     @el._fromJSON @model._attributes
 
+    _exchange-rate = @model._attributes.'exchange_rate'
+    if not _exchange-rate or _exchange-rate is ''
+      App.ajax._get '/utils/exchange_rate', do
+        _success: (_res) ~>
+          @el.query '[name=exchange_rate]' ._value = _res.'rate'
+
     super!
 
   /** Field list for numeration form. (Array.<FieldOptions>) */
@@ -85,7 +91,7 @@ class NumerationEdit extends Module
         'N'
         'R'
 
-    * _name: ''
+    * _name: 'exchange_rate'
       _label: 'Tipo de cambio'
 
     * _name: ''

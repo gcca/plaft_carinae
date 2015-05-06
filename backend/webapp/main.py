@@ -30,6 +30,10 @@ urls = [
     # Views (no html-json.)
     ('/declaration/pdf/(\d+)', views.DeclarationPDF),
 
+    # utils
+    ('/utils/exchange_rate', handlers.utils_exchange_rate),
+
+
     # Handlers
     uri('customer', handlers.Customer),
     uri('dispatch', handlers.Dispatch),
