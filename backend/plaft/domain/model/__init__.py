@@ -226,6 +226,7 @@ class Dispatch(dom.Model):
     """."""
     order = dom.String()
     reference = dom.String()
+    validity = dom.String()
     order = dom.String()
     regime = dom.Structured(CodeName)
     jurisdiction = dom.Structured(CodeName)

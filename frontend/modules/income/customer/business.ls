@@ -65,13 +65,13 @@ class Business extends App.View
     * _name: 'document_number'
       _label: 'b) N&ordm; RUC'
 
-    * _name: 'legal_identification'
+    * _name: 'legal_type'
       _label: 'Representado Legal'
       _type: FieldType.kComboBox
       _options:
         'RL'
         'Apoderado'
-        'Mandatario' #TODO
+        'Mandatario'
         'El mismo'
 
     * _name: 'condition'
@@ -93,7 +93,7 @@ class Business extends App.View
       _type: FieldType.kView
       _options: new Shareholders
 
-    * _name: 'identification'
+    * _name: 'legal'
       _label: 'e) Identificacion RL'
 
     * _name: 'address'

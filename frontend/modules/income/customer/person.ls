@@ -82,7 +82,7 @@ class Person extends App.View
     * _name: 'issuance_country'
       _label: 'Pais documento emitido extranjero'
 
-    * _name: 'legal_identification'
+    * _name: 'legal_type'
       _label: 'Representado Legal'
       _type: FieldType.kComboBox
       _options:
