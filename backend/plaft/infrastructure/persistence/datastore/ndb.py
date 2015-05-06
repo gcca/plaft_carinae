@@ -96,7 +96,6 @@ PolyModel = polymodel.PolyModel
 
 
 def convert_keys(dct, hist):
-
     for k in (k for k in dct if type(dct[k]) is ndb.Key):
         nkey = dct[k]
         if nkey in hist:
@@ -118,9 +117,9 @@ def convert_keys(dct, hist):
         for nkey in value:
             obj = nkey.get().to_dict()
             convert_keys(obj, hist+(nkey,))
-            print dct[k[:-4]][i]
             dct[k[:-4]][i] = obj
             i += 1
+
 
 
 class KeyAccessor(ndb.MetaModel):
