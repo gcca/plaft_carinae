@@ -96,7 +96,7 @@ def create(payload, customs_agency, customer=None):
     update_stakeholders(dispatch)
 
     datastore = customs_agency.datastore
-    datastore.pending.append(dispatch.key)
+    datastore.pending_key.append(dispatch.key)
     datastore.store()
 
     return dispatch
