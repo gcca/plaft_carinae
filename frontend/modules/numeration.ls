@@ -65,9 +65,11 @@ class NumerationEdit extends Module
         _date.set-date _date.get-date! + 1
         if _date.get-day! not in [0, 6]
           days -= 1
+      _day = _date.get-date!
+      _day = if _day <= 9 then "0#{_day}" else "#{_day}"
       _month = _date.get-month! + 1
       _month = if _month <= 9 then "0#{_month}" else "#{_month}"
-      @_last-day.html = "#{_date.get-date!}/
+      @_last-day.html = "#{_day}/
                          #{_month}/
                          #{_date.get-full-year!}"
     else

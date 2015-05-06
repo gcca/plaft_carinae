@@ -11,8 +11,8 @@ App.MODULES =
   Income        = require './modules/income'
   Numeration    = require './modules/numeration'
   Operation     = require './modules/operation'
-  OperationList = require './modules/operation-list'
   Anexo6        = require './modules/anexo-seis'
+  OperationList = require './modules/operation-list'
   Alerts        = require './modules/alerts'
 
 Workspace = require './workspace'

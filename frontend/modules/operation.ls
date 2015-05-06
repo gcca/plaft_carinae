@@ -240,11 +240,11 @@ class Operations extends Module
 
         _table-accepting.set-rows _accepting
 
-        @$el._append '<h2>Lista de despachos pendientes</h2>'
+        @$el._append '<h4>Lista de despachos pendientes</h4>'
         @el._append _table-pending.render!.el
 
 
-        @$el._append '<h2>Lista de despachos aceptados</h2>'
+        @$el._append '<h4>Lista de despachos aceptados</h4>'
         @el._append _table-accepting.render!.el
       _error: ->
         alert 'Error!!! NumerationP list'
