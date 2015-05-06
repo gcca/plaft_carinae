@@ -47,7 +47,7 @@ document.body.innerHTML = "
                     else ''}'>
 
           <input type='text' placeholder='Email' name='username'
-              class='#{gz.Css \form-control}' value='gcca@mail.io'>
+              class='#{gz.Css \form-control}'>
 
 
           #{if error
@@ -65,7 +65,7 @@ document.body.innerHTML = "
                     else ''}'>
 
           <input type='password' placeholder='Password' name='password'
-              class='#{gz.Css \form-control}' value='789'>
+              class='#{gz.Css \form-control}'>
 
           #{if error
             then "<span class='#{gz.Css \glyphicon}
