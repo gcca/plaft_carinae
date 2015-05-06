@@ -28,11 +28,11 @@ class Declarant(RESTHandler):
     """Declarant RESTful."""
 
 
-class Operation(RESTHandler):
+class Operation(RESTHandler):  # DEBUG
     """Operation RESTful."""
 
 
-class Datastore(RESTHandler):
+class Datastore(RESTHandler):  # DEBUG
     """Datastore RESTful."""
 
 

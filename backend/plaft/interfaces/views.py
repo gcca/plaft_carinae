@@ -52,7 +52,7 @@ class Dashboard(DirectToController):
         self.add_arg('us', self.user.customs_agency.employees_key)
 
 
-class Debug(Handler):
+class Debug(Handler):  # DEBUG
     """Only use to handtest."""
 
     def get(self):
@@ -466,7 +466,7 @@ class DeclarationPDF(Handler):
         doc.build(story)
 
 
-class NewUsers(Handler):
+class NewUsers(Handler):  # DEBUG
 
     @staticmethod
     def to_li(agency):
