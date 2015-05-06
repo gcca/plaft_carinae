@@ -64,8 +64,8 @@ class PanelHeadingStakeholder extends PanelHeaderClosable
   render: ->
     ret = super!
     _search = new SearchByDto do
-      _url: 'linked'
-      _items: window.'plaft'.'linked'
+      _url: 'stakeholder'
+      _items: window.'plaft'.'stakeholder'
       _callback: @_callback-dto
     @_show _search
 

@@ -42,9 +42,9 @@ class NumerationEdit extends Module
     ########################################################################
     # VER ON-SAVE DE OPERATION.LS
     _dto = @model._attributes
-    for linked in _dto.'linked'
-      delete linked.'slug'
-    for declarant in _dto.'declarant'
+    for stk in _dto.'stakeholders'
+      delete stk.'slug'
+    for declarant in _dto.'declarants'
       delete declarant.'slug'
     ########################################################################
 
@@ -77,7 +77,7 @@ class NumerationEdit extends Module
     * _name: 'amount'
       _label: 'Valor de la mercancia - FOB $'
 
-    * _name: 'canal'
+    * _name: 'channel'
       _label: 'Canal - Tipo Aforo'
       _type: FieldType.kComboBox
       _options:
@@ -85,16 +85,16 @@ class NumerationEdit extends Module
         'N'
         'R'
 
-    * _name: 'exchange_rate'
+    * _name: ''
       _label: 'Tipo de cambio'
 
-    * _name: 'ammount_soles'
+    * _name: ''
       _label: 'Monto operacion Nuevos soles'
 
-    * _name: 'uif_last_day'
+    * _name: ''
       _label: 'UIF OS Ultimo dia'
 
-    * _name: 'expire_date_RO'
+    * _name: ''
       _label: 'Vigencia RO 5 años'
 
 /**

@@ -69,7 +69,7 @@ class Stakeholder extends PanelBody
    * Carga el formulario segun el dto.
    */
   read-dto: (dto) ->
-    if @_options.dto.'customer_type' is \Natural
+    if @_options.dto.'document_type' isnt \ruc
       FIELD = _FIELD_PERSON
       TYPE = @@Type.kPerson
     else
@@ -104,7 +104,7 @@ class Stakeholder extends PanelBody
     FIELD = _FIELD_BUSINESS
     TYPE = @@Type.kBusiness
     if @_options.dto?
-      if @_options.dto.'customer_type' is \Natural
+      if @_options.dto.'document_type' isnt \ruc
         FIELD = _FIELD_PERSON
         TYPE = @@Type.kPerson
       else
@@ -237,6 +237,10 @@ class Stakeholder extends PanelBody
 
     * _name: 'country'
       _label: 'País origen'
+
+    * _name: 'document_type'
+      _type: FieldType.kHidden
+      _options: <[ruc]>
 
 /** @export */
 module.exports = Stakeholder

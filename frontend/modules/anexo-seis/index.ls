@@ -43,9 +43,9 @@ class OperationEdit extends Module
     ########################################################################
     # VER ON-SAVE DE NUMERATION.LS
     _dto = @model._attributes
-    for linked in _dto.'linked'
-      delete linked.'slug'
-    for declarant in _dto.'declarant'
+    for stk in _dto.'stakeholders'
+      delete stk.'slug'
+    for declarant in _dto.'declarants'
       delete declarant.'slug'
     ########################################################################
     App.ajax._post "/api/dispatch/#{@model._id}/anexo_seis", @_toJSON!, do

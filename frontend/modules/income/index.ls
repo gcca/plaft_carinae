@@ -68,8 +68,8 @@ class IncomeModel extends App.Model
 
   defaults:
     'declaration': []
-    'linked': []
-    'declarant': []
+    'stakeholders': []
+    'declarants': []
 
 
 /**
@@ -182,13 +182,18 @@ class Operation extends Module
   on-save: ~>
     customer-dto = @customer._toJSON!
 
+    stk = @stakeholder._toJSON!
+    for s in stk
+      delete s.'customer_type'
+
+
     dispatch-dto = @dispatch.el._toJSON!
       ..'customer' = @customer-model._id
       ..'declaration' =
         'third': @customer._third.el._toJSON!
         'customer': customer-dto
-      ..'declarant' = @declarant._toJSON!
-      ..'linked' = @stakeholder._toJSON!
+      ..'declarants' = @declarant._toJSON!
+      ..'stakeholders' = stk
 
     # Save to IncomeModel.
     @income-model._save dispatch-dto, do
@@ -227,9 +232,9 @@ class Operation extends Module
       third-dto: @_third
 
     @stakeholder = Stakeholder._new do
-      collection : @income-model._attributes\linked
+      collection : @income-model._attributes\stakeholders
     @declarant = Declarant._new do
-      collection : @income-model._attributes\declarant
+      collection : @income-model._attributes\declarants
 
     pnl-group = new PanelGroup
 

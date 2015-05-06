@@ -18,8 +18,8 @@ panelgroup = require '../app/widgets/panelgroup'
 class DispatchModel extends App.Model
   defaults:
     'declaration': []
-    'linked': []
-    'declarant': []
+    'stakeholders': []
+    'declarants': []
 
 /**
  * @class Operation

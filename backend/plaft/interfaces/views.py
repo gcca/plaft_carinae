@@ -44,7 +44,7 @@ class Dashboard(DirectToController):
     """Users dashboard."""
 
     def _args(self):
-        self.add_arg('linked',
+        self.add_arg('stakeholder',
                      {stk.slug: stk.id for stk in model.Stakeholder.all()})
         self.add_arg('declarant',
                      {dcl.slug: dcl.id for dcl in model.Declarant.all()})
@@ -470,7 +470,7 @@ class NewUsers(Handler):
 
     @staticmethod
     def to_li(agency):
-        officer = agency.officer.get()
+        officer = agency.officer
         return (
             '<tr>'
             '<td style="padding:4px 14px">%s</td>'
