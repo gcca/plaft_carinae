@@ -14,6 +14,7 @@ from plaft.domain import model
 import plaft.config
 from datetime import timedelta
 import datetime
+from reportlab.lib import colors
 from reportlab.lib.enums import TA_JUSTIFY
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -78,7 +79,7 @@ class DeclarationPDF(Handler):
         list = []
         for s in shareholders:
             list.append(['    Nombre', s.name])
-            list.append(['    Documento', s.document_type])
+            list.append(['    Documento', (s.document_type).upper()])
             list.append(['    Número', s.document_number])
             list.append(['', ''])
         return list
@@ -124,7 +125,24 @@ class DeclarationPDF(Handler):
             table.setStyle(TableStyle([('VALIGN',
                                         (0, 0),
                                         (-1, -1),
-                                        'TOP')]))
+                                        'MIDDLE'),
+                                       ('INNERGRID',
+                                        (0, 0),
+                                        (-1, -1),
+                                        0.25,
+                                        colors.black),
+                                       ('BOX',
+                                        (0, 0),
+                                        (-1, -1),
+                                        0.25,
+                                        colors.black),
+                                       ('ALIGN',
+                                        (0, 0),
+                                        (-1, -1),
+                                        'CENTER'),
+                                       ('SPAN',
+                                        (0, 0),
+                                        (-1, 0))]))
             story.append(table)
             story.append(Spacer(1, space))
         else:
@@ -310,7 +328,7 @@ class DeclarationPDF(Handler):
                           4)
         self.addParagraph(story, styles,
                           tab + self.checkEmpty(customer,
-                                                'identification'),
+                                                'legal'),
                           12)
         self.addParagraph(story, styles, 'f) Domicilio', 4)
         self.addParagraph(story, styles,
@@ -391,32 +409,49 @@ class DeclarationPDF(Handler):
 
         story = []
 
-        jurisdiccionTable = [['Código', 'Nombre'],
-                             [self.checkEmpty(dispatch.jurisdiction,
-                                              'code'),
-                              self.checkEmpty(dispatch.jurisdiction,
-                                              'name')]]
-        headerTable = [['Ref. Cliente', 'N Orden Despacho', 'Jurisdiccion'],
-                       [dispatch.reference, dispatch.order,
-                        Table(jurisdiccionTable, colWidths='*')]]
+        data = [[self.checkEmpty(dispatch.jurisdiction, 'code'),
+                 self.checkEmpty(dispatch.jurisdiction, 'name')]]
+
+        s = getSampleStyleSheet()
+        s = s["BodyText"]
+        s.wordWrap = 'LTR'
+        jurisdiccionTable = [[Paragraph(cell, s) for cell in row]
+                             for row in data]
+        table = Table(jurisdiccionTable,  colWidths=(0.5*inch, 2.5*inch))
+        table.setStyle(TableStyle([('VALIGN',
+                                    (0, 0),
+                                    (-1, -1),
+                                    'MIDDLE'),
+                                   ('INNERGRID',
+                                    (0, 0),
+                                    (-1, -1),
+                                    0.25,
+                                    colors.black),
+                                   ('ALIGN',
+                                    (0, 0),
+                                    (-1, -1),
+                                    'CENTER')]))
+        headerTable = [['ANEXO Nº5'],
+                       ['Ref. Cliente', 'N Orden Despacho', 'Jurisdiccion'],
+                       [dispatch.reference, dispatch.order, table]]
 
         self.addTable(story, headerTable, 12, True)
+        story.append(Spacer(1, 9))
 
         story.append(Paragraph('<para alignment=center>'
                                '<font size=12>'
-                               '<b>ANEXO N&ordm;5</b>'
+                               '<b>DECLARACIÓN JURADA DE CONOCIMIENTO'
+                               ' DEL CLIENTE</b>'
                                '</font>'
                                '</para>',
                                styles['Normal']))
         story.append(Spacer(1, 12))
 
-        story.append(Paragraph('<para alignment=center>'
-                               '<font size=12>'
-                               '<b>Declaración Jurada De conocimiento'
-                               ' del Cliente</b>'
-                               '</font>'
-                               '</para>',
-                               styles['Normal']))
+        self.addParagraph(story, styles,
+                          ('Por el presente documento, declaro bajo'
+                           ' juramento, lo siguiente'),
+                          8)
+        story.append(Spacer(1, 9))
 
         title = ('Persona Jurídica'
                  if customer.document_type == 'ruc'
@@ -427,12 +462,7 @@ class DeclarationPDF(Handler):
                                '<b>%s</b>'
                                '</font>'
                                '</para>' % title, styles['Normal']))
-        story.append(Spacer(1, 24))
-
-        self.addParagraph(story, styles,
-                          ('Por el presente documento, declaro bajo'
-                           ' juramento, lo siguiente'),
-                          8)
+        story.append(Spacer(1, 3))
 
         if customer.document_type == 'ruc':
             self.makeBusinessPDF(story, styles, dispatch, customer)
