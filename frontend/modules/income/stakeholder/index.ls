@@ -147,7 +147,7 @@ class Stakeholders extends PanelGroup
    * @private
    */
   _toJSON: ->
-    for @_panels then .._body._get-form!._toJSON!
+    for @_panels then .._body._element._toJSON!
 
   /**
    * Mostrar un panel.

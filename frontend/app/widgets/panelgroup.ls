@@ -188,10 +188,6 @@ class exports.PanelBody extends App.View
   /** @override */
   _className: "#{gz.Css \panel-collapse} #{gz.Css \collapse}"
 
-  /** Obtener el formulario del PanelBody */
-  _get-form: ->
-    @el.query "#{gz.Css \form}"
-
   /** @override */
   initialize: (@_options) ->
     if @_options?
@@ -212,7 +208,7 @@ class exports.PanelBody extends App.View
     super!
 
   /** @private */ _options: null
-  /** @private */ _element: null
+  /** @public */ _element: null
   /** @private */ _id-content: null
   /** @private */ _body: null
 
