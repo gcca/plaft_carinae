@@ -121,7 +121,6 @@ def convert_keys(dct, hist):
             i += 1
 
 
-
 class KeyAccessor(ndb.MetaModel):
 
     def __new__(cls, name, bases, dct):
@@ -129,9 +128,10 @@ class KeyAccessor(ndb.MetaModel):
             if type(v) is ndb.KeyProperty:
                 if v._repeated:
                     accessor = (lambda k: lambda self: [m.get()
-                                             for m in getattr(self, k)])(k)
+                                for m in getattr(self, k)])(k)
                 else:
-                    accessor = (lambda k: lambda self: getattr(self, k).get())(k)
+                    accessor = (lambda k:
+                                lambda self: getattr(self, k).get())(k)
                 dct[k[:-4]] = property(accessor)
         return super(KeyAccessor, cls).__new__(cls, name, bases, dct)
 

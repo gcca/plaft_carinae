@@ -30,8 +30,8 @@ class CustomsAgency(dom.Model):
     def datastore(self):
         return Datastore.find(customs_agency_key=self.key)
 
-# Usuarios
 
+# Usuarios
 class User(dom.User, dom.PolyModel):
     """Usuario de PLAFT.
 
@@ -67,7 +67,8 @@ class Customer(dom.Model, dom.PolyModel):
     # (-o-) A los dos.
     document_number = dom.String()
     document_type = dom.String()  # tipo de documento: ruc, dni, etc.
-
+    client_type = dom.String()
+    validity = dom.String()
     document = dom.Structured(Document)
 
     activity = dom.String()  # actividad (jurídica)
@@ -226,7 +227,6 @@ class Dispatch(dom.Model):
     """."""
     order = dom.String()
     reference = dom.String()
-    validity = dom.String()
     order = dom.String()
     regime = dom.Structured(CodeName)
     jurisdiction = dom.Structured(CodeName)

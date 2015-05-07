@@ -20,21 +20,21 @@ def create_autocomplate():
     from collections import namedtuple
 
     DStakeholder = namedtuple('DStakeholder',
-                         'name document_type')
+                              'name document_type')
 
     init_customers = [
         DStakeholder('Sony',
-                'ruc'),
+                     'ruc'),
         DStakeholder('Coca Cola',
-                'ruc'),
+                     'ruc'),
         DStakeholder('Microsoft',
-                'ruc'),
+                     'ruc'),
         DStakeholder('Javier Huaman',
-                'dni'),
+                     'dni'),
         DStakeholder('Cristhian Gonzales',
-                'dni'),
+                     'dni'),
         DStakeholder('Antonio Adama',
-                'dni'),
+                     'dni'),
     ]
 
     type2number = {
@@ -56,8 +56,8 @@ def create_autocomplate():
                           type2number[data.document_type]))
 
         stakeholder = Stakeholder(name=data.name,
-                        document_type=data.document_type,
-                        document_number=document_number)
+                                  document_type=data.document_type,
+                                  document_number=document_number)
         stakeholder.store()
 
 
@@ -145,10 +145,8 @@ def operations(agency, list_dispatches, datastore):
                  for dstp in list(dispatch_set)
                  if dstp.get().customer == dispatch.get().customer])
 
-
         create_operation(agency, dstp_operation, datastore)
         dispatch_set = dispatch_set.difference(dstp_operation)
-
 
 
 def create_sample_data():
