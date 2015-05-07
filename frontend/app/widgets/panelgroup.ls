@@ -73,7 +73,6 @@ class exports.PanelHeading extends App.View
   /** @private */ _panel: null
 
 
-
 /**
  * PanelHeadingClosable
  * --------------------
@@ -120,6 +119,7 @@ class exports.PanelHeaderClosable extends PanelHeading
     ret
 
   /** @private */_search: null
+
 
 /**
  * PanelHeaderPDF
@@ -283,7 +283,6 @@ class exports.Panel extends App.View
     @el._append @_body.render!.el
     @_collapse = @el.query "##{_id-content}"
     @_toggle!
-
 
     super!
 
