@@ -185,5 +185,26 @@ class ApplicationDispatchTest(testplaft.TestCase):
 
         dispatch.delete()
 
+    # def test_no_unique_order(self):
+    #     customs_agency = CustomsAgency()
+    #     customs_agency.store()
+
+    #     datastore = Datastore(customs_agency=customs_agency.key)
+    #     datastore.store()
+
+    #     # use case
+    #     dispatch_dto = {
+    #         'order': '666-666',
+    #         'declaration': {
+    #             'customer': {
+    #                 'document_number': '12312312',
+    #                 'document_type': 'dni'
+    #             }
+    #         }
+    #     }
+
+    #     plaft.application.dispatch.create(dispatch_dto, customs_agency)
+    #     plaft.application.dispatch.create(dispatch_dto, customs_agency)
+
 
 # vim: et:ts=4:sw=4
