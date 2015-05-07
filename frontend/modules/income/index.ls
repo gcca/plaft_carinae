@@ -11,7 +11,7 @@
  * |        [PanelBody]             |
  * |                                |
  * |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ |
- * |   Customer [PanelHeaderPDF]    |
+ * |   Customer [PanelHeadingPDF]   |
  * |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ |
  * |                                |
  * |        [PanelBody]             |
@@ -38,13 +38,17 @@ Module = require '../../workspace/module'
 panelgroup = require '../../app/widgets/panelgroup'
   PanelGroup = ..PanelGroup
   PanelHeading = ..PanelHeading
-  PanelHeaderPDF = ..PanelHeaderPDF
   PanelBody = ..PanelBody
+
+panel-heading = require './heading'
+
 customer = require './customer'
   Customer = ..Customer
+
 Dispatch = require './dispatch'
 Stakeholder = require './stakeholder'
 Declarant = require './declarant'
+
 
 /**
  * CustomerModel
@@ -242,7 +246,7 @@ class Operation extends Module
       _title: 'Despacho - Operacion'
       _element: (@dispatch).render!.el
 
-    @customer-head = new PanelHeaderPDF _title: 'Declaracion jurada'
+    @customer-head = new panel-heading.Pdf _title: 'Declaracion jurada'
     pnl-group.new-panel do
       _panel-heading: @customer-head
       _element: (@customer).render!.el

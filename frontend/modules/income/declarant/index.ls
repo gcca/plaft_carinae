@@ -115,7 +115,7 @@ class Declarants extends PanelGroup
    * @private
    */
   _toJSON: ->
-    for @_panels then .._body._element._toJSON!
+    for @_panels then .._body.el.query \form ._toJSON!
 
   /**
    * Mostrar un panel.
