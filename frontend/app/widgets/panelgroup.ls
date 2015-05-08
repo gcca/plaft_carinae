@@ -157,8 +157,6 @@ class exports.PanelBody extends App.View
     if @_element?
       @el._first._append @_element
 
-    console.log @el
-
     super!
 
   /** @private */ _options: null
