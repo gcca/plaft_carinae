@@ -49,5 +49,28 @@ exports._code =
   '20'
   ''
 
+exports._sbs =
+  on # Entrada de mercaderia
+  on # Entrada de mercaderia
+  off # Salida de mercaderia
+  off # Salida de mercaderia
+  off # Salida de mercaderia
+  off # Salida de mercaderia
+  on # Entrada de mercaderia
+  off # Salida de mercaderia
+  off # Salida de mercaderia
+  on # Entrada de mercaderia
+  off # Salida de mercaderia
+  on # Entrada de mercaderia
+  on # Entrada de mercaderia
+  off # Salida de mercaderia
+  on # Entrada de mercaderia
+  on # Entrada de mercaderia
+  on # Entrada de mercaderia
+  on # Entrada de mercaderia
+  on # Entrada de mercaderia
+  on # Entrada de mercaderia
+  on # Entrada de mercaderia
+
 
 # vim: ts=2:sw=2:sts=2:et
