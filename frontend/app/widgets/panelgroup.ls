@@ -1,19 +1,123 @@
 /** @module app.widget */
 
-/**
- * PanelHeading
- * ------------
- *
- * @example
- * >>> panel-heading = new PanelHeading do
- * >>>   _title: 'Example-Title'
- * >>> panel-heading = new PanelHeading
- *
- * @class PanelHeading
- * @extends View
- * @export
- */
-class exports.PanelHeading extends App.View
+
+class ControlTitle extends App.View
+
+  @@__hash__ = 'title'
+
+  _tagName: \span
+
+  _text:~
+    -> @el.html
+    (title) ->
+      @el.html = title
+
+  initialize: ({_heading}) ->
+    @el.css = 'margin:5px;width:400px;cursor:pointer'
+    @el.html = '&nbsp;'*8
+    @el._data.'toggle' = 'collapse'
+    @el._data.'parent' = "##{_heading._parent-uid}"
+    @el.attr \href "##{_heading._collapse-id}"
+    @el.attr \aria-expanded \false
+
+
+class ControlClose extends App.View
+
+  @@__hash__ = 'close'
+
+  _tagName: \span
+
+  _className: gz.Css \pull-right
+
+  _on-close: (_, _panel) ~>
+    _panel._free!
+
+  initialize: ({_heading}) ->
+    @el.css = 'flex:1;margin:5px'
+    _btn = App.dom._new \button
+        .._class = "#{gz.Css \btn}
+                  \ #{gz.Css \btn-sm}
+                  \ #{gz.Css \close}
+                  \ #{gz.Css \pull-right}"
+        ..html = '&times;'
+        ..on-click @_on-close _, _heading._panel
+    @el._append _btn
+
+
+class ControlSearch extends App.View
+
+  @@__hash__ = 'search'
+
+  _tagName: \span
+
+  apply-attr: (_url, _items) ->
+    @_url = _url
+    @_items = _items
+    (new App.widget.Typeahead do
+      el: @_input
+      _source:
+        _display: App.widget.Typeahead.Source.kDisplay
+        _tokens: App.widget.Typeahead.Source.kTokens
+      _limit: 3
+      _collection: [{
+        _name: n, \
+        _code: '<span style="color:#555;font-size:9px">...</span>', \
+        _id: @_items[n], \
+        _display: n, \
+        _tokens: n} \
+        for n of @_items]
+      _template: (p) -> "
+        <p style='float:right;font-style:italic;margin-left:1em'>
+          #{p._code}</p>
+        <p style='font-size:14px;text-align:justify'>#{p._name}</p>")
+      ..on-closed @changeValue _, @_heading
+      ..render!
+
+  changeValue: (_, _heading) ~>
+    @_value = @_items[@_input._value]
+    @load-dto _, _heading
+
+  load-dto: (_heading) ->
+    App.ajax._get ("/api/#{@_url}/" + @_value), null, do
+      _success: (_dto) ~>
+        _heading.trigger (gz.Css \button), _dto # change name trigger
+
+  _search-dto: (_, _heading) ~>
+    load-dto _heading
+
+  initialize: ({@_heading}) ->
+    @el.css = 'width: 200px;margin: 0;padding: 0;flex:4'
+
+    @_search = App.dom._new \div
+      .._class = gz.Css \input-group
+    @_search.html = ''
+    @_input = App.dom._new \input
+      .._type = \text
+      .._name = \search
+      .._class = gz.Css \form-control
+    @_search._append @_input
+
+    _button = App.dom._new \button
+      .._class = "#{gz.Css \btn} #{gz.Css \btn-default}"
+      ..html = "&nbsp;<i class='#{gz.Css \glyphicon}
+                              \ #{gz.Css \glyphicon-search}'></i>&nbsp;"
+      ..on-click @_search-dto _, @_heading
+
+    _span = App.dom._new \span
+        .._class = gz.Css \input-group-btn
+        .._append _button
+
+    @_search._append _span
+    @el._append @_search
+
+  /** @private */ _field   : null
+  /** @private */ _name    : null
+  /** @private */ _input   : null
+  /** @private */ _heading   : null
+  /** @private */ _value  : null
+
+
+class PanelHeading extends App.View
 
   /** @override */
   _tagName: \div
@@ -21,158 +125,60 @@ class exports.PanelHeading extends App.View
   /** @override */
   _className: "#{gz.Css \panel-heading}"
 
-  /**
-   */
-  _callback-dto: (_dto) ~>
-    @trigger (gz.Css \button), _dto
-
-  /**
-   * Change title
-   * @param {String} _title
-   */
-  set-title: (_title)->
-    @el._first._first.html = _title
-
-  /**
-   * Remove panel from array-panel
-   */
-  _remove-panel: ~>
-    @trigger (gz.Css \close), @_panel
-    $ @_panel .remove!
 
   /** @override */
-  initialize: (@_options) ->
-    if @_options?
-      @_id-content = @_options._id-content
-      @_parent-uid = @_options._parent-uid
-      @_title = @_options._title
-      @_panel = @_options._panel
+  initialize: ({@_parent-uid, @_panel, @_collapse-id}) ->
     super!
-
-  /** @override */
-  render: ->
+    @_control = {}
     @el.css = "padding:5px"
     @el.html = "<div class='#{gz.Css \panel-title}' style='display:flex'>
-                  <span data-toggle='collapse'
-                     data-parent='##{@_parent-uid}'
-                     href='##{@_id-content}'
-                     style='margin:5px;width:400px;cursor:pointer'>
-                   #{if @_title?
-                     then @_title
-                     else 'Por defecto'}
-                  </span>&nbsp;
                 </div>"
-    @_head = @el.query ".#{gz.Css \panel-title}"
-    super!
+    @_container = @el._first
+    for control in @_controls
+      _instance = new control do
+        _heading: @
+      @_container._append _instance.render!.el
+      @_control[control.__hash__] = _instance
 
-  /** @private */ _options: null
-  /** @private */ _id-content: null
+  _get: (_Control) ->
+    @_control[_Control.__hash__]
+
+
   /** @private */ _parent-uid: null
-  /** @private */ _head: null
+  /** @private */ _container: null
   /** @private */ _title: null
   /** @private */ _panel: null
+  /** @private */ _controls: [ControlTitle]
+  /** @private */ _control: null
+  /** @private */ _collapse-id: null
 
 
-/**
- * PanelHeadingClosable
- * --------------------
- * @example
- * >>> panel-close = new PanelHeaderClosable _title 'Example Title'
- * # Show search.
- * >>> panel-close._show do
- * >>>   _view: view-search [module.income.widget]
- * @class PanelHeadingClosable
- * @extends PanelHeading
- * @export
- */
-class exports.PanelHeaderClosable extends PanelHeading
+class PanelBody extends App.View
 
-  /**
-   * Muestra la seccion search en el panelHeader.
-   * @param {view-search} _view
-   */
-  _show: (_view) ->
-    @_search.html = ''
-    @_search._append _view.render!.el
-
-  /** @override */
-  render: ->
-    ret = super!
-    @_search = App.dom._new \span
-      ..css = "width: 200px;margin: 0;padding: 0;flex:4"
-
-    _btn = App.dom._new \button
-        .._class = "#{gz.Css \btn}
-                  \ #{gz.Css \btn-sm}
-                  \ #{gz.Css \close}
-                  \ #{gz.Css \pull-right}"
-        ..html = 'x'
-        ..on-click @_remove-panel
-
-    _span = App.dom._new \span
-      .._class = gz.Css \pull-right
-      ..css= "flex:1;margin:5px"
-      .._append _btn
-
-    @_head._append @_search
-    @_head._append _span
-    ret
-
-  /** @private */_search: null
-
-
-/**
- * PanelBody
- * ---------
- *
- * @example
- * >>> panel-body = new PanelBody do
- * >>>   _element: another-view.render!.el
- * >>> panel-body = new PanelBody
- * @class PanelHeading
- * @extends View
- * @export
- */
-class exports.PanelBody extends App.View
-  /** @override */
   _tagName: \div
 
-  /** @override */
-  _className: "#{gz.Css \panel-collapse} #{gz.Css \collapse}"
+  _className: gz.Css \panel-body
 
-  /** @override */
-  initialize: (@_options) ->
-    if @_options?
-      @_id-content = @_options._id-content
-      @_element = @_options._element
-    super!
+  initialize: ({@_panel}) -> super!
 
-  /** @override */
-  render: ->
-    @el._id = @_id-content
-    @el.html="<div class='#{gz.Css \panel-body}'>
-              </div>"
-
-    # TODO: Saber si es HTMLElement o String
-    if @_element?
-      @el._first._append @_element
-
-    super!
-
-  /** @private */ _options: null
-  /** @public */ _element: null
-  /** @private */ _id-content: null
-  /** @private */ _body: null
+  _panel: null
 
 
-/**
- * Panel
- * -------------
- * @class Panel
- * @extends View
- * @export
- */
-class exports.Panel extends App.View
+class FormBody extends PanelBody
+
+  _tagName: \form
+
+  _json:~
+    -> @_json-getter!
+    (_dto) ->
+      @_json-setter _dto
+
+  _json-setter: (_dto) ->
+      @el._fromJSON _dto
+
+  _json-getter: -> @el._toJSON!
+
+class Panel extends App.View
 
   /** @override */
   _tagName: \div
@@ -180,129 +186,66 @@ class exports.Panel extends App.View
   /** @override */
   _className: "#{gz.Css \panel} #{gz.Css \panel-default}"
 
-  /**
-   * Open panel.
-   */
-  _open: ->
-    @_collapse._class._add    gz.Css \in
+  /** @override */
+  _free: ->
+    @trigger (gz.Css \free), @
+#    @_header._free!
+#    @_body._free!
+    super!
 
-  /**
-   * Close panel.
-   */
-  _close: ->
-    @_collapse._class._remove gz.Css \in
+  _open: -> @_collapse._class._add    gz.Css \in
 
-  /**
-   * Toggle panel to open or close.
-   */
-  _toggle: ->
-    @_collapse._class._toggle gz.Css \in
+  _close: -> @_collapse._class._remove gz.Css \in
+
+  _toggle: -> @_collapse._class._toggle gz.Css \in
 
   /** @override */
-  initialize: (@_options) -> super!
+  initialize: ({_heading=PanelHeading, \
+                _body=PanelBody, \
+                @_parent-uid}) ->
+    @_collapse-id = App.utils.uid 'p'
+
+    @_header = new _heading do
+      _parent-uid: @_parent-uid
+      _panel: @
+      _collapse-id: @_collapse-id
+    @_body = new _body _panel: @
+    super!
 
   /** @override */
   render: ->
-    _id-content = App.utils.uid 'p'
-
-    # building panel heading
-    if @_options._panel-heading?
-      @_header = @_options._panel-heading
-      @_header._id-content = _id-content
-      @_header._parent-uid = @_options._parent-uid
-      @_header._panel = @el
-    else
-      @_header = new PanelHeading do
-        _title: @_options._title
-        _id-content: _id-content
-        _parent-uid: @_options._parent-uid
-        _panel: @el
-
-    # building panel body
-    if @_options._panel-body?
-      @_body = @_options._panel-body
-      @_body._id-content = _id-content
-    else
-      @_body = new PanelBody do
-        _id-content: _id-content
-        _element: @_options._element
-
     @el._append @_header.render!.el
-    @el._append @_body.render!.el
-    @_collapse = @el.query "##{_id-content}"
-    @_toggle!
 
+    @_collapse = App.dom._new \div
+      .._class = "#{gz.Css \panel-collapse}
+                \ #{gz.Css \collapse}"
+      .._id = @_collapse-id
+
+    @_collapse._append @_body.render!.el
+
+    @el._append @_collapse
     super!
 
-  /** @private */ _options: null
   /** @public */  _header: null
   /** @public */  _body: null
-  /** @private */ _collapse: null
+  _collapse-id: null
+  _collapse: null
 
 
-/**
- * PanelGroup
- * ----------
- *
- * @example
- * >>> panel-group = new PanelGroup
- * >>> panel-group.new-panel do
- * ...   _title: 'Example-Title'
- * ...   _element: 'Example contenido' TODO: Falta implementar solo texto.
- * >>> # with panelheading and panelbody
- * >>> panel-heading = new PanelHeading do
- * ...   _title: 'Example-Title'
- * >>> panel-body = new PanelBody do
- * ...   _element: another-view.render!.el
- * >>> panel-group.new-panel do
- * ...   _panel-heading: panel-heading
- * ...   _panel-body: panel-body
- * >>> another-view.el._append panel-group.render!.el
- * >>> # with panelbody
- * >>> _div = App.dom._new \div
- * ...   ..html = 'Example'
- * >>> panel-body = new PanelBody do
- * ...   _element: _div
- * >>> panel-group.new-panel do
- * ...   _title: 'Example Title'
- * ...   _panel-body: panel-body
- * >>> another-view.el._append panel-group.render!.el
- * >>> # with panelheading
- * >>> panel-heading = new PanelHeading do
- * ...   _title: 'Example-Title'
- * >>> panel-group.new-panel do
- * ...   _panel-heading: panel-heading
- * ...   _element: another-view.render!.el
- * >>> another-view.el._append panel-group.render!.el
- *
- * @class PanelGroup
- * @extends View
- * @export
- */
-class exports.PanelGroup extends App.View
+class PanelGroup extends App.View
 
   /** @override */
   _tagName: \div
 
-  /**
-   * Close all panels
-   */
-  close-all: ->
-    for @_panels then .._close!
+  close-all: -> for @_panels then .._close!
 
-  /**
-   * @see @new-panel
-   */
+  open-all: -> for @_panels then  .._open!
+
+  /** @see @new-panel */
   drop-panel: (panel) ~>
     @_panels._remove panel
     if @_panels._length is 1
       @open-all!
-
-  /**
-   * Open all panels
-   */
-  open-all: ->
-    for @_panels then  .._open!
 
   /**
    * Crea un nuevo panel
@@ -313,25 +256,23 @@ class exports.PanelGroup extends App.View
    * @param {HTMLElement} _element
    * @return Panel
    */
-  new-panel: ({_panel-heading = null,\
-               _panel-body = null,\
-               _title = null,\
-               _element = null} = App._void._Object) ~>
+  new-panel: ({_panel-heading = PanelHeading,\
+               _panel-body = PanelBody} = {}) ~>
     @close-all!
-    _panel = @ConcretPanel._new do
-      _title: _title
-      _parent-uid: @root-el._id
-      _element: _element
-      _panel-heading: _panel-heading
-      _panel-body: _panel-body
-    @root-el._append _panel.render!.el
-    _panel._header.on (gz.Css \close), @drop-panel
+    _panel = @_Panel._new do
+      _parent-uid: @__container._id
+      _heading: _panel-heading
+      _body: _panel-body
+
+    @__container._append _panel.render!.el
+    _panel._header.on (gz.Css \free), @drop-panel
     @_panels._push _panel
+    _panel._open!
     _panel
 
   /** @override */
-  initialize: ({@root-el = @el, \
-                @ConcretPanel = Panel} = App._void._Object) ->
+  initialize: ({@_container = @el, \
+                @_Panel = Panel} = App._void._Object) ->
     @_panels = new Array
     super!
 
@@ -341,16 +282,26 @@ class exports.PanelGroup extends App.View
    * Root for panels accumulation.
    * @type HTMLElement
    * @protected
-   */ _root-el: null
+   */ __container: null
 
-  root-el:~
-    -> @_root-el
+  _container:~
+    -> @__container
     (el) ->
-      @_root-el = el
+      @__container = el
         .._id = (gz.Css \id-panel-group) + App.utils.uid!
         .._class._add gz.Css \panel-group
 
-  /** @protected */ ConcretPanel: null
+  /** @protected */ Panel: null
+
+/** @export */
+exports <<<
+  PanelGroup: PanelGroup
+  PanelBody: PanelBody
+  PanelHeading: PanelHeading
+  ControlTitle: ControlTitle
+  ControlClose: ControlClose
+  ControlSearch: ControlSearch
+  FormBody: FormBody
 
 
 # vim: ts=2:sw=2:sts=2:et
