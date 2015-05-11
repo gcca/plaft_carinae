@@ -60,6 +60,7 @@ class exports.CodeNameField extends App.View
   /** @private */ _span   : null
   /** @private */ _hidden : null
   /** @private */ _max-length : null
+  /** @private */ _typeahead : null
 
   /** @override */
   render: ->
@@ -86,7 +87,7 @@ class exports.CodeNameField extends App.View
     @el._append @_hidden
     @el._append @_input
     @el._append @_span
-    (new App.widget.Typeahead do
+    @_typeahead = (new App.widget.Typeahead do
       el          : @_input
       _source     :
         _display : App.widget.Typeahead.Source.kDisplay
