@@ -9,29 +9,29 @@ widget = App.widget.codename
 FieldType = App.builtins.Types.Field
 DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
 
+panelgroup = require '../../app/widgets/panelgroup'
 /**
  * Dispatch
  * ----------
- * TODO
  *
  * @class Dispatch
  * @extends View
  */
-class Dispatch extends App.View
+class DispatchBody extends panelgroup.FormBody
 
-  /** @override */
-  _tagName: \form
-
-  /** @override */
-  initialize: ({@dispatch}) -> super!
 
   /** @override */
   render: ->
     App.builder.Form._new @el, _FIELD_DISPATCH
       ..render!
+      @_typeahead = .._elements.'regime'._view._typeahead
       .._free!
 
-    @el._fromJSON @dispatch
+
+    @_typeahead.on-selected (_, _obj) ~>
+      _display = _obj.'_display'
+      _k = App.lists.regime._display._index _display
+      @trigger (gz.Css \code-regime), App.lists.regime._sbs[_k]
 
     super!
 
@@ -68,7 +68,7 @@ class Dispatch extends App.View
         _label: 'Descripcion mercancia'
 
 /** @export */
-module.exports = Dispatch
+module.exports = DispatchBody
 
 
 # vim: ts=2:sw=2:sts=2:et

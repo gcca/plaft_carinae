@@ -19,6 +19,11 @@ search = require '../widget'
  */
 class PanelHeadingDeclarant extends PanelHeaderClosable
 
+
+
+  _callback-dto: (_dto) ~>
+    @trigger (gz.Css \button), _dto
+
   /**
    * Modifica el titulo segun el evento on-key-up
    * de cada caja de texto.
@@ -116,24 +121,11 @@ class Declarants extends PanelGroup
    */
   _toJSON: ->
     for @_panels then .._body.el.query \form ._toJSON!
-
-  /**
-   * Mostrar un panel.
-   */
-  render-panel: ~>
-    _head-declarant = new PanelHeadingDeclarant do
-      _title: "Declarant"
-    _body-declarant = new Declarant do
-      dto: null
-
-    @new-panel do
-      _panel-heading: _head-declarant, _panel-body: _body-declarant
-
   /**
    * Carga el panel segun el dto.
    * @param {Array.<dto>} dto
    */
-  render-dto: (dto) ->
+  render-panel: (dto) ->
     _head-declarant = new PanelHeadingDeclarant do
       _title: "Declarant"
     _body-declarant = new Declarant do
@@ -159,12 +151,13 @@ class Declarants extends PanelGroup
                   Agregar
                 </button>"
     @root-el = @el._first
-    @el._last.on-click @render-panel
+    @el._last.on-click ~>
+      @render-panel!
 
     if @collection?
       if @collection._length isnt 0
         for _dto in @collection
-          @render-dto _dto
+          @render-panel _dto
 
     super!
 

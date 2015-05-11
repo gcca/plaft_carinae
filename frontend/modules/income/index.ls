@@ -36,18 +36,14 @@
 Module = require '../../workspace/module'
 
 panelgroup = require '../../app/widgets/panelgroup'
-  PanelGroup = ..PanelGroup
-  PanelHeading = ..PanelHeading
-  PanelBody = ..PanelBody
-
 panel-heading = require './heading'
 
 customer = require './customer'
-  Customer = ..Customer
+  CustomerBody = ..Customer
 
-Dispatch = require './dispatch'
-Stakeholder = require './stakeholder'
-Declarant = require './declarant'
+DispatchBody = require './dispatch'
+#Stakeholder = r equire './stakeholder'
+#Declarant = r equire './declarant'
 
 
 /**
@@ -112,16 +108,16 @@ class Operation extends Module
       success = (dto) ~>
         @income-model = new IncomeModel dto.0
 
-        @_customer = @income-model._attributes.'declaration'.'customer'
-        @_third = @income-model._attributes.'declaration'.'third'
+        @_customer-dto = @income-model._attributes.'declaration'
 
         customer-dto = @income-model._attributes.'customer'
+
         @customer-model = new CustomerModel customer-dto
 
         @render-operation!
-        if dto.0.\id
-          @customer-head._show do
-            _href: "/declaration/pdf/#{@income-model\id}"
+#        if dto.0.\id
+#          @customer-head._show do
+#            _href: "/declaration/pdf/#{@income-model\id}"
 
       not-found = (e) ~>
         @_desktop.notifier.notify do
@@ -135,7 +131,7 @@ class Operation extends Module
 
       success = (dto) ~>
         @customer-model = new CustomerModel dto.0
-        @_customer = @customer-model._attributes
+        @_customer-dto = @customer-model._attributes
         @income-model = new IncomeModel
         @render-operation!
 
@@ -174,7 +170,7 @@ class Operation extends Module
       \document_number : _query
     @customer-model = new CustomerModel dto
     @income-model = new IncomeModel
-    @_customer = @customer-model._attributes
+    @_customer-dto = @customer-model._attributes
     @_third = null
     @render-operation!
 
@@ -202,8 +198,8 @@ class Operation extends Module
     # Save to IncomeModel.
     @income-model._save dispatch-dto, do
       _success: (dto) ~>
-        @customer-head._show do
-          _href:  "/declaration/pdf/#{@income-model\id}"
+#        @customer-head._show do
+#          _href:  "/declaration/pdf/#{@income-model\id}"
 
         @_desktop.notifier.notify do
           _message: 'Guardado'
@@ -230,38 +226,59 @@ class Operation extends Module
   render-operation: ->
     @clean!
 
-    @dispatch = Dispatch._new dispatch : @income-model._attributes
-    @customer = Customer._new do
-      customer-dto : @_customer
-      third-dto: @_third
+#    @dispatch = Dispatch._new dispatch : @income-model._attributes
+#    @customer = Customer._new do
+#      customer-dto : @_customer
+#      third-dto: @_third
 
-    @stakeholder = Stakeholder._new do
-      collection : @income-model._attributes\stakeholders
-    @declarant = Declarant._new do
-      collection : @income-model._attributes\declarants
+#    @stakeholder = Stakeholder._new do
+#      collection : @income-model._attributes\stakeholders
 
-    pnl-group = new PanelGroup
+#    @declarant = Declarant._new do
+#      collection : @income-model._attributes\declarants
 
-    pnl-group.new-panel do
-      _title: 'Despacho - Operacion'
-      _element: (@dispatch).render!.el
+#    pnl-group = new PanelGroup
 
-    @customer-head = new panel-heading.Pdf _title: 'Declaracion jurada'
-    pnl-group.new-panel do
-      _panel-heading: @customer-head
-      _element: (@customer).render!.el
+    pnl-group = new panelgroup.PanelGroup
 
-    pnl-group.new-panel do
-      _title: 'Declarante'
-      _element: (@declarant).render!.el
+    @dispatch =  pnl-group.new-panel do
+      _panel-heading: panelgroup.PanelHeading
+      _panel-body: DispatchBody
+    @dispatch._header._get panelgroup.ControlTitle ._text = 'Despacho-Operacion'
+    @dispatch._body._json = @income-model._attributes
 
-    pnl-group.new-panel do
-      _title: 'Vinculado'
-      _element: (@stakeholder).render!.el
+    @customer = pnl-group.new-panel do
+      _panel-heading: panel-heading.HeadingPDF
+      _panel-body: CustomerBody
+    @customer._header._get panelgroup.ControlTitle ._text = 'Declaración Jurada'
+    @customer._body._json = @_customer-dto
 
-    pnl-group.open-all!
-    @el._append pnl-group.render!el
-    @trick-typeahead!
+
+    @el._append pnl-group.render!.el
+
+#    pnl-group.new-panel do
+#      _title: 'Despacho - Operacion'
+#      _element: (@dispatch).render!.el
+
+##    @customer-head = new panel-heading.Pdf _title: 'Declaracion jurada'
+##    pnl-group.new-panel do
+##      _panel-heading: @customer-head
+##      _element: (@customer).render!.el
+
+#    pnl-group.new-panel do
+#      _title: 'Declarante'
+#      _element: (@declarant).render!.el
+
+#    pnl-group.new-panel do
+#      _title: 'Vinculado'
+#      _element: (@stakeholder).render!.el
+
+#    @dispatch.on (gz.Css \code-regime), ~>
+#      @stakeholder.load-stakeholder it
+
+#    pnl-group.open-all!
+#    @el._append pnl-group.render!el
+#    @trick-typeahead!
 
   /** @override */
   render: ->

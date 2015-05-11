@@ -6,6 +6,9 @@ Business = require './business'
 FieldType = App.builtins.Types.Field
 DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
 
+
+panelgroup = require '../../../app/widgets/panelgroup'
+
 /**
  * Third
  * ----------
@@ -212,105 +215,88 @@ class exports.Identification extends App.View
  * @class Customer
  * @extends View
  */
-class exports.Customer extends App.View
+class exports.Customer extends panelgroup.FormBody
 
   /** @override */
   _tagName: \form
 
   /** @private */
   on-customer-change: ~>
-    @_type = @el.query('[name=customer_type]').selectedIndex
+    _type = @el.query('[name=customer_type]').selectedIndex
     @el._last.html = ""
 
-    if @_type is @@Type.kPerson
-      @_customer = new Person
-      @el._append (@_customer).render!.el
-      @_third = new Identification
-      @el._last._append @_third.render!.el
+    if _type is @@Type.kPerson
+      _customer = new Person
       @el.query '[name=document_type]' ._value = 'dni'
 
-    if @_type is @@Type.kBusiness
-      @_customer = Business._new!
-      @el._append (@_customer).render!.el
-      @_shareholder = @_customer.shareholder
-      @el.query('[name=customer_type]').selectedIndex = @_type
-      @_third = new Identification
-      @el._last._append @_third.render!.el
+    if _type is @@Type.kBusiness
+      _customer = new Business
       @el.query '[name=document_type]' ._value = 'ruc'
 
-    @el.query('[name=customer_type]').selectedIndex = @_type
-    @el.query('[name=customer_type]').on-change @on-customer-change
+    @el._append (_customer).render!.el
+    _third = new Identification
+    @el._last._append _third.render!.el
 
-  /** @private */
-  set-customer-type: ->
-    if _type?
-      if @_type is @@Type.kPerson
-        @_customer = new Person
-
-      if @_type is @@Type.kBusiness
-        @_customer = Business._new!
-
-    else
-      if @customer-dto.'document_number'._length is 11
-        @_type = @@Type.kBusiness
-        @_customer = Business._new!
-        @el.query('[name=customer_type]').selectedIndex = @_type
-      else
-        @_type = @@Type.kPerson
-        @_customer = new Person
-        @el.query('[name=customer_type]').selectedIndex = @_type
+    @el.query '[name=customer_type]' .selectedIndex = _type
+    @el.query '[name=customer_type]' .on-change @on-customer-change
 
   /**
    * Shareholder list to JSON.
    * @return {Array.<Shareholder-JSON>} || {}
+   * @see panelgroup.FormBody._json-getter
    * @override
    */
-  _toJSON: ->
-    _r = @el._toJSON!
+  _json-getter: ->
+    _r = super!
+    delete! _r.'customer_type'
     if @_type is @@Type.kBusiness
       _r.'shareholders' = @_shareholder._toJSON!
     _r
 
-  /**
-   * Carga el dto en el formulario.
-   * @private
-   */
-  render-dto: !->
-    @_shareholder = @_customer.shareholder
-    if @_shareholder?
-      _shareholder = @customer-dto.'shareholders'
-      @_shareholder.load-from _shareholder if _shareholder?
-    @_third = new Identification th: @third-dto
-    @el._last._append @_third.render!.el
-    @el.query('[name=customer_type]').on-change @on-customer-change
+  _json-setter: (_dto) ->
+    console.log _dto
+    _type = __get-customer-type _dto
 
-    @el._fromJSON @customer-dto
-
-    @el.query '[name=document_type]' ._value = \
-      if @_type is @@Type.kBusiness then 'ruc'
-      else if @_type is @@Type.kPerson then 'dni'
-      else alert 'ERROR: 75f2dfac-f412-11e4-bf73-001d7d7379f5'
-
-  /** @override */
-  initialize: ({@customer-dto, @third-dto}) ->  super!
-
-  /** @override */
-  render: ->
+    @el.html = ''
     App.builder.Form._new @el, _FIELD_HEAD
       ..render!
       .._free!
 
-    @set-customer-type!
-    @el._append @_customer.render!.el
-    @render-dto!
+    if _type is @@Type.kPerson
+      _customer = new Person
 
-    super!
+    if _type is @@Type.kBusiness
+      _customer = new Business
+      _share-dto = _dto.'shareholders'
+      _customer.shareholder.load-from _share-dto if _share-dto?
 
-  /** @private */ _type: null
-  /** @private */ customer-dto: null
-  /** @private */ _customer: null
-  /** @private */ _shareholder: null
-  /** @private */ _third: null
+    @el.query '[name=customer_type]' .selectedIndex = _type
+
+    _third = new Identification th: _dto.'third'
+
+    @el._append _customer.render!.el
+    @el._last._append _third.render!.el
+
+    @el.query '[name=customer_type]' .on-change @on-customer-change
+    super _dto
+
+  __get-customer-type = (_dto) ->
+    if not _dto?
+      App._debug._log 'BRUTALIDAD'
+      alert 'Contactar con el proveedor: 4a86fad2-f823-11e4-8ed6-904ce5010430'
+      return
+
+    if _dto.'document_type'?
+      if _dto.'document_type' is 'ruc'
+      then @@Type.kBusiness
+      else @@Type.kPerson
+    else
+      # if not _dto.'document_number'?
+      if _dto.'document_number'._length is 11
+      then @@Type.kBusiness
+      # TODO: Evaluar todos los posibles documentos.
+      else @@Type.kPerson
+
 
   @@Type =
     kPerson: 0

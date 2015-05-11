@@ -6,7 +6,6 @@ panelgroup = require '../../../app/widgets/panelgroup'
   Panel = ..Panel
 search = require '../widget'
   SearchByDto = ..SearchByDto
-Stakeholder = require './stakeholder'
 
 
 /**
@@ -16,6 +15,11 @@ Stakeholder = require './stakeholder'
  * @extends PanelHeadingClosable
  */
 class PanelHeadingStakeholder extends PanelHeaderClosable
+
+
+  _callback-dto: (_dto) ~>
+    @trigger (gz.Css \button), _dto
+
 
   /**
    * Modifica el titulo segun el evento on-key-up
@@ -149,31 +153,26 @@ class Stakeholders extends PanelGroup
   _toJSON: ->
     for @_panels then .._body.el.query \form ._toJSON!
 
+
+  load-panels: (_title = 'Vinculado', _panel-body) ->
+    if @_panels?
+      for p in @_panels
+        p._header._remove-panel!
+    @_title = _title
+    @_panel-body = _panel-body
+    @render-panel!
+
   /**
    * Mostrar un panel.
    */
-  render-panel: ~>
+  render-panel: (dto) ->
     _head-stakeholder = new PanelHeadingStakeholder do
-      _title: "Vinculado"
-    _body-stakeholder = new Stakeholder do
-      dto: null
-
-    @new-panel do
-      _panel-heading: _head-stakeholder, _panel-body: _body-stakeholder
-
-  /**
-   * Carga el panel segun el dto.
-   * @param {Array.<dto>} dto
-   */
-  render-dto: (dto) ->
-    _head-stakeholder = new PanelHeadingStakeholder do
-      _title: "Vinculado"
-    _body-stakeholder = new Stakeholder do
+      _title: @_title
+    _body-stakeholder = new @_panel-body do
       dto: dto
 
     @new-panel do
-      _panel-heading: _head-stakeholder
-      _panel-body: _body-stakeholder
+      _panel-heading: _head-stakeholder, _panel-body: _body-stakeholder
 
   /** @override */
   initialize: ->
@@ -191,14 +190,18 @@ class Stakeholders extends PanelGroup
                   Agregar
                 </button>"
     @root-el = @el._first
-    @el._last.on-click @render-panel
+    @el._last.on-click ~>
+      @render-panel!
 
     if @collection?
       if @collection._length isnt 0
         for _dto in @collection
-          @render-dto _dto
+          @render-panel _dto
 
     super!
+
+  /** @public */ _title: null
+  /** @public */ _panel-body: null
 
 /** @export */
 module.exports = Stakeholders
