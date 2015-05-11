@@ -1,6 +1,6 @@
 /** @module modules.income */
 
-panelgroup = require '../../app/widgets/panelgroup'
+panelgroup = App.widget.panelgroup
 
 class exports.ControlPDF extends App.View
 

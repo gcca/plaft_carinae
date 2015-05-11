@@ -4,7 +4,7 @@ widget = App.widget.codename
   InputName = ..InputName
   CodeNameField = ..CodeNameField
 
-panelgroup = require '../../../app/widgets/panelgroup'
+panelgroup = App.widget.panelgroup
   PanelBody = ..PanelBody
 
 FieldType = App.builtins.Types.Field

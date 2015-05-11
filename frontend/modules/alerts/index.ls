@@ -5,7 +5,7 @@
 FieldType = App.builtins.Types.Field
 Module = require '../../workspace/module'
 
-panelgroup = require '../../app/widgets/panelgroup'
+panelgroup = App.widget.panelgroup
   PanelGroup = ..PanelGroup
   PanelHeaderClosable = ..PanelHeaderClosable
   PanelBody = ..PanelBody

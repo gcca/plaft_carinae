@@ -1,6 +1,6 @@
 /** @module modules */
 
-panelgroup = require '../../../app/widgets/panelgroup'
+App.widget.panelgroup
   PanelGroup = ..PanelGroup
   PanelHeaderClosable = ..PanelHeaderClosable
   Panel = ..Panel

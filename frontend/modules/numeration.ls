@@ -4,7 +4,7 @@
  */
 
 Module = require '../workspace/module'
-table = require '../app/widgets/table'
+table = App.widget.table
   Table = ..Table
 FieldType = App.builtins.Types.Field
 

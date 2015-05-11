@@ -386,7 +386,7 @@ class formToObject
 App.model = require './model'
 
 /** @export */
-App.widget = require './widgets'
+App.widget = require './widget'
 
 
 # vim: ts=2:sw=2:sts=2:et

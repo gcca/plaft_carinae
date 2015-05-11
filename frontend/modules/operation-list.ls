@@ -3,10 +3,9 @@
  */
 
 Module = require '../workspace/module'
-table = require '../app/widgets/table'
-  Table = ..Table
+Table = App.widget.table.Table
 
-panelgroup = require '../app/widgets/panelgroup'
+App.widget.panelgroup
   PanelGroup = ..PanelGroup
   PanelHeading = ..PanelHeading
   PanelBody = ..PanelBody

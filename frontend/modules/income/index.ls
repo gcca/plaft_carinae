@@ -35,7 +35,7 @@
 
 Module = require '../../workspace/module'
 
-panelgroup = require '../../app/widgets/panelgroup'
+panelgroup = App.widget.panelgroup
 panel-heading = require './heading'
 
 customer = require './customer'
