@@ -29,9 +29,6 @@ class ControlClose extends App.View
 
   _className: gz.Css \pull-right
 
-  _on-close: (_, _panel) ~>
-    _panel._free!
-
   initialize: ({_heading}) ->
     @el.css = 'flex:1;margin:5px'
     _btn = App.dom._new \button
@@ -40,7 +37,7 @@ class ControlClose extends App.View
                   \ #{gz.Css \close}
                   \ #{gz.Css \pull-right}"
         ..html = '&times;'
-        ..on-click @_on-close _, _heading._panel
+        ..on-click ~> _heading._panel._free!
     @el._append _btn
 
 
@@ -50,7 +47,7 @@ class ControlSearch extends App.View
 
   _tagName: \span
 
-  apply-attr: (_url, _items) ->
+  _apply-attr: (_url, _items) ->
     @_url = _url
     @_items = _items
     (new App.widget.Typeahead do
@@ -75,15 +72,15 @@ class ControlSearch extends App.View
 
   changeValue: (_, _heading) ~>
     @_value = @_items[@_input._value]
-    @load-dto _, _heading
+    @load-dto _heading
 
   load-dto: (_heading) ->
     App.ajax._get ("/api/#{@_url}/" + @_value), null, do
       _success: (_dto) ~>
-        _heading.trigger (gz.Css \button), _dto # change name trigger
+        _heading._panel.trigger (gz.Css \button), _dto # change name trigger
 
   _search-dto: (_, _heading) ~>
-    load-dto _heading
+    @load-dto _heading
 
   initialize: ({@_heading}) ->
     @el.css = 'width: 200px;margin: 0;padding: 0;flex:4'
@@ -164,19 +161,27 @@ class PanelBody extends App.View
   _panel: null
 
 
-class FormBody extends PanelBody
-
-  _tagName: \form
+class JSONBody extends PanelBody
 
   _json:~
     -> @_json-getter!
     (_dto) ->
       @_json-setter _dto
 
+  _json-getter: ->
+
+  _json-setter: (_dto) ->
+
+
+class FormBody extends JSONBody
+
+  _tagName: \form
+
+  _json-getter: -> @el._toJSON!
+
   _json-setter: (_dto) ->
       @el._fromJSON _dto
 
-  _json-getter: -> @el._toJSON!
 
 class Panel extends App.View
 
@@ -189,8 +194,8 @@ class Panel extends App.View
   /** @override */
   _free: ->
     @trigger (gz.Css \free), @
-#    @_header._free!
-#    @_body._free!
+    @_header._free!
+    @_body._free!
     super!
 
   _open: -> @_collapse._class._add    gz.Css \in
@@ -205,11 +210,11 @@ class Panel extends App.View
                 @_parent-uid}) ->
     @_collapse-id = App.utils.uid 'p'
 
-    @_header = new _heading do
+    @_header = _heading._new do
       _parent-uid: @_parent-uid
       _panel: @
       _collapse-id: @_collapse-id
-    @_body = new _body _panel: @
+    @_body = _body._new _panel: @
     super!
 
   /** @override */
@@ -244,8 +249,8 @@ class PanelGroup extends App.View
   /** @see @new-panel */
   drop-panel: (panel) ~>
     @_panels._remove panel
-    if @_panels._length is 1
-      @open-all!
+#    if @_panels._length is 1
+#      @open-all!
 
   /**
    * Crea un nuevo panel
@@ -265,7 +270,7 @@ class PanelGroup extends App.View
       _body: _panel-body
 
     @__container._append _panel.render!.el
-    _panel._header.on (gz.Css \free), @drop-panel
+    _panel.on (gz.Css \free), @drop-panel
     @_panels._push _panel
     _panel._open!
     _panel
@@ -302,6 +307,6 @@ exports <<<
   ControlClose: ControlClose
   ControlSearch: ControlSearch
   FormBody: FormBody
-
+  JSONBody: JSONBody
 
 # vim: ts=2:sw=2:sts=2:et

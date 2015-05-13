@@ -1,143 +1,31 @@
 /** @module modules */
 
-App.widget.panelgroup
-  PanelGroup = ..PanelGroup
-  PanelHeaderClosable = ..PanelHeaderClosable
-  Panel = ..Panel
+panelgroup = App.widget.panelgroup
 
-Declarant = require './declarant'
+FormBodyDeclarant = require './declarant'
 
-search = require '../widget'
-  SearchByDto = ..SearchByDto
+class DeclarantHeading extends panelgroup.PanelHeading
 
-
-/**
- * PanelHeadingDeclarant
- * ---------------------
- * @class PanelHeadingDeclarant
- * @extends View
- */
-class PanelHeadingDeclarant extends PanelHeaderClosable
+  _controls: [panelgroup.ControlTitle,
+              panelgroup.ControlSearch,
+              panelgroup.ControlClose]
 
 
-
-  _callback-dto: (_dto) ~>
-    @trigger (gz.Css \button), _dto
-
-  /**
-   * Modifica el titulo segun el evento on-key-up
-   * de cada caja de texto.
-   * @param {Integer} _type
-   */
-  overload-for-title: ->
-    _name = @_panel.query '[name=name]'
-    _father_name = @_panel.query '[name=father_name]'
-    _mother_name = @_panel.query '[name=mother_name]'
-
-    /**
-     * (Event) Modifica el titulo segun el evento.
-     * @private
-     * @see parent.set-title
-     */
-    _set-title = ~>
-      @set-title _name._value + ' ' \
-                             + _father_name._value + ' ' \
-                             + _mother_name._value
-
-    _name.on-key-up _set-title
-    _father_name.on-key-up _set-title
-    _mother_name.on-key-up _set-title
-
-  /**
-   * Cambia el titulo del Panel-heading.
-   * @param {Object} dto
-   */
-  load-title: (dto) ->
-    @set-title "#{dto.'name'}
-              \ #{dto.'father_name'}
-              \ #{dto.'mother_name'}"
-
-  /** @override */
-  render: ->
-    ret = super!
-
-    _search = new SearchByDto do
-      _url: 'declarant'
-      _items: window.plaft.'declarant'
-      _callback: @_callback-dto
-
-    @_show _search
-
-    ret
-
-/**
- * PanelDeclarant
- * --------------
- * @class PanelDeclarant
- * @extends Panel
- */
-class PanelDeclarant extends Panel
-
-  /**
-   * Modifica el titulo segun el dto.
-   */
-  render-dto: ->
-    _dto = @_body._options.dto
-    if _dto?
-      @_header.load-title _dto
-
-  /**
-   * Carga el dto en el formulario actual.
-   * @see @render-dto
-   */
-  _take-dto: ~>
-    @_body._options.dto = it
-    @_body.read-dto it
-    @render-dto!
-
-  /** @override */
-  render: ->
-    ret = super!
-    @_header.overload-for-title!
-    @_header.on (gz.Css \button), @_take-dto
-    @render-dto!
-    ret
-
-/**
- * Declarants
- * ----------
- * @class Declarants
- * @extends View
- */
-class Declarants extends PanelGroup
+class DeclarantGroup extends panelgroup.PanelGroup
 
   /** @override */
   _tagName: \div
 
-  /**
-   * Form to JSON.
-   * @return {Object}
-   * @private
-   */
-  _toJSON: ->
-    for @_panels then .._body.el.query \form ._toJSON!
-  /**
-   * Carga el panel segun el dto.
-   * @param {Array.<dto>} dto
-   */
-  render-panel: (dto) ->
-    _head-declarant = new PanelHeadingDeclarant do
-      _title: "Declarant"
-    _body-declarant = new Declarant do
-      dto: dto
+  _toJSON: -> for @_panels then .._body._json
 
-    @new-panel do
-      _panel-heading: _head-declarant
-      _panel-body: _body-declarant
-
-  /** @override */
-  initialize: ->
-    super ConcretPanel: PanelDeclarant
+  render-panel: (_dto) ->
+    _declarant = @new-panel do
+      _panel-heading: DeclarantHeading
+      _panel-body: FormBodyDeclarant
+    _declarant._header._get panelgroup.ControlTitle ._text = 'Declarante'
+    _declarant._header._get panelgroup.ControlSearch ._apply-attr 'declarant',
+                                                                  window.'plaft'.'declarant'
+    _declarant._body._json = _dto
 
   /** @override */
   render: ->
@@ -148,22 +36,31 @@ class Declarants extends PanelGroup
                 <button type='button'
                         class= '#{gz.Css \btn}
                               \ #{gz.Css \btn-default}'>
-                  Agregar
-                </button>"
-    @root-el = @el._first
+                  Agregar"
+    @_container = @el._first
     @el._last.on-click ~>
       @render-panel!
-
-    if @collection?
-      if @collection._length isnt 0
-        for _dto in @collection
-          @render-panel _dto
 
     super!
 
 
+class BodyDeclarant extends panelgroup.JSONBody
+
+  _json-getter: -> @_group-declarant._toJSON!
+
+  _json-setter: (_dtos) ->
+    for _dto in _dtos
+      @_group-declarant.render-panel _dto
+
+  render: ->
+    @_group-declarant = new DeclarantGroup
+    @el._append @_group-declarant.render!.el
+    super!
+
+  _group-declarant: null
+
 /** @export */
-module.exports = Declarants
+module.exports = BodyDeclarant
 
 
 # vim: ts=2:sw=2:sts=2:et

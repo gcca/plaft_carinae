@@ -4,8 +4,7 @@ widget = App.widget.codename
   InputName = ..InputName
   CodeNameField = ..CodeNameField
 
-App.widget.panelgroup
-  PanelBody = ..PanelBody
+panelgroup = App.widget.panelgroup
 
 FieldType = App.builtins.Types.Field
 DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
@@ -18,23 +17,21 @@ DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
  * @class Declarant
  * @extends View
  */
-class Declarant extends PanelBody
+class Declarant extends panelgroup.FormBody
 
-  /**
-   * Carga el formulario segun el dto.
-   */
+
   read-dto: (dto) ->
     @_body._first._fromJSON @_options.dto
 
   /** @override */
   render: ->
     ret = super!
-    @_body = @el.query '.panel-body'
-    $ @_body ._append "<form></form>"
-    App.builder.Form._new @_body._first, _FIELD_DECLARANT
+    App.builder.Form._new @el, _FIELD_DECLARANT
         ..render!
         .._free!
-    @_body._first._fromJSON @_options.dto
+
+    @_panel.on (gz.Css \button), ~>
+      @_json = it
     ret
 
   /** Local variable for settings. */
