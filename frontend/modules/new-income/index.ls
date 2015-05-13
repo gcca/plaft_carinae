@@ -1,12 +1,17 @@
 /** @modules.income */
 
+
+panelgroup = App.widget.panelgroup
+DeclarantBody = require '../income/declarant'
+Module = require '../../workspace/module'
+
 class Dispatch extends App.Model
 
   /** @oevrride */
   urlRoot: \income
 
 
-class Income extends App.workspace.Module
+class Income extends Module
 
   /**
    * Search by a number (order or document) and filtering
@@ -69,6 +74,8 @@ class Income extends App.workspace.Module
    * @protected
    */
   on-save: ->
+    console.log @panels2dispatchDTO!
+    return
     @model._save @panels2dispatchDTO!, do
       _success: ~>
         @_desktop.notifier.notify do
@@ -87,10 +94,10 @@ class Income extends App.workspace.Module
    */
   panels2dispatchDTO: ->
     _dispatch-dto =
-      _declaration: @_panels._declaration._json
-      _declarants: @_panels._declarants._json
-      _stakeholders: @_panels._stakeholders._json
-    _dispatch-dto <<<< @_panels._dispatch._json
+      _declaration: @_panels._declaration._body._json
+      _declarants: @_panels._declarants._body._json
+      _stakeholders: @_panels._stakeholders._body._json
+    _dispatch-dto <<<< @_panels._dispatch._body._json
 
   /**
    * Render dispatch, declaration, declarants and stakeholders panels.
@@ -99,15 +106,25 @@ class Income extends App.workspace.Module
    * @private
    */
   render-panels: (_dispatch-dto) ->
-    @model = new Dispath _dispatch-dto  # Model for storing data
+    @clean!
 
-    # TODO: Create panels here
+    @model = new Dispatch _dispatch-dto  # Model for storing data
+
+    _panel-group = new panelgroup.PanelGroup
+
+    foo =  # TODO: Remove when @_panels updated.
+      _body:
+        _json: new Object
 
     @_panels =  # To build dispatch DTO.
-      _dispatch: null  # TODO: new DispatchPanel
-      _declaration: null  # TODO: new DeclarationPanel
-      _declarants: null  # TODO: new DeclarantsPanel
-      _stakholders: null  # TODO: new StakeholdersPanel
+      _dispatch: foo  # TODO: new DispatchPanel
+      _declaration: foo  # TODO: new DeclarationPanel
+      _declarants: _panel-group.new-panel do
+                     _panel-heading: panelgroup.PanelHeading
+                     _panel-body: DeclarantBody
+      _stakeholders: foo  # TODO: new StakeholdersPanel
+
+    @el._append _panel-group.render!.el
 
   /** @override */
   render: ->
@@ -122,6 +139,7 @@ class Income extends App.workspace.Module
            style='font-size:20pt'></i>
       </span>"
     @_desktop._search._focus 'DNI o número de orden'
+    @on-search '12345678989', @@_SEARCHENUM.kByDocumentNumber
     super!
 
   ## Attributes
