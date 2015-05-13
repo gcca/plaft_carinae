@@ -236,7 +236,9 @@ Array::=
     -> @\length
     (x) -> @\length = x
 
-  _remove: -> @splice (@indexOf it), 1
+  _remove: ->
+    i = @indexOf it
+    @splice i, 1 if i > -1
 
 String::=
   _length:~ -> @\length
