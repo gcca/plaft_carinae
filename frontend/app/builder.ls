@@ -198,7 +198,7 @@ class exports.Form extends Array implements PoolMixin
       #_element-t = _field: ..
       #Object._properties _element-t, do
       #  _element: get: ~>
-      #    console.log @el._elements[_name]
+      #    # @el._elements[_name]
       #    @el._elements[_name]
       #@_elements[_name] = _element-t
 
@@ -232,6 +232,10 @@ class exports.Form extends Array implements PoolMixin
 
     if _options?
       @fields _options
+
+  ->
+    super!
+    @initialize ...
 
   /** Create pool */ Pool @@
 

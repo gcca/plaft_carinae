@@ -388,5 +388,8 @@ App.model = require './model'
 /** @export */
 App.widget = require './widget'
 
+/** @export */
+App.mixin = require './mixin'
+
 
 # vim: ts=2:sw=2:sts=2:et
