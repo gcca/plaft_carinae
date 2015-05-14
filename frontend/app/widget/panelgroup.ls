@@ -29,7 +29,9 @@ class ControlClose extends App.View
 
   _className: gz.Css \pull-right
 
-  initialize: ({_heading}) ->
+  on-close: ~> @_heading._panel._free!
+
+  initialize: ({@_heading}) ->
     @el.css = 'flex:1;margin:5px'
     _btn = App.dom._new \button
         .._class = "#{gz.Css \btn}
@@ -37,8 +39,10 @@ class ControlClose extends App.View
                   \ #{gz.Css \close}
                   \ #{gz.Css \pull-right}"
         ..html = '&times;'
-        ..on-click ~> _heading._panel._free!
+        ..on-click @on-close
     @el._append _btn
+
+  _heading: null
 
 
 class ControlSearch extends App.View
@@ -193,7 +197,8 @@ class Panel extends App.View
 
   /** @override */
   _free: ->
-    @trigger (gz.Css \free), @
+    #@trigger (gz.Css \free), @
+    @_panel-group.drop-panel @
     @_header._free!
     @_body._free!
     super!
@@ -207,7 +212,8 @@ class Panel extends App.View
   /** @override */
   initialize: ({_heading=PanelHeading, \
                 _body=PanelBody, \
-                @_parent-uid}) ->
+                @_parent-uid, \
+                @_panel-group}) ->
     @_collapse-id = App.utils.uid 'p'
 
     @_header = _heading._new do
@@ -249,8 +255,6 @@ class PanelGroup extends App.View
   /** @see @new-panel */
   drop-panel: (panel) ~>
     @_panels._remove panel
-#    if @_panels._length is 1
-#      @open-all!
 
   /**
    * Crea un nuevo panel
@@ -268,9 +272,10 @@ class PanelGroup extends App.View
       _parent-uid: @__container._id
       _heading: _panel-heading
       _body: _panel-body
+      _panel-group: @
 
     @__container._append _panel.render!.el
-    _panel.on (gz.Css \free), @drop-panel
+    # _panel.on (gz.Css \free), @drop-panel
     @_panels._push _panel
     _panel._open!
     _panel
@@ -287,11 +292,17 @@ class PanelGroup extends App.View
    * Root for panels accumulation.
    * @type HTMLElement
    * @protected
-   */ __container: null
+   */ __container:  # dummy
+     _id: null
+     _class: _remove: ->
 
   _container:~
     -> @__container
     (el) ->
+      @__container
+        .._id = ''
+        .._class._remove gz.Css \panel-group
+
       @__container = el
         .._id = (gz.Css \id-panel-group) + App.utils.uid!
         .._class._add gz.Css \panel-group
