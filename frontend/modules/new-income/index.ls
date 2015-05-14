@@ -78,6 +78,7 @@ class Income extends Module
    * @protected
    */
   on-save: ->
+    # TODO: Remove this.
     console.log @panels2dispatchDTO!
     return
     @model._save @panels2dispatchDTO!, do
@@ -154,7 +155,6 @@ class Income extends Module
            style='font-size:20pt'></i>
       </span>"
     @_desktop._search._focus 'DNI o número de orden'
-    @on-search '12345678989', @@_SEARCHENUM.kByDocumentNumber
     super!
 
   ## Attributes
