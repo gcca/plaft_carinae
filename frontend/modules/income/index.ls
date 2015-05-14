@@ -42,8 +42,8 @@ customer = require './customer'
   CustomerBody = ..Customer
 
 DispatchBody = require './dispatch'
-#Stakeholder = r equire './stakeholder'
-#Declarant = r equire './declarant'
+StakeholderBody = require './stakeholder'
+DeclarantBody = require './declarant'
 
 
 /**
@@ -92,12 +92,6 @@ class Operation extends Module
     if not query._length
       @_desktop.notifier.notify do
         _message: 'Te olvidaste de escribir algo.'
-        _type: @_desktop.notifier.kDanger
-      return
-    if not filter?
-      @_desktop.notifier.notify do
-        _message: 'Debes seleccionar el tipo de
-                   \ búqueda que quieres realizar.'
         _type: @_desktop.notifier.kDanger
       return
     # FIND BY ORDER
@@ -180,34 +174,35 @@ class Operation extends Module
    * @protected
    */
   on-save: ~>
-    customer-dto = @customer._toJSON!
+    console.log @declarant._body._json
+#    customer-dto = @customer._toJSON!
 
-    stk = @stakeholder._toJSON!
-    for s in stk
-      delete s.'customer_type'
+#    stk = @stakeholder._toJSON!
+#    for s in stk
+#      delete s.'customer_type'
 
 
-    dispatch-dto = @dispatch.el._toJSON!
-      ..'customer' = @customer-model._id
-      ..'declaration' =
-        'third': @customer._third.el._toJSON!
-        'customer': customer-dto
-      ..'declarants' = @declarant._toJSON!
-      ..'stakeholders' = stk
+#    dispatch-dto = @dispatch.el._toJSON!
+#      ..'customer' = @customer-model._id
+#      ..'declaration' =
+#        'third': @customer._third.el._toJSON!
+#        'customer': customer-dto
+#      ..'declarants' = @declarant._toJSON!
+#      ..'stakeholders' = stk
 
-    # Save to IncomeModel.
-    @income-model._save dispatch-dto, do
-      _success: (dto) ~>
-#        @customer-head._show do
-#          _href:  "/declaration/pdf/#{@income-model\id}"
+#    # Save to IncomeModel.
+#    @income-model._save dispatch-dto, do
+#      _success: (dto) ~>
+##        @customer-head._show do
+##          _href:  "/declaration/pdf/#{@income-model\id}"
 
-        @_desktop.notifier.notify do
-          _message: 'Guardado'
-          _type: @_desktop.notifier.kSuccess
-      _error: ~>
-        @_desktop.notifier.notify do
-          _message: 'Error: 869171b8-3f8e-11e4-a98f-88252caeb7e8'
-          _type: @_desktop.notifier.kDanger
+#        @_desktop.notifier.notify do
+#          _message: 'Guardado'
+#          _type: @_desktop.notifier.kSuccess
+#      _error: ~>
+#        @_desktop.notifier.notify do
+#          _message: 'Error: 869171b8-3f8e-11e4-a98f-88252caeb7e8'
+#          _type: @_desktop.notifier.kDanger
 
   /**
    * Sync typeahead completion with panel overflow.
@@ -245,13 +240,33 @@ class Operation extends Module
       _panel-heading: panelgroup.PanelHeading
       _panel-body: DispatchBody
     @dispatch._header._get panelgroup.ControlTitle ._text = 'Despacho-Operacion'
-    @dispatch._body._json = @income-model._attributes
+    @dispatch._body._json = @income-model._attributes if @income-model._attributes?
 
-    @customer = pnl-group.new-panel do
-      _panel-heading: panel-heading.HeadingPDF
-      _panel-body: CustomerBody
-    @customer._header._get panelgroup.ControlTitle ._text = 'Declaración Jurada'
-    @customer._body._json = @_customer-dto
+    @declarant =  pnl-group.new-panel do
+      _panel-heading: panelgroup.PanelHeading
+      _panel-body: DeclarantBody
+    @declarant._header._get panelgroup.ControlTitle ._text = 'Declarantes'
+    @declarant._body._json = @income-model._attributes.'declarants'
+
+
+    @stakeholder =  pnl-group.new-panel do
+      _panel-heading: panelgroup.PanelHeading
+      _panel-body: StakeholderBody
+    @stakeholder._header._get panelgroup.ControlTitle ._text = 'Vinculado'
+    @stakeholder._body.set-type @dispatch._body._get-type!
+
+    @dispatch._body.on (gz.Css \code-regime), ~>
+      @stakeholder._body.set-type it
+
+
+
+#    @customer = pnl-group.new-panel do
+#      _panel-heading: panel-heading.HeadingPDF
+#      _panel-body: CustomerBody
+#    @customer._header._get panelgroup.ControlTitle ._text = 'Declaración Jurada'
+#    @customer._body._json = @_customer-dto
+
+
 
 
     @el._append pnl-group.render!.el
@@ -272,9 +287,6 @@ class Operation extends Module
 #    pnl-group.new-panel do
 #      _title: 'Vinculado'
 #      _element: (@stakeholder).render!.el
-
-#    @dispatch.on (gz.Css \code-regime), ~>
-#      @stakeholder.load-stakeholder it
 
 #    pnl-group.open-all!
 #    @el._append pnl-group.render!el

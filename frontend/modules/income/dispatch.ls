@@ -1,8 +1,5 @@
 /** @module modules */
 
-customer = require './customer'
-  Identification = ..Identification
-
 widget = App.widget.codename
   CodeNameField = ..CodeNameField
 
@@ -22,13 +19,29 @@ panelgroup = App.widget.panelgroup
 class DispatchBody extends panelgroup.FormBody
 
 
+  _json-setter: (_dto) ->
+    console.log '-------------------------'
+    console.log _dto.'regime'
+    console.log '-------------------------'
+    if _dto.'regime'?
+      @_display = _dto.'regime'.'name'
+    super _dto
+
+  _get-type: ->
+    console.log '-------------------------'
+    console.log @_display
+    console.log '-------------------------'
+    if @_display?
+      _k = App.lists.regime._display._index @_display
+      return App.lists.regime._sbs[k]
+
+
   /** @override */
   render: ->
     App.builder.Form._new @el, _FIELD_DISPATCH
       ..render!
       @_typeahead = .._elements.'regime'._view._typeahead
       .._free!
-
 
     @_typeahead.on-selected (_, _obj) ~>
       _display = _obj.'_display'
@@ -68,6 +81,8 @@ class DispatchBody extends panelgroup.FormBody
 
       * _name: 'description'
         _label: 'Descripcion mercancia'
+
+  _display: null
 
 /** @export */
 module.exports = DispatchBody
