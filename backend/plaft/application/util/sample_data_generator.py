@@ -16,7 +16,7 @@ from plaft.domain.model import (User, Dispatch, CodeName, Declaration,
                                 Operation, Officer, Employee)
 
 
-def create_autocomplate():
+def create_autocomplete():
     from collections import namedtuple
 
     DStakeholder = namedtuple('DStakeholder',
@@ -78,14 +78,7 @@ def create_dispatches(agency, datastore, customers, n=15):
     from string import digits, letters
 
     years = ['2014', '2015', '2016']
-    j = 5
     list_dispatches = []
-    init_codename = []
-    while j:
-        codename = CodeName(code=''.join(random.sample(digits, 3)),
-                            name=''.join(random.sample(letters, 7)))
-        init_codename.append(codename)
-        j -= 1
 
     while n:
         order = '%s-%s' % (random.choice(years),
@@ -93,8 +86,8 @@ def create_dispatches(agency, datastore, customers, n=15):
         customer = random.choice(customers)
         declaration = Declaration(customer=customer)
         declaration.store()
-        jurisdiction = random.choice(init_codename)
-        regime = random.choice(init_codename)
+        jurisdiction = random.choice(jurisdictions)
+        regime = random.choice(regimes)
         dispatch = Dispatch(order=order,
                             customer_key=customer.key,
                             declaration_key=declaration.key,
@@ -226,7 +219,101 @@ def create_sample_data():
         list_dispatches = create_dispatches(agency, datastore, customers)
         operations(agency, list_dispatches, datastore)
 
-    create_autocomplate()
+    create_autocomplete()
+
+
+# LIST
+
+regimes = [
+    CodeName(name='Importacion para el Consumo',
+             code='10'),
+    CodeName(name='Reimportacion en el mismo Estado',
+             code='36'),
+    CodeName(name='Exportacion Definitiva',
+             code='40'),
+    CodeName(name=('Exportacion Temporal para Reimportacion'
+                   'en el mismo Estado'),
+             code='51'),
+    CodeName(name='Exportacion Temporal para Perfeccionamiento Pasivo',
+             code='52'),
+    CodeName(name='Admision temporal para Perfeccionamiento Activo',
+             code='21'),
+    CodeName(name='Admision temporal para Reexportacion en el mismo Estado',
+             code='20'),
+    CodeName(name='Drawback',
+             code='41'),
+    CodeName(name='Reposicion de Mercancias con Franquicia Arancelaria',
+             code='41'),
+    CodeName(name='Deposito Aduanero',
+             code='70'),
+    CodeName(name='Reembarque',
+             code='89'),
+    CodeName(name='Transito Aduanero',
+             code='80'),
+    CodeName(name='Importacion Simplificada',
+             code='18'),
+    CodeName(name='Exportacion Simplificada',
+             code='48'),
+    CodeName(name='Material de Uso Aeronautico',
+             code='71'),
+    CodeName(name='Destino Especial de Tienda Libre (DUTY FREE)',
+             code='72'),
+    CodeName(name='Rancho de naves',
+             code=''),
+    CodeName(name='Material de Guerra',
+             code=''),
+    CodeName(name='Vehiculos para Turismo',
+             code=''),
+    CodeName(name='Material uso Aeronautico',
+             code=''),
+    CodeName(name='Ferias o Exposiciones Internacionales',
+             code='20')
+]
+
+
+raw_jurisdiction = (
+    ('A NIVEL NACIONAL', '983'),
+    ('AÉREA DEL CALLAO', '235'),
+    ('AEROPUERTO DE TACNA', '947'),
+    ('ALMACÉN SANTA ANITA', '974'),
+    ('AREQUIPA', '154'),
+    ('CETICOS - TACNA', '956'),
+    ('CHICLAYO', '055'),
+    ('CHIMBOTE', '091'),
+    ('COMPLEJO FRONTERIZO SANTA ROSA - TACNA', '929'),
+    ('CUSCO', '190'),
+    ('DEPENDENCIA FERROVIARIA TACNA', '884'),
+    ('DEPENDENCIA POSTAL DE AREQUIPA', '910'),
+    ('DEPENDENCIA POSTAL DE SALAVERRY', '965'),
+    ('DEPENDENCIA POSTAL TACNA', '893'),
+    ('DESAGUADERO', '262'),
+    ('ILO', '163'),
+    ('INTENDENCIA DE PREVENCIÓN Y CONTROL FRONTERIZO', '316'),
+    ('INTENDENCIA NACIONAL DE FISCALIZACIÓN ADUANERA (INFA)', '307'),
+    ('IQUITOS', '226'),
+    ('LA TINA', '299'),
+    ('LIMA METROPOLITANA', '992'),
+    ('MARÍTIMA DEL CALLAO', '118'),
+    ('MOLLENDO - MATARANI', '145'),
+    ('OFICINA POSTAL DE LINCE', '901'),
+    ('PAITA', '046'),
+    ('PISCO', '127'),
+    ('POSTAL DE LIMA', '244'),
+    ('PUCALLPA', '217'),
+    ('PUERTO MALDONADO', '280'),
+    ('PUNO', '181'),
+    ('SALAVERRY', '082'),
+    ('SEDE CENTRAL - CHUCUITO', '000'),
+    ('TACNA', '172'),
+    ('TALARA', '028'),
+    ('TARAPOTO', '271'),
+    ('TERMINAL TERRESTRE TACNA', '928'),
+    ('TUMBES', '019'),
+    ('VUCE ADUANAS', '848')
+)
+
+jurisdictions = tuple(CodeName(name=j[0], code=j[1])
+                      for j in raw_jurisdiction)
 
 
 # vim: et:ts=4:sw=4
