@@ -2,15 +2,18 @@
 
 Business = require './business'
 Person = require './person'
+Third = require './third'
 
 
-class Customer extends App.widget.panelgroup.JSONBody
+class DeclarationBody extends App.widget.panelgroup.JSONBody
 
   /**
    * @override
    * @protected
    */
-  _json-getter: -> @_customer._toJSON!
+  _json-getter: ->
+    'customer': @_customer._toJSON!
+    'third': @_third._json
 
   /**
    * Get customer data and build the form by customer type Business
@@ -19,8 +22,10 @@ class Customer extends App.widget.panelgroup.JSONBody
    * @override
    * @protected
    */
-  _json-setter: (_customer-dto) ->
+  _json-setter: (_declaration-dto) ->
     @el.html = null  # clean
+
+    _customer-dto = _declaration-dto.'customer'
 
     try
       _customer-class = __class-by _customer-dto
@@ -28,9 +33,15 @@ class Customer extends App.widget.panelgroup.JSONBody
       alert e.'message'
       return
 
+    # adding customer
     @_customer = new _customer-class
     @el._append @_customer.render!.el
     @_customer.el._fromJSON _customer-dto
+
+    # adding third
+    @_third = new Third
+    @el._append @_third.render!.el
+    @_third._json = _declaration-dto.'third'
 
   /**
    * Get customer class ({@code Business} or {@code Person}) by customer dto.\
@@ -39,17 +50,17 @@ class Customer extends App.widget.panelgroup.JSONBody
    * @private
    */
   __class-by = (_customer-dto) ->
-    return Business if _customer-dto?  # By default
+    return Business if not _customer-dto?  # By default
 
     # (-o-) TODO: Add to model a method to evaluate customer type.
     doc-type = _customer-dto.'document_type'
     if doc-type is 'ruc'
       Business
-    else if doc-type?  # not equal to 'ruc' but there is the data.
+    else if doc-type?  # not equal to 'ruc' but there is data.
       Person
     else  # check by number when type doesn't exists.
       doc-number = _customer-dto.'document_number'
-      if doc-number? and doc-number_constructor is String
+      if doc-number? and doc-number._constructor is String
         if doc-number._length is 11  # is RUC
           Business
         else  # is DNI, PA, CE, etc.
@@ -58,14 +69,20 @@ class Customer extends App.widget.panelgroup.JSONBody
         throw 'ERROR: 047bc8c2-f997-11e4-a5be-001d7d7379f5'
 
   /**
-   * Customer view
+   * Customer view.
+   * @type App.View
+   */
+  _customer: null
+
+  /**
+   * Third view.
    * @type App.View
    */
   _customer: null
 
 
 /** @export */
-modules.exports = Customer
+module.exports = DeclarationBody
 
 
 # vim: ts=2:sw=2:sts=2:et

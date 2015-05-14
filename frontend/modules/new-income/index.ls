@@ -2,8 +2,12 @@
 
 
 panelgroup = App.widget.panelgroup
+
+DeclarationBody = require './declaration'
 DeclarantBody = require '../income/declarant'
+
 Module = require '../../workspace/module'
+
 
 class Dispatch extends App.Model
 
@@ -118,12 +122,23 @@ class Income extends Module
 
     @_panels =  # To build dispatch DTO.
       _dispatch: foo  # TODO: new DispatchPanel
-      _declaration: foo  # TODO: new DeclarationPanel
+      _declaration: _panel-group.new-panel do
+                      _panel-heading: panelgroup.PanelHeading
+                      _panel-body: DeclarationBody
       _declarants: _panel-group.new-panel do
                      _panel-heading: panelgroup.PanelHeading
                      _panel-body: DeclarantBody
       _stakeholders: foo  # TODO: new StakeholdersPanel
 
+    c-title = panelgroup.ControlTitle
+    @_panels
+      .._declaration._header._get c-title ._text = 'Anexo 5'
+      .._declarants._header._get c-title ._text = 'Declarantes'
+
+    @_panels
+      .._declaration._body._json = _dispatch-dto.'declaration'
+
+    _panel-group.open-all!
     @el._append _panel-group.render!.el
 
   /** @override */
