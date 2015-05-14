@@ -43,7 +43,6 @@ class FormStakeholder extends panelgroup.FormBody
       .._free!
     @_person-type-html._selected-index = _next-type
     @_person-type-html.on-change ~>
-      console.log @
       @_render-by-type!
 
   /** @see render-stakeholder */

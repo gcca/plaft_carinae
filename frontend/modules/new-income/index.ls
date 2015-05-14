@@ -101,7 +101,7 @@ class Income extends Module
     _dispatch-dto =
       _declaration: @_panels._declaration._body._json
       _declarants: @_panels._declarants._body._json
-      _stakeholders: @_panels._stakeholders._body._json
+    _dispatch-dto <<<< @_panels._stakeholders._body._json
     _dispatch-dto <<<< @_panels._dispatch._body._json
 
   /**
@@ -155,7 +155,6 @@ class Income extends Module
            style='font-size:20pt'></i>
       </span>"
     @_desktop._search._focus 'DNI o número de orden'
-    super!
 
   ## Attributes
 

@@ -254,7 +254,6 @@ class exports.Customer extends panelgroup.FormBody
     _r
 
   _json-setter: (_dto) ->
-    console.log _dto
     _type = __get-customer-type _dto
 
     @el.html = ''
