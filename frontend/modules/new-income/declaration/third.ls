@@ -154,7 +154,7 @@ class Identification extends App.View
       if _dto.'identification_type'?
         if _dto.'identification_type' is \Si
           @radio-yes._checked = on
-          @load-yes!
+          @load-yes _dto
         else
           @radio-no._checked = on
 
@@ -164,8 +164,8 @@ class Identification extends App.View
    *
    * @private
    */
-  load-yes: ~>
-    @third = new Third third: @th
+  load-yes: (_dto) ~>
+    @third = new Third third: _dto
     @el._append @third.render!el
 
   /**
@@ -175,9 +175,6 @@ class Identification extends App.View
   load-no: ~>
     if @third?
       @third.no-change!
-
-  /** @override */
-  initialize: ({@th}={}) ->  super!
 
   /** @override */
   render: ->
@@ -206,20 +203,9 @@ class Identification extends App.View
       .._append @radio-no
       .._append App.dom.create-text-node ' No'
 
-    if @th?
-      if @th.'identification_type'?
-        if @th.'identification_type' is \Si
-          @radio-yes._checked = on
-          @load-yes!
-        else
-          @radio-no._checked = on
-
-    @el._fromJSON @th
-
     super!
 
   /** @private */ third: null
-  /** @private */ th: null
 
 
 /** @export */
