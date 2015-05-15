@@ -237,51 +237,31 @@ def create_sample_data():
 
 # LIST
 
-regimes = [
-    CodeName(name='Importacion para el Consumo',
-             code='10'),
-    CodeName(name='Reimportacion en el mismo Estado',
-             code='36'),
-    CodeName(name='Exportacion Definitiva',
-             code='40'),
-    CodeName(name=('Exportacion Temporal para Reimportacion'
-                   'en el mismo Estado'),
-             code='51'),
-    CodeName(name='Exportacion Temporal para Perfeccionamiento Pasivo',
-             code='52'),
-    CodeName(name='Admision temporal para Perfeccionamiento Activo',
-             code='21'),
-    CodeName(name='Admision temporal para Reexportacion en el mismo Estado',
-             code='20'),
-    CodeName(name='Drawback',
-             code='41'),
-    CodeName(name='Reposicion de Mercancias con Franquicia Arancelaria',
-             code='41'),
-    CodeName(name='Deposito Aduanero',
-             code='70'),
-    CodeName(name='Reembarque',
-             code='89'),
-    CodeName(name='Transito Aduanero',
-             code='80'),
-    CodeName(name='Importacion Simplificada',
-             code='18'),
-    CodeName(name='Exportacion Simplificada',
-             code='48'),
-    CodeName(name='Material de Uso Aeronautico',
-             code='71'),
-    CodeName(name='Destino Especial de Tienda Libre (DUTY FREE)',
-             code='72'),
-    CodeName(name='Rancho de naves',
-             code=''),
-    CodeName(name='Material de Guerra',
-             code=''),
-    CodeName(name='Vehiculos para Turismo',
-             code=''),
-    CodeName(name='Material uso Aeronautico',
-             code=''),
-    CodeName(name='Ferias o Exposiciones Internacionales',
-             code='20')
-]
+raw_regimes = (
+    ('Importacion para el Consumo', '10'),
+    ('Reimportacion en el mismo Estado', '36'),
+    ('Exportacion Definitiva', '40'),
+    ('Exportacion Temporal para Reimportacion en el mismo Estado', '51'),
+    ('Exportacion Temporal para Perfeccionamiento Pasivo', '52'),
+    ('Admision temporal para Perfeccionamiento Activo', '21'),
+    ('Admision temporal para Reexportacion en el mismo Estado', '20'),
+    ('Drawback', '41'),
+    ('Reposicion de Mercancias con Franquicia Arancelaria', '41'),
+    ('Deposito Aduanero', '70'),
+    ('Reembarque', '89'),
+    ('Transito Aduanero', '80'),
+    ('Importacion Simplificada', '18'),
+    ('Exportacion Simplificada', '48'),
+    ('Material de Uso Aeronautico', '71'),
+    ('Destino Especial de Tienda Libre (DUTY FREE)', '72'),
+    ('Rancho de naves', ''),
+    ('Material de Guerra', ''),
+    ('Vehiculos para Turismo', ''),
+    ('Material uso Aeronautico', ''),
+    ('Ferias o Exposiciones Internacionales', '20')
+)
+
+regimes = tuple(CodeName(name=j[0], code=j[1]) for j in raw_regimes)
 
 
 raw_jurisdiction = (
