@@ -19,12 +19,17 @@ class Business extends Customer
   _tagName: \form
 
   /** @override */
-  _toJSON: ->
+  _json-getter: ->
     r = @el._toJSON!
     shareholders = @shareholders-view._toJSON!
     if shareholders._length
       r.'shareholders' = shareholders
     r
+
+  _json-setter: (_dto) ->
+    super _dto
+    if _dto.'shareholders'?
+      @shareholders-view.load-from _dto.'shareholders'
 
   /** @private */
   on-is_obligated-change: ~>

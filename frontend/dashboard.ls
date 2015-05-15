@@ -8,13 +8,12 @@ App = require './app'
 
 App.MODULES =
   Welcome       = require './modules/welcome'
-  ##Income        = r equire './modules/income'
-  Income     = require './modules/new-income'
-  ## Numeration    = r equire './modules/numeration'
-  ## Operation     = r equire './modules/operation'
-  ## Anexo6        = r equire './modules/anexo-seis'
-  ## OperationList = r equire './modules/operation-list'
-  ## Alerts        = r equire './modules/alerts'
+  Income        = require './modules/new-income'
+  Numeration    = require './modules/numeration'
+  Operation     = require './modules/operation'
+  Anexo6        = require './modules/anexo-seis'
+  OperationList = require './modules/operation-list'
+  Alerts        = require './modules/alerts'
 
 Workspace = require './workspace'
 Settings = require './settings'
@@ -144,24 +143,6 @@ class Dashboard extends App.View
 
 
 (new Dashboard).render!
-
-# document.query('.glyphicon-cloud').click()
-# document.query('input').value = '12345678989'
-# document.query('select').value = 'order'
-# document.query('.glyphicon-search').parentNode.click()
-
-# 2 income
-#$ ".#{gz.Css \glyphicon-file}" .parent!.parent!.0.dispatchEvent(
-#  new MouseEvent(\click))
-#$ "##{gz.Css \search}"
-#  #..find 'input' .val 'mlml'
-#  ..find 'input' .val '2014-601'
-#  #..find 'input' .val '12345678989'
-#  ..find 'button' .click!
-
-
-# 3 settings
-#$ "##{gz.Css \id-settings-users}" .0.dispatchEvent (new MouseEvent \click)
 
 
 # vim: ts=2:sw=2:sts=2:et

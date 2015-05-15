@@ -7,6 +7,7 @@ panelgroup = App.widget.panelgroup
 
 
 class Customer extends App.View
+  App.mixin.JSONAccessor ::
 
   /** @override */
   _tagName: \form
@@ -16,7 +17,9 @@ class Customer extends App.View
    * @return Object
    * @protected
    */
-  _toJSON: -> @el._toJSON!
+  _json-getter: -> @el._toJSON!
+
+  _json-setter: (_dto) -> @el._fromJSON _dto
 
   /**
    * See Business and Person initialize and their events.

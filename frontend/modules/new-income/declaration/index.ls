@@ -12,7 +12,7 @@ class DeclarationBody extends App.widget.panelgroup.JSONBody
    * @protected
    */
   _json-getter: ->
-    'customer': @_customer._toJSON!
+    'customer': @_customer._json
     'third': @_third._json
 
   /**
@@ -36,7 +36,7 @@ class DeclarationBody extends App.widget.panelgroup.JSONBody
     # adding customer
     @_customer = new _customer-class
     @el._append @_customer.render!.el
-    @_customer.el._fromJSON _customer-dto
+    @_customer._json = _customer-dto
 
     # adding third
     @_third = new Third
