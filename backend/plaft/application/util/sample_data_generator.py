@@ -109,7 +109,11 @@ def create_dispatches(agency, datastore, customers, n=20):
                             declaration_key=declaration.key,
                             customs_agency_key=agency.key,
                             jurisdiction=jurisdiction,
-                            regime=regime)
+                            regime=regime,
+                            sender_stakeholders=[
+                                random.choice(stakeholders)],
+                            reciever_stakeholders=[
+                                random.choice(stakeholders)])
         dispatch.store()
         datastore.pending_key.append(dispatch.key)
         datastore.store()
@@ -159,6 +163,8 @@ def operations(agency, list_dispatches, datastore):
 
 
 def create_sample_data():
+    create_stakeholders()
+
     from collections import namedtuple
 
     DCustomer = namedtuple('DCustomer',
@@ -227,7 +233,6 @@ def create_sample_data():
         operations(agency, list_dispatches, datastore)
 
     create_autocomplete()  # TODO: Remove when update domain model
-    create_stakeholders()
 
 
 # LIST
@@ -369,9 +374,9 @@ raw_stakeholders = (
     ('ruc', 'Spacely Space Sprockets', 'The Jetsons')
 )
 
-stakeholders = (Stakeholder(document_type=j[0],
-                            name=j[1],
-                            address=j[2])
-                for j in raw_stakeholders)
+stakeholders = tuple(Stakeholder(document_type=j[0],
+                                 name=j[1],
+                                 address=j[2])
+                     for j in raw_stakeholders)
 
 # vim: et:ts=4:sw=4
