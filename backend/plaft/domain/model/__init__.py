@@ -235,6 +235,9 @@ class Dispatch(dom.Model):
     customer_key = dom.Key(Customer)
     declaration_key = dom.Key(Declaration)
     declarants = dom.Structured(Declarant, repeated=True)
+    sender_stakeholders = dom.Structured(Stakeholder, repeated=True)
+    reciever_stakeholders = dom.Structured(Stakeholder, repeated=True)
+
     stakeholders = dom.Structured(Stakeholder, repeated=True)
 
     # Numeration
