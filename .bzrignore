@@ -1,4 +1,4 @@
-doc/build
+build
 renaming_map.js
 backend/static
 *.js
