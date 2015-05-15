@@ -8,7 +8,8 @@ App = require './app'
 
 App.MODULES =
   Welcome       = require './modules/welcome'
-  Income        = require './modules/income'
+  ##Income        = r equire './modules/income'
+  Income     = require './modules/new-income'
   ## Numeration    = r equire './modules/numeration'
   ## Operation     = r equire './modules/operation'
   ## Anexo6        = r equire './modules/anexo-seis'

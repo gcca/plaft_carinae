@@ -4,7 +4,9 @@
 panelgroup = App.widget.panelgroup
 
 DeclarationBody = require './declaration'
-DeclarantBody = require '../income/declarant'
+DeclarantBody = require './declarant'
+DispatchBody = require './dispatch'
+StakeholderBody = require './stakeholder'
 
 Module = require '../../workspace/module'
 
@@ -78,9 +80,6 @@ class Income extends Module
    * @protected
    */
   on-save: ->
-    # TODO: Remove this.
-    console.log @panels2dispatchDTO!
-    return
     @model._save @panels2dispatchDTO!, do
       _success: ~>
         @_desktop.notifier.notify do
@@ -99,8 +98,8 @@ class Income extends Module
    */
   panels2dispatchDTO: ->
     _dispatch-dto =
-      _declaration: @_panels._declaration._body._json
-      _declarants: @_panels._declarants._body._json
+      declaration: @_panels._declaration._body._json
+      declarants: @_panels._declarants._body._json
     _dispatch-dto <<<< @_panels._stakeholders._body._json
     _dispatch-dto <<<< @_panels._dispatch._body._json
 
@@ -117,27 +116,40 @@ class Income extends Module
 
     _panel-group = new panelgroup.PanelGroup
 
-    foo =  # TODO: Remove when @_panels updated.
-      _body:
-        _json: new Object
 
     @_panels =  # To build dispatch DTO.
-      _dispatch: foo  # TODO: new DispatchPanel
+      _dispatch:  _panel-group.new-panel do
+                    _panel-heading: panelgroup.PanelHeading
+                    _panel-body: DispatchBody
       _declaration: _panel-group.new-panel do
                       _panel-heading: panelgroup.PanelHeading
                       _panel-body: DeclarationBody
       _declarants: _panel-group.new-panel do
                      _panel-heading: panelgroup.PanelHeading
                      _panel-body: DeclarantBody
-      _stakeholders: foo  # TODO: new StakeholdersPanel
+      _stakeholders:_panel-group.new-panel do
+                      _panel-heading: panelgroup.PanelHeading
+                      _panel-body: StakeholderBody
 
     c-title = panelgroup.ControlTitle
     @_panels
+      .._dispatch._header._get c-title ._text = 'Despacho'
       .._declaration._header._get c-title ._text = 'Anexo 5'
       .._declarants._header._get c-title ._text = 'Declarantes'
+      .._stakeholders._header._get c-title ._text = 'Vinculados'
+
+    @_panels
+      .._dispatch._body._json = _dispatch-dto
+      .._stakeholders._body.set-type .._dispatch._body._get-type!
+      .._dispatch._body.on (gz.Css \code-regime), ~>
+        .._stakeholders._body.set-type it
 
     @_panels
       .._declaration._body._json = _dispatch-dto.'declaration'
+      .._declarants._body._json = _dispatch-dto.'declarants'
+      .._stakeholders._body._json =
+        'sender_stakeholders': _dispatch-dto.'sender_stakeholders'
+        'reciever_stakeholders': _dispatch-dto.'reciever_stakeholders'
 
     _panel-group.open-all!
     @el._append _panel-group.render!.el

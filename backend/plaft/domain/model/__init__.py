@@ -201,7 +201,6 @@ class Stakeholder(dom.Model):
     nationality = dom.String()
     activity = dom.String()
     ciiu = dom.Structured(CodeName)  # (-o-) str
-    position = dom.String()
     address = dom.String()
     employer = dom.String()
     average_monthly_income = dom.String()
@@ -209,6 +208,8 @@ class Stakeholder(dom.Model):
     ubigeo = dom.Structured(CodeName)  # (-o-) str
     phone = dom.String()
     represents_to = dom.String()
+    condition = dom.String()  # residencia
+    linked_type = dom.String()  # tipo de vinculación.
 
     slug = dom.Computed(lambda s: s.name
                         if 'ruc' == s.document_type

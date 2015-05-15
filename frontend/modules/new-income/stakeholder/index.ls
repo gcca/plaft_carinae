@@ -19,31 +19,41 @@ class StakeholderGroup extends panelgroup.JSONBody
     'reciever_stakeholders': @_pgStakeholder2._toJSON!
 
   _json-setter: (_dto) ->
-    for d in _dto.'sender_stakeholders'
-      _sender = @_pgStakeholder1.new-panel do
-        _panel-head = stakeholder.StakeholderHeading
-        _panel-body = CustomerBody
-      _sender._body._json = d
+    sender-dto= _dto.'sender_stakeholders'
+    reciever-dto =_dto.'reciever_stakeholders'
+    if sender-dto?
+      for sender in sender-dto
+        @_pgStakeholder1.new-panel @_sender.'body'
+          .._header._get panelgroup.ControlTitle ._text = @_sender.'title'
+          .._body._json = sender
 
-    for d in _dto.'reciever_stakeholders'
-      _reciever = @_pgStakeholder1.new-panel do
-        _panel-head = stakeholder.StakeholderHeading
-        _panel-body = LinkedBody
-      _reciever._body._json = d
+    if reciever-dto?
+      for reciever in reciever-dto
+        @_pgStakeholder2.new-panel  @_reciever.'body'
+          .._header._get panelgroup.ControlTitle ._text = @_reciever.'title'
+          .._body._json = reciever
 
 
   set-type: (_type) ->
     @render!
     if _type?
       if _type  # Entrada de mercaderia
-        @_pgStakeholder1.set-panel 'Importador', CustomerBody
-        @_pgStakeholder2.set-panel 'Destinatario', LinkedBody
-
+        @_sender =
+          'title': 'Importador'
+          'body': CustomerBody
+        @_reciever =
+          'title': 'Destinatario'
+          'body': LinkedBody
       else  # Salida de mercaderia
-        @_pgStakeholder1.set-panel 'Proveedor', LinkedBody
-        @_pgStakeholder2.set-panel 'Exportador', CustomerBody
-    @_pgStakeholder1.new-panel!
-    @_pgStakeholder2.new-panel!
+        @_sender =
+          'title': 'Proveedor'
+          'body': LinkedBody
+        @_reciever =
+          'title': 'Exportador'
+          'body': CustomerBody
+
+      @_pgStakeholder1.set-panel @_sender.'title', @_sender.'body'
+      @_pgStakeholder2.set-panel @_reciever.'title', @_reciever.'body'
 
   render: ->
     @el.html = null

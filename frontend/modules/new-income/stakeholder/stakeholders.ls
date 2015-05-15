@@ -33,17 +33,11 @@ class Stakeholders extends panelgroup.PanelGroup
   /**
    * Mostrar un panel.
    */
-  new-panel: ->
+  new-panel: (_panel-body=@_Body, _panel-heading=StakeholderHeading)->
     if @_Body?
-      _stakeholder = super do
-        _panel-heading: StakeholderHeading
-        _panel-body: @_Body
-
-      _stakeholder._header._get panelgroup.ControlTitle ._text = @_title
-      _stakeholder._header._get panelgroup.ControlSearch ._apply-attr 'stakeholder',
-                                                                  window.'plaft'.'stakeholder'
-    else
-      alert 'Debe escoger si es Salida o Entrada de Mercaderia.'
+      _r = super do
+        _panel-heading: _panel-heading
+        _panel-body:_panel-body
 
 
   /** @override */
@@ -57,7 +51,13 @@ class Stakeholders extends panelgroup.PanelGroup
                 </button>"
     @_container = @el._first
     @el._last.on-click ~>
-      @new-panel!
+      if @_Body?
+        @new-panel @_Body
+          .._header._get panelgroup.ControlTitle ._text = @_title
+          .._header._get panelgroup.ControlSearch ._apply-attr 'stakeholder',
+                                                                window.'plaft'.'stakeholder'
+      else
+        alert 'Debe escoger si es Salida o Entrada de Mercaderia.'
 
     super!
 

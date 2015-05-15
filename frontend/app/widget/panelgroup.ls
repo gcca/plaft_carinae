@@ -81,7 +81,7 @@ class ControlSearch extends App.View
   load-dto: (_heading) ->
     App.ajax._get ("/api/#{@_url}/" + @_value), null, do
       _success: (_dto) ~>
-        _heading._panel.trigger (gz.Css \button), _dto # change name trigger
+        _heading._panel.trigger (gz.Css \load-body), _dto
 
   _search-dto: (_, _heading) ~>
     @load-dto _heading

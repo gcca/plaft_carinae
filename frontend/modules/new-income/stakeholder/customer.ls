@@ -30,6 +30,8 @@ class FormCustomer extends BodyStakeholder
 
     @$el._append "<div></div>"
     @render-skateholder @_FIELD_PERSON, @@Type.kPerson
+    @_panel.on (gz.Css \load-body), (_dto) ~>
+      @_json = _dto
     ret
 
   /** Local variable for settings. */
@@ -38,19 +40,19 @@ class FormCustomer extends BodyStakeholder
 
   /** FIELD */
   _FIELD_HEAD =
-    * _name: '' # TODO
+    * _name: 'linked_type'
       _label: 'Tipo de vinculación'
       _type: FieldType.kComboBox
       _options: <[Exportador]>
 
-    * _name: 'customer_type' # TODO
+    * _name: 'customer_type'
       _label: 'Tipo Persona'
       _type: FieldType.kComboBox
       _options:
         'Natural'
         'Jurídica'
 
-    * _name: '' # TODO
+    * _name: 'represents_to'
       _label: 'La persona en cuyo nombre'
       _tip: 'La persona en cuyo nombre se realiza la operación'
       _type: FieldType.kComboBox
@@ -60,7 +62,7 @@ class FormCustomer extends BodyStakeholder
         'Mandatario'
         'Él mismo'
 
-    * _name: '' # TODO
+    * _name: 'condition'
       _label: 'Condición de residencia'
       _tip: "Condición de residencia de la persona en cuyo nombre se realiza
           \ la operación."
@@ -71,37 +73,37 @@ class FormCustomer extends BodyStakeholder
 
   /** FIELD */
   _FIELD_PERSON :
-    * _name: '' # TODO
+    * _name: 'document_number'
       _label: 'Tipo de documento de identidad'
       _type: FieldType.kComboBox
       _options: DOCUMENT_TYPE_PAIR
 
-    * _name: '' # TODO
+    * _name: 'document_type'
       _label: 'Número de documento de identidad'
 
-    * _name: '' # TODO
+    * _name: 'issuance_country'
       _label: 'País de emisión del documento'
 
-    * _name: 'father_name' # TODO
+    * _name: 'father_name'
       _label: 'Apellido paterno'
 
-    * _name: 'mother_name' # TODO
+    * _name: 'mother_name'
       _label: 'Apellido materno'
 
-    * _name: 'name' # TODO
+    * _name: 'name'
       _label: 'Nombres'
 
-    * _name: '' # TODO
+    * _name: 'nationality'
       _label: 'Nacionalidad'
 
-    * _name: '' # TODO
+    * _name: 'position'
       _label: 'Ocupación, oficio o profesión'
       _type: FieldType.kView
       _options : new InputName do
                    _name : App.lists.activity._display
-                   _field : 'pep_position'
+                   _field : 'position'
 
-    * _name: '' # TODO
+    * _name: 'ciiu'
       _label: 'Código CIIU de ocupacion'
       _type: FieldType.kView
       _options : new CodeNameField do
@@ -109,46 +111,43 @@ class FormCustomer extends BodyStakeholder
                    _name : App.lists.ciiu._display
                    _field : 'ciiu'
 
-    * _name: '' # TODO
+    * _name: 'employer'
       _label: 'Cargo (si aplica)'
       _type: FieldType.kView
       _options : new InputName do
                    _name : App.lists.office._display
-                   _field : 'pep_position'
+                   _field : 'employer'
 
-    * _name: '' # TODO
+    * _name: 'address'
       _label: 'Nombre y N° de la vía dirección'
 
-    * _name: '' # TODO
-      _label: 'Teléfono de la persona operación'
-
-    * _name: '' # TODO
+    * _name: 'phone'
       _label: 'Teléfono de la persona operación'
 
   /** FIELD */
   _FIELD_BUSINESS :
-    * _name: '' # TODO
+    * _name: 'document_number'
       _label: 'Numero de RUC'
       _tip: "Número de RUC de la persona en cuyo nombre se realiza
            \ la operación."
 
-    * _name: 'name' # TODO
+    * _name: 'name'
       _label: 'Razón social'
       _tip: "Razón social de la person en cuyo nombre se realiza
            \ la operación."
 
-    * _name: '' # TODO
+    * _name: 'activity'
       _label: 'Actividad Ecónomica'
       _tip: "Actividad ecónomica de la persona en cuyo nombre se realiza
            \ la operación."
 
-    * _name: '' # TODO
+    * _name: 'address'
       _label: 'Nombre y N° via direccion'
 
-    * _name: '' # TODO
+    * _name: 'phone'
       _label: 'Télefono de la persona'
 
-    * _name: '' # TODO
+    * _name: 'document_type'
       _type: FieldType.kHidden
       _options: <[ruc]>
 

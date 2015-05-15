@@ -41,8 +41,8 @@ urls = [
     uri('declarant', handlers.Declarant),
 
     # Handler methods
-    ('/api/income/create', handlers.create),
-    ('/api/income/create/(\d+)', handlers.update),
+    ('/api/income', handlers.create),
+    ('/api/income/(\d+)', handlers.update),
     ('/api/dispatch/(\d+)/numerate', handlers.numerate),
     ('/api/dispatch/(\d+)/accept', handlers.accept_dispatch),
     ('/api/dispatch/(\d+)/anexo_seis', handlers.anexo_seis),

@@ -28,6 +28,8 @@ class FormLinked extends BodyStakeholder
       .._free!
     @$el._append "<div></div>"
     @render-skateholder @_FIELD_PERSON, @@Type.kPerson
+    @_panel.on (gz.Css \load-body), (_dto) ~>
+      @_json = _dto
     ret
 
   /** Local variable for settings. */
@@ -36,12 +38,12 @@ class FormLinked extends BodyStakeholder
 
   /** FIELD */
   _FIELD_HEAD =
-    * _name: '' # TODO
+    * _name: 'linked_type'
       _label: 'Tipo de vinculación'
       _type: FieldType.kComboBox
       _options: <[Proveedor]>
 
-    * _name: 'customer_type' # TODO
+    * _name: 'customer_type'
       _label: 'Tipo Persona'
       _type: FieldType.kComboBox
       _options:
@@ -50,40 +52,40 @@ class FormLinked extends BodyStakeholder
 
   /** FIELD */
   _FIELD_PERSON :
-    * _name: 'father_name' # TODO
+    * _name: 'father_name'
       _label: 'Apellido paterno'
 
-    * _name: 'mother_name' # TODO
+    * _name: 'mother_name'
       _label: 'Apellido materno'
 
-    * _name: 'name' # TODO
+    * _name: 'name'
       _label: 'Nombre completo'
 
-    * _name: '' # TODO
+    * _name: 'country'
       _label: 'País de emisión del documento'
 
-    * _name: '' # TODO
+    * _name: 'address'
       _label: 'Nombre y N° de la vía dirección'
 
-    * _name: '' # TODO
+    * _name: 'phone'
       _label: 'Teléfono de la persona'
 
-    * _name: '' # TODO
+    * _name: 'document_type'
       _type: FieldType.kHidden
       _options: <[dni]>
 
   /** FIELD */
   _FIELD_BUSINESS :
-    * _name: 'name' # TODO
+    * _name: 'name'
       _label: 'Razon social'
 
-    * _name: '' # TODO
+    * _name: 'social_object'
       _label: 'Objeto social'
 
-    * _name: '' # TODO
+    * _name: 'address'
       _label: 'Nombre y N° via direccion'
 
-    * _name: '' # TODO
+    * _name: 'phone'
       _label: 'Teléfono de la persona en cuyo nombre'
 
     * _name: 'document_type'

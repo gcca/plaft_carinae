@@ -56,10 +56,10 @@ class Person extends Customer
     * _name: 'name'
       _label: 'a) Nombres'
 
-    * _name: 'father-name'
+    * _name: 'father_name'
       _label: 'Apellido Paterno'
 
-    * _name: 'mother-name'
+    * _name: 'mother_name'
       _label: 'Apellido Materno'
 
     * _name: 'document_type'

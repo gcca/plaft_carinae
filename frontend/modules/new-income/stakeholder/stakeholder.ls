@@ -30,6 +30,11 @@ class FormStakeholder extends panelgroup.FormBody
       @render-skateholder FIELD, TYPE
     super _dto
 
+  _json-getter: ->
+    _dto = super!
+    delete! _dto.'customer_type'
+    _dto
+
   /**
    * @param {Array.<FieldOptions>} _fields
    * @param {Integer} _next-type
