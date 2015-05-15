@@ -16,6 +16,32 @@ from plaft.domain.model import (User, Dispatch, CodeName, Declaration,
                                 Operation, Officer, Employee)
 
 
+# Utils
+
+TYPE2NUMBER = {
+    'ruc': 11,
+    'dni': 8
+}
+
+DOCNUMS = ('0', '1', '2', '3', '4',
+           '5', '6', '7', '8', '9',
+           '0', '1', '2', '3', '4',
+           '5', '6', '7', '8', '9')
+
+def pick_document_number_by(document_type):
+    return ''.join(random.sample(DOCNUMS, TYPE2NUMBER[document_type]))
+
+
+# Creations
+
+def create_stakeholders():
+    for stakeholder in stakeholders:
+        stakeholder.document_number = pick_document_number_by(
+            stakeholder.document_type)
+
+        stakeholder.store()
+
+
 def create_autocomplete():
     from collections import namedtuple
 
@@ -37,23 +63,13 @@ def create_autocomplete():
                      'dni'),
     ]
 
-    type2number = {
-        'ruc': 11,
-        'dni': 8
-    }
-
-    type2customer = {
-        'ruc': 'Jurídica',
-        'dni': 'Natural'
-    }
+    # type2customer = {
+    #     'ruc': 'Jurídica',
+    #     'dni': 'Natural'
+    # }
 
     for data in init_customers:
-        document_number = ''.join(
-            random.sample(['0', '1', '2', '3', '4',
-                           '5', '6', '7', '8', '9',
-                           '0', '1', '2', '3', '4',
-                           '5', '6', '7', '8', '9'],
-                          type2number[data.document_type]))
+        document_number = pick_document_number_by(data.document_type)
 
         stakeholder = Stakeholder(name=data.name,
                                   document_type=data.document_type,
@@ -74,7 +90,7 @@ def create_employees(agency, j=7):
     agency.store()
 
 
-def create_dispatches(agency, datastore, customers, n=15):
+def create_dispatches(agency, datastore, customers, n=20):
     from string import digits, letters
 
     years = ['2014', '2015', '2016']
@@ -162,19 +178,10 @@ def create_sample_data():
                   'dni'),
     ]
 
-    type2number = {
-        'ruc': 11,
-        'dni': 8
-    }
-
     customers = []
     for data in init_customers:
-        document_number = ''.join(
-            random.sample(['0', '1', '2', '3', '4',
-                           '5', '6', '7', '8', '9',
-                           '0', '1', '2', '3', '4',
-                           '5', '6', '7', '8', '9'],
-                          type2number[data.document_type]))
+        document_number = pick_document_number_by(data.document_type)
+
         customer = Customer(name=data.name,
                             document_type=data.document_type,
                             document_number=document_number)
@@ -219,7 +226,8 @@ def create_sample_data():
         list_dispatches = create_dispatches(agency, datastore, customers)
         operations(agency, list_dispatches, datastore)
 
-    create_autocomplete()
+    create_autocomplete()  # TODO: Remove when update domain model
+    create_stakeholders()
 
 
 # LIST
@@ -315,5 +323,55 @@ raw_jurisdiction = (
 jurisdictions = tuple(CodeName(name=j[0], code=j[1])
                       for j in raw_jurisdiction)
 
+
+raw_stakeholders = (
+    # (document_type, name, address)
+    ('ruc', 'LexCorp', 'DC Comics'),
+    ('ruc', 'Primatech', 'Heroes'),
+    ('ruc', 'Blue Sun', 'Firefly and Serenity'),
+    ('ruc', 'Merrick Biotech', 'The Island'),
+    ('ruc', 'Fatboy Industries', 'The Middleman'),
+    ('ruc', 'Buy n Large Corporation', 'WALL•E'),
+    ('ruc', 'Tyrell Corporation', 'Blade Runner'),
+    ('ruc', 'Veidt Industries', 'Watchmen'),
+    ('ruc', 'Weyland-Yutani', 'Alien franchise'),
+    ('ruc', 'Cyberdyne Systems Corporation', 'Terminator'),
+    ('ruc', 'Yoyodyne', 'The Crying of Lot 49 and V. by Thomas Pynchon'),
+    ('ruc', 'Earth Protectors', 'Up, Up, and Away, 2000'),
+    ('ruc', 'Omni Consumer Products', 'Robocop'),
+    ('ruc', 'Soylent Corporation', 'Soylent Green'),
+    ('ruc', 'GeneCo', 'Repo! The Genetic Opera'),
+    # block 2
+    ('ruc', 'CHOAM', 'Dune'),
+    ('ruc', 'Acme Corp.', 'Looney Tunes'),
+    ('ruc', 'Sirius Cybernetics Corp.', 'Hitchhiker’s Guide'),
+    ('ruc', 'MomCorp', 'Futurama'),
+    ('ruc', 'Rich Industries', 'Richie Rich'),
+    ('ruc', 'Soylent Corp.', 'Soylent Green'),
+    ('ruc', 'Very Big Corp. of America', 'Monty Python'),
+    ('ruc', 'Frobozz Magic Co.', 'Zork'),
+    ('ruc', 'Warbucks Industries', 'Lil’ Orphan Annie'),
+    ('ruc', 'Tyrell Corp.', 'Bladerunner'),
+    ('ruc', 'Wayne Enterprises', 'Batman'),
+    ('ruc', 'Virtucon', 'Austin Powers'),
+    ('ruc', 'Globex', 'The Simpsons'),
+    ('ruc', 'Umbrella Corp.', 'Resident Evil'),
+    ('ruc', 'Wonka Industries', 'Charlie... Choc. Factory'),
+    ('ruc', 'Stark Industries', 'Iron Man'),
+    ('ruc', 'Clampett Oil', 'Beverly Hillbillies'),
+    ('ruc', 'Oceanic Airlines', 'Lost'),
+    ('ruc', 'Yoyodyne Propulsion Sys.', 'Crying of Lot 49'),
+    ('ruc', 'Cyberdyne Systems Corp.', 'Terminator'),
+    ('ruc', 'd’Anconia Copper', 'Atlas Shrugged'),
+    ('ruc', 'Gringotts', 'Harry Potter'),
+    ('ruc', 'Oscorp', 'Spider-Man'),
+    ('ruc', 'Nakatomi Trading Corp.', 'Die-Hard'),
+    ('ruc', 'Spacely Space Sprockets', 'The Jetsons')
+)
+
+stakeholders = (Stakeholder(document_type=j[0],
+                            name=j[1],
+                            address=j[2])
+                for j in raw_stakeholders)
 
 # vim: et:ts=4:sw=4
