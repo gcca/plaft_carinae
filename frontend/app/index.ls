@@ -74,7 +74,7 @@ NewMixin =
   pool: null
 
 FreeMixin =
-  _free: !-> @_remove!; @_constructor.pool.free @
+  _free: !-> @'undelegateEvents'! ; @_remove!; @_constructor.pool.free @
 
 PoolMixin =
   _free: !-> @_constructor.pool.free @

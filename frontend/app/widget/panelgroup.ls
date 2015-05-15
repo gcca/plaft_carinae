@@ -149,7 +149,7 @@ class PanelHeading extends App.View
   /** @private */ _container: null
   /** @private */ _title: null
   /** @private */ _panel: null
-  /** @private */ _controls: [ControlTitle]
+  /** @protected */ _controls: [ControlTitle]
   /** @private */ _control: null
   /** @private */ _collapse-id: null
 

@@ -61,10 +61,10 @@ class JSONEncoder(json.JSONEncoder):
         """Serialize ``obj`` to a JSON formatted ``str``."""
         return unicode(json.dumps(obj,
                                   cls=cls,
-                                  # separators=(',', ':'),
-                                  sort_keys=True,
-                                  indent=4,
-                                  separators=(',', ': '),
+                                  separators=(',', ':'),
+                                  # sort_keys=True,
+                                  # indent=4,
+                                  # separators=(',', ': '),
                                   check_circular=False)).decode('utf-8')
 
     @classmethod
@@ -281,9 +281,8 @@ class User(Model):
                                    password=password,
                                    **kwargs)
 
-    @property
-    def dict(self):
-        d = super(User, self).dict
+    def to_dict(self):
+        d = super(User, self).to_dict()
         del d['password']
         return d
 
