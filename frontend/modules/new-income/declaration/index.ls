@@ -1,11 +1,51 @@
 /** @module modules.income */
 
+panelgroup = App.widget.panelgroup
+
 Business = require './business'
 Person = require './person'
 Third = require './third'
 
 
-class DeclarationBody extends App.widget.panelgroup.JSONBody
+# HEADING
+
+class ControlPDF extends App.View
+
+  @@__hash__ = 'pdf'
+
+  _tagName: \span
+
+  _className: gz.Css \pull-right
+
+  _show: (_href) ->
+    @_pdf.attr \href "declaration/pdf/#{_href}"
+    @el.css.'display' = ''
+
+  initialize: ({_heading}) ->
+    @el.css = 'flex:1;margin:5px;display:-webkit-inline-box;'
+    _icon = App.dom._new \i
+      .._class = "#{gz.Css \glyphicon}
+                  \ #{gz.Css \glyphicon-bookmark}"
+
+    @_pdf = App.dom._new \a
+      .._class = "#{gz.Css \btn}
+                \ #{gz.Css \btn-info}
+                \ #{gz.Css \btn-sm}
+                \ #{gz.Css \pull-right}"
+      ..target = '_blank'
+      ..html = 'PDF '
+      .._append _icon
+    @el._append @_pdf
+
+  _pdf: null
+
+class DeclarationHeading extends panelgroup.PanelHeading
+
+  _controls: [panelgroup.ControlTitle, ControlPDF]
+
+
+# BODY
+class DeclarationBody extends panelgroup.JSONBody
 
   /**
    * @override
@@ -82,7 +122,9 @@ class DeclarationBody extends App.widget.panelgroup.JSONBody
 
 
 /** @export */
-module.exports = DeclarationBody
-
+exports <<<
+  Body: DeclarationBody
+  Heading: DeclarationHeading
+  ControlPDF: ControlPDF
 
 # vim: ts=2:sw=2:sts=2:et
