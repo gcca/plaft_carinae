@@ -155,6 +155,7 @@ class Income extends Module
            style='font-size:20pt'></i>
       </span>"
     @_desktop._search._focus 'DNI o número de orden'
+    super!
 
   ## Attributes
 
