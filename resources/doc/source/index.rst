@@ -1,16 +1,12 @@
-Proyecto LAc
-============
+Proyecto PLAFTsw
+================
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
-.. automodule:: plaft.interfaces
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :noindex:
+   domain
 
 ..
    Índices y cuadros
