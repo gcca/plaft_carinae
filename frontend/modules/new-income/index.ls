@@ -3,7 +3,7 @@
 
 panelgroup = App.widget.panelgroup
 
-DeclarationBody = require './declaration'
+declaration = require './declaration'
 DeclarantBody = require './declarant'
 DispatchBody = require './dispatch'
 StakeholderBody = require './stakeholder'
@@ -116,20 +116,19 @@ class Income extends Module
 
     _panel-group = new panelgroup.PanelGroup
 
-
     @_panels =  # To build dispatch DTO.
       _dispatch:  _panel-group.new-panel do
                     _panel-heading: panelgroup.PanelHeading
                     _panel-body: DispatchBody
       _declaration: _panel-group.new-panel do
-                      _panel-heading: panelgroup.PanelHeading
-                      _panel-body: DeclarationBody
+                      _panel-heading: declaration.Heading
+                      _panel-body: declaration.Body
       _declarants: _panel-group.new-panel do
                      _panel-heading: panelgroup.PanelHeading
                      _panel-body: DeclarantBody
-      _stakeholders:_panel-group.new-panel do
-                      _panel-heading: panelgroup.PanelHeading
-                      _panel-body: StakeholderBody
+      _stakeholders: _panel-group.new-panel do
+                       _panel-heading: panelgroup.PanelHeading
+                       _panel-body: StakeholderBody
 
     c-title = panelgroup.ControlTitle
     @_panels
@@ -150,6 +149,9 @@ class Income extends Module
       .._stakeholders._body._json =
         'sender_stakeholders': _dispatch-dto.'sender_stakeholders'
         'reciever_stakeholders': _dispatch-dto.'reciever_stakeholders'
+
+    if _dispatch-dto.'id'?  # Añadiendo botón PDF(en modo edición).
+      @_panels._declaration._header._get declaration.ControlPDF ._show _dispatch-dto.'id'
 
     _panel-group.open-all!
     @el._append _panel-group.render!.el
