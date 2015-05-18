@@ -66,7 +66,7 @@ class BodyLinked extends panelgroup.JSONBody
 
   _json-setter: (_stakeholders) ->
     if _stakeholders?
-      for stakeholder in stakeholders
+      for stakeholder in _stakeholders
         @_pgStakeholder.new-panel!
           .._body._json = stakeholder
 
