@@ -75,6 +75,7 @@ class DeclarationBody extends panelgroup.JSONBody
 
     # adding customer
     @_customer = new _customer-class
+    @_customer.on (gz.Css \change), @on-customer-type-change
     @el._append @_customer.render!.el
     @_customer._json = _customer-dto
 
@@ -82,6 +83,19 @@ class DeclarationBody extends panelgroup.JSONBody
     @_third = new Third
     @el._append @_third.render!.el
     @_third._json = _declaration-dto.'third'
+
+  on-customer-type-change: ~>
+    _customer-class = if it is 'j' then Business else Person
+
+    @_customer = new _customer-class
+    @_customer.on (gz.Css \change), @on-customer-type-change
+    @_customer.set-type it
+
+    @el.html = null
+    @el._append @_customer.render!.el
+
+    @_third = new Third
+    @el._append @_third.render!.el
 
   /**
    * Get customer class ({@code Business} or {@code Person}) by customer dto.\
