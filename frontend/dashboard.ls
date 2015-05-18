@@ -8,12 +8,12 @@ App = require './app'
 
 App.MODULES =
   Welcome       = require './modules/welcome'
-  Income        = require './modules/new-income'
+  Income        = require './modules/income'
   Numeration    = require './modules/numeration'
   Operation     = require './modules/operation'
   Anexo6        = require './modules/anexo-seis'
   OperationList = require './modules/operation-list'
-  Alerts        = require './modules/alerts'
+  ## Alerts        = r equire './modules/alerts'
 
 Workspace = require './workspace'
 Settings = require './settings'

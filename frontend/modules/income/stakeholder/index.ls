@@ -40,11 +40,11 @@ class StakeholderGroup extends panelgroup.JSONBody
     if _type?
       if _type  # Entrada de mercaderia
         @_sender =
-          'heading': 'Importador'  # 'Proveedor'
+          'heading': 'Importador'  # 'Importador'
           'body': CustomerBody
           'title': 'Importadores'
         @_reciever =
-          'heading': 'Proveedor'  # 'Importador'
+          'heading': 'Proveedor'  # 'Proveedor'
           'body': LinkedBody
           'title': 'Proveedores'
       else  # Salida de mercaderia
