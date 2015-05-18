@@ -42,6 +42,13 @@ def create_stakeholders():
         stakeholder.store()
 
 
+def create_declarants():
+    for declarant in declarants:
+        declarant.document_number = pick_document_number_by('dni')
+
+        declarant.store()
+
+
 def create_autocomplete():
     from collections import namedtuple
 
@@ -110,10 +117,10 @@ def create_dispatches(agency, datastore, customers, n=20):
                             customs_agency_key=agency.key,
                             jurisdiction=jurisdiction,
                             regime=regime,
-                            sender_stakeholders=[
+                            stakeholders=[
                                 random.choice(stakeholders)],
-                            reciever_stakeholders=[
-                                random.choice(stakeholders)])
+                            declarants=[
+                                random.choice(declarants)])
         dispatch.store()
         datastore.pending_key.append(dispatch.key)
         datastore.store()
@@ -164,6 +171,7 @@ def operations(agency, list_dispatches, datastore):
 
 def create_sample_data():
     create_stakeholders()
+    create_declarants()
 
     from collections import namedtuple
 
@@ -358,5 +366,24 @@ stakeholders = tuple(Stakeholder(document_type=j[0],
                                  name=j[1],
                                  address=j[2])
                      for j in raw_stakeholders)
+
+
+raw_declarants = (
+    ('Tony Stark', 'Iron Man'),
+    ('Bruce Wayne', 'Batman'),
+    ('Charles Xavier', 'X-men'),
+    ('Mister Fantastic', 'Fantastic Four'),
+    ('Michael Holt', 'Mister Terrific'),
+    ('Lex Luthor', 'Superman'),
+    ('Green Goblin', 'Spider-Man'),
+    ('Penguin', 'Batman'),
+    ('Kyle Rayner', 'Green Lantern'),
+    ('Kingpin', 'Marvel Comics')
+)
+
+declarants = tuple(Declarant(name=j[0],
+                             address=j[1])
+                   for j in raw_declarants)
+
 
 # vim: et:ts=4:sw=4
