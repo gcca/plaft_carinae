@@ -28,6 +28,8 @@ class Business extends Customer
 
   _json-setter: (_dto) ->
     super _dto
+    @el.query '[name=document_type]'
+      .._value = 'ruc'
     if _dto.'shareholders'?
       @shareholders-view.load-from _dto.'shareholders'
 
