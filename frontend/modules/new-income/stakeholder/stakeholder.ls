@@ -9,6 +9,7 @@ panelgroup = App.widget.panelgroup
 FieldType = App.builtins.Types.Field
 DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
 
+
 /**
  * Stakeholder
  * -----------
