@@ -34,10 +34,9 @@ class Stakeholders extends panelgroup.PanelGroup
    * Mostrar un panel.
    */
   new-panel: (_panel-body=@_Body, _panel-heading=StakeholderHeading)->
-    if @_Body?
-      _r = super do
-        _panel-heading: _panel-heading
-        _panel-body:_panel-body
+    _r = super do
+      _panel-heading: _panel-heading
+      _panel-body:_panel-body
 
 
   /** @override */
