@@ -6,7 +6,7 @@ panelgroup = App.widget.panelgroup
 declaration = require './declaration'
 DeclarantBody = require './declarant'
 DispatchBody = require './dispatch'
-NewStakeholderBody = require './new-stakeholder'
+StakeholderBody = require './stakeholder'
 
 Module = require '../../workspace/module'
 
@@ -102,7 +102,7 @@ class Income extends Module
     _dispatch-dto =
       declaration: @_panels._declaration._body._json
       declarants: @_panels._declarants._body._json
-      stakeholders: @_panels._new-stakeholders._body._json
+      stakeholders: @_panels._stakeholders._body._json
     _dispatch-dto <<<< @_panels._dispatch._body._json
 
   /**
@@ -128,27 +128,27 @@ class Income extends Module
       _declarants: _panel-group.new-panel do
                      _panel-heading: panelgroup.PanelHeading
                      _panel-body: DeclarantBody
-      _new-stakeholders: _panel-group.new-panel do
-                          _panel-heading: panelgroup.PanelHeading
-                          _panel-body: NewStakeholderBody
+      _stakeholders: _panel-group.new-panel do
+                      _panel-heading: panelgroup.PanelHeading
+                      _panel-body: StakeholderBody
 
     c-title = panelgroup.ControlTitle
     @_panels
       .._dispatch._header._get c-title ._text = 'Despacho'
       .._declaration._header._get c-title ._text = 'Anexo 5'
       .._declarants._header._get c-title ._text = 'Declarantes'
-      .._new-stakeholders._header._get c-title ._text = 'Nuevos Vinculados'
+      .._stakeholders._header._get c-title ._text = 'Vinculados'
 
     @_panels
       .._dispatch._body._json = _dispatch-dto
-      .._new-stakeholders._body.set-type .._dispatch._body._get-type!
+      .._stakeholders._body.set-type .._dispatch._body._get-type!
       .._dispatch._body.on (gz.Css \code-regime), ~>
-        .._new-stakeholders._body.set-type it
+        .._stakeholders._body.set-type it
 
     @_panels
       .._declaration._body._json = _dispatch-dto.'declaration'
       .._declarants._body._json = _dispatch-dto.'declarants'
-      .._new-stakeholders._body._json = _dispatch-dto.'stakeholders'
+      .._stakeholders._body._json = _dispatch-dto.'stakeholders'
 
     if _dispatch-dto.'id'?  # Añadiendo botón PDF(en modo edición).
       @_panels._declaration._header._get declaration.ControlPDF ._show _dispatch-dto.'id'
