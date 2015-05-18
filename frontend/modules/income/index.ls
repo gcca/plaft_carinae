@@ -174,7 +174,6 @@ class Operation extends Module
    * @protected
    */
   on-save: ~>
-    console.log @declarant._body._json
 #    customer-dto = @customer._toJSON!
 
 #    stk = @stakeholder._toJSON!
