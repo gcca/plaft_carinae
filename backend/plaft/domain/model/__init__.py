@@ -4,8 +4,43 @@
 .. module:: domain.model
    :synopsis: Domain model layer.
 
-.. moduleauthor:: Gonzales Castillo, Cristhian A. <cristhian.gz@aol.com>
+.. moduleauthor:: Gonzales Castillo, Cristhian A. <gcca@gcca.tk>
 
+El proceso de lavado de activos se lleva a cabo con los `documentos
+de despacho`.
+
+Diagrama::
+
+                               +-----------+
+                     o---------| Datastore |
+                     |         +-----------+
+        +---------------+
+        | CustomsAgency |--------------o               +---------+
+        +---------------+              |           o---| Officer |
+              |    |                +------+       |   +---------+
+              |    |                | User |<------|
+              |    o-----------o    +------+       |   +----------+
+              |                |                   o---| Employee |
+              |                |                       +----------+
+          +-----------+        |
+          | Operation |    +----------+           +-------------+
+          +-----------+    | Dispatch |---o-------| Stakeholder |<---o
+                 |         +----------+   |       +-------------+    |
+                 |                |       |                          |
+                 o----------------o       |                          |
+                                          |           +--------+     |
+                                          |           | Linked |-----|
+                       +-----------+      |           +--------+     |
+                       | Declarant |------o                          |
+                       +-----------+                +----------+     |
+                                               o--->| Customer |-----o
+                                               |    +----------+
+                                               |
+                                               o---------------o
+                                               |               |
+                                          +----------+     +--------+
+                                          | Business |     | Person |
+                                          +----------+     +--------+
 
 """
 

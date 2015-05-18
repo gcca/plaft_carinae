@@ -369,6 +369,7 @@ stakeholders = tuple(Stakeholder(document_type=j[0],
 
 
 raw_declarants = (
+    # (name, address)
     ('Tony Stark', 'Iron Man'),
     ('Bruce Wayne', 'Batman'),
     ('Charles Xavier', 'X-men'),
