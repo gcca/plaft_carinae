@@ -6,7 +6,6 @@ panelgroup = App.widget.panelgroup
 declaration = require './declaration'
 DeclarantBody = require './declarant'
 DispatchBody = require './dispatch'
-StakeholderBody = require './stakeholder'
 NewStakeholderBody = require './new-stakeholder'
 
 Module = require '../../workspace/module'
@@ -104,7 +103,6 @@ class Income extends Module
       declaration: @_panels._declaration._body._json
       declarants: @_panels._declarants._body._json
       stakeholders: @_panels._new-stakeholders._body._json
-    _dispatch-dto <<<< @_panels._stakeholders._body._json
     _dispatch-dto <<<< @_panels._dispatch._body._json
 
   /**
@@ -130,9 +128,6 @@ class Income extends Module
       _declarants: _panel-group.new-panel do
                      _panel-heading: panelgroup.PanelHeading
                      _panel-body: DeclarantBody
-      _stakeholders: _panel-group.new-panel do
-                       _panel-heading: panelgroup.PanelHeading
-                       _panel-body: StakeholderBody
       _new-stakeholders: _panel-group.new-panel do
                           _panel-heading: panelgroup.PanelHeading
                           _panel-body: NewStakeholderBody
@@ -142,23 +137,17 @@ class Income extends Module
       .._dispatch._header._get c-title ._text = 'Despacho'
       .._declaration._header._get c-title ._text = 'Anexo 5'
       .._declarants._header._get c-title ._text = 'Declarantes'
-      .._stakeholders._header._get c-title ._text = 'Vinculados'
       .._new-stakeholders._header._get c-title ._text = 'Nuevos Vinculados'
 
     @_panels
       .._dispatch._body._json = _dispatch-dto
-      .._stakeholders._body.set-type .._dispatch._body._get-type!
       .._new-stakeholders._body.set-type .._dispatch._body._get-type!
       .._dispatch._body.on (gz.Css \code-regime), ~>
-        .._stakeholders._body.set-type it
         .._new-stakeholders._body.set-type it
 
     @_panels
       .._declaration._body._json = _dispatch-dto.'declaration'
       .._declarants._body._json = _dispatch-dto.'declarants'
-      .._stakeholders._body._json =
-        'sender_stakeholders': _dispatch-dto.'sender_stakeholders'
-        'reciever_stakeholders': _dispatch-dto.'reciever_stakeholders'
       .._new-stakeholders._body._json = _dispatch-dto.'stakeholders'
 
     if _dispatch-dto.'id'?  # Añadiendo botón PDF(en modo edición).
