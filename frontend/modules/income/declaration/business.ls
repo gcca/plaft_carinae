@@ -74,22 +74,6 @@ class Business extends Customer
     * _name: 'document_number'
       _label: 'b) N&ordm; RUC'
 
-    * _name: 'legal_type'
-      _label: 'Representado Legal'
-      _type: FieldType.kComboBox
-      _options:
-        'RL'
-        'Apoderado'
-        'Mandatario'
-        'El mismo'
-
-    * _name: 'condition'
-      _label: 'Condición'
-      _type: FieldType.kComboBox
-      _options:
-        'Residente'
-        'No residente'
-
     * _name: 'social_object'
       _label: 'c) Objeto Social'
 
@@ -118,25 +102,6 @@ class Business extends Customer
       _label: 'i) El origen de los fondos'
       _type: FieldType.kComboBox
       _options: App.lists.money-source._display
-
-    * _name: 'ciiu'
-      _label: 'Código CIIU de ocupacion'
-      _type: FieldType.kView
-      _options : new CodeNameField do
-                   _code : App.lists.ciiu._code
-                   _name : App.lists.ciiu._display
-                   _field : 'ciiu'
-
-    * _name: 'ubigeo'
-      _label: 'Código Ubigeo'
-      _grid: _GRID._full
-      _type: FieldType.kView
-      _options : new CodeNameField do
-                   _code: App.lists.ubigeo._pool._code
-                   _name: App.lists.ubigeo._pool._display
-                   _max-length: 15
-                   _field: 'ubigeo'
-
 
     * _name: 'is_obligated'
       _label: 'j) Si es Sujeto obligado'

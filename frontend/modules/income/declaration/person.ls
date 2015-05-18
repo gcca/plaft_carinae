@@ -73,22 +73,6 @@ class Person extends Customer
     * _name: 'issuance_country'
       _label: 'Pais documento emitido extranjero'
 
-    * _name: 'legal_type'
-      _label: 'Representado Legal'
-      _type: FieldType.kComboBox
-      _options:
-        'RL'
-        'Apoderado'
-        'Mandatario'
-        'El mismo'
-
-    * _name: 'condition'
-      _label: 'Condición'
-      _type: FieldType.kComboBox
-      _options:
-        'Residente'
-        'No residente'
-
     * _name: 'ruc'
       _label: 'c) RUC, de ser el caso'
 
@@ -145,24 +129,6 @@ class Person extends Customer
       _label: 'm) El origen de los fondos'
       _type: FieldType.kComboBox
       _options: App.lists.money-source._display
-
-    * _name: 'ciiu'
-      _label: 'Código CIIU de ocupacion'
-      _type: FieldType.kView
-      _options : new CodeNameField do
-                   _code : App.lists.ciiu._code
-                   _name : App.lists.ciiu._display
-                   _field : 'ciiu'
-
-    * _name: 'ubigeo'
-      _label: 'Código Ubigeo'
-      _grid: _GRID._full
-      _type: FieldType.kView
-      _options : new CodeNameField do
-                   _code: App.lists.ubigeo._pool._code
-                   _name: App.lists.ubigeo._pool._display
-                   _max-length: 15
-                   _field: 'ubigeo'
 
     * _name: 'is_obligated'
       _label: 'n) Si es Sujeto obligado'
