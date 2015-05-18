@@ -85,6 +85,8 @@ class Income extends Module
         @_desktop.notifier.notify do
           _message: 'Guardado'
           _type: @_desktop.notifier.kSuccess
+        @_panels._declaration._header.\
+          _get declaration.ControlPDF ._show @model.'id'
 
       _error: ~>
         @_desktop.notifier.notify do
