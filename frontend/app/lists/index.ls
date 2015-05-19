@@ -100,8 +100,6 @@ exports <<<
 
   activity-business: require './activity-business'
 
-  money-source: require './money-source'
-
   office: require './office'
 
   ciiu: require './ciiu'
