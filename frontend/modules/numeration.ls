@@ -121,6 +121,13 @@ class NumerationEdit extends Module
 
     _template = "
       <div class='#{gz.Css \form-group} #{gz.Css \col-md-12}'>
+        <a href='http://ww1.sunat.gob.pe/cl-at-ittipcam/tcS01Alias'
+           target='_blank'>
+          Consultar tipo de cambio
+        </a>
+      </div>
+      <div class='#{gz.Css \form-group} #{gz.Css \col-md-12}'
+           style='margin-top:1em'>
         <div class='#{gz.Css \form-group} #{gz.Css \col-md-4}'>
           <label class='#{gz.Css \col-md-12} #{gz.Css \control-label}'
                  style='padding-left:0;
