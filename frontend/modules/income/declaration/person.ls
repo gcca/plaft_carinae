@@ -43,7 +43,17 @@ class Person extends Customer
 
       .._elements.'is_obligated'._element
         ..on-change @on-is_obligated-change
+
+      # Update issuance_country by document_type
+      issuance-country-el = .._elements.'issuance_country'._element
+        .._disabled = on
+
+      .._elements.'document_type'._element.on-change (evt) ->
+        doc-type-el = evt._target
+        issuance-country-el._disabled = doc-type-el._value is 'dni'
+
       ..render!
+
     super!
 
   /** Local variable for settings. */
