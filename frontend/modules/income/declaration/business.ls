@@ -98,10 +98,15 @@ class Business extends Customer
     * _name: 'phone'
       _label: 'h) Telefono oficina'
 
-    * _name: 'money_source'
+    * _name: 'money_source_type'
       _label: 'i) El origen de los fondos'
       _type: FieldType.kComboBox
-      _options: App.lists.money-source._display
+      _options:
+        'No efectivo'
+        'Efectivo'
+
+    * _name: 'money_source'
+      _label: 'Descripción del origen de los fondos'
 
     * _name: 'is_obligated'
       _label: 'j) Si es Sujeto obligado'

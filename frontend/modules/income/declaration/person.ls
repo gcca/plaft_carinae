@@ -146,10 +146,15 @@ class Person extends Customer
     * _name: 'employment'
       _label: 'l) Cargo o función pública'
 
-    * _name: 'money_source'
+    * _name: 'money_source_type'
       _label: 'm) El origen de los fondos'
       _type: FieldType.kComboBox
-      _options: App.lists.money-source._display
+      _options:
+        'No efectivo'
+        'Efectivo'
+
+    * _name: 'money_source'
+      _label: 'Descripción del origen de los fondos'
 
     * _name: 'is_obligated'
       _label: 'n) Si es Sujeto obligado'

@@ -180,6 +180,9 @@ class Customer(dom.Model, dom.PolyModel):
 
     shareholders = dom.Structured(Shareholder, repeated=True)
 
+    # DISPATCH
+    money_source_type = dom.String()
+
 
 class Person(Customer):
     """."""
