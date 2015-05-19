@@ -153,12 +153,6 @@ class NumerationEdit extends Module
     @_last-day = @el.query '#_last-days'
 
 
-    _exchange-rate = @model._attributes.'exchange_rate'
-    if not _exchange-rate or _exchange-rate is ''
-      App.ajax._get '/utils/exchange_rate', do
-        _success: (_res) ~>
-          @el.query '[name=exchange_rate]' ._value = _res.'rate'
-
     @el.query '[name=numeration_date]'
       ..on-blur @load-dates
       @_calculate-working-days .._value
