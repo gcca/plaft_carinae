@@ -96,11 +96,15 @@ class Third extends App.View
   _FIELDS_PERSON =
     * _name: 'document_type'
       _label: 'Tipo documento'
+      _tip: 'Tipo de documento de la persona en cuya cuenta se realiza la
+          \ operación.'
       _type: FieldType.kComboBox
       _options: DOCUMENT_TYPE_PAIR
 
     * _name: 'document_number'
       _label: 'Número documento identidad'
+      _tip: 'Número de documento de la persona en cuya cuenta se realiza la
+          \ operación.'
 
     * _name: 'father_name'
       _label: 'Apellido paterno'
@@ -113,6 +117,7 @@ class Third extends App.View
 
     * _name: 'third_ok'
       _label: 'Persona a favor operacion'
+      _tip: 'La persona a favor de quien se realiza la operación.'
       _type: FieldType.kComboBox
       _options:
         'Importador'
@@ -127,6 +132,7 @@ class Third extends App.View
 
     * _name: 'third_ok'
       _label: 'Persona a favor operacion'
+      _tip: 'La persona a favor de quien se realiza la operación.'
       _type: FieldType.kComboBox
       _options:
         'Importador'

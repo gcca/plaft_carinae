@@ -24,7 +24,7 @@ class Person extends Customer
       | otherwise => @clean-text-partner!
 
   on-is_obligated-change: ~>
-    @_form-builder._elements'has_officer'._element
+    @form-builder._elements'has_officer'._element
       _officer-yes = ..query '[value=Sí]'
       _officer-no = ..query '[value=No]'
     is_obligated = @el.query('[name=is_obligated]:checked').value
@@ -37,13 +37,13 @@ class Person extends Customer
   /** @override */
   render: ->
     @form-builder = new App.builder.Form @el, _FIELD_PERSON
-      ..render!
 
       .._elements'civil_state'._element
         ..on-change @on-civil_state-change
 
       .._elements.'is_obligated'._element
         ..on-change @on-is_obligated-change
+      ..render!
     super!
 
   /** Local variable for settings. */
@@ -64,17 +64,24 @@ class Person extends Customer
 
     * _name: 'document_type'
       _label: 'b) Tipo documento'
+      _tip: 'Tipo de documento de la persona en cuyon nombre se
+           \ realiza la operación.'
       _type: FieldType.kComboBox
       _options: DOCUMENT_TYPE_PAIR
 
     * _name: 'document_number'
       _label: 'Número documento identidad'
+      _tip: 'Número de documento de la persona en cuyo nombre se realiza
+           \ la operación.'
 
     * _name: 'issuance_country'
-      _label: 'Pais documento emitido extranjero'
+      _label: 'País documento emitido extranjero'
+      _tip: 'País de emisión del documento de la persona en cuyo nombre
+           \ se realiza la operación.'
 
     * _name: 'ruc'
       _label: 'c) RUC, de ser el caso'
+      _tip: 'Número de RUC de la persona en cuyo nombre se realiza la operación.'
 
     * _name: 'birthplace'
       _label: 'd) Lugar de nacimiento'
@@ -84,6 +91,8 @@ class Person extends Customer
 
     * _name: 'nationality'
       _label: 'e) Nacionalidad'
+      _tip: 'Nacionalidad de la persona en cuyo nombre se realiza
+           \ la operación.'
 
     * _name: 'address'
       _label: 'f) Domicilio declarado (lugar de residencia)'
@@ -103,6 +112,8 @@ class Person extends Customer
 
     * _name: 'activity'
       _label: 'j) Profesión u ocupación'
+      _tip: 'Ocupación, oficio o profesión de la persona en cuyo nombre se
+           \ realiza la operación.'
       _type: FieldType.kView
       _options : new InputName do
                    _name : App.lists.activity._display
@@ -132,6 +143,7 @@ class Person extends Customer
 
     * _name: 'is_obligated'
       _label: 'n) Si es Sujeto obligado'
+      _tip: 'Es sujeto obligado informar a la UIF-Perú.'
       _type: FieldType.kRadioGroup
       _options: <[Sí No]>
 
@@ -142,6 +154,7 @@ class Person extends Customer
 
     * _name: 'reference'
       _label: 'Ref. Cliente'
+      _tip: 'Referencia del cliente.'
       _grid: _GRID._inline
 
 

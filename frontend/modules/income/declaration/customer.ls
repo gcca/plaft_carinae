@@ -19,7 +19,10 @@ class Customer extends App.View
    */
   _json-getter: -> @el._toJSON!
 
-  _json-setter: (_dto) -> @el._fromJSON _dto
+  _json-setter: (_dto) ->
+    @el.query '[name=document_type]'
+      .._value = 'dni'
+    @el._fromJSON _dto
 
   set-type: ->
     @_select._value = it
@@ -32,7 +35,7 @@ class Customer extends App.View
     super!
     @_select = App.dom._new \select
       .._class = gz.Css \form-control
-      ..html = "<option value='j'>Jurídico</option>
+      ..html = "<option value='j'>Jurídica</option>
                 <option value='n'>Natural</option>"
       ..css = 'width:48.5%'
       ..on-change @on-customer-type-change

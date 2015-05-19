@@ -78,7 +78,7 @@ class FormLinked extends panelgroup.FormBody
       ..render!
       .._free!
     @$el._append "<div></div>"
-    @render-skateholder @_FIELD_PERSON, @@Type.kPerson
+    @render-skateholder @_FIELD_BUSINESS, @@Type.kBusiness
     @_panel.on (gz.Css \load-body), (_dto) ~>
       @_json = _dto
     ret

@@ -28,8 +28,6 @@ class Business extends Customer
 
   _json-setter: (_dto) ->
     super _dto
-    @el.query '[name=document_type]'
-      .._value = 'ruc'
     if _dto.'shareholders'?
       @shareholders-view.load-from _dto.'shareholders'
 
@@ -64,9 +62,8 @@ class Business extends Customer
   /** FIELD */
   _FIELD_BUSINESS =
     * _name: 'document_type'
-      _label: 'b) Tipo documento'
-      _type: FieldType.kComboBox
-      _options: DOCUMENT_TYPE_PAIR
+      _type: FieldType.kHidden
+      _options: <[ruc]>
 
     * _name: 'name'
       _label: 'a) Denominación o razón social'
@@ -78,7 +75,9 @@ class Business extends Customer
       _label: 'c) Objeto Social'
 
     * _name: 'activity'
-      _label: 'Actividad economica principal'
+      _label: 'Actividad económica principal'
+      _tip: 'Actividad económica de la persona en cuyo nombre se realiza la
+           \ operación.'
 
     * _name: 'shareholders'
       _label: 'd) Identificacion accionistas'
@@ -88,6 +87,7 @@ class Business extends Customer
 
     * _name: 'legal'
       _label: 'e) Identificacion RL'
+      _tip: 'Representante legal de la empresa.'
 
     * _name: 'address'
       _label: 'f) Domicilio'
