@@ -7,18 +7,20 @@ Module = require '../../workspace/module'
 
 panelgroup = App.widget.panelgroup
   PanelGroup = ..PanelGroup
-  PanelHeaderClosable = ..PanelHeaderClosable
   PanelBody = ..PanelBody
 
 Modal = require './modal'
 
 
-class HeadAlert extends PanelHeaderClosable
+class HeadAlert extends panelgroup.PanelHeading
+
+  _controls: [panelgroup.ControlTitle, panelgroup.ControlClose]
 
   _remove-panel: ~>
     _r = super!
-    @trigger (gz.Css \removed-title), @el._first._first.html # TODO: Agregar a base.less
+    @trigger (gz.Css \removed-title), @el._first._first.html
     _r
+
 
 class PendingAlerts extends App.View
 
@@ -59,7 +61,7 @@ class PendingAlerts extends App.View
 
   click: (_alert) ->
     @_alerts._remove _alert
-    @trigger (gz.Css \change), _alert # TODO: Agregar a base.less
+    @trigger (gz.Css \change), _alert
     @_load-alerts!
     $ @_pool-alert ._hide!
 
@@ -92,32 +94,32 @@ class PendingAlerts extends App.View
     id-pool = App.utils.uid 'i'
     @el.css = "margin-bottom:15px"
     @el.html = "
-    <div style='margin-bottom:15px'>
-      <div class='#{gz.Css \input-group}'>
-        <span class='#{gz.Css \input-group-btn}'>
-          <button id='#{id-view-all}' type='button'
-            class='#{gz.Css \btn} #{gz.Css \btn-default}'>
-            &nbsp;
-            <i class='#{gz.Css \glyphicon}
-                    \ #{gz.Css \glyphicon-plus}'>
-            </i>
-            &nbsp;
-          </button>
-          <button id='#{id-search}' type='button'
-                  class='#{gz.Css \btn} #{gz.Css \btn-default}'>
-            &nbsp;
-            <i class='#{gz.Css \glyphicon}
-                    \ #{gz.Css \glyphicon-search}'>
-            </i>
-            &nbsp;
-          </button>
-        </span>
-        <input type='text'
-               class='#{gz.Css \form-control}'
-               placeholder='Buscar'>
+      <div style='margin-bottom:15px'>
+        <div class='#{gz.Css \input-group}'>
+          <span class='#{gz.Css \input-group-btn}'>
+            <button id='#{id-view-all}' type='button'
+              class='#{gz.Css \btn} #{gz.Css \btn-default}'>
+              &nbsp;
+              <i class='#{gz.Css \glyphicon}
+                      \ #{gz.Css \glyphicon-plus}'>
+              </i>
+              &nbsp;
+            </button>
+            <button id='#{id-search}' type='button'
+                    class='#{gz.Css \btn} #{gz.Css \btn-default}'>
+              &nbsp;
+              <i class='#{gz.Css \glyphicon}
+                      \ #{gz.Css \glyphicon-search}'>
+              </i>
+              &nbsp;
+            </button>
+          </span>
+          <input type='text'
+                 class='#{gz.Css \form-control}'
+                 placeholder='Buscar'>
+        </div>
       </div>
-    </div>
-    <div id='#{id-pool}'></div>"
+      <div id='#{id-pool}'></div>"
 
     @el._first._append @_modal.render!.el
 
@@ -180,7 +182,7 @@ class CurrentAlerts extends PanelGroup
 
         pnl-head.on (gz.Css \removed-title), ~>
           @_alerts._remove it
-          @trigger (gz.Css \removed), it # TODO: Agregar a base.less
+          @trigger (gz.Css \removed), it
 
     super!
 
@@ -208,6 +210,7 @@ class CurrentAlerts extends PanelGroup
       _label: 'Descripción de otros.'
 
   /** @private */ _alerts: null
+
 
 class Alerts extends Module
 

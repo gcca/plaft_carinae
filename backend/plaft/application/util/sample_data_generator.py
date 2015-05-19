@@ -117,10 +117,8 @@ def create_dispatches(agency, datastore, customers, n=20):
                             customs_agency_key=agency.key,
                             jurisdiction=jurisdiction,
                             regime=regime,
-                            stakeholders=[
-                                random.choice(stakeholders)],
-                            declarants=[
-                                random.choice(declarants)])
+                            stakeholders=[random.choice(stakeholders)],
+                            declarants=[random.choice(declarants)])
         dispatch.store()
         datastore.pending_key.append(dispatch.key)
         datastore.store()

@@ -3,10 +3,12 @@
  * @author gcca@gcca.tk (cristHian Gz. <gcca>)
  */
 
+
 Module = require '../workspace/module'
 table = App.widget.table
   Table = ..Table
 FieldType = App.builtins.Types.Field
+
 
 /**
 * @class Dispatch
@@ -15,12 +17,14 @@ FieldType = App.builtins.Types.Field
 class Dispatch extends App.Model
   urlRoot: 'dispatch'
 
+
 /**
 * @Class Dispatches
 * @extends Collection
 */
 class Dispatches extends App.Collection
   model: Dispatch
+
 
 /**
  * Una vista que contiene el formulario del modulo de Numeracion de registros
@@ -187,6 +191,8 @@ class NumerationEdit extends Module
         'R'
     * _name: 'exchange_rate'
       _label: 'Tipo de cambio'
+
+
 /**
  * @class Numeration
  * @extends Module
