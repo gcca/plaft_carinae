@@ -45,6 +45,7 @@ class NumerationEdit extends Module
   on-save: ~>
     ########################################################################
     # VER ON-SAVE DE OPERATION.LS
+    # TODO: Remove deprecated code
     _dto = @model._attributes
     for stk in _dto.'stakeholders'
       delete stk.'slug'
@@ -52,8 +53,10 @@ class NumerationEdit extends Module
       delete declarant.'slug'
     ########################################################################
 
-    App.ajax._post "/api/dispatch/#{@model._id}/numerate", @el._toJSON!, do
-      _success: ~>
+    _dto = @el._toJSON!
+    App.ajax._post "/api/dispatch/#{@model._id}/numerate", _dto, do
+      _success:     ~>
+        @model._set _dto  # update data for change on (event)
         @_desktop.notifier.notify do
           _message : 'Se actualizó correctamente los datos'
           _type    : @_desktop.notifier.kSuccess
