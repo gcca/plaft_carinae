@@ -101,7 +101,7 @@ class NumerationEdit extends Module
     @_calculate-ammount-soles _value
 
   load-dates: ~>
-    ExpReg = /^(0?[1-9]|[12][0-9]|3[01])[\/](0?[1-9]|1[012])[/\\/](19|20)\d{2}$/
+    ExpReg = /^\d{1,2}\/\d{1,2}\/\d{4}$/
     _value = it._target._value
     if ExpReg.test _value
       @_calculate-working-days _value
@@ -116,42 +116,53 @@ class NumerationEdit extends Module
     App.builder.Form._new @el, _FIELDS
       ..render!
       .._free!
+
     @el._fromJSON @model._attributes
 
     _template = "
-    <div class='#{gz.Css \form-group} #{gz.Css \col-md-12}'>
-    <div class='#{gz.Css \form-group} #{gz.Css \col-md-4}'>
-      <label class='#{gz.Css \col-md-12} #{gz.Css \control-label}'
-             style='padding-left: 0px; padding-right: 0px;'>
-      Monto en Soles
-      </label></br>
-      <label id='_ammount-soles'
-             style='font-size: 20px; font-weight: 500;'></label>
-    </div>
-    <div class='#{gz.Css \form-group} #{gz.Css \col-md-4}'>
-      <label class='#{gz.Css \col-md-12} #{gz.Css \control-label}'
-             style='padding-left: 0px; padding-right: 0px;'>
-      Último dia UIF
-      </label></br>
-      <label id='_last-days'
-             style='font-size: 20px; font-weight: 500;'></label>
-    </div>
-    <div class='#{gz.Css \form-group} #{gz.Css \col-md-4}'>
-      <label class='#{gz.Css \col-md-12} #{gz.Css \control-label}'
-             style='padding-left: 0px; padding-right: 0px;'>
-      Vigencia de RO 5 años
-      </label></br>
-      <label id='_five-years'
-             style='font-size: 20px; font-weight: 500;'></label>
-    </div>
-    </div>
-    "
+      <div class='#{gz.Css \form-group} #{gz.Css \col-md-12}'>
+        <div class='#{gz.Css \form-group} #{gz.Css \col-md-4}'>
+          <label class='#{gz.Css \col-md-12} #{gz.Css \control-label}'
+                 style='padding-left:0;
+                        padding-right:0;'>
+            Monto en Soles
+          </label>
+          </br>
+          <label id='_ammount-soles'
+                 style='font-size:20px;
+                        font-weight:500;'>
+          </label>
+        </div>
+        <div class='#{gz.Css \form-group} #{gz.Css \col-md-4}'>
+          <label class='#{gz.Css \col-md-12} #{gz.Css \control-label}'
+                 style='padding-left:0;
+                        padding-right:0;'>
+            Último dia UIF
+          </label>
+          </br>
+          <label id='_last-days'
+                 style='font-size:20px;
+                        font-weight:500;'>
+          </label>
+        </div>
+        <div class='#{gz.Css \form-group} #{gz.Css \col-md-4}'>
+          <label class='#{gz.Css \col-md-12} #{gz.Css \control-label}'
+                 style='padding-left:0;
+                        padding-right:0;'>
+            Vigencia de RO 5 años
+          </label>
+          </br>
+          <label id='_five-years'
+                 style='font-size:20px;
+                        font-weight:500;'>
+          </label>
+        </div>
+      </div>"
 
     @$el._append _template
 
     @_five-years = @el.query '#_five-years'
     @_last-day = @el.query '#_last-days'
-
 
     @el.query '[name=numeration_date]'
       ..on-blur @load-dates
@@ -160,10 +171,11 @@ class NumerationEdit extends Module
     @el.query '[name=amount]'
       ..on-blur @load-amount-soles
       @_calculate-ammount-soles .._value
+
     super!
 
-  _five-years: null
-  _last-day: null
+  /** @private */ _five-years: null
+  /** @private */ _last-day: null
 
   /** Field list for numeration form. (Array.<FieldOptions>) */
   _FIELDS =
@@ -221,11 +233,11 @@ class Numeration extends Module
                       else if it is 'N' then gz.Css \label-warning
                       else if it is 'R' then gz.Css \label-danger
                       else ''
-        if _label-type is ''
+        ## if _label-type is ''
           ##################################################################
           # TODO: Crear métodos de debugging
           ##################################################################
-          console.log 'CANAL VACIO'  # vale.
+          # 'CANAL VACIO'
 
         "<span class='#{gz.Css \label} #{_label-type}'>
            #{it}
@@ -234,23 +246,22 @@ class Numeration extends Module
     App.ajax._get '/api/customs_agency/list_dispatches', do
       _success: (dispatches) ~>
         _pending = new Dispatches dispatches.'pending'
-        _tabla = new Table  do
-                      _attributes: _attributes
-                      _labels: _labels
-                      _templates: _templates
-                      on-dblclick-row: (evt) ~>
-                        @_desktop.load-next-page NumerationEdit, model: evt._target._model
+        _table = new Table  do
+          _attributes: _attributes
+          _labels: _labels
+          _templates: _templates
+          on-dblclick-row: (evt) ~>
+            @_desktop.load-next-page(NumerationEdit,
+                                     model: evt._target._model)
 
-        _tabla.set-rows _pending
+        _table.set-rows _pending
 
-        @el._append _tabla.render!.el
-
+        @el._append _table.render!.el
 
       _error: ->
         alert 'Error!!! Numeration list'
 
     super!
-
 
   /** @protected */ @@_caption = 'NUMERACIÓN'
   /** @protected */ @@_icon    = gz.Css \print
