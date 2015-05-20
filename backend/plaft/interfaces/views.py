@@ -76,12 +76,17 @@ class Debug(Handler):  # DEBUG
 class DeclarationPDF(Handler):
 
     def shareholdersList(self, shareholders):
-        list = []
+        list = ''
+        i = 1
         for s in shareholders:
-            list.append(['    Nombre', s.name])
-            list.append(['    Documento', (s.document_type).upper()])
-            list.append(['    Número', s.document_number])
-            list.append(['', ''])
+            j = '0'+str(i) if i < 10 else str(i)
+            if list:
+                list += '<br/>'
+            list += '%s. %s <br/>%s %s<br/>' %(j,
+                                        s.document_number,
+                                        '&nbsp;'*(len(j)+3),
+                                        s.name)
+            i += 1
         return list
 
     def checkButtonchk(self, obj, value):
@@ -152,11 +157,9 @@ class DeclarationPDF(Handler):
                                         (0, 0),
                                         (-1, 0))]))
             story.append(table)
-           # story.append(Spacer(1, space))
         else:
             table = Table(data, [2.2*inch, 3.5*inch])
-            story.append(table)
-            story.append(Spacer(1, space))
+            return table
 
     # Adds all the paragraphs for the Person class.
     def makePersonPDF(self, story, dispatch, customer):
@@ -253,7 +256,6 @@ class DeclarationPDF(Handler):
             ('INNERGRID', (0, 0), (-1, -1),  0.25, colors.black),
             ('BOX',       (0, 0), (-1, -1),  0.25, colors.black)
         ]))
-
         story.append(table)
 
     # Adds all the paragraphs for the Business class
@@ -279,7 +281,7 @@ class DeclarationPDF(Handler):
                            ' o asociados, que tengan un porcentaje igual'
                            ' o mayor al 5% de las acciones'
                            ' o participaciones',
-                        self.checkEmpty(customer, 'activity')]) #VERIFICAR ACCIONISTAS
+                        self.shareholdersList(customer.shareholders)])
 
         content.append(['e)','Identificacion del representante legal'
                            ' o de quien comparece con facultades de'
@@ -315,11 +317,11 @@ class DeclarationPDF(Handler):
                         self.checkButtonchk(dispatch.declaration.customer,
                                                 'has_officer')])
 
-        content.append(['k)','Identificacion del tercero, sea persona'
-                           ' natural (nombres y apellidos) o persona'
-                           ' juridica (razon o denominacion social)'
-                           ' por cuyo intermedio se realiza la operacion,'
-                           ' de ser el caso',
+        content.append(['k)','''Identificacion del tercero sea persona
+                            natural (nombres y apellidos) o persona
+                            juridica (razon o denominacion social)
+                            por cuyo</br> intermedio se realiza la operacion,
+                            de ser el caso''',
                         self.checkComplexKey(dispatch.declaration,
                                                'third.name')])
 
@@ -328,7 +330,10 @@ class DeclarationPDF(Handler):
         s = getSampleStyleSheet()
         s = s["BodyText"]
         s.wordWrap = 'LTR'
-        contentTable = [[Paragraph(cell, s) for cell in row]
+
+
+        contentTable = [[Paragraph(row[cell], s)
+                        for cell in range(len(row))]
                              for row in content]
         table = Table(contentTable, colWidths=(0.3*inch, 4*inch, 3.2*inch))
         table.setStyle(TableStyle([
@@ -338,13 +343,6 @@ class DeclarationPDF(Handler):
         ]))
 
         story.append(table)
-
-#        if customer.shareholders:
-#            self.addTable(story,
-#                          self.shareholdersList(customer.shareholders),
-#                          12)
-#        else:
-#            self.addParagraph(story, styles, 'Sin accionistas', 12)
 
 
     def get(self, id):
@@ -366,8 +364,8 @@ class DeclarationPDF(Handler):
                                 pagesize=letter,
                                 rightMargin=30,
                                 leftMargin=30,
-                                topMargin=40,
-                                bottomMargin=40)
+                                topMargin=20,
+                                bottomMargin=30)
 
         story = []
 
