@@ -147,14 +147,14 @@ class Person extends Customer
       _label: 'l) Cargo o función pública'
 
     * _name: 'money_source_type'
-      _label: 'm) El origen de los fondos'
+      _label: 'm) Tipo de Fondos'
       _type: FieldType.kComboBox
       _options:
         'No efectivo'
         'Efectivo'
 
     * _name: 'money_source'
-      _label: 'Descripción del origen de los fondos'
+      _label: 'Origen de los fondos'
 
     * _name: 'is_obligated'
       _label: 'n) Si es Sujeto obligado'
