@@ -178,6 +178,7 @@ class NumerationEdit extends Module
       ..on-blur @load-dates
       @_calculate-working-days .._value
       @_calculate-storage-years .._value
+
     @el.query '[name=amount]'
       ..on-blur @load-amount-soles
       @_calculate-ammount-soles .._value
