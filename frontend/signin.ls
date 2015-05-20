@@ -47,6 +47,7 @@ document.body.innerHTML = "
                     else ''}'>
 
           <input type='text' placeholder='Email' name='username'
+              style='width:17em'
               class='#{gz.Css \form-control}'>
 
 
@@ -65,6 +66,7 @@ document.body.innerHTML = "
                     else ''}'>
 
           <input type='password' placeholder='Password' name='password'
+              style='width:11em'
               class='#{gz.Css \form-control}'>
 
           #{if error
