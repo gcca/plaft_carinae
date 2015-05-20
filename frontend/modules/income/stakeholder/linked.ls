@@ -86,6 +86,20 @@ class FormLinked extends panelgroup.FormBody
   /** @private */ _person-type-html: null
 
   /**
+   * Update text for country.
+   * @param {string} _in-or-out Label.
+   * @see _operation-type-to-{in,out}
+   */
+  @@_operation-type-to = (_in-or-out) ->
+    FormLinked::_FIELD_BUSINESS.5._label = 'Código de país de ' + _in-or-out
+
+  @@_operation-type-to-in = ->
+    @_operation-type-to 'origen'
+
+  @@_operation-type-to-out = ->
+    @_operation-type-to 'destino'
+
+  /**
    * Opciones de Tipo de Persona
    */
   @@Type =
@@ -142,11 +156,22 @@ class FormLinked extends panelgroup.FormBody
     * _name: 'social_object'
       _label: 'Objeto social'
 
+    * _name: 'activity'
+      _label: 'Actividad económica principal'
+
     * _name: 'address'
       _label: 'Nombre y N° via direccion'
 
     * _name: 'phone'
       _label: 'Teléfono de la persona en cuyo nombre'
+
+    * _name: 'country'
+      _label: ''  # origen o destino (importación o exportación)
+                  # según el tipo de operación. Ver en el builder.
+      _type: FieldType.kView
+      _options : new InputName do
+                   _name : App.lists.country-sbs._display
+                   _field : 'country'
 
     * _name: 'document_type'
       _type: FieldType.kHidden

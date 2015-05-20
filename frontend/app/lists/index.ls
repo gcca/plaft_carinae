@@ -108,6 +108,8 @@ exports <<<
 
   alerts: require './alerts'
 
+  country-sbs: require './country-sbs'
+
 
 # Generate {@code _pair} attribute
 for , _obj of exports

@@ -76,8 +76,10 @@ class BodyLinked extends panelgroup.JSONBody
     if _type?
       if _type  # Entrada de mercaderia
         @_title = 'Proveedores'
+        LinkedBody._operation-type-to-in!  # (-o-) HARDCODE
       else  # Salida de mercaderia
         @_title = 'Destinatarios de embarque'
+        LinkedBody._operation-type-to-out!  # (-o-) HARDCODE
 
     @$el._append "<h3>#{if @_title? then @_title else ''}</h3>"
     @el._append @_pgStakeholder.render!.el
