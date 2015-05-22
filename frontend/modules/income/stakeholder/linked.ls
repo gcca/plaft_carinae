@@ -71,7 +71,7 @@ class FormLinked extends panelgroup.FormBody
   /** @override */
   render: ->
     ret = super!
-    App.builder.Form._new @el, _FIELD_HEAD
+    App.builder.Form._new @el, @_FIELD_HEAD
       .._elements['customer_type']._field
         ._class +=" #{gz.Css \bg-warning}
                   \ #{gz.Css \has-warning}"
@@ -90,14 +90,15 @@ class FormLinked extends panelgroup.FormBody
    * @param {string} _in-or-out Label.
    * @see _operation-type-to-{in,out}
    */
-  @@_operation-type-to = (_in-or-out) ->
+  @@_operation-type-to = (_in-or-out, _in-or-out-select) ->
     FormLinked::_FIELD_BUSINESS.5._label = 'Código de país de ' + _in-or-out
+    FormLinked::_FIELD_HEAD.0._options = [_in-or-out-select]
 
   @@_operation-type-to-in = ->
-    @_operation-type-to 'origen'
+    @_operation-type-to 'origen', 'Proveedor'
 
   @@_operation-type-to-out = ->
-    @_operation-type-to 'destino'
+    @_operation-type-to 'destino', 'Destinatario de embarque'
 
   /**
    * Opciones de Tipo de Persona
@@ -111,11 +112,13 @@ class FormLinked extends panelgroup.FormBody
   _FIELD_ATTR = App.builder.Form._FIELD_ATTR
 
   /** FIELD */
-  _FIELD_HEAD =
+  _FIELD_HEAD :
     * _name: 'linked_type'
       _label: 'Tipo de vinculación'
       _type: FieldType.kComboBox
-      _options: <[Proveedor]>
+      _options:
+        'Proveedor'
+        'Destinatario de embarque'
 
     * _name: 'customer_type'
       _label: 'Tipo Persona'
