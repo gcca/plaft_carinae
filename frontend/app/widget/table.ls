@@ -115,6 +115,7 @@ class exports.Table extends App.View
     for _attr in @_attributes
       App.dom._new \td
         ..html = @__get-value _model._attributes, _attr
+        ..css = @_column-cell-style[_attr]
         _tr._append ..
 
     _tr._model = _model
@@ -173,6 +174,7 @@ class exports.Table extends App.View
   initialize: ({@_attributes, \
                 _labels, \
                 _templates = {}, \
+                _column-cell-style = {} \
                 @on-dblclick-row = App._void._Function}) ->
     super!
     # <thead>
@@ -180,11 +182,16 @@ class exports.Table extends App.View
     @make-header _labels
     @el._append @t-head
 
-    # Evaluating templates
-    @_templates = _templates
+    # Evaluating templates and column cell style
     for _attr in @_attributes
-      if not @_templates[_attr]
-        @_templates[_attr] = simple-template  # see above of {@initialize}
+      if not _templates[_attr]
+        _templates[_attr] = simple-template  # see above of {@initialize}
+
+      if not _column-cell-style[_attr]
+        _column-cell-style[_attr] = ''
+
+    @_templates = _templates
+    @_column-cell-style = _column-cell-style
 
     # <tbody>
     @t-body = App.dom._new \tbody
@@ -192,6 +199,7 @@ class exports.Table extends App.View
 
   /** @private */ _attributes: null
   /** @private */ _templates: null
+  /** @private */ _column-cell-style: null
   /** @private */ t-head: null
   /** @private */ t-body: null
   /**

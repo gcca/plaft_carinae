@@ -268,6 +268,12 @@ class Numeration extends Module
            #{it}
          </span>"
 
+    _column-cell-style =
+      'declaration.customer.name': 'text-overflow:ellipsis;
+                                    white-space:nowrap;
+                                    overflow:hidden;
+                                    max-width:27ch'
+
     App.ajax._get '/api/customs_agency/list_dispatches', do
       _success: (dispatches) ~>
         _pending = new Dispatches dispatches.'pending'
@@ -275,6 +281,7 @@ class Numeration extends Module
           _attributes: _attributes
           _labels: _labels
           _templates: _templates
+          _column-cell-style: _column-cell-style
           on-dblclick-row: (evt) ~>
             @_desktop.load-next-page(NumerationEdit,
                                      model: evt._target._model)

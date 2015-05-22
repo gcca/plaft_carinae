@@ -97,7 +97,7 @@ def create_employees(agency, j=7):
     agency.store()
 
 
-def create_dispatches(agency, datastore, customers, n=20):
+def create_dispatches(agency, datastore, customers, n=30):
     from string import digits, letters
 
     years = ['2014', '2015', '2016']
@@ -185,6 +185,8 @@ def create_sample_data():
         DCustomer('Javier Huaman',
                   'dni'),
         DCustomer('Cristhian Gonzales',
+                  'dni'),
+        DCustomer('María Cayetana Belén Montserrat Castañeda',
                   'dni'),
         DCustomer('Antonio Adama',
                   'dni'),
