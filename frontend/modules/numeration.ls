@@ -76,20 +76,20 @@ class NumerationEdit extends Module
       _day = if _day <= 9 then "0#{_day}" else "#{_day}"
       _month = _date.get-month! + 1
       _month = if _month <= 9 then "0#{_month}" else "#{_month}"
-      @_last-day.html = "#{_day}/
+      @_last-day-display.html = "#{_day}/
                          #{_month}/
                          #{_date.get-full-year!}"
     else
-      @_last-day.html = ''
+      @_last-day-display.html = ''
 
   _calculate-storage-years: (d) ->
     if d and d isnt ''
       dt = d._split '/'
-      @_five-years.html = "#{dt[0]}/
+      @_five-years-display.html = "#{dt[0]}/
                            #{dt[1]}/
                            #{(parseInt dt[2])+5}"
     else
-      @_five-years.html = ''
+      @_five-years-display.html = ''
 
   _calculate-amount-soles: (amount, exchange-rate) ->
     _value = (parseFloat exchange-rate) * (parseFloat amount)
@@ -107,8 +107,8 @@ class NumerationEdit extends Module
       @_calculate-working-days _value
       @_calculate-storage-years _value
     else
-      @_last-day.html = ''
-      @_five-years.html = ''
+      @_last-day-display.html = ''
+      @_five-years-display.html = ''
 
 
   /** @override */
@@ -130,7 +130,8 @@ class NumerationEdit extends Module
     @el._fromJSON @model._attributes
 
     _amount-id = App.utils.uid 'l'
-    _last-days-id = App.utils.uid 'l'
+    _last-day-id = App.utils.uid 'l'
+    _five-years-id = App.utils.uid 'l'
 
     _template = "
       <div class='#{gz.Css \form-group} #{gz.Css \col-md-12}'>
@@ -160,7 +161,7 @@ class NumerationEdit extends Module
             Último dia UIF
           </label>
           </br>
-          <label id='#{_last-days-id}'
+          <label id='#{_last-day-id}'
                  style='font-size:20px;
                         font-weight:500;'>
           </label>
@@ -172,7 +173,7 @@ class NumerationEdit extends Module
             Vigencia de RO 5 años
           </label>
           </br>
-          <label id='_five-years'
+          <label id='#{_five-years-id}'
                  style='font-size:20px;
                         font-weight:500;'>
           </label>
@@ -182,10 +183,8 @@ class NumerationEdit extends Module
     @$el._append _template
 
     @_amount-display = @el.query "##{_amount-id}"
-    @_last-days-display = @el.query "##{_last-days-id}"
-
-    @_five-years = @el.query '#_five-years'
-    @_last-day = @el.query '#_last-days'
+    @_last-day-display = @el.query "##{_last-day-id}"
+    @_five-years-display = @el.query "##{_five-years-id}"
 
     @model._attributes
       @_calculate-working-days ..'numeration_date'
@@ -195,12 +194,11 @@ class NumerationEdit extends Module
 
     super!
 
-  /** @private */ _five-years: null
-  /** @private */ _last-day: null
   /** @private */ _amount-el: null
   /** @private */ _exchange-rate-el: null
   /** @private */ _amount-display: null
-  /** @private */ _last-days-display: null
+  /** @private */ _last-day-display: null
+  /** @private */ _five-years-display: null
 
   /** Field list for numeration form. (Array.<FieldOptions>) */
   _FIELDS =
