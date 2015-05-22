@@ -64,8 +64,8 @@ class NumerationEdit extends Module
         alert 'ERROR: e746ae94-5a3a-11e4-9a1d-88252caeb7e8'
 
   _calculate-working-days: (d) ->
-    if d isnt ''
-      dt = d.split('/')
+    if d and d isnt ''
+      dt = d._split '/'
       _date = new Date (parseInt dt[2]), (parseInt dt[1])-1, (parseInt dt[0])
       days = 15
       while days
@@ -83,25 +83,22 @@ class NumerationEdit extends Module
       @_last-day.html = ''
 
   _calculate-storage-years: (d) ->
-    if d isnt ''
-      dt = d.split('/')
+    if d and d isnt ''
+      dt = d._split '/'
       @_five-years.html = "#{dt[0]}/
                            #{dt[1]}/
                            #{(parseInt dt[2])+5}"
     else
       @_five-years.html = ''
 
-  _calculate-ammount-soles: (amount) ->
-    _amount-soles = @el.query '#_ammount-soles'
-    dollar = @el.query '[name=exchange_rate]' ._value
-    if amount is '' or isNaN amount
-      _amount-soles.html = ""
-    else
-      _amount-soles.html = "#{(parseFloat dollar)*(parseFloat amount)}"
+  _calculate-amount-soles: (amount, exchange-rate) ->
+    _value = (parseFloat exchange-rate) * (parseFloat amount)
+    @_amount-display.html = if _value then _value.'toFixed' 2 else '-'
 
   load-amount-soles: ~>
-    _value = it._target._value
-    @_calculate-ammount-soles _value
+    _amount = @_amount-el._value
+    _exchange-rate = @_exchange-rate-el._value
+    @_calculate-amount-soles _amount, _exchange-rate
 
   load-dates: ~>
     ExpReg = /^\d{1,2}\/\d{1,2}\/\d{4}$/
@@ -117,10 +114,23 @@ class NumerationEdit extends Module
   /** @override */
   render: ->
     App.builder.Form._new @el, _FIELDS
+
+      .._elements.'numeration_date'._element
+        ..on-blur @load-dates
+
+      @_amount-el = .._elements.'amount'._element
+        ..on-blur @load-amount-soles
+
+      @_exchange-rate-el = .._elements.'exchange_rate'._element
+        ..on-blur @load-amount-soles
+
       ..render!
       .._free!
 
     @el._fromJSON @model._attributes
+
+    _amount-id = App.utils.uid 'l'
+    _last-days-id = App.utils.uid 'l'
 
     _template = "
       <div class='#{gz.Css \form-group} #{gz.Css \col-md-12}'>
@@ -138,7 +148,7 @@ class NumerationEdit extends Module
             Monto en Soles
           </label>
           </br>
-          <label id='_ammount-soles'
+          <label id='#{_amount-id}'
                  style='font-size:20px;
                         font-weight:500;'>
           </label>
@@ -150,7 +160,7 @@ class NumerationEdit extends Module
             Último dia UIF
           </label>
           </br>
-          <label id='_last-days'
+          <label id='#{_last-days-id}'
                  style='font-size:20px;
                         font-weight:500;'>
           </label>
@@ -171,21 +181,26 @@ class NumerationEdit extends Module
 
     @$el._append _template
 
+    @_amount-display = @el.query "##{_amount-id}"
+    @_last-days-display = @el.query "##{_last-days-id}"
+
     @_five-years = @el.query '#_five-years'
     @_last-day = @el.query '#_last-days'
 
-    @el.query '[name=numeration_date]'
-      ..on-blur @load-dates
-      @_calculate-working-days .._value
-      @_calculate-storage-years .._value
-    @el.query '[name=amount]'
-      ..on-blur @load-amount-soles
-      @_calculate-ammount-soles .._value
+    @model._attributes
+      @_calculate-working-days ..'numeration_date'
+      @_calculate-storage-years ..'numeration_date'
+
+      @_calculate-amount-soles ..'amount', ..'exchange_rate'
 
     super!
 
   /** @private */ _five-years: null
   /** @private */ _last-day: null
+  /** @private */ _amount-el: null
+  /** @private */ _exchange-rate-el: null
+  /** @private */ _amount-display: null
+  /** @private */ _last-days-display: null
 
   /** Field list for numeration form. (Array.<FieldOptions>) */
   _FIELDS =
