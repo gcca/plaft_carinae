@@ -86,6 +86,8 @@ class DeclarationPDF(Handler):
                                         s.document_number,
                                         '&nbsp;'*(len(j)+3),
                                         s.name)
+            list += '%s %s<br/>' %('&nbsp;'*(len(j)+3),
+                                    s.ratio)
             i += 1
         return list
 
@@ -133,33 +135,14 @@ class DeclarationPDF(Handler):
             return '-'
 
     def addTable(self, story, data, space, autoColWidths=False):
-        if autoColWidths:
-            table = Table(data, colWidths='*')
-            table.setStyle(TableStyle([('VALIGN',
-                                        (0, 0),
-                                        (-1, -1),
-                                        'MIDDLE'),
-                                       ('INNERGRID',
-                                        (0, 0),
-                                        (-1, -1),
-                                        0.25,
-                                        colors.black),
-                                       ('BOX',
-                                        (0, 0),
-                                        (-1, -1),
-                                        0.25,
-                                        colors.black),
-                                       ('ALIGN',
-                                        (0, 0),
-                                        (-1, -1),
-                                        'CENTER'),
-                                       ('SPAN',
-                                        (0, 0),
-                                        (-1, 0))]))
-            story.append(table)
-        else:
-            table = Table(data, [2.2*inch, 3.5*inch])
-            return table
+        table = Table(data, colWidths='*')
+        table.setStyle(TableStyle([
+        ('VALIGN',    (0, 0), (-1, -1), 'MIDDLE'),
+        ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+        ('BOX',       (0, 0), (-1, -1), 0.25, colors.black),
+        ('ALIGN',     (0, 0), (-1, -1), 'CENTER'),
+        ('SPAN',      (0, 0), (-1, 0))]))
+        story.append(table)
 
     # Adds all the paragraphs for the Person class.
     def makePersonPDF(self, story, dispatch, customer):
@@ -392,7 +375,7 @@ class DeclarationPDF(Handler):
                        [reference, order, jurisdiction],
                        [dispatch.reference, dispatch.order, table]]
 
-        self.addTable(story, headerTable, 12, True)
+        self.addTable(story, headerTable, 12)
 
         titlePDF = Paragraph('<b>DECLARACIÓN DE CONOCIMIENTO DEL CLIENTE</b>',
                             styles['Center'])
