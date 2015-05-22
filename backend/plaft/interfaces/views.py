@@ -76,20 +76,20 @@ class Debug(Handler):  # DEBUG
 class DeclarationPDF(Handler):
 
     def shareholdersList(self, shareholders):
-        list = ''
+        html = []
         i = 1
         for s in shareholders:
             j = '0'+str(i) if i < 10 else str(i)
-            if list:
-                list += '<br/>'
-            list += '%s. %s <br/>%s %s<br/>' %(j,
-                                        s.document_number,
-                                        '&nbsp;'*(len(j)+3),
-                                        s.name)
-            list += '%s %s<br/>' %('&nbsp;'*(len(j)+3),
-                                    s.ratio)
+            html.append('<br/>')
+            html.append('%s. %s <br/>%s %s<br/>' % (j,
+                                                    s.document_number,
+                                                    '&nbsp;'*(len(j)+3),
+                                                    s.name))
+            html.append('%s %s<br/>' % ('&nbsp;'*(len(j)+3),
+                                        s.ratio))
             i += 1
-        return list
+        html.append('<br/>')
+        return ''.join(html)
 
     def checkButtonchk(self, obj, value):
         if hasattr(obj, value):
