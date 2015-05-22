@@ -30,8 +30,8 @@ class Declarant extends panelgroup.FormBody
         ..render!
         .._free!
 
-    @_panel.on (gz.Css \button), ~>
-      @_json = it
+    @_panel.on (gz.Css \load-body), (_dto) ~>
+      @_json = _dto
     ret
 
   /** Local variable for settings. */
