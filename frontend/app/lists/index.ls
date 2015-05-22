@@ -110,6 +110,8 @@ exports <<<
 
   country-sbs: require './country-sbs'
 
+  anexo2: require './anexo2'
+
 
 # Generate {@code _pair} attribute
 for , _obj of exports
