@@ -387,12 +387,12 @@ class Operations extends Module
   /** @override */
   render: ->
     _labels =
-      'J. aduanera'
-      'N Orden'
-      'N regimen aduanero'
-      'Nombre/Razon social'
-      'N DAM'
-      'Fecha declaracion aduanera'
+      'Aduana'
+      'Orden N&ordm;'
+      'Régimen'
+      'Razón social / Nombre'
+      'N&ordm; DAM'
+      'F. Declaración'
       'DI RO'
 
     _attributes =
@@ -403,6 +403,12 @@ class Operations extends Module
       'dam'
       'numeration_date'
       'diro'
+
+    _column-cell-style =
+      'declaration.customer.name': 'text-overflow:ellipsis;
+                                    white-space:nowrap;
+                                    overflow:hidden;
+                                    max-width:27ch'
 
     _template-pending =
       'diro': ->
@@ -425,8 +431,10 @@ class Operations extends Module
                       _attributes: _attributes
                       _labels: _labels
                       _templates: _template-pending
+                      _column-cell-style: _column-cell-style
                       on-dblclick-row: (evt) ~>
-                        @_desktop.load-next-page OperationEdit, model: evt._target._model
+                        @_desktop.load-next-page OperationEdit, do
+                          model: evt._target._model
 
         _table-pending.set-rows _pending
 
@@ -434,12 +442,17 @@ class Operations extends Module
                       _attributes: _attributes
                       _labels: _labels
                       _templates: _template-accepting
+                      _column-cell-style: _column-cell-style
 
         _table-accepting.set-rows _accepting
 
         @$el._append '<h4>Lista de despachos pendientes</h4>'
         @el._append _table-pending.render!.el
 
+        @$el._append "<div class='#{gz.Css \col-md-12}'
+                           style='margin-bottom:20px'>
+                        <hr>
+                      </div>"
 
         @$el._append '<h4>Lista de despachos aceptados</h4>'
         @el._append _table-accepting.render!.el

@@ -231,12 +231,12 @@ class Numeration extends Module
   /** @override */
   render: ->
     _labels =
-      'J. Aduana'
-      'N Orden'
-      'R. Aduana'
-      'Razon social'
-      'N DAM'
-      'Fecha numeracion'
+      'Aduana'
+      'Orden N&ordm;'
+      'Régimen'
+      'Razón social / Nombre'
+      'N&ordm; DAM'
+      'F. Numerac'
       'FOB $'
       'Canal'
 
