@@ -133,6 +133,7 @@ class OperationEdit extends Module
   load-list-operation: (_dto) ->
     _customer = _dto.'declaration'.'customer'
     _stk = _dto.'stakeholders'.'0'
+
     _list-operation = []
     _list-operation._push @empty-field _customer.'money_source_type'
     _list-operation._push _dto.'regime'.'name' + "("+_dto.'regime'.'code'+")"
@@ -183,7 +184,11 @@ class OperationEdit extends Module
     _declarant = _dto.'0'
     if not _declarant?
       list-declarant = ['-' for til 16]
-      return list-declarant
+
+      @load-table App.lists.anexo2.declarant._code,
+                  App.lists.anexo2.declarant._display,
+                  list-declarant
+      return
     list-declarant = []
 
 
