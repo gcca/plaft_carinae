@@ -231,4 +231,9 @@ def list_operations(customs_agency):
             in Operation.all(customs_agency_key=customs_agency.key)]
 
 
+def list_dispatches(customs_agency):
+    """."""
+    return Dispatch.all(customs_agency_key=customs_agency.key)
+
+
 # vim: et:ts=4:sw=4

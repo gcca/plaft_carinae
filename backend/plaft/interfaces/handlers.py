@@ -37,6 +37,18 @@ class Datastore(RESTHandler):  # DEBUG
 
 
 @handler_method
+def dispatches(handler):
+    """ (Handler) -> None
+
+    => [Dispatch]
+    """
+    customs_agency = handler.user.customs_agency
+    handler.render_json(
+        plaft.application.dispatch.list_dispatches(customs_agency)
+    )
+
+
+@handler_method
 def pending_and_accepting(handler):
     """ (Handler) -> None
 

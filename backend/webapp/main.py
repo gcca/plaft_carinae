@@ -45,6 +45,7 @@ urls = [
     ('/api/dispatch/(\d+)/anexo_seis', handlers.anexo_seis),
     ('/api/customs_agency/list_dispatches', handlers.pending_and_accepting),
     ('/api/operation/list', handlers.list_operation),
+    ('/api/dispatch/list', handlers.dispatches),
     ('/api/reporte_operaciones', handlers.reporte_operaciones),
     ('/generate_user/(\d+)', handlers.generate_user),
     ('/update_data', handlers.update_data),
