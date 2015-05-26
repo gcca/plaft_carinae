@@ -45,6 +45,9 @@ class Business extends Customer
     else
       _officer-yes._disabled = off
 
+  /** @protected */
+  set-default-type: -> @set-type 'j'
+
   /** @override */
   render: ->
     @form-builder = new App.builder.Form @el, _FIELD_BUSINESS

@@ -27,18 +27,25 @@ class Customer extends App.View
   set-type: ->
     @_select._value = it
 
+  /** @protected */
+  set-default-type: ->
+    throw 'BRUTAL-ERROR'
+
   on-customer-type-change: ~>
     @trigger (gz.Css \change), it._target._value
 
   /** @override */
   initialize: ->
     super!
+
     @_select = App.dom._new \select
       .._class = gz.Css \form-control
       ..html = "<option value='j'>Jurídica</option>
-                <option value='n'>Natural</option>"
+                <option value='n'}>Natural</option>"
       ..css = 'width:48.5%'
       ..on-change @on-customer-type-change
+
+    @set-default-type!
 
     _div = App.dom._new \div
       .._class = "#{gz.Css \form-group}

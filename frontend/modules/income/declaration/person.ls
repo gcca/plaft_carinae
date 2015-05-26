@@ -34,6 +34,9 @@ class Person extends Customer
     else
       _officer-yes._disabled = off
 
+  /** @protected */
+  set-default-type: -> @set-type 'n'
+
   /** @override */
   render: ->
     @form-builder = new App.builder.Form @el, _FIELD_PERSON
