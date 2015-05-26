@@ -45,28 +45,109 @@ class OperationEdit extends Module
       _bad-request: ~>
         alert 'DENEGADO (Error)'
 
-  empty-field: (_field) ->
+  upper-field: (_field) ->
     if _field?
+      return  _field.to-upper-case!
+    else
+      return 'No aplica'
+
+  empty-field: (_field, message='No aplica') ->
+    if _field?
+      if _field is ""
+        return message
+      else
+        return _field
+    else
+      return message
+
+  in-country: (_field) ->
+    if @_type
       return _field
     else
-      return '-'
+      return 'No aplica'
+
+  out-country: (_field) ->
+    if not @_type
+      return _field
+    else
+      return 'No aplica'
+
+  load-header: (_dto) ->
+    _customer = _dto.'declaration'.'customer'
+    if _customer.'document_type' is \ruc
+      _name = _customer.'name'
+    else
+      _name = "#{_customer.'name'}
+             \ #{_customer.'father_name'}
+             \ #{_customer.'mother_name'}"
+    $ @el._first ._append "
+      <div class='#{gz.Css \col-md-6}'>
+        <label class='#{gz.Css \col-md-6}'>
+          N Orden despacho
+        </label>
+        <label class='#{gz.Css \col-md-6}'
+               style='border:solid'>
+          #{_dto.'order'}
+        </label>
+        <label class='#{gz.Css \col-md-6}'>
+          N DAM
+        </label>
+        <label class='#{gz.Css \col-md-6}'
+               style='border:solid'>
+          #{_dto.'dam'}
+        </label>
+        <label class='#{gz.Css \col-md-6}'>
+          Tipo de operación
+        </label>
+        <label class='#{gz.Css \col-md-6}'
+               style='border:solid'>
+          #{_dto.'regime'.'code'}
+        </label>
+      </div>
+
+      <div class='#{gz.Css \col-md-6}'>
+        <label class='#{gz.Css \col-md-6}'>
+          Razón social/Nombre
+        </label>
+        <label class='#{gz.Css \col-md-6}'
+               style='border:solid'>
+          #{_name}
+        </label>
+        <label class='#{gz.Css \col-md-6}'>
+          Fecha numeración
+        </label>
+        <label class='#{gz.Css \col-md-6}'
+               style='border:solid'>
+          #{_dto.'numeration_date'}
+        </label>
+        <label class='#{gz.Css \col-md-6}'>
+          Descripción
+        </label>
+        <label class='#{gz.Css \col-md-6}'
+               style='border:solid'>
+          #{_dto.'regime'.'name'}
+        </label>
+      </div>"
+
 
   load-list-operation: (_dto) ->
     _customer = _dto.'declaration'.'customer'
+    _stk = _dto.'stakeholders'.'0'
     _list-operation = []
     _list-operation._push @empty-field _customer.'money_source_type'
-    _list-operation._push 'No existe dato'
-    _list-operation._push '-'
+    _list-operation._push _dto.'regime'.'name' + "("+_dto.'regime'.'code'+")"
+    _list-operation._push 'No aplica'
     _list-operation._push @empty-field _dto.'description'
     _list-operation._push @empty-field _dto.'dam'
     _list-operation._push @empty-field _dto.'numeration_date'
     _list-operation._push @empty-field _customer.'money_source'
-    _list-operation._push ''
-    _list-operation._push ''
-    _list-operation._push ''
-    _list-operation._push ''
-    _list-operation._push ''
-    _list-operation._push ''
+    _list-operation._push 'D'
+    _list-operation._push 'No aplica'
+    _list-operation._push parseFloat _dto.'amount'*_dto.'exchange_rate'
+    _list-operation._push _dto.'exchange_rate'
+    _list-operation._push @in-country _stk.'country'  # Verificar de donde sacar el dato.
+    _list-operation._push @out-country _stk.'country'  # Verificar de donde sacar el dato.
+
 
     @load-table App.lists.anexo2.operation._code,
                 App.lists.anexo2.operation._display,
@@ -74,7 +155,7 @@ class OperationEdit extends Module
 
   load-list-third: (_third) ->
     if not _third? or _third.'identification_type' is 'No'
-      list-third = ['-' for til 7]
+      list-third = ['No aplica' for til 7]
     else
       if _third.'document_type'?
         _third-type = 'Persona Natural'
@@ -105,15 +186,15 @@ class OperationEdit extends Module
       return list-declarant
     list-declarant = []
 
-    if _dto.'ciuu'?
+
+    if _declarant.'ciiu'?
       _ciiu = _declarant.'ciiu'.'name'
 
-    if _dto.'ubigeo'?
-      _ubigeo = _declarant.'ubigeo'.'name'
-
+    if _declarant.'ubigeo'?
+      _ubigeo = _declarant.'ubigeo'.'code' + " " + _declarant.'ubigeo'.'name'
     list-declarant._push @empty-field _declarant.'represents_to'
     list-declarant._push @empty-field _declarant.'residence_status'
-    list-declarant._push @empty-field _declarant.'document_type'
+    list-declarant._push @upper-field _declarant.'document_type'
     list-declarant._push @empty-field _declarant.'document_number'
     list-declarant._push @empty-field _declarant.'issuance_country'
     list-declarant._push @empty-field _declarant.'father_name'
@@ -121,7 +202,7 @@ class OperationEdit extends Module
     list-declarant._push @empty-field _declarant.'name'
     list-declarant._push @empty-field _declarant.'nationality'
     list-declarant._push @empty-field _declarant.'activity'
-    list-declarant._push '-'
+    list-declarant._push 'No aplica'
     list-declarant._push @empty-field _ciiu
     list-declarant._push @empty-field _declarant.'position'
     list-declarant._push @empty-field _declarant.'address'
@@ -137,49 +218,47 @@ class OperationEdit extends Module
     _customer = _dto.'declaration'.'customer'
     if _customer.'document_type' is \ruc
       _customer-type = 'Persona Jurídica'
-      _dnumber = '-'
-      _document-type = '-'
+      _dnumber = 'No aplica'
       _document-number = _customer.'document_number'
       _name = _customer.'name'
-      _name35 = '-'
-      _ocupation = '-'
+      _name35 = 'No aplica'
+      _ocupation = 'No aplica'
       _activity = _customer.'activity'
     else
       _customer-type = 'Persona Natural'
       _dnumber = _customer.'document_number'
-      _document-type = _customer.'document_type'
       _document-number = _customer.'ruc'
       _name = _customer.'father_name'
       _name35 = _customer.'name'
       _ocupation = _customer.'activity'
-      _activity = '-'
+      _activity = 'No aplica'
 
     list-customer._push  _title
     if _isTrue
       _code-array = App.lists.anexo2.linked1._code
       _display-array = App.lists.anexo2.linked1._display
-      list-customer._push  'No existe dato'
+      list-customer._push  @empty-field _customer.'legal_type'
     else
       _code-array = App.lists.anexo2.linked2._code
       _display-array = App.lists.anexo2.linked2._display
 
-    list-customer._push  'No existe dato'
+    list-customer._push  @empty-field _customer.'condition'
     list-customer._push  _customer-type
-    list-customer._push  _document-type
-    list-customer._push  _dnumber
+    list-customer._push  @upper-field _customer.'document_type'
+    list-customer._push  @empty-field _customer.'condition'
     list-customer._push  @empty-field _customer.'issuance_country'
-    list-customer._push  _document-number
-    list-customer._push  _name
+    list-customer._push  @empty-field _document-number
+    list-customer._push  @empty-field _name
     list-customer._push  @empty-field _customer.'mother_name'
-    list-customer._push  _name35
+    list-customer._push  @empty-field _name35
     list-customer._push  @empty-field _customer.'nationality'
-    list-customer._push  _ocupation
-    list-customer._push  '-' # Ya no existe descripcion de otros
+    list-customer._push  @empty-field _ocupation
+    list-customer._push  'No aplica' # Ya no existe descripcion de otros
     list-customer._push  _activity
-    list-customer._push  'No existe dato'
+    list-customer._push  'No aplica'   # No existe dato en Anexo 5
     list-customer._push  @empty-field _customer.'employment'
     list-customer._push  @empty-field _customer.'fiscal_address'
-    list-customer._push  'No existe dato'
+    list-customer._push  'No aplica'  # No existe dato en Anexo 5
     list-customer._push  @empty-field _customer.'phone'
 
     @load-table _code-array,
@@ -194,7 +273,7 @@ class OperationEdit extends Module
       if _stkholder.'document_type' is \ruc
         _stkholder-type = 'Persona Jurídica'
         _name = _stkholder.'name'
-        _name35 = '-'
+        _name35 = 'No aplica'
       else
         _stkholder-type = 'Persona Natural'
         _name = _stkholder.'father_name'
@@ -204,28 +283,28 @@ class OperationEdit extends Module
       if _isTrue
         _code-array = App.lists.anexo2.linked1._code
         _display-array = App.lists.anexo2.linked1._display
-        list-linked._push  'No existe dato'
+        list-linked._push  @empty-field _stkholder.'legal_type'
       else
         _code-array = App.lists.anexo2.linked2._code
         _display-array = App.lists.anexo2.linked2._display
-      list-linked._push  '-'
+      list-linked._push  @empty-field _stkholder.'condition'
       list-linked._push  _stkholder-type  # Verificar tipo de persona
-      list-linked._push  @empty-field _stkholder.'document_type'
+      list-linked._push  @upper-field _stkholder.'document_type'
       list-linked._push  @empty-field _stkholder.'document_number'
-      list-linked._push  @empty-field _stkholder.'country'
-      list-linked._push  '-'
+      list-linked._push  @empty-field _stkholder.'issuance_country'
+      list-linked._push  @empty-field!
       list-linked._push  _name
       list-linked._push  @empty-field _stkholder.'mother_name'
       list-linked._push  _name35
-      list-linked._push  'No tiene dato'
-      list-linked._push  '-'
-      list-linked._push  '-'
-      list-linked._push  '-'
-      list-linked._push  '-'
-      list-linked._push  '-'
+      list-linked._push  @empty-field _stkholder.'nationality'
+      list-linked._push  @empty-field!
+      list-linked._push  @empty-field!
+      list-linked._push  @empty-field _stkholder.'activity'
+      list-linked._push  @empty-field!
+      list-linked._push  @empty-field!
       list-linked._push  @empty-field _stkholder.'address'
-      list-linked._push  '-'
-      list-linked._push  '-'
+      list-linked._push  @empty-field!
+      list-linked._push  @empty-field _stkholder.'phone'
 
       @load-table _code-array,
                   _display-array,
@@ -294,6 +373,9 @@ class OperationEdit extends Module
     </div>"
     _dto-anexo2 = @model._attributes
 
+
+    @load-header _dto-anexo2
+
     $ @el._last ._append '<h4>DATOS DE IDENTIFICACIÓN DE LAS PERSONAS
                           \ QUE SOLICITA O FISICAMENTE REALIZA LA OPERACIÓN
                           \ EN REPRESENTACIÓN DEL CLIENTE DEL SUJETO OBLIGADO
@@ -301,8 +383,8 @@ class OperationEdit extends Module
 
     @load-list-declarant _dto-anexo2.'declarants'
 
-    _type = @check-list _dto-anexo2.'regime'.'name'
-    if _type
+    @_type = @check-list _dto-anexo2.'regime'.'name'
+    if @_type
 
       $ @el._last ._append '<h4>DATOS DE IDENTIFICACIÓN DE LS PERSONAS
                           \ EN CUYOS NOMBRES SE REALIZA LA OPERACIÓN
@@ -351,12 +433,7 @@ class OperationEdit extends Module
 
     super!
 
-  /**
-   * Opciones de Tipo de Persona
-   */
-  @@Type =
-    kIn: on
-    kOut: off
+  _type: null
 
 
 /**
