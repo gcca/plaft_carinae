@@ -62,13 +62,13 @@ class OperationEdit extends Module
 
   in-country: (_field) ->
     if @_type
-      return _field
+      return @empty-field _field
     else
       return 'No aplica'
 
   out-country: (_field) ->
     if not @_type
-      return _field
+      return @empty-field _field
     else
       return 'No aplica'
 
@@ -145,7 +145,7 @@ class OperationEdit extends Module
     _list-operation._push 'D'
     _list-operation._push 'No aplica'
     _list-operation._push parseFloat _dto.'amount'*_dto.'exchange_rate'
-    _list-operation._push _dto.'exchange_rate'
+    _list-operation._push @empty-field _dto.'exchange_rate'
     _list-operation._push @in-country _stk.'country'  # Verificar de donde sacar el dato.
     _list-operation._push @out-country _stk.'country'  # Verificar de donde sacar el dato.
 
@@ -259,7 +259,7 @@ class OperationEdit extends Module
     list-customer._push  @empty-field _customer.'nationality'
     list-customer._push  @empty-field _ocupation
     list-customer._push  'No aplica' # Ya no existe descripcion de otros
-    list-customer._push  _activity
+    list-customer._push  @empty-field _activity
     list-customer._push  'No aplica'   # No existe dato en Anexo 5
     list-customer._push  @empty-field _customer.'employment'
     list-customer._push  @empty-field _customer.'fiscal_address'
