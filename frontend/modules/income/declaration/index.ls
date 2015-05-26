@@ -39,12 +39,14 @@ class ControlPDF extends App.View
 
   _pdf: null
 
+
 class DeclarationHeading extends panelgroup.PanelHeading
 
   _controls: [panelgroup.ControlTitle, ControlPDF]
 
 
 # BODY
+
 class DeclarationBody extends panelgroup.JSONBody
 
   /**
