@@ -84,7 +84,7 @@ class OperationList extends Module
       'N DAM'
 
     _attributes =
-      '**' # TODO:buscar una manera para darle un espacio en blanco.
+      '**'  # TODO:buscar una manera para darle un espacio en blanco.
       'order'
       'dam'
 

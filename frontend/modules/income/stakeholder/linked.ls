@@ -138,7 +138,7 @@ class FormLinked extends panelgroup.FormBody
     * _name: 'name'
       _label: 'Nombre completo'
 
-    * _name: 'country'
+    * _name: 'issuance_country'
       _label: 'País de emisión del documento'
 
     * _name: 'address'
@@ -146,6 +146,9 @@ class FormLinked extends panelgroup.FormBody
 
     * _name: 'phone'
       _label: 'Teléfono de la persona'
+
+    * _name: 'nationality'
+      _label: 'Nacionalidad'
 
     * _name: 'document_type'
       _type: FieldType.kHidden
