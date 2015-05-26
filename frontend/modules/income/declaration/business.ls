@@ -62,7 +62,6 @@ class Business extends Customer
 
   /** Local variable for settings. */
   _GRID = App.builder.Form._GRID
-  _FIELD_ATTR = App.builder.Form._FIELD_ATTR
 
   /** FIELD */
   _FIELD_BUSINESS =
