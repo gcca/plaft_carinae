@@ -2,6 +2,8 @@
 
 
 panelgroup = App.widget.panelgroup
+table = App.widget.table
+  Table = ..Table
 
 declaration = require './declaration'
 DeclarantBody = require './declarant'
@@ -12,9 +14,15 @@ Module = require '../../workspace/module'
 
 
 class Dispatch extends App.Model
-
   /** @oevrride */
   urlRoot: \income
+
+/**
+* @Class Dispatches
+* @extends Collection
+*/
+class Dispatches extends App.Collection
+  model: Dispatch
 
 
 class Income extends Module
@@ -158,16 +166,69 @@ class Income extends Module
 
   /** @override */
   render: ->
+    _labels =
+      'Aduana'
+      'Orden N&ordm;'
+      'Fecha'
+      'Regime'
+      'Razón social / Nombre'
+      'RUC/DNI'
+      ''
+
+    _attributes =
+      'jurisdiction.code'
+      'order'
+      'income_date'
+      'regime.code'
+      'declaration.customer'
+      'declaration.customer.document_number'
+      'dumpy'
+
+    _templates =
+      'declaration.customer': ->
+        "#{if it.'document_type' is \ruc then it.'name'
+            else it.'name'+' '+it.'father_name'+' '+ it.'mother_name'}"
+      'dumpy': ->
+        "<span class='#{gz.Css \glyphicon}
+                    \ #{gz.Css \glyphicon-remove}'
+            style='cursor:pointer;font-size:18px'></span>"
+
     @el.html = "
-      <span>
+      <div>
         <span style='vertical-align:super'>
-          Ingrese el DNI o el Orden de Despacho.
+          Si desea agregar una nueva operación, por favor
+        \ ingrese el número de DNI/RUC.
         </span>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <i class='#{gz.Css \glyphicon}
                 \ #{gz.Css \glyphicon-hand-up}'
            style='font-size:20pt'></i>
-      </span>"
+      </div><br/>"
+
+    _column-cell-style =
+      'declaration.customer.name': 'text-overflow:ellipsis;
+                                    white-space:nowrap;
+                                    overflow:hidden;
+                                    max-width:27ch'
+
+    App.ajax._get '/api/dispatch/list', do
+      _success: (dispatches) ~>
+        _pending = new Dispatches dispatches
+        _table = new Table  do
+          _attributes: _attributes
+          _labels: _labels
+          _templates: _templates
+          _column-cell-style: _column-cell-style
+          on-dblclick-row: (evt) ~>
+            _dispatch =  evt._target._model._attributes
+            @on-search _dispatch.'order', @@_SEARCHENUM.kByOrder
+
+        _table.set-rows _pending
+
+        @el._append _table.render!.el
+
+      _error: ->
+        alert 'Error!!! Numeration list'
     @_desktop._search._focus 'DNI o número de orden'
     super!
 
