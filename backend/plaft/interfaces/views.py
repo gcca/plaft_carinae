@@ -148,7 +148,11 @@ class DeclarationPDF(Handler):
     def makePersonPDF(self, story, dispatch, customer):
         content = []
         content.append(['a)','Nombres y apellidos',
-                        self.checkEmpty(customer, 'name')])
+                        self.checkEmpty(customer, 'name')
+                        +", " +
+                        self.checkEmpty(customer, 'father_name')
+                        +" " +
+                        self.checkEmpty(customer, 'mother_name')])
 
         content.append(['b)','Tipo de documento de identidad',
                         (self.checkEmpty(customer, 'document_type')).upper()])
@@ -204,8 +208,7 @@ class DeclarationPDF(Handler):
                                 en Perú o en el extranjero, indicando el
                                 nombre del organismo público u organización
                                 internacional''',
-                        self.checkEmpty(customer, 'employment',
-                                                'Sin cargo publico')])
+                        self.checkEmpty(customer, 'employment')])
 
         content.append(['m)','El origen de los fondos, bienes u otros'
                              ' activos involucrados en dicha transaccion'
@@ -441,64 +444,96 @@ class NewUsers(Handler):  # DEBUG
     def to_li(agency):
         officer = agency.officer
         return (
-            '<tr>'
-            '<td style="padding:4px 14px">%s</td>'
-            '<td style="padding:4px 14px">%s</td>'
-            '<td style="padding:4px 14px">&times;</td>'
-            '</tr>') % (agency.name, officer.username)
+            """
+            <div style='width:100%%;display:table-row-group;margin:4px 0'>
+                <form method='post' action='/new-user/%(agency_id)s?opt=edit'
+                        style='width:70%%;display:table-cell'>
+                    <label style='width:30%%;min-width:250px;
+                        margin:0 5px'>%(agency_name)s</label>
+                    <input
+                        type='hidden'
+                        value='%(agency_name)s'
+                        name='agency'/>
+                    <input style='width:40%%;margin:0 5px'
+                        type='text'
+                        value='%(office_name)s'
+                        name='username'/>
+                    <input style='width:20%%;margin:0 5px'
+                        type='text'
+                        name='password'/>
+                    <input type='submit' value='GRD'>
+                </form>
 
-    def template(self, agency='', username='', customs_id='', password='',
+                <form method='post' action='/new-user/%(agency_id)s?opt=delete'
+                    style='display:table-cell'>
+                    <input type='submit' value='X'>
+                </form>
+            </div>
+            <br/>""") % {
+        'agency_name': agency.name,
+        'office_name': officer.username,
+        'agency_id': agency.id
+        }
+
+    def template(self, agency='', username='', password='',
                  msg='', mode='create'):
 
-        title = 'Editar' if customs_id else 'Nuevo'
+
         agencies = ''.join(self.to_li(a) for a in model.CustomsAgency.all())
 
         return u"""
             <html>
                 <body>
-                    <h4>%(title)s</h4>
+                    <h4>Nuevo Registro</h4>
                     <form method='post'>
-                        <label><i>Buscar (por nombre de agencia): </i></label>
-                        <input type='text' name='search'>
-                        <span style='color:red'>%(msg)s</span>
-                        <br/>
-                        <br/>
-                        <label>Nombre de la agencia: </label>
-                        <input type='text'
+                        <table>
+                         <tr>
+                          <td>
+                            <label>Nombre de la agencia: </label>
+                          </td>
+                          <td>
+                            <label>Correo del oficial de cumplimiento: </label>
+                          </td>
+                          <td>
+                            <label>Contraseña: </label>
+                          </td>
+                         </tr>
+                         <tr>
+                          <td>
+                            <input type='text'
                                name='agency'
                                value='%(agency)s'>
-                        <br/>
-                        <label>Correo del oficial de cumplimiento: </label>
-                        <input type='text'
-                               name='username'
-                               value='%(username)s'>
-                        <br/>
-                        <label>Contraseña: </label>
-                        <input type='text'
+                          </td>
+                          <td>
+                            <input type='text'
+                                   name='username'
+                                   value='%(username)s'>
+                          </td>
+                          <td>
+                            <input type='text'
                                name='password'
                                value='%(password)s'>
+                          </td>
+                         </tr>
+
+                        </table>
                         <br/>
-                        <input type='submit'>
+                        <input type='submit' value='Registrar'>
                         <a href=''>Nuevo</a>
-                        <input type='hidden'
-                               name='customs_id'
-                               value='%(customs_id)s'>
                         <input type='hidden'
                                name='mode'
                                value='s'>
                     </form>
                 </body>
                 <hr>
-                <table>
+                <div style='width:900px;display:table'>
                   %(agencies)s
-                </table>
+                </div>
             </html>
         """ % {
             'agency': agency,
             'username': username,
-            'customs_id': customs_id,
             'password': password,
-            'title': title,
             'msg': msg,
             'agencies': agencies
         }
@@ -506,35 +541,28 @@ class NewUsers(Handler):  # DEBUG
     def get(self):
         self.write(self.template())
 
-    def post(self):
-        search = unicode(self.request.get('search'))
-        if search:
-            customs_agency = model.CustomsAgency.find(name=search)
-            if customs_agency:
-                username = customs_agency.officer_key.username
-                self.write(self.template(search,
-                                         username,
-                                         customs_agency.id))
-            else:
-                self.write(self.template(msg='No encontrado.'))
-
-            return
+    def post(self, customs_id=None):
 
         agency_name = unicode(self.request.get('agency'))
         username = unicode(self.request.get('username'))
         password = unicode(self.request.get('password'))
-        customs_id = unicode(self.request.get('customs_id'))
+        operation = unicode(self.request.get('opt'))
 
         if customs_id:
-            customs_agency = model.CustomsAgency.find(int(customs_id))
+            if operation == 'edit':
+                customs_agency = model.CustomsAgency.find(int(customs_id))
 
-            customs_agency.name = agency_name
-            customs_agency.store()
+                customs_agency.name = agency_name
+                customs_agency.store()
 
-            officer = customs_agency.officer_key
-            officer.username = username
-            officer.populate(password=password)
-            officer.store()
+                officer = customs_agency.officer
+                officer.username = username
+                officer.password = password
+                officer.store()
+                self.write(self.template())
+            else:
+                return
+
         else:
             customs_agency = model.CustomsAgency(name=agency_name)
             customs_agency.store()
@@ -550,10 +578,10 @@ class NewUsers(Handler):  # DEBUG
             customs_agency.officer_key = officer.key
             customs_agency.store()
 
-        self.write(self.template(agency_name,
-                                 username,
-                                 customs_agency.id,
-                                 password))
+            self.write(self.template(agency_name,
+                                     username,
+                                     password))
+
 
 
 # vim: et:ts=4:sw=4
