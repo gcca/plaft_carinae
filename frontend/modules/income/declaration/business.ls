@@ -76,6 +76,10 @@ class Business extends Customer
     * _name: 'document_number'
       _label: 'b) N&ordm; RUC'
 
+    ::COMMON-FIELDS._legal-type
+
+    ::COMMON-FIELDS._condition
+
     * _name: 'social_object'
       _label: 'c) Objeto Social'
 
@@ -112,6 +116,10 @@ class Business extends Customer
 
     * _name: 'money_source'
       _label: 'Origen de los fondos'
+
+    ::COMMON-FIELDS._ciiu
+
+    ::COMMON-FIELDS._ubigeo
 
     * _name: 'is_obligated'
       _label: 'j) Si es Sujeto obligado'

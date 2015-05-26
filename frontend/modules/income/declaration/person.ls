@@ -92,6 +92,10 @@ class Person extends Customer
       _tip: 'País de emisión del documento de la persona en cuyo nombre
            \ se realiza la operación.'
 
+    ::COMMON-FIELDS._legal-type
+
+    ::COMMON-FIELDS._condition
+
     * _name: 'ruc'
       _label: 'c) RUC, de ser el caso'
       _tip: 'Número de RUC de la persona en cuyo nombre se realiza la operación.'
@@ -158,6 +162,10 @@ class Person extends Customer
 
     * _name: 'money_source'
       _label: 'Origen de los fondos'
+
+    ::COMMON-FIELDS._ciiu
+
+    ::COMMON-FIELDS._ubigeo
 
     * _name: 'is_obligated'
       _label: 'n) Si es Sujeto obligado'
