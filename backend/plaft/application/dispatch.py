@@ -233,7 +233,8 @@ def list_operations(customs_agency):
 
 def list_dispatches(customs_agency):
     """."""
-    return Dispatch.all(customs_agency_key=customs_agency.key)
+    return sorted(Dispatch.all(customs_agency_key=customs_agency.key),
+                  key=lambda d: d.order)
 
 
 # vim: et:ts=4:sw=4
