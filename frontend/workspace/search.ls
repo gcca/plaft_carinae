@@ -69,6 +69,7 @@ class Search extends App.View
    * @private
    */
   _menu: (_items) ->
+    @_menu-dropdown.html = null  # clean dropdown
     if _items? and _items._length  # show menu
       for _item in _items
         _a = App.dom._new \a
