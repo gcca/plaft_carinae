@@ -212,10 +212,6 @@ def create_sample_data():
         Data('Cyberdine',
              'Mice Dyson',
              'mice@cd.io',
-             '123'),
-        Data('CavaSoft SAC',
-             'César Vargas',
-             'cesarvargas@cavasoftsac.com',
              '123')
     ]
 
@@ -241,6 +237,20 @@ def create_sample_data():
         operations(agency, list_dispatches, datastore)
 
     create_autocomplete()  # TODO: Remove when update domain model
+
+    # HARDCODED data
+    ca = CustomsAgency(name='CavaSoft SAC')
+    ca.store()
+
+    ds = Datastore(customs_agency_key=ca.key)
+    ds.store()
+
+    of = Officer(customs_agency_key=ca.key,
+                 name='César Vargas',
+                 username='cesarvargas@cavasoftsac.com',
+                 password='123')
+    ca.officer_key = of.store()
+    ca.store()
 
 
 # LIST
