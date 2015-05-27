@@ -58,6 +58,7 @@ class Income extends Module
           _dispatch_dto =
             'declaration':
               'customer': _customer-dto
+            'declarants': [_customer-dto.'declarant']
           @render-panels _dispatch_dto
         _not-found: ~>  # income with new customer
           _dispatch_dto =

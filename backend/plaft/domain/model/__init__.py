@@ -95,6 +95,32 @@ class Employee(User):
 
 # Clientes (de la agencia de aduanas)
 
+# Tiene una referencia cruzada entre dispatch - * - customer
+class Declarant(dom.Model):  # TODO: update in domain model
+    """."""
+    represents_to = dom.String()
+    residence_status = dom.String()
+    # (-o-) A los dos.
+    document_type = dom.String()
+    document_number = dom.String()
+
+    issuance_country = dom.String()
+    name = dom.String()
+    father_name = dom.String(default='')
+    mother_name = dom.String(default='')
+    nationality = dom.String()
+    activity = dom.String()
+    ciiu = dom.Structured(CodeName)  # (-o-) dom.String
+    position = dom.String()
+    address = dom.String()
+    ubigeo = dom.Structured(CodeName)  # (-o-) dom.String
+    phone = dom.String()
+
+    slug = dom.Computed(lambda s: '%s %s %s' % (s.name,
+                                                s.father_name,
+                                                s.mother_name))
+
+
 class Customer(dom.Model, dom.PolyModel):
     """Cliente."""
     name = dom.String()  # nombre o razón social del cliente
@@ -118,6 +144,8 @@ class Customer(dom.Model, dom.PolyModel):
     is_obligated = dom.String()  # (-o-) boolean
     has_officer = dom.String()  # (-o-) boolean
     condition = dom.String()  # residencia
+
+    declarant_key = dom.Key(Declarant)
 
     def __new__(cls, **kwargs):
         """Polymorphic creation to implement the factory pattern
@@ -193,31 +221,6 @@ class Business(Customer):
 
 
 # Involucrados
-
-class Declarant(dom.Model):
-    """."""
-    represents_to = dom.String()
-    residence_status = dom.String()
-    # (-o-) A los dos.
-    document_type = dom.String()
-    document_number = dom.String()
-
-    issuance_country = dom.String()
-    name = dom.String()
-    father_name = dom.String(default='')
-    mother_name = dom.String(default='')
-    nationality = dom.String()
-    activity = dom.String()
-    ciiu = dom.Structured(CodeName)  # (-o-) dom.String
-    position = dom.String()
-    address = dom.String()
-    ubigeo = dom.Structured(CodeName)  # (-o-) dom.String
-    phone = dom.String()
-
-    slug = dom.Computed(lambda s: '%s %s %s' % (s.name,
-                                                s.father_name,
-                                                s.mother_name))
-
 
 class Stakeholder(dom.Model):
     """."""

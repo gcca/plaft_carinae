@@ -35,7 +35,8 @@ def update_stakeholders(dispatch):
         dct = dcl.dict
         del dct['slug']
         new_dcl << dct
-        new_dcl.store()
+        customer.declarant_key = new_dcl.store()  # WARNING: only a declarant
+        customer.store()  # TODO: Change this when update domain model.
 
 
 def create(payload, customs_agency, customer=None):
