@@ -97,7 +97,7 @@ def create_employees(agency, j=7):
     agency.store()
 
 
-def create_dispatches(agency, datastore, customers, n=15):
+def create_dispatches(agency, datastore, customers, n=30):
     from string import digits, letters
 
     years = ['2014', '2015', '2016']
