@@ -130,15 +130,15 @@ class Income extends Module
       _dispatch:  _panel-group.new-panel do
                     _panel-heading: panelgroup.PanelHeading
                     _panel-body: DispatchBody
+      _stakeholders: _panel-group.new-panel do
+                      _panel-heading: panelgroup.PanelHeading
+                      _panel-body: StakeholderBody
       _declaration: _panel-group.new-panel do
                       _panel-heading: declaration.Heading
                       _panel-body: declaration.Body
       _declarants: _panel-group.new-panel do
                      _panel-heading: panelgroup.PanelHeading
                      _panel-body: DeclarantBody
-      _stakeholders: _panel-group.new-panel do
-                      _panel-heading: panelgroup.PanelHeading
-                      _panel-body: StakeholderBody
 
     c-title = panelgroup.ControlTitle
     @_panels
