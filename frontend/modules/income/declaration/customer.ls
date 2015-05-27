@@ -66,46 +66,6 @@ class Customer extends App.View
   /** Local variable for settings. */
   _GRID = App.builder.Form._GRID
 
-  /** @see Business, Person */
-  COMMON-FIELDS:
-    _legal-type:
-      _name: 'legal_type'
-      _label: 'Representado Legal'
-      _type: FieldType.kComboBox
-      _options:
-        'RL'
-        'Apoderado'
-        'Mandatario'
-        'El mismo'
-
-    _condition:
-      _name: 'condition'
-      _label: 'Condición'
-      _type: FieldType.kComboBox
-      _options:
-        'Residente'
-        'No residente'
-
-    _ciiu:
-      _name: 'ciiu'
-      _label: 'Código CIIU de ocupacion'
-      _type: FieldType.kView
-      _options : new CodeNameField do
-                   _code : App.lists.ciiu._code
-                   _name : App.lists.ciiu._display
-                   _field : 'ciiu'
-
-    _ubigeo:
-      _name: 'ubigeo'
-      _label: 'Código Ubigeo'
-      _grid: _GRID._full
-      _type: FieldType.kView
-      _options : new CodeNameField do
-                   _code: App.lists.ubigeo._pool._code
-                   _name: App.lists.ubigeo._pool._display
-                   _max-length: 15
-                   _field: 'ubigeo'
-
 
 /** @export */
 module.exports = Customer

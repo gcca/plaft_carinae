@@ -150,12 +150,19 @@ class Income extends Module
 
     @_panels
       .._dispatch._body._json = _dispatch-dto
+      # Stakeholder changes on type
       .._stakeholders._body.set-type .._dispatch._body._get-type!
       .._dispatch._body.on (gz.Css \code-regime), ~>
         .._stakeholders._body.set-type it
 
     @_panels
       .._declaration._body._json = _dispatch-dto.'declaration'
+
+      # Declaration(-stakeholder) changes on type
+      .._declaration._body.set-type .._dispatch._body._get-type!
+      .._dispatch._body.on (gz.Css \code-regime), ~>
+        .._declaration._body.set-type it
+
       .._declarants._body._json = _dispatch-dto.'declarants'
       .._stakeholders._body._json = _dispatch-dto.'stakeholders'
 

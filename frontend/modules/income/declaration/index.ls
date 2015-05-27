@@ -5,6 +5,7 @@ panelgroup = App.widget.panelgroup
 Business = require './business'
 Person = require './person'
 Third = require './third'
+Stakeholder = require './stakeholder'
 
 
 # HEADING
@@ -54,8 +55,14 @@ class DeclarationBody extends panelgroup.JSONBody
    * @protected
    */
   _json-getter: ->
-    'customer': @_customer._json
+    'customer': @_customer._json <<<< @_stakeholder._json
     'third': @_third._json
+
+  /**
+   * Toggle a field by operation type (in or out).
+   * @see Stakeholder.display-legal
+   */
+  set-type: -> @_stakeholder.display-legal it
 
   /**
    * Get customer data and build the form by customer type Business
@@ -86,6 +93,15 @@ class DeclarationBody extends panelgroup.JSONBody
     @el._append @_third.render!.el
     @_third._json = _declaration-dto.'third'
 
+    # adding stakeholder data
+    @_stakeholder = new Stakeholder
+    App.dom._new \div
+      .._class = gz.Css \col-md-12
+      .._append App.dom._new \hr
+      @el._append ..
+    @el._append @_stakeholder.render!.el
+    @_stakeholder._json = _customer-dto
+
   on-customer-type-change: ~>
     _customer-class = if it is 'j' then Business else Person
 
@@ -98,6 +114,13 @@ class DeclarationBody extends panelgroup.JSONBody
 
     @_third = new Third
     @el._append @_third.render!.el
+
+    @_stakeholder = new Stakeholder
+    App.dom._new \div
+      .._class = gz.Css \col-md-12
+      .._append App.dom._new \hr
+      @el._append ..
+    @el._append @_stakeholder.render!.el
 
   /**
    * Get customer class ({@code Business} or {@code Person}) by customer dto.\
@@ -134,7 +157,13 @@ class DeclarationBody extends panelgroup.JSONBody
    * Third view.
    * @type App.View
    */
-  _customer: null
+  _third: null
+
+  /**
+   * Third view.
+   * @type App.View
+   */
+  _stakeholder: null
 
 
 /** @export */
