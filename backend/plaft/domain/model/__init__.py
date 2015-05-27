@@ -148,8 +148,8 @@ class Customer(dom.Model, dom.PolyModel):
             return super(Customer, cls).__new__(cls, **kwargs)
 
     # PERSON
-    father_name = dom.String()
-    mother_name = dom.String()
+    father_name = dom.String(default='')
+    mother_name = dom.String(default='')
     civil_state = dom.String()
     partner = dom.String()  # nombre de la pareja o conviviente
     birthplace = dom.String()
@@ -204,8 +204,8 @@ class Declarant(dom.Model):
 
     issuance_country = dom.String()
     name = dom.String()
-    father_name = dom.String()
-    mother_name = dom.String()
+    father_name = dom.String(default='')
+    mother_name = dom.String(default='')
     nationality = dom.String()
     activity = dom.String()
     ciiu = dom.Structured(CodeName)  # (-o-) dom.String
@@ -234,8 +234,8 @@ class Stakeholder(dom.Model):
     pep_position = dom.String()  # cargo público que ocupa u ocupó.
     birthday = dom.String()  # (-o-) date
     name = dom.String()
-    father_name = dom.String()
-    mother_name = dom.String()
+    father_name = dom.String(default='')
+    mother_name = dom.String(default='')
     nationality = dom.String()
     activity = dom.String()
     ciiu = dom.Structured(CodeName)  # (-o-) str
