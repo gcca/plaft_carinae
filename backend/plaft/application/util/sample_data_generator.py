@@ -97,7 +97,7 @@ def create_employees(agency, j=7):
     agency.store()
 
 
-def create_dispatches(agency, datastore, customers, n=30):
+def create_dispatches(agency, datastore, customers, n=15):
     from string import digits, letters
 
     years = ['2014', '2015', '2016']
@@ -150,7 +150,7 @@ def create_operation(agency, dstp_operation, datastore):
 
 def operations(agency, list_dispatches, datastore):
     dispatch_set = set(random.sample(list_dispatches,
-                                     int(len(list_dispatches)*0.75)))
+                                     int(len(list_dispatches)*0.65)))
 
     while dispatch_set:
         dispatch = random.choice(list(dispatch_set))
