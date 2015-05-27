@@ -17,6 +17,7 @@ class Dispatch extends App.Model
   /** @oevrride */
   urlRoot: \income
 
+
 /**
 * @Class Dispatches
 * @extends Collection
