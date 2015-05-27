@@ -45,6 +45,10 @@ class OperationEdit extends Module
       _bad-request: ~>
         alert 'DENEGADO (Error)'
 
+  calculate-field: (n1, n2) ->
+    result = parseFloat n1*n2
+    result.to-fixed 2
+
   upper-field: (_field) ->
     if _field?
       return  _field.to-upper-case!
@@ -81,49 +85,52 @@ class OperationEdit extends Module
              \ #{_customer.'father_name'}
              \ #{_customer.'mother_name'}"
     $ @el._first ._append "
-      <div class='#{gz.Css \col-md-6}'>
-        <label class='#{gz.Css \col-md-6}'>
-          N Orden despacho
+      <div class='#{gz.Css \col-md-4}'>
+        <label class='#{gz.Css \col-md-4}'
+               style='padding:0'>
+          N&ordm; Orden
         </label>
-        <label class='#{gz.Css \col-md-6}'
+        <label class='#{gz.Css \col-md-8}'
                style='border:solid'>
           #{_dto.'order'}
         </label>
-        <label class='#{gz.Css \col-md-6}'>
-          N DAM
+        <label class='#{gz.Css \col-md-4}'
+               style='padding:0'>
+          N&ordm; DAM
         </label>
-        <label class='#{gz.Css \col-md-6}'
+        <label class='#{gz.Css \col-md-8}'
                style='border:solid'>
           #{_dto.'dam'}
         </label>
-        <label class='#{gz.Css \col-md-6}'>
+        <label class='#{gz.Css \col-md-4}'
+               style='padding:0'>
           Tipo de operación
         </label>
-        <label class='#{gz.Css \col-md-6}'
+        <label class='#{gz.Css \col-md-8}'
                style='border:solid'>
-          #{_dto.'regime'.'code'}
+          #{@check-code-sbs _dto.'regime'.'name'}
         </label>
       </div>
 
-      <div class='#{gz.Css \col-md-6}'>
-        <label class='#{gz.Css \col-md-6}'>
+      <div class='#{gz.Css \col-md-8}'>
+        <label class='#{gz.Css \col-md-4}'>
           Razón social/Nombre
         </label>
-        <label class='#{gz.Css \col-md-6}'
+        <label class='#{gz.Css \col-md-8}'
                style='border:solid'>
           #{_name}
         </label>
-        <label class='#{gz.Css \col-md-6}'>
+        <label class='#{gz.Css \col-md-4}'>
           Fecha numeración
         </label>
-        <label class='#{gz.Css \col-md-6}'
+        <label class='#{gz.Css \col-md-8}'
                style='border:solid'>
           #{_dto.'numeration_date'}
         </label>
-        <label class='#{gz.Css \col-md-6}'>
+        <label class='#{gz.Css \col-md-4}'>
           Descripción
         </label>
-        <label class='#{gz.Css \col-md-6}'
+        <label class='#{gz.Css \col-md-8}'
                style='border:solid'>
           #{_dto.'regime'.'name'}
         </label>
@@ -133,10 +140,11 @@ class OperationEdit extends Module
   load-list-operation: (_dto) ->
     _customer = _dto.'declaration'.'customer'
     _stk = _dto.'stakeholders'.'0'
+    _code-sbs = @check-code-sbs _dto.'regime'.'name'
 
     _list-operation = []
     _list-operation._push @empty-field _customer.'money_source_type'
-    _list-operation._push _dto.'regime'.'name' + "("+_dto.'regime'.'code'+")"
+    _list-operation._push _dto.'regime'.'name' + "("+_code-sbs+")"
     _list-operation._push 'No aplica'
     _list-operation._push @empty-field _dto.'description'
     _list-operation._push @empty-field _dto.'dam'
@@ -144,7 +152,7 @@ class OperationEdit extends Module
     _list-operation._push @empty-field _customer.'money_source'
     _list-operation._push 'D'
     _list-operation._push 'No aplica'
-    _list-operation._push parseFloat _dto.'amount'*_dto.'exchange_rate'
+    _list-operation._push @calculate-field _dto.'amount', _dto.'exchange_rate'
     _list-operation._push @empty-field _dto.'exchange_rate'
     _list-operation._push @in-country _stk.'country'  # Verificar de donde sacar el dato.
     _list-operation._push @out-country _stk.'country'  # Verificar de donde sacar el dato.
@@ -197,6 +205,7 @@ class OperationEdit extends Module
 
     if _declarant.'ubigeo'?
       _ubigeo = _declarant.'ubigeo'.'code' + " " + _declarant.'ubigeo'.'name'
+
     list-declarant._push @empty-field _declarant.'represents_to'
     list-declarant._push @empty-field _declarant.'residence_status'
     list-declarant._push @upper-field _declarant.'document_type'
@@ -225,6 +234,7 @@ class OperationEdit extends Module
       _customer-type = 'Persona Jurídica'
       _dnumber = 'No aplica'
       _document-number = _customer.'document_number'
+      _document-type = 'No aplica'
       _name = _customer.'name'
       _name35 = 'No aplica'
       _ocupation = 'No aplica'
@@ -237,6 +247,7 @@ class OperationEdit extends Module
       _name35 = _customer.'name'
       _ocupation = _customer.'activity'
       _activity = 'No aplica'
+      _document-type = _customer.'document_type'
 
     list-customer._push  _title
     if _isTrue
@@ -247,9 +258,15 @@ class OperationEdit extends Module
       _code-array = App.lists.anexo2.linked2._code
       _display-array = App.lists.anexo2.linked2._display
 
+    if _customer.'ciiu'?
+      _ciiu = _customer.'ciiu'.'name'
+
+    if _customer.'ubigeo'?
+      _ubigeo = _customer.'ubigeo'.'code' + " " + _customer.'ubigeo'.'name'
+
     list-customer._push  @empty-field _customer.'condition'
     list-customer._push  _customer-type
-    list-customer._push  @upper-field _customer.'document_type'
+    list-customer._push  @empty-field _document-type
     list-customer._push  @empty-field _customer.'condition'
     list-customer._push  @empty-field _customer.'issuance_country'
     list-customer._push  @empty-field _document-number
@@ -260,10 +277,10 @@ class OperationEdit extends Module
     list-customer._push  @empty-field _ocupation
     list-customer._push  'No aplica' # Ya no existe descripcion de otros
     list-customer._push  @empty-field _activity
-    list-customer._push  'No aplica'   # No existe dato en Anexo 5
+    list-customer._push  @empty-field _ciiu
     list-customer._push  @empty-field _customer.'employment'
     list-customer._push  @empty-field _customer.'fiscal_address'
-    list-customer._push  'No aplica'  # No existe dato en Anexo 5
+    list-customer._push  @empty-field _ubigeo
     list-customer._push  @empty-field _customer.'phone'
 
     @load-table _code-array,
@@ -277,12 +294,14 @@ class OperationEdit extends Module
       # Verificar stakeholder
       if _stkholder.'document_type' is \ruc
         _stkholder-type = 'Persona Jurídica'
+        _document-type = 'No aplica'
         _name = _stkholder.'name'
         _name35 = 'No aplica'
       else
         _stkholder-type = 'Persona Natural'
         _name = _stkholder.'father_name'
         _name35 = _stkholder.'name' # Nombre de persona Natural
+        _document-type = _stkholder.'document_type'
 
       list-linked._push  @empty-field _stkholder.'linked_type'
       if _isTrue
@@ -292,9 +311,10 @@ class OperationEdit extends Module
       else
         _code-array = App.lists.anexo2.linked2._code
         _display-array = App.lists.anexo2.linked2._display
+
       list-linked._push  @empty-field _stkholder.'condition'
       list-linked._push  _stkholder-type  # Verificar tipo de persona
-      list-linked._push  @upper-field _stkholder.'document_type'
+      list-linked._push  @empty-field _document-type
       list-linked._push  @empty-field _stkholder.'document_number'
       list-linked._push  @empty-field _stkholder.'issuance_country'
       list-linked._push  @empty-field!
@@ -309,7 +329,7 @@ class OperationEdit extends Module
       list-linked._push  @empty-field!
       list-linked._push  @empty-field _stkholder.'address'
       list-linked._push  @empty-field!
-      list-linked._push  @empty-field _stkholder.'phone'
+      list-linked._push  @empty-field!
 
       @load-table _code-array,
                   _display-array,
@@ -338,10 +358,15 @@ class OperationEdit extends Module
     _table._append _tbody
     @el._last._append _table
 
-  check-list: (_name-regime) ->
+  check-commodity: (_name-regime) ->
     _k = App.lists.regime._display._index _name-regime
 
     return App.lists.regime._sbs[_k]
+
+  check-code-sbs: (_name-regime) ->
+    _k = App.lists.regime._display._index _name-regime
+
+    return App.lists.regime._sbs-code[_k]
 
 
   /** @override */
@@ -388,7 +413,7 @@ class OperationEdit extends Module
 
     @load-list-declarant _dto-anexo2.'declarants'
 
-    @_type = @check-list _dto-anexo2.'regime'.'name'
+    @_type = @check-commodity _dto-anexo2.'regime'.'name'
     if @_type
 
       $ @el._last ._append '<h4>DATOS DE IDENTIFICACIÓN DE LS PERSONAS
