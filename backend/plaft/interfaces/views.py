@@ -583,5 +583,43 @@ class NewUsers(Handler):  # DEBUG
                                      password))
 
 
+class UsersFromFile(Handler):
+
+    def get(self):
+        self.write("""
+          <html>
+            <body>
+              <form method='post'
+                    enctype="multipart/form-data"
+                    accept-charset='utf-8'>
+                <input type='file' name='users_file'>
+                <input type='submit'>
+              </form>
+            </body>
+          </html>
+        """)
+
+    def post(self):
+        users_file = (self.request.get('users_file')
+                      .decode('cp1252', 'replace')
+                      .encode('utf-8'))
+        user_rows = (l.split(',') for l in users_file.split('\n'))
+
+        for agency_name, user_caption, _, username, password in user_rows:
+            agency = model.CustomsAgency(name=agency_name)
+            agency.store()
+
+            datastore = model.Datastore(customs_agency_key=agency.key)
+            datastore.store()
+
+            officer = model.Officer(name=user_caption,
+                                    username=username,
+                                    password=password,
+                                    customs_agency_key=agency.key)
+            agency.officer_key = officer.store()
+            agency.store()
+
+        self.write('OK')
+
 
 # vim: et:ts=4:sw=4

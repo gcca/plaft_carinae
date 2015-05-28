@@ -59,6 +59,7 @@ if plaft.config.DEBUG:
         ('/debug', views.Debug),
         ('/new-user', views.NewUsers),
         ('/new-user/(\d+)', views.NewUsers),
+        ('/users-from-file', views.UsersFromFile),
 
         # Handlers
         uri('operation', handlers.Operation),
