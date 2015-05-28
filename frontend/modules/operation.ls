@@ -7,6 +7,7 @@ Module = require '../workspace/module'
 table = App.widget.table
   Table = ..Table
 
+
 FieldType = App.builtins.Types.Field
 
 
@@ -294,14 +295,12 @@ class OperationEdit extends Module
       # Verificar stakeholder
       if _stkholder.'document_type' is \ruc
         _stkholder-type = 'Persona Jurídica'
-        _document-type = 'No aplica'
         _name = _stkholder.'name'
         _name35 = 'No aplica'
       else
         _stkholder-type = 'Persona Natural'
         _name = _stkholder.'father_name'
         _name35 = _stkholder.'name' # Nombre de persona Natural
-        _document-type = _stkholder.'document_type'
 
       list-linked._push  @empty-field _stkholder.'linked_type'
       if _isTrue
@@ -314,17 +313,17 @@ class OperationEdit extends Module
 
       list-linked._push  @empty-field _stkholder.'condition'
       list-linked._push  _stkholder-type  # Verificar tipo de persona
-      list-linked._push  @empty-field _document-type
-      list-linked._push  @empty-field _stkholder.'document_number'
-      list-linked._push  @empty-field _stkholder.'issuance_country'
+      list-linked._push  @empty-field!
+      list-linked._push  @empty-field!
+      list-linked._push  @empty-field!
       list-linked._push  @empty-field!
       list-linked._push  _name
       list-linked._push  @empty-field _stkholder.'mother_name'
       list-linked._push  _name35
-      list-linked._push  @empty-field _stkholder.'nationality'
       list-linked._push  @empty-field!
       list-linked._push  @empty-field!
-      list-linked._push  @empty-field _stkholder.'activity'
+      list-linked._push  @empty-field!
+      list-linked._push  @empty-field!
       list-linked._push  @empty-field!
       list-linked._push  @empty-field!
       list-linked._push  @empty-field _stkholder.'address'
