@@ -234,7 +234,7 @@ def list_operations(customs_agency):
 
 def list_dispatches(customs_agency):
     """."""
-    return sorted(Dispatch.all(customs_agency_key=customs_agency.key),
+    return sorted([d for d in customs_agency.datastore.pending],
                   key=lambda d: d.order)
 
 
