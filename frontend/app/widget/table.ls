@@ -114,7 +114,10 @@ class exports.Table extends App.View
 
     for _attr in @_attributes
       App.dom._new \td
-        ..html = @__get-value _model._attributes, _attr
+        if _attr is 'dumpy'
+          $ .. ._append @_templates[_attr] _tr
+        else
+          ..html = @__get-value _model._attributes, _attr
         ..css = @_column-cell-style[_attr]
         _tr._append ..
 
