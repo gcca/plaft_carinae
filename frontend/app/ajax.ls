@@ -34,6 +34,8 @@ exports <<<
     ajax_base \PUT, &
 
   _delete: ->
+    &.2 = &.1
+    &.1 = undefined
     ajax_base \DELETE, &
 
 
