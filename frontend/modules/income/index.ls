@@ -5,6 +5,8 @@ panelgroup = App.widget.panelgroup
 table = App.widget.table
   Table = ..Table
 
+MessageBox = App.widget.message-box
+
 declaration = require './declaration'
 DeclarantBody = require './declarant'
 DispatchBody = require './dispatch'
@@ -25,7 +27,10 @@ class Dispatch extends App.Model
 class Dispatches extends App.Collection
   model: Dispatch
 
-
+/**
+* @Class Income
+* @extends Module
+*/
 class Income extends Module
 
   /**
@@ -173,6 +178,25 @@ class Income extends Module
     _panel-group.open-all!
     @el._append _panel-group.render!.el
 
+  _on-dumpy: (_tr) ->
+    _span = App.dom._new \span
+      .._class = "#{gz.Css \glyphicon}
+                \ #{gz.Css \glyphicon-remove}"
+      ..css = 'cursor:pointer;font-size:18px'
+      ..on-click ~>
+        see-button = (_value) ->
+          if _value
+            _id = _tr._model._id
+            App.ajax._delete "/api/dispatch/#{_id}/delete", do
+              _success: ->
+                $ _tr ._remove!
+
+        message = MessageBox._new do
+          _title: 'Eliminación de despacho.'
+          _body: '<h5>¿Desea eliminar el despacho?</h5>'
+          _callback: see-button
+        message._show!
+
   /** @override */
   render: ->
     _labels =
@@ -197,10 +221,7 @@ class Income extends Module
       'declaration.customer': ->
         "#{if it.'document_type' is \ruc then it.'name'
             else it.'name'+' '+it.'father_name'+' '+ it.'mother_name'}"
-      'dumpy': ->
-        "<span class='#{gz.Css \glyphicon}
-                    \ #{gz.Css \glyphicon-remove}'
-            style='cursor:pointer;font-size:18px'></span>"
+      'dumpy': @_on-dumpy
 
     @el.html = "
       <div>
