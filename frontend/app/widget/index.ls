@@ -84,5 +84,6 @@ class exports.Typeahead extends App.View
 exports.panelgroup = require './panelgroup'
 exports.codename = require './codename'
 exports.table = require './table'
+exports.message-box = require './modal'
 
 # vim: ts=2:sw=2:sts=2:et
