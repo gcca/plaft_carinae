@@ -299,5 +299,18 @@ def list_operation(handler):
         plaft.application.dispatch.list_operations(customs_agency)
     )
 
+@handler_method('delete')
+def dispatch_delete(handler, id):
+    dispatch = model.Dispatch.find(int(id))
+
+    datastore = dispatch.customs_agency.datastore
+    datastore.pending_key.remove(dispatch.key)
+    datastore.store()
+
+    dispatch.declaration.delete()
+    dispatch.delete()
+
+    handler.write_json('{}')
+
 
 # vim: et:ts=4:sw=4
