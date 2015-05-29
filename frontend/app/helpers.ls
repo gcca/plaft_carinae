@@ -226,11 +226,12 @@ HTMLElement::=
  * {@code Array} and {@code String}  shortcuts.
  */
 Array::=
-  _push  : ref$\push
-  _pop   : ref$\pop
-  _join  : ref$\join
-  _index : ref$\indexOf
+  _push   : ref$\push
+  _pop    : ref$\pop
+  _join   : ref$\join
+  _index  : ref$\indexOf
   _splice : ref$\splice
+  _shift  : ref$\shift
 
   _length:~
     -> @\length

@@ -63,9 +63,8 @@ class NumerationEdit extends Module
       _bad-request: ~>
         alert 'ERROR: e746ae94-5a3a-11e4-9a1d-88252caeb7e8'
 
-  _calculate-working-days: (d) ->
-    if d and d isnt ''
-      dt = d._split '/'
+  _calculate-working-days: (dt) ->
+    if dt?
       _date = new Date (parseInt dt[2]), (parseInt dt[1])-1, (parseInt dt[0])
       days = 15
       while days
@@ -82,9 +81,8 @@ class NumerationEdit extends Module
     else
       @_last-day-display.html = ''
 
-  _calculate-storage-years: (d) ->
-    if d and d isnt ''
-      dt = d._split '/'
+  _calculate-storage-years: (dt) ->
+    if dt?
       @_five-years-display.html = "#{dt[0]}/
                            #{dt[1]}/
                            #{(parseInt dt[2])+5}"
@@ -101,11 +99,12 @@ class NumerationEdit extends Module
     @_calculate-amount-soles _amount, _exchange-rate
 
   load-dates: ~>
-    ExpReg = /^\d{1,2}\/\d{1,2}\/\d{4}$/
-    _value = it._target._value
-    if ExpReg.test _value
-      @_calculate-working-days _value
-      @_calculate-storage-years _value
+    re-date = /^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/
+    date-array = re-date.'exec' it._target._value
+    if date-array?
+      date-array._shift!
+      @_calculate-working-days date-array
+      @_calculate-storage-years date-array
     else
       @_last-day-display.html = ''
       @_five-years-display.html = ''
