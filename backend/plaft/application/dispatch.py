@@ -235,7 +235,7 @@ def list_operations(customs_agency):
 def list_dispatches(customs_agency):
     """."""
     return sorted([d for d in customs_agency.datastore.pending],
-                  key=lambda d: d.order)
+                  key=lambda d: d.order, reverse=True)
 
 
 # vim: et:ts=4:sw=4
