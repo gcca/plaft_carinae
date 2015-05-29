@@ -28,14 +28,6 @@ class Declarant(RESTHandler):
     """Declarant RESTful."""
 
 
-class Operation(RESTHandler):  # DEBUG
-    """Operation RESTful."""
-
-
-class Datastore(RESTHandler):  # DEBUG
-    """Datastore RESTful."""
-
-
 @handler_method
 def dispatches(handler):
     """ (Handler) -> None
