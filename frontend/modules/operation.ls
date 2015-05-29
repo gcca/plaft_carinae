@@ -164,26 +164,28 @@ class OperationEdit extends Module
                 _list-operation
 
   load-list-third: (_third) ->
-    if not _third? or _third.'identification_type' is 'No'
-      list-third = ['No aplica' for til 7]
-    else
-      if _third.'document_type'?
+    list-third = []
+    if _third.'document_type'?
+      if _third.'document_type' is \ruc
+        _third-type = 'Persona Jurídica'
+        _third-name = _third.'name'
+        _name69 = 'No aplica'
+        _dtype = 'No aplica'
+      else
         _third-type = 'Persona Natural'
         _third-name = _third.'father_name'
         _name69 = _third.'name'
-      else
-        _third-type = 'Persona Jurídica'
-        _third-name = _third.'name'
-        _name69 = '-'
+        _dtype = _third.'document_type'
 
-      list-third = []
       list-third._push @empty-field _third-type
-      list-third._push @empty-field _third.'document_type'
+      list-third._push @upper-field _dtype
       list-third._push @empty-field _third.'document_number'
       list-third._push @empty-field _third-name
       list-third._push @empty-field _third.'mother_name'
       list-third._push @empty-field _name69
       list-third._push @empty-field _third.'third_ok'
+    else
+        list-third = ['No aplica' for til 7]
 
     @load-table App.lists.anexo2.third._code,
                 App.lists.anexo2.third._display,
@@ -268,7 +270,7 @@ class OperationEdit extends Module
     list-customer._push  @empty-field _customer.'condition'
     list-customer._push  _customer-type
     list-customer._push  @empty-field _document-type
-    list-customer._push  @empty-field _customer.'condition'
+    list-customer._push  _dnumber
     list-customer._push  @empty-field _customer.'issuance_country'
     list-customer._push  @empty-field _document-number
     list-customer._push  @empty-field _name
@@ -415,7 +417,7 @@ class OperationEdit extends Module
     @_type = @check-commodity _dto-anexo2.'regime'.'name'
     if @_type
 
-      $ @el._last ._append '<h4>DATOS DE IDENTIFICACIÓN DE LS PERSONAS
+      $ @el._last ._append '<h4>DATOS DE IDENTIFICACIÓN DE LAS PERSONAS
                           \ EN CUYOS NOMBRES SE REALIZA LA OPERACIÓN
                           \ ORDENANTES/PROVEEDOR EXTRANJERO (INGRESO DE
                           \ MERCANCÍA)/ EXPORTADOR(SALIDA DE MERCANCÍA)</h4>'
@@ -433,7 +435,7 @@ class OperationEdit extends Module
 
     else
 
-      $ @el._last ._append '<h4>DATOS DE IDENTIFICACIÓN DE LS PERSONAS
+      $ @el._last ._append '<h4>DATOS DE IDENTIFICACIÓN DE LAS PERSONAS
                           \ EN CUYOS NOMBRES SE REALIZA LA OPERACIÓN
                           \ ORDENANTES/PROVEEDOR EXTRANJERO (INGRESO DE
                           \ MERCANCÍA)/ EXPORTADOR(SALIDA DE MERCANCÍA)</h4>'
