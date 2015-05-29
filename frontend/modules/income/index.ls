@@ -189,23 +189,26 @@ class Income extends Module
     @el._append _panel-group.render!.el
 
   _on-dumpy: (_tr) ->
-    _span = App.dom._new \span
-      .._class = "#{gz.Css \glyphicon}
-                \ #{gz.Css \glyphicon-remove}"
-      ..css = 'cursor:pointer;font-size:18px'
-      ..on-click ~>
-        see-button = (_value) ->
-          if _value
-            _id = _tr._model._id
-            App.ajax._delete "/api/dispatch/#{_id}/delete", do
-              _success: ->
-                $ _tr ._remove!
+    if _tr._model? and not _tr._model._attributes.'accepted'
+      _span = App.dom._new \span
+        .._class = "#{gz.Css \glyphicon}
+                  \ #{gz.Css \glyphicon-remove}"
+        ..css = 'cursor:pointer;font-size:18px'
+        ..on-click ~>
+          see-button = (_value) ->
+            if _value
+              _id = _tr._model._id
+              App.ajax._delete "/api/dispatch/#{_id}/delete", do
+                _success: ->
+                  $ _tr ._remove!
 
-        message = MessageBox._new do
-          _title: 'Eliminación de despacho.'
-          _body: '<h5>¿Desea eliminar el despacho?</h5>'
-          _callback: see-button
-        message._show!
+          message = MessageBox._new do
+            _title: 'Eliminación de despacho.'
+            _body: '<h5>¿Desea eliminar el despacho?</h5>'
+            _callback: see-button
+          message._show!
+    else
+      App.dom._new \span
 
   /** @override */
   render: ->

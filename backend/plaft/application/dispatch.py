@@ -227,15 +227,20 @@ def anexo_seis(dispatch, **args):
 
 def list_operations(customs_agency):
     """."""
-    return [operation
-            for operation
-            in Operation.all(customs_agency_key=customs_agency.key)]
+    return Operation.all(customs_agency_key=customs_agency.key)
 
 
 def list_dispatches(customs_agency):
     """."""
-    return sorted([d for d in customs_agency.datastore.pending],
-                  key=lambda d: d.order, reverse=True)
+    def flag(dispatch, is_accepted):
+        dct = dispatch.dict
+        dct['accepted'] = is_accepted
+        return dct
+
+    pending = [flag(d, False) for d in customs_agency.datastore.pending]
+    accepting = [flag(d, True) for d in customs_agency.datastore.accepting]
+
+    return sorted(pending + accepting, key=lambda d: d['order'], reverse=True)
 
 
 # vim: et:ts=4:sw=4
