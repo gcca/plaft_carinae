@@ -140,6 +140,10 @@ class Third extends App.View
         'Proveedor'
         'Exportador'
 
+    * _name: 'document_type'
+      _type: FieldType.kHidden
+      _options: <[ruc]>
+
 /**
  * Identification
  * -------------
