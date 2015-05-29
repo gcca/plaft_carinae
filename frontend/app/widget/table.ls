@@ -111,6 +111,7 @@ class exports.Table extends App.View
    */
   add-row: (_model) ->
     _tr = App.dom._new \tr
+    _tr._model = _model
 
     for _attr in @_attributes
       App.dom._new \td
@@ -121,7 +122,6 @@ class exports.Table extends App.View
         ..css = @_column-cell-style[_attr]
         _tr._append ..
 
-    _tr._model = _model
     _tr.on-dbl-click @__dummy-on-dblclick-row
 
     _model.on \change ~>
