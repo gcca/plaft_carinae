@@ -291,6 +291,7 @@ def list_operation(handler):
         plaft.application.dispatch.list_operations(customs_agency)
     )
 
+
 @handler_method('delete')
 def dispatch_delete(handler, id):
     dispatch = model.Dispatch.find(int(id))
