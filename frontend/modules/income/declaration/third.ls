@@ -82,13 +82,17 @@ class Third extends App.View
       .._append radio-business
       .._append App.dom.create-text-node ' Jurídica'
 
-    if @third?
-      if @third.'third_type' is \Juridico
+    if @third.'document_type'?
+      if @third.'document_type' is \ruc
         radio-business._checked = on
         @load-business!
       else
         radio-person._checked = on
         @load-person!
+    else
+      radio-business._checked = on
+      @load-business!
+
 
     super!
 
@@ -175,7 +179,7 @@ class Identification extends App.View
    * @private
    */
   load-yes: (_dto) ~>
-    @third = new Third third: _dto
+    @third = Third._new third: _dto
     @el._append @third.render!el
 
   /**
