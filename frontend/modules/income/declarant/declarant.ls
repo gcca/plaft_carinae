@@ -27,6 +27,7 @@ class Declarant extends panelgroup.FormBody
   render: ->
     ret = super!
     App.builder.Form._new @el, _FIELD_DECLARANT
+        .._elements.'document_type'._element._value = \dni
         ..render!
         .._free!
 
