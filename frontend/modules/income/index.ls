@@ -175,6 +175,16 @@ class Income extends Module
     if _dispatch-dto.'id'?  # Añadiendo botón PDF(en modo edición).
       @_panels._declaration._header._get declaration.ControlPDF ._show _dispatch-dto.'id'
 
+    # HARDCODE
+    _dispatch-ref-el = @_panels._dispatch._body.el.query '[name=reference]'
+    _declaration-ref-el = @_panels._declaration._body.el.query '[name=reference]'
+    _dispatch-ref-el.on-key-up ->
+      _declaration-ref-el._value = _dispatch-ref-el._value
+    _declaration-ref-el.on-key-up ->
+      _dispatch-ref-el._value = _declaration-ref-el._value
+
+
+
     _panel-group.open-all!
     @el._append _panel-group.render!.el
 
