@@ -402,6 +402,11 @@ class OperationEdit extends Module
     </div>
     <div class='#{gz.Css \col-md-12}'>
     </div>"
+
+    btn-accept = @el.query ".#{gz.Css \btn-success}"
+
+    btn-accept.on-click @on-accept
+
     _dto-anexo2 = @model._attributes
 
 
