@@ -60,31 +60,31 @@ gen-sbs-pair = ->
 exports <<<
   document-type:  # Table 1
     _display:
+      'DOCUMENTO NACIONAL DE IDENTIDAD'
       'CARNÉ DE EXTRANJERIA'
       'CARNÉ DE IDENTIDAD'
       'CÉDULA DE CIUDADANIA'
       'CÉDULA DIPLOMATICA DE IDENTIDAD'
-      'DOCUMENTO NACIONAL DE IDENTIDAD'
       'PASAPORTE'
       'REGISTRO ÚNICO DE CONTRIBUYENTE'
       'OTRO'
 
     _code: #(gen-seq 7) ++ ['01']
+      'dni'
       'ce'
       'ci'
       'cc'
       'cdi'
-      'dni'
       'pa'
       'ruc'
       'otro'
 
     _short:
+      'DNI'
       'CE'
       'CI'
       'CC'
       'CDI'
-      'DNI'
       'PA'
       'RUC'
       'OTRO'
