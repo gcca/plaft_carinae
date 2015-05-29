@@ -216,7 +216,7 @@ class Income extends Module
       'Aduana'
       'Orden N&ordm;'
       'Fecha'
-      'Regime'
+      'Régimen'
       'Razón social / Nombre'
       'RUC/DNI'
       ''
