@@ -10,6 +10,7 @@
 
 from __future__ import unicode_literals
 import random
+import plaft.config
 from plaft.domain.model import (User, Dispatch, CodeName, Declaration,
                                 Customer, Third, Declarant, Stakeholder,
                                 Business, Datastore, CustomsAgency,
@@ -167,7 +168,7 @@ def operations(agency, list_dispatches, datastore):
         dispatch_set = dispatch_set.difference(dstp_operation)
 
 
-def create_sample_data():
+def _data_debug():
     create_stakeholders()
     create_declarants()
 
@@ -239,6 +240,13 @@ def create_sample_data():
     create_autocomplete()  # TODO: Remove when update domain model
 
     # HARDCODED data
+    _data_deploy()
+
+
+def _data_deploy():
+    if CustomsAgency.find(name='CavaSoft SAC'):
+        return
+
     ca = CustomsAgency(name='CavaSoft SAC')
     ca.store()
 
@@ -251,6 +259,9 @@ def create_sample_data():
                  password='123')
     ca.officer_key = of.store()
     ca.store()
+
+
+create_sample_data = _data_debug if plaft.config.DEBUG else _data_deploy
 
 
 # LIST

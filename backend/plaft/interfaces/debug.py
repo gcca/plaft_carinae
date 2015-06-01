@@ -10,6 +10,13 @@ from plaft.interfaces import Handler, RESTHandler
 from plaft.domain import model
 
 
+class IsDebug(Handler):
+
+    def get(self):
+        import plaft.config
+        self.write(plaft.config.DEBUG)
+
+
 class Debug(Handler):
     """Only use to handtest."""
 

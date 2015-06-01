@@ -11,7 +11,10 @@ sys.path.insert(
     'support'))
 
 
-DEBUG = True
+DEBUG = os.environ.get('SERVER_SOFTWARE', '').startswith('Development')
+if DEBUG:
+    import logging
+    logging.getLogger().setLevel(logging.DEBUG)
 
 
 # vim: ts=4:sw=4:sts=4:et
