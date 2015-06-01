@@ -56,14 +56,7 @@ urls = [
 if plaft.config.DEBUG:
     from plaft.interfaces import debug
     urls += [
-        # Views
-        ('/isdebug', debug.IsDebug),
-        ('/debug', debug.Debug),
-        ('/new-user', debug.NewUsers),
-        ('/new-user/(\d+)', debug.NewUsers),
-        ('/users-from-file', debug.UsersFromFile),
-
-             # Handlers
+        # Handlers
         uri('operation', debug.Operation),
         uri('datastore', debug.Datastore),
     ]
@@ -72,7 +65,10 @@ else:  # TODO: Remove when running production version.
     urls += [
         # Views
         ('/isdebug', debug.IsDebug),
-        ('/debug', debug.Debug)
+        ('/debug', debug.Debug),
+        ('/new-user', debug.NewUsers),
+        ('/new-user/(\d+)', debug.NewUsers),
+        ('/users-from-file', debug.UsersFromFile)
     ]
 
 
