@@ -1,6 +1,6 @@
 """Dispatch use cases."""
 
-from plaft.domain.model import (Dispatch, Customer, Declaration, Operation,
+from plaft.domain.model import (Dispatch, Customer, Operation,
                                 Declarant, Stakeholder)
 from plaft.domain.model.dispatch import UniqueSpecification
 
@@ -79,19 +79,16 @@ def create(payload, customs_agency, customer=None):
     """
     # it_satisfies(create_pre, payload)
 
-    declaration = Declaration.new(payload['declaration'])
-    declaration.store()
+    declaration = Dispatch.Declaration.new(payload['declaration'])
 
     if not customer:
         customer = Customer.new(payload['declaration']['customer'])
         customer.store()
 
-    del payload['declaration']
-
     dispatch = Dispatch.new(payload)
     dispatch.customs_agency_key = customs_agency.key
     dispatch.customer_key = customer.key
-    dispatch.declaration_key = declaration.key
+    dispatch.declaration = declaration
     dispatch.store()
 
     update_stakeholders(dispatch)
@@ -137,10 +134,10 @@ def update(dispatch, payload):
     """
     declaration = dispatch.declaration
     declaration << payload['declaration']
-    declaration.store()
 
     del payload['declaration']
     dispatch << payload
+    dispatch.declaration = declaration
     dispatch.store()
 
     update_stakeholders(dispatch)

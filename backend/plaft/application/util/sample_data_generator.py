@@ -11,7 +11,7 @@
 from __future__ import unicode_literals
 import random
 import plaft.config
-from plaft.domain.model import (User, Dispatch, CodeName, Declaration,
+from plaft.domain.model import (User, Dispatch, CodeName,
                                 Customer, Third, Declarant, Stakeholder,
                                 Business, Datastore, CustomsAgency,
                                 Operation, Officer, Employee)
@@ -108,18 +108,17 @@ def create_dispatches(agency, datastore, customers, n=30):
         order = '%s-%s' % (random.choice(years),
                            ''.join(random.sample(digits, 5)))
         customer = random.choice(customers)
-        declaration = Declaration(customer=customer)
-        declaration.store()
+        declaration = Dispatch.Declaration(customer=customer)
         jurisdiction = random.choice(jurisdictions)
         regime = random.choice(regimes)
         dispatch = Dispatch(order=order,
                             customer_key=customer.key,
-                            declaration_key=declaration.key,
                             customs_agency_key=agency.key,
                             jurisdiction=jurisdiction,
                             regime=regime,
                             stakeholders=[random.choice(stakeholders)],
                             declarants=[random.choice(declarants)])
+        dispatch.declaration = declaration
         dispatch.store()
         datastore.pending_key.append(dispatch.key)
         datastore.store()

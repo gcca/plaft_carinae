@@ -113,7 +113,7 @@ class FormLinked extends panelgroup.FormBody
 
   /** FIELD */
   _FIELD_HEAD :
-    * _name: 'linked_type'
+    * _name: 'link_type'
       _label: 'Tipo de vinculación'
       _type: FieldType.kComboBox
       _options:
