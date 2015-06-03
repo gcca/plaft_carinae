@@ -43,7 +43,7 @@ class Stakeholder extends App.View
             \ representado por:'
       _type: FieldType.kComboBox
       _options:
-        'RL'
+        'Representante Legal'
         'Apoderado'
         'Mandatario'
         'El mismo'
