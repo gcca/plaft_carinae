@@ -30,6 +30,7 @@ exports <<<
       kRadioGroup: null
       kView      : null
       kHidden    : null
+      kYesNo     : null
 
     /**
      * @typedef {{
