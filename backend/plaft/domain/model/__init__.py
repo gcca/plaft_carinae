@@ -135,7 +135,7 @@ class Customer(dom.Model, dom.PolyModel):
     activity = dom.String()  # actividad (jurídica)
     # o profesión-ocupación (natural)
 
-    birthday = dom.String()  # fecha de registro (jurídica)
+    birthday = dom.Date()  # fecha de registro (jurídica)
     # o fecha de nacimiento (natural)
 
     address = dom.String()
@@ -255,7 +255,8 @@ class Dispatch(dom.Model):
     regime = dom.Structured(CodeName)
     jurisdiction = dom.Structured(CodeName)
     description = dom.String()
-    income_date = dom.String()  # (-o-) date
+    # income_date = dom.String()  # (-o-) date
+    income_date = dom.Date()
     customer_key = dom.Key(Customer)
 
     third = dom.Structured(Third)
@@ -269,7 +270,7 @@ class Dispatch(dom.Model):
     # Numeration
     dam = dom.String()
     # diferencia entre el income_date y el numeration_date
-    numeration_date = dom.String()  # (-o-) date
+    numeration_date = dom.Date()  # (-o-) date
     amount = dom.String()
     currency = dom.String()
     channel = dom.String()
