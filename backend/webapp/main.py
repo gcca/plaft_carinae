@@ -53,16 +53,12 @@ urls = [
 ]
 
 
-if plaft.config.DEBUG:
+if plaft.config.DEBUG or True:
     from plaft.interfaces import debug
     urls += [
         # Handlers
         uri('operation', debug.Operation),
         uri('datastore', debug.Datastore),
-    ]
-else:  # TODO: Remove when running production version.
-    from plaft.interfaces import debug
-    urls += [
         # Views
         ('/isdebug', debug.IsDebug),
         ('/debug', debug.Debug),
