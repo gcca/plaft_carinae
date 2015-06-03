@@ -35,15 +35,20 @@ class Business extends Customer
 
   /** @private */
   on-is_obligated-change: ~>
-    @form-builder._elements'has_officer'._element
-      _officer-yes = ..query '[value=Sí]'
-      _officer-no = ..query '[value=No]'
-    is_obligated = @el.query('[name=is_obligated]:checked').value
-    if is_obligated === 'No'
+    officer = @form-builder._elements.'has_officer'
+    officer._radios
+      _officer-yes = .._yes
+      _officer-no = .._no
+    chk-officer = officer._checkbox
+    is_obligated = @form-builder._elements.'is_obligated'._radios._no
+    if is_obligated._checked
       _officer-yes._disabled = on
+      _officer-yes._checked = off
       _officer-no._checked = on
+      chk-officer._checked = off
     else
       _officer-yes._disabled = off
+      _officer-no._checked = off
 
   /** @protected */
   set-default-type: -> @set-type 'j'
@@ -114,13 +119,15 @@ class Business extends Customer
 
     * _name: 'is_obligated'
       _label: 'j) Si es Sujeto obligado'
-      _type: FieldType.kRadioGroup
-      _options: <[Si No]>
+      _type: FieldType.kYesNo
+#      _type: FieldType.kRadioGroup
+#      _options: <[Si No]>
 
     * _name: 'has_officer'
       _label: 'Oficial cumplimiento'
-      _type: FieldType.kRadioGroup
-      _options: <[Sí No]>
+      _type: FieldType.kYesNo
+#      _type: FieldType.kRadioGroup
+#      _options: <[Sí No]>
 
     * _name: 'reference'
       _label: 'Ref. Cliente'
