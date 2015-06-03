@@ -354,10 +354,10 @@ class DocumentProperty(ndb.StructuredProperty):
         return value
 
 
-class DateProperty(ndb.DateProperty):
+class Date(ndb.DateProperty):
 
     import re
-    RE_DATE = re.compile(r'\d{2}/\d{2}/\d{4}')
+    RE_DATE = re.compile(r'(\d{2})[\/-](\d{2})[\/-](\d{4})')
 
     def _validate(self, value):
         if isinstance(value, basestring) and self.RE_DATE.match(value):
@@ -367,7 +367,8 @@ class DateProperty(ndb.DateProperty):
         if isinstance(value, datetime.date):
             return value
         elif isinstance(value, basestring):
-            day, month, year = value.split('/')
+            dvalue = self.RE_DATE.match(value)
+            day, month, year = dvalue.groups()
             value = datetime.date(int(year), int(month), int(day))
             return value
         else:
