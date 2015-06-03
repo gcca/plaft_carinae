@@ -20,6 +20,20 @@ class Customer extends App.View
   _json-getter: -> @el._toJSON!
 
   _json-setter: (_dto) ->
+    _is-obligate = @form-builder._elements'is_obligated'._radios
+    _has-officer = @form-builder._elements'has_officer'._radios
+
+    if _dto.'is_obligated'?
+      if _dto.'is_obligated'
+        _is-obligate._yes._checked = true
+      else
+        _is-obligate._no._checked = true
+    if _dto.'has_officer'?
+      if _dto.'has_officer'
+        _has-officer._yes._checked = true
+      else
+        _has-officer._no._checked = true
+
     @el.query '[name=document_type]'
       .._value = 'dni'
     @el._fromJSON _dto
