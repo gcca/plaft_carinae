@@ -155,8 +155,8 @@ class NewUsers(Handler):
                 customs_agency.store()
 
                 officer = customs_agency.officer
-                officer.username = username
-                officer.password = password
+                officer.populate(username=username,
+                                 password=password)
                 officer.store()
                 self.write(self.template())
             else:
