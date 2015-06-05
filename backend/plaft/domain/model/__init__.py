@@ -145,7 +145,7 @@ class Customer(dom.Model, dom.PolyModel):
     has_officer = dom.Boolean()
     condition = dom.String()  # residencia
 
-    declarant_key = dom.Key(Declarant)
+    declarants = dom.Structured(Declarant, repeated=True)
 
     def __new__(cls, **kwargs):
         """Polymorphic creation to implement the factory pattern
@@ -262,8 +262,6 @@ class Dispatch(dom.Model):
     third = dom.Structured(Third)
     historical_customer = dom.Structured(Customer)
     money_source = dom.String()
-
-    declarants = dom.Structured(Declarant, repeated=True)
 
     stakeholders = dom.Structured(Stakeholder, repeated=True)
 

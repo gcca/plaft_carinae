@@ -63,7 +63,6 @@ class Income extends Module
           _dispatch_dto =
             'declaration':
               'customer': _customer-dto
-            'declarants': [_customer-dto.'declarant']
           @render-panels _dispatch_dto
         _not-found: ~>  # income with new customer
           _dispatch_dto =
@@ -114,9 +113,11 @@ class Income extends Module
    * @private
    */
   panels2dispatchDTO: ->
+    _declaration = @_panels._declaration._body._json
+    _declaration.'customer'.'declarants' = @_panels._declarants._body._json
+
     _dispatch-dto =
-      declaration: @_panels._declaration._body._json
-      declarants: @_panels._declarants._body._json
+      declaration: _declaration
       stakeholders: @_panels._stakeholders._body._json
     _dispatch-dto <<<< @_panels._dispatch._body._json
 
@@ -169,7 +170,7 @@ class Income extends Module
       .._dispatch._body.on (gz.Css \code-regime), ~>
         .._declaration._body.set-type it
 
-      .._declarants._body._json = _dispatch-dto.'declarants'
+      .._declarants._body._json = _dispatch-dto.'declaration'.'customer'.'declarants'
       .._stakeholders._body._json = _dispatch-dto.'stakeholders'
 
     if _dispatch-dto.'id'?  # Añadiendo botón PDF(en modo edición).

@@ -116,8 +116,7 @@ def create_dispatches(agency, datastore, customers, n=30):
                             customs_agency_key=agency.key,
                             jurisdiction=jurisdiction,
                             regime=regime,
-                            stakeholders=[random.choice(stakeholders)],
-                            declarants=[random.choice(declarants)])
+                            stakeholders=[random.choice(stakeholders)])
         dispatch.declaration = declaration
         dispatch.store()
         datastore.pending_key.append(dispatch.key)
@@ -198,7 +197,8 @@ def _data_debug():
 
         customer = Customer(name=data.name,
                             document_type=data.document_type,
-                            document_number=document_number)
+                            document_number=document_number,
+                            declarants=[random.choice(declarants)])
         customer.store()
         customers.append(customer)
 
