@@ -74,12 +74,11 @@ class DeclarationPDF(Handler):
     def checkButtonchk(self, obj, value):
         if hasattr(obj, value):
             if getattr(obj, value):
-                if getattr(obj, value) == 'No':
-                    return 'SI( &nbsp; ) &nbsp;&nbsp; NO( X )'
-                else:
-                    return 'SI( X ) &nbsp;&nbsp; NO( &nbsp; )'
-            else:
+                return 'SI( X ) &nbsp;&nbsp; NO( &nbsp; )'
+            elif getattr(obj, value) is None:
                 return '-'
+            else:
+                return 'SI( &nbsp; ) &nbsp;&nbsp; NO( X )'
         else:
             return 'No se encontro informacion'
 
@@ -99,6 +98,16 @@ class DeclarationPDF(Handler):
         if hasattr(obj, value):
             if getattr(obj, value):
                 return getattr(obj, value)
+            else:
+                return message
+        else:
+            return 'No se encontro informacion'
+
+    # Only obj and value params are required!!
+    def checkDate(self, obj, value, message='-'):
+        if hasattr(obj, value):
+            if getattr(obj, value):
+                return (getattr(obj, value)).strftime('%d/%m/%Y')
             else:
                 return message
         else:
@@ -148,7 +157,7 @@ class DeclarationPDF(Handler):
                         self.checkEmpty(customer, 'birthplace')])
 
         content.append(['','Fecha de nacimiento',
-                        self.checkEmpty(customer, 'birthday')])
+                        self.checkDate(customer, 'birthday')])
 
         content.append(['e)','Nacionalidad',
                         self.checkEmpty(customer, 'nationality')])
@@ -316,11 +325,6 @@ class DeclarationPDF(Handler):
 
         dispatch = model.Dispatch.find(int(id))
         customer = dispatch.declaration.customer
-
-        if customer.document_type == 'ruc':
-            customer = model.Business.new(customer.dict)
-        else:
-            customer = model.Person.new(customer.dict)
 
         styles = getSampleStyleSheet()
         styles.add(ParagraphStyle(name='Justify', alignment=TA_JUSTIFY))
