@@ -204,15 +204,17 @@ class UsersFromFile(Handler):
                       .encode('utf-8'))
         user_rows = (l.split(',') for l in users_file.split('\n'))
 
-        for agency_name, user_caption, _, username, password in user_rows:
+        # for agency_name, user_caption, _, username, password in user_rows:
+        #     officer = model.Officer(name=user_caption,
+
+        for agency_name, username, password in user_rows:
             agency = model.CustomsAgency(name=agency_name)
             agency.store()
 
             datastore = model.Datastore(customs_agency_key=agency.key)
             datastore.store()
 
-            officer = model.Officer(name=user_caption,
-                                    username=username,
+            officer = model.Officer(username=username,
                                     password=password,
                                     customs_agency_key=agency.key)
             agency.officer_key = officer.store()
