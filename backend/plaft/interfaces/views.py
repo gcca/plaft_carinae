@@ -360,7 +360,7 @@ class DeclarationPDF(Handler):
 
         self.addTable(story, headerTable, 12)
 
-        titlePDF = Paragraph('<b>DECLARACIÓN DE CONOCIMIENTO DEL CLIENTE</b>',
+        titlePDF = Paragraph('<b>DECLARACIÓN JURADA DE CONOCIMIENTO DEL CLIENTE</b>',
                             styles['Center'])
 
         title_customer = Paragraph('<b>%s</b>' %('PERSONA JURIDICA'
