@@ -67,6 +67,12 @@ class CustomsAgency(dom.Model):
 
 
 # Usuarios
+class Permissions(dom.Model):
+    """."""
+    modules = dom.Text(repeated=True)
+    signals = dom.Text(repeated=True)
+
+
 class User(dom.User, dom.PolyModel):
     """Usuario de PLAFT.
 
@@ -83,6 +89,7 @@ class User(dom.User, dom.PolyModel):
     name = dom.String()
     is_officer = dom.Boolean(default=False)  # (-o-) Retirar.
     customs_agency_key = dom.Key(CustomsAgency)
+    permissions_key = dom.Key(Permissions)
 
 
 class Officer(User):
