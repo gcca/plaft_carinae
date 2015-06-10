@@ -456,13 +456,13 @@ class RESTful(BaseRESTful):
                 return type(fn.func_name,
                             (BaseRESTful,),
                             {method_or_fn: fn,
-                             'with_id': len(fn.func_code.co_varnames) > 1})
+                             'with_id': fn.func_code.co_argcount > 1})
             return wrapper
         return type(
             method_or_fn.func_name,
             (BaseRESTful,),
             {'get': method_or_fn,
-             'with_id': len(method_or_fn.func_code.co_varnames) > 1})  # fn
+             'with_id': method_or_fn.func_code.co_argcount > 1})  # fn
 
     @staticmethod
     def nested(cls_restful):
