@@ -391,5 +391,9 @@ App.widget = require './widget'
 /** @export */
 App.mixin = require './mixin'
 
+# HARDCODE
+App.permissions =
+  modules: window.plaft.'user'.'permissions'.'modules'
+  signals: window.plaft.'user'.'permissions'.'signals'
 
 # vim: ts=2:sw=2:sts=2:et
