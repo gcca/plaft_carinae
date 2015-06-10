@@ -202,10 +202,8 @@ class UsersFromFile(Handler):
         users_file = (self.request.get('users_file')
                       .decode('cp1252', 'replace')
                       .encode('utf-8'))
-        user_rows = (l.split(',') for l in users_file.split('\n'))
 
-        # for agency_name, user_caption, _, username, password in user_rows:
-        #     officer = model.Officer(name=user_caption,
+        user_rows = (l.split(',') for l in users_file.split('\n') if l)
 
         for agency_name, username, password in user_rows:
             agency = model.CustomsAgency(name=agency_name)
@@ -214,9 +212,9 @@ class UsersFromFile(Handler):
             datastore = model.Datastore(customs_agency_key=agency.key)
             datastore.store()
 
-            officer = model.Officer(username=username,
-                                    password=password,
-                                    customs_agency_key=agency.key)
+            officer = model.Officer(customs_agency_key=agency.key)
+            officer.populate(username=username, password=password)
+
             agency.officer_key = officer.store()
             agency.store()
 
