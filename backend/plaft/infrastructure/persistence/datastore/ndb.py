@@ -217,9 +217,11 @@ class Model(Entity, ndb.Model):
             if property in payload:
                 prop_type = _properties[property]
                 dtype = type(prop_type)
-                value = payload[property]
+                if dtype is not Key:
+                    value = payload[property]
 
                 if dtype is Key:
+                    value = payload[property[:-4]]
                     if not value:
                         continue
                     # TODO(): hot update nested models
@@ -357,7 +359,7 @@ class DocumentProperty(ndb.StructuredProperty):
 class Date(ndb.DateProperty):
 
     import re
-    RE_DATE = re.compile(r'(\d{2})[\/-](\d{2})[\/-](\d{4})')
+    RE_DATE = re.compile(r'(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})')
 
     def _validate(self, value):
         if isinstance(value, basestring) and self.RE_DATE.match(value):

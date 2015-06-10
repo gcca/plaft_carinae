@@ -12,8 +12,9 @@ App.MODULES =
   Numeration    = require './modules/numeration'
   Operation     = require './modules/operation'
   Anexo6        = require './modules/anexo-seis'
-  OperationList = require './modules/operation-list'  # TODO: port panelgroup
+  OperationList = require './modules/operation-list'
   ## Alerts        = r equire './modules/alerts'  TODO: port panelgroup
+
 
 Workspace = require './workspace'
 Settings = require './settings'
