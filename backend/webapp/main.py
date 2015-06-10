@@ -24,18 +24,11 @@ urls = [
     # Handlers: see RESTful classes
 
     # Handler methods
-    ('/api/income', handlers.create),
-    ('/api/income/(\\d+)', handlers.update),
-    ('/api/dispatch/(\\d+)/numerate', handlers.numerate),
-    ('/api/dispatch/(\\d+)/accept', handlers.accept_dispatch),
-    ('/api/dispatch/(\\d+)/anexo_seis', handlers.anexo_seis),
     ('/api/customs_agency/list_dispatches', handlers.pending_and_accepting),
     ('/api/operation/list', handlers.list_operation),
-    ('/api/dispatch/list', handlers.dispatches),
     ('/api/reporte_operaciones', handlers.reporte_operaciones),
     ('/generate_user/(\\d+)', handlers.generate_user),
     ('/update_data', handlers.update_data),
-    ('/api/dispatch/(\\d+)/delete', handlers.dispatch_delete),
 ]
 
 

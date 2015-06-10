@@ -16,10 +16,6 @@ class Customer(RESTful):
     """Customer RESTful."""
 
 
-class Dispatch(RESTful):
-    """Dispatch RESTful."""
-
-
 class Stakeholder(RESTful):
     """Stakeholder RESTful."""
 
@@ -32,16 +28,44 @@ class Declarant(RESTful):
     """Declarant RESTful."""
 
 
-@handler_method
-def dispatches(handler):
-    """ (Handler) -> None
+class User(RESTful):
+    """User RESTful."""
 
-    => [Dispatch]
-    """
-    customs_agency = handler.user.customs_agency
-    handler.render_json(
-        plaft.application.dispatch.list_dispatches(customs_agency)
-    )
+    def get(self, id=None):
+        self.write_json('{"m":"Are you kidding me?"}')
+
+    def post(self):
+        payload = self.query
+        customs_agency = self.user.customs_agency
+        permissions = payload['permissions']
+        permission_id = None
+
+        if permissions:
+            permission = model.Permissions()
+            permission << permissions
+            permission.store()
+            permission_id = permission.key
+
+        employee = model.Employee(name=payload['name'],
+                                  username=payload['username'],
+                                  password=payload['password'],
+                                  customs_agency_key=customs_agency.key,
+                                  permissions_key=permission_id)
+        employee.store()
+
+        customs_agency.employees_key.append(employee.key)
+        customs_agency.store()
+
+        self.write_json('{"id":%d}' % employee.id)
+
+    def put(self, id):
+        employee = model.Employee.find(int(id))
+        employee << self.query
+        employee.store()
+        self.write_json('{}')
+
+    def delete(self, id):
+        self.write_json('{"m":"Are you kidding me?"}')
 
 
 @handler_method
@@ -60,79 +84,6 @@ def pending_and_accepting(handler):
 
 
 @handler_method('post')
-def create(handler):
-    """ (Handler) -> None
-
-    => {
-        'id': int,
-        'customer': int
-    }
-
-    ~> BAD_REQUEST: No ID cliente.
-    """
-    payload = handler.query
-
-    customs_agency = handler.user.customs_agency
-
-    customer = None
-    if 'customer' in payload:
-        customer_id = payload['customer']
-        customer = model.Customer.find(customer_id)
-        if not customer:
-            handler.status.BAD_REQUEST('No existe el cliente: ' +
-                                       customer_id)
-            return
-
-    dispatch = plaft.application.dispatch.create(payload,
-                                                 customs_agency,
-                                                 customer)
-    handler.render_json({
-        'id': dispatch.id,
-        'customer': dispatch.customer_key.id()
-    })
-
-
-@handler_method('put')
-def update(handler, dispatch_id=None):
-    """ (Handler) -> None
-
-    => {}
-
-    ~>
-        BAD_REQUEST: No existe cliente.
-        NOT_FOUND: No existe despacho.
-    """
-    payload = handler.query
-    dispatch = model.Dispatch.find(int(dispatch_id))
-    if dispatch:
-        dd = plaft.application.dispatch.update(dispatch, payload)
-        handler.write_json('{}')
-    else:
-        handler.status.NOT_FOUND('No existe el despacho con el id: ' +
-                                 dispatch_id)
-
-
-@handler_method('post')
-def numerate(handler, dispatch_id):
-    """ (Handler) -> None
-
-    => {}
-
-    ~> NOT_FOUND: No existe despacho.
-    """
-    playload = handler.query
-
-    dispatch = model.Dispatch.find(int(dispatch_id))
-    if dispatch:
-        plaft.application.dispatch.numerate(dispatch, **playload)
-
-        handler.write_json('{}')
-    else:
-        handler.status.NOT_FOUND('No existe el despacho con el id: ' +
-                                 dispatch_id)
-
-
-@handler_method('post')
 def register(handler, dispatch_id):
     """ (Handler) -> None
 
@@ -147,42 +98,6 @@ def register(handler, dispatch_id):
         plaft.application.dispatch.register(dispatch,
                                             query['country_source'],
                                             query['country_target'])
-        handler.write_json('{}')
-    else:
-        handler.status.NOT_FOUND('No existe el despacho con el id: ' +
-                                 dispatch_id)
-
-
-@handler_method('post')
-def accept_dispatch(handler, dispatch_id=None):
-    """ (Handler) -> None
-
-    => {'id': int}
-
-    ~> NOT_FOUND: No existe despacho.
-    """
-    dispatch = model.Dispatch.find(int(dispatch_id))
-    if dispatch:
-        operation = plaft.application.operation.accept(dispatch)
-        handler.write_json('{"id":%s}' % operation.id)
-    else:
-        handler.status.NOT_FOUND('No se halló el despacho ' + dispatch_id)
-
-
-@handler_method('post')
-def anexo_seis(handler, dispatch_id):
-    """ (Handler) -> None
-
-    => {}
-
-    ~> NOT_FOUND: No existe despacho.
-    """
-    playload = handler.query
-
-    dispatch = model.Dispatch.find(int(dispatch_id))
-    if dispatch:
-        plaft.application.dispatch.anexo_seis(dispatch, **playload)
-
         handler.write_json('{}')
     else:
         handler.status.NOT_FOUND('No existe el despacho con el id: ' +
@@ -296,64 +211,142 @@ def list_operation(handler):
     )
 
 
-@handler_method('delete')
-def dispatch_delete(handler, id):
-    dispatch = model.Dispatch.find(int(id))
-
-    datastore = dispatch.customs_agency.datastore
-    datastore.pending_key.remove(dispatch.key)
-    datastore.store()
-
-    dispatch.declaration.delete()
-    dispatch.delete()
-
-    handler.write_json('{}')
 
 
 # TODO: Cambiar nombre a Dispatch (quitar el '_')
 #       y borrar la clase Dispatch anterior.
 #       De momento cubre lo mismo que las urls
-#         uri('dispatch', handlers.Dispatch)
+#         uri('dispatch', handlers.Dispatch) (-)
 #         ('/api/dispatch/(\d+)/numerate', handlers.numerate),
 #         ('/api/dispatch/(\d+)/accept', handlers.accept_dispatch),
 #         ('/api/dispatch/(\d+)/anexo_seis', handlers.anexo_seis),
-#         ('/api/dispatch/list', handlers.dispatches),
-#         ('/api/dispatch/(\d+)/delete', handlers.dispatch_delete),
-class _Dispatch(RESTful):
-
-    def get(self, id=None):
-        self.write('Disabled')
+#         ('/api/dispatch/list', handlers.dispatches), (-)
+#         ('/api/dispatch/(\d+)/delete', handlers.dispatch_delete), (-)
+class Dispatch(RESTful):
 
     def post(self):
-        self.write('Crear despacho')
+        """ (Handler) -> None
+
+        => {
+            'id': int,
+            'customer': int
+        }
+
+        ~> BAD_REQUEST: No ID cliente.
+        """
+        payload = self.query
+
+        customs_agency = self.user.customs_agency
+
+        customer = None
+        if 'customer' in payload:
+            customer_id = payload['customer']
+            customer = model.Customer.find(customer_id)
+            if not customer:
+                handler.status.BAD_REQUEST('No existe el cliente: ' +
+                                           customer_id)
+                return
+
+        dispatch = plaft.application.dispatch.create(payload,
+                                                     customs_agency,
+                                                     customer)
+        self.render_json({
+            'id': dispatch.id,
+            'customer': dispatch.customer_key.id()
+        })
 
     def put(self, id):
-        self.write('Actualizar despacho')  # podría usarse para numerar
+        """ (Handler) -> None
+
+        => {}
+
+        ~>
+            BAD_REQUEST: No existe cliente.
+            NOT_FOUND: No existe despacho.
+        """
+        payload = self.query
+        dispatch = model.Dispatch.find(int(id))
+        if dispatch:
+            dd = plaft.application.dispatch.update(dispatch, payload)
+            self.write_json('{}')
+        else:
+            self.status.NOT_FOUND('No existe el despacho con el id: ' +
+                                     dispatch_id)
 
     def delete(self, id):
-        # acá debería estar la funcionalidad de '/api/dispatch/(\d+)/delete
-        self.write('Disabled')
+        dispatch = model.Dispatch.find(int(id))
+
+        datastore = dispatch.customs_agency.datastore
+        datastore.pending_key.remove(dispatch.key)
+        datastore.store()
+
+        dispatch.delete()
+
+        self.write_json('{}')
 
     @RESTful.method('post')
     def numerate(self, dispatch_id):
-        self.write('Numerar')
+        """ (Handler) -> None
+
+        => {}
+
+        ~> NOT_FOUND: No existe despacho.
+        """
+        playload = self.query
+
+        dispatch = model.Dispatch.find(int(dispatch_id))
+        if dispatch:
+            plaft.application.dispatch.numerate(dispatch, **playload)
+
+            self.write_json('{}')
+        else:
+            self.status.NOT_FOUND('No existe el despacho con el id: ' +
+                                     dispatch_id)
 
     @RESTful.method('post')
     def accept(self, dispatch_id):
-        self.write('Aceptar')
+        """ (Handler) -> None
+
+        => {'id': int}
+
+        ~> NOT_FOUND: No existe despacho.
+        """
+        dispatch = model.Dispatch.find(int(dispatch_id))
+        if dispatch:
+            operation = plaft.application.operation.accept(dispatch)
+            self.write_json('{"id":%s}' % operation.id)
+        else:
+            self.status.NOT_FOUND('No se halló el despacho ' + dispatch_id)
 
     @RESTful.method('post')  # ?
     def anexo_seis(self, dispatch_id):
-        self.write('¿Anexar?')
+        """ (Handler) -> None
+
+        => {}
+
+        ~> NOT_FOUND: No existe despacho.
+        """
+        playload = handler.query
+
+        dispatch = model.Dispatch.find(int(dispatch_id))
+        if dispatch:
+            plaft.application.dispatch.anexo_seis(dispatch, **playload)
+
+            self.write_json('{}')
+        else:
+            self.status.NOT_FOUND('No existe el despacho con el id: ' +
+                                     dispatch_id)
 
     @RESTful.method  # get
     def list(self):
-        self.write('Listar')
+        """ (Handler) -> None
 
-    # Esto debería borrarse. Usar el `delete` REST de arriba.
-    @RESTful.method('delete')
-    def delete(self, dispatch_id):
-        self.write('Borrar')
+        => [Dispatch]
+        """
+        customs_agency = self.user.customs_agency
+        self.render_json(
+            plaft.application.dispatch.list_dispatches(customs_agency)
+        )
 
 
 # vim: et:ts=4:sw=4
