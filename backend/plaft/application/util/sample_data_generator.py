@@ -14,7 +14,7 @@ import plaft.config
 from plaft.domain.model import (User, Dispatch, CodeName,
                                 Customer, Third, Declarant, Stakeholder,
                                 Business, Datastore, CustomsAgency,
-                                Operation, Officer, Employee)
+                                Operation, Officer, Employee, Permissions)
 
 
 # Utils
@@ -202,17 +202,21 @@ def _data_debug():
         customer.store()
         customers.append(customer)
 
-    Data = namedtuple('Data', 'customs_agency officer username password')
+    Data = namedtuple('Data', 'customs_agency officer username password signals modules')
 
     init_data = [
         Data('Massive Dynamic',
              'Nina Sharp',
              'gcca@mail.io',
-             '789'),
+             '789',
+             ['WEL-HASH','NUM-HASH','ANEXO2-HASH'],
+             ['WEL-HASH','NUM-HASH','ANEXO2-HASH']),
         Data('Cyberdine',
              'Mice Dyson',
              'mice@cd.io',
-             '123')
+             '123',
+             ['WEL-HASH','NUM-HASH','ANEXO2-HASH'],
+             ['WEL-HASH','NUM-HASH','ANEXO2-HASH'])
     ]
 
     for data in init_data:
@@ -224,10 +228,15 @@ def _data_debug():
         datastore = Datastore(customs_agency_key=agency.key)
         datastore.store()
 
+        permission = Permissions(modules=data.modules,
+                                 signals=data.signals)
+        permission.store()
+
         officer = Officer(name=data.officer,
                           username=data.username,
                           password=data.password,
-                          customs_agency_key=agency.key)
+                          customs_agency_key=agency.key,
+                          permissions_key=permission.key)
         officer.store()
 
         agency.officer_key = officer.key
