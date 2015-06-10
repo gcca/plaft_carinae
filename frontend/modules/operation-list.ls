@@ -164,6 +164,7 @@ class OperationList extends Module
 
   /** @protected */ @@_caption = 'LISTA OPERACION'
   /** @protected */ @@_icon    = gz.Css \th-list
+  /** @protected */ @@_hash    = 'OPLIST-HASH'
 
 /** @export */
 module.exports = OperationList

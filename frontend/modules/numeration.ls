@@ -49,8 +49,6 @@ class NumerationEdit extends Module
     _dto = @model._attributes
     for stk in _dto.'stakeholders'
       delete stk.'slug'
-    for declarant in _dto.'declarants'
-      delete declarant.'slug'
     ########################################################################
 
     _dto = @el._toJSON!
@@ -294,6 +292,7 @@ class Numeration extends Module
 
   /** @protected */ @@_caption = 'NUMERACIÓN'
   /** @protected */ @@_icon    = gz.Css \print
+  /** @protected */ @@_hash    = 'NUM-HASH'
 
 
 /** @export */

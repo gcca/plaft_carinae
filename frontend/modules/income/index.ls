@@ -17,7 +17,7 @@ Module = require '../../workspace/module'
 
 class Dispatch extends App.Model
   /** @oevrride */
-  urlRoot: \income
+  urlRoot: \dispatch
 
 
 /**
@@ -199,7 +199,7 @@ class Income extends Module
           see-button = (_value) ->
             if _value
               _id = _tr._model._id
-              App.ajax._delete "/api/dispatch/#{_id}/delete", do
+              App.ajax._delete "/api/dispatch/#{_id}", do
                 _success: ->
                   $ _tr ._remove!
 
@@ -293,6 +293,7 @@ class Income extends Module
 
   /** @protected*/ @@_caption = 'OPERACION'
   /** @protected*/ @@_icon    = gz.Css \cloud
+  /** @protected */ @@_hash   = 'INCOME-HASH'
   /** @protected*/
   @@_search-menu =
     * _caption: 'C'

@@ -23,8 +23,6 @@ class OperationEdit extends Module
     _dto = @model._attributes
     for stk in _dto.'stakeholders'
       delete stk.'slug'
-    for declarant in _dto.'declarants'
-      delete declarant.'slug'
     ########################################################################
 
     @model._save @el._toJSON!, do
@@ -417,7 +415,7 @@ class OperationEdit extends Module
                           \ EN REPRESENTACIÓN DEL CLIENTE DEL SUJETO OBLIGADO
                           (DECLARANTE).</h4>'
 
-    @load-list-declarant _dto-anexo2.'declarants'
+    @load-list-declarant _dto-anexo2.'declaration'.'customer'.'declarants'
 
     @_type = @check-commodity _dto-anexo2.'regime'.'name'
     if @_type
@@ -579,6 +577,7 @@ class Operations extends Module
 
   /** @protected */ @@_caption = 'ANEXO 2'
   /** @protected */ @@_icon    = gz.Css \flash
+  /** @protected */ @@_hash  = 'ANEXO2-HASH'
 
 
 /** @export */
