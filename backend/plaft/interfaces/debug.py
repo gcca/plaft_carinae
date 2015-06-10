@@ -6,7 +6,7 @@
 
 """
 
-from plaft.interfaces import Handler, RESTHandler
+from plaft.interfaces import Handler, RESTful
 from plaft.domain import model
 
 
@@ -222,11 +222,12 @@ class UsersFromFile(Handler):
 
 
 # REST Handlers
-class Operation(RESTHandler):
+
+class Operation(RESTful):
     """Operation RESTful."""
 
 
-class Datastore(RESTHandler):
+class Datastore(RESTful):
     """Datastore RESTful."""
 
 

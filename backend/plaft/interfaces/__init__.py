@@ -16,22 +16,28 @@ from plaft.domain import model
 from plaft.infrastructure.support import util
 
 
-def login_required(m, msg='Intento de ingreso no autorizado'):
-    return lambda s, *a, **k: (
-        m(s, *a, **k) if s.user
-        else (s.status.FORBIDDEN('restricted-access')
-              if '/api/' in s.request.url
-              else s.redirect('/?restricted-access')))
+def login_required(m):
+    """Handler method decorator."""
+    def wrapper(s, *a, **k):
+        """check authenticated user."""
+        return (m(s, *a, **k)
+                if s.user
+                else (s.status.FORBIDDEN('restricted-access')
+                      if '/api/' in s.request.url
+                      else s.redirect('/?restricted-access')))
+    return wrapper
 
 
 class LoginRequired(type):
+    """Metaclass to set default protected method for authentication."""
 
-    def __new__(cls, name, bases, dct):
+    def __new__(mcs, name, bases, dct):
         # TODO: Improve method to decide when apply login validation
         #       to a concret handler.
         if name == 'SignIn':  # (-o-) HARDCODE: SignIn
             def without_user(self, *args, **kwargs):
-                super(DirectToController, self).initialize(*args, **kwargs)
+                """Disable check user."""
+                super(self.__class__, self).initialize(*args, **kwargs)
                 self.user = True
             dct['initialize'] = without_user
 
@@ -40,7 +46,7 @@ class LoginRequired(type):
                 if method in dct:
                     dct[method] = login_required(dct[method])
 
-        return super(LoginRequired, cls).__new__(cls, name, bases, dct)
+        return super(LoginRequired, mcs).__new__(mcs, name, bases, dct)
 
 
 class Handler(RequestHandler):
@@ -310,30 +316,51 @@ class DirectToController(Handler):
         super(DirectToController, self).__init__(*args, **kwargs)
 
 
-# RESTful
+# Abstract HTTP methods
 
-class RESTError(Exception):
-    """Error on construction RESTHandler."""
-    pass
+def handler_method(method='get'):
+    """Method to handler class."""
+    if isinstance(method, str):
+        def wrapper(fn):
+            """Create class with handler specific method."""
+            return type('HandlerMethod', (Handler,), {method: fn})
+        return wrapper
+    return type('HandlerMethod', (Handler,), {'get': method})
 
 
-class RESTHandler(Handler):
+# RESTful handler
 
-    def __init__(self, *args, **kwargs):
-        self.__name = self.__class__.__name__
+class MetaRESTful(type):
+    """Ensure basic class attributes."""
 
-        try:
-            self.__model = getattr(model, self.__name)
-        except AttributeError:
-            raise RESTError('{"e":"No RESTHandler model class name:'
-                            ' %s."}' % self.__name)
+    def __init__(cls, name, *args):
+        if 'RESTful' != name:
+            cls.path = name.lower()
 
-        super(RESTHandler, self).__init__(*args, **kwargs)
+            try:
+                cls._model = getattr(model, name, None)
+            except AttributeError:
+                raise AttributeError('{"e":"No RESTHandler model class name:'
+                                     ' %s."}' % name)
+
+        super(MetaRESTful, cls).__init__(name, *args)
+
+
+class BaseRESTful(Handler):
+    """Base RESTful handlers with nested entities and extra methods.
+
+    TODO: Improve (created) method to collect uri's.
+    """
+
+    _model = None
+    path = None
+    nested = False  # see nested below
 
     def get(self, id=None):
+        """READ or LIST."""
         if id:
             try:
-                instance = self.__model.find(int(id))
+                instance = self._model.find(int(id))
             except ValueError:
                 self.status.BAD_REQUEST('Bad id %s' % id)
             else:
@@ -343,7 +370,7 @@ class RESTHandler(Handler):
                     self.status.NOT_FOUND('Not found by id %s' % id)
 
         else:
-            instances = list(self.__model.all(**self.query))
+            instances = list(self._model.all(**self.query))
             if instances:
                 self.render_json(instances)
             else:
@@ -352,6 +379,7 @@ class RESTHandler(Handler):
                 self.status.NOT_FOUND('Not found with %s' % params)
 
     def post(self):
+        """CREATE."""
         query = self.query
 
         if query:
@@ -359,7 +387,7 @@ class RESTHandler(Handler):
                 instances = []
                 try:
                     for dto in query:
-                        instance = self.__model.new(dto)
+                        instance = self._model.new(dto)
                         instance.store()
                         instances.append(instance)
                 except IOError:
@@ -369,7 +397,7 @@ class RESTHandler(Handler):
                 else:
                     self.render_json(instance.id for instance in instances)
             else:  # create single
-                instance = self.__model.new(query)
+                instance = self._model.new(query)
                 try:
                     instance.store()
                 except IOError:
@@ -380,8 +408,9 @@ class RESTHandler(Handler):
             self.status.BAD_REQUEST('No query')
 
     def put(self, id=None):
+        """EDIT."""
         try:
-            instance = self.__model.find(int(id))
+            instance = self._model.find(int(id))
         except ValueError:
             self.status.BAD_REQUEST('Bad id %s' % id)
         else:
@@ -401,8 +430,9 @@ class RESTHandler(Handler):
                 self.status.NOT_FOUND('Not found by id %s' % id)
 
     def delete(self, id=None):
+        """REMOVE."""
         try:
-            instance = self.__model.find(int(id))
+            instance = self._model.find(int(id))
         except ValueError:
             self.status.BAD_REQUEST('Bad id %s' % id)
         else:
@@ -412,12 +442,33 @@ class RESTHandler(Handler):
                 self.status.NOT_FOUND('Not found by id %s' % id)
 
 
-# Abstract HTTP methods
+class RESTful(BaseRESTful):
+    """RESTful handler."""
 
-def handler_method(method='get'):
-    if type(method) is str:
-        return lambda fn: type('HandlerMethod', (Handler,), {method: fn})
-    return type('HandlerMethod', (Handler,), {'get': method})
+    __metaclass__ = MetaRESTful
+
+    @staticmethod
+    def method(method_or_fn):
+        """RESTful handler class from method."""
+        if isinstance(method_or_fn, str):  # method
+            def wrapper(fn):
+                """Create class with RESTful specific method."""
+                return type(fn.func_name,
+                            (BaseRESTful,),
+                            {method_or_fn: fn,
+                             'with_id': len(fn.func_code.co_varnames) > 1})
+            return wrapper
+        return type(
+            method_or_fn.func_name,
+            (BaseRESTful,),
+            {'get': method_or_fn,
+             'with_id': len(method_or_fn.func_code.co_varnames) > 1})  # fn
+
+    @staticmethod
+    def nested(cls_restful):
+        """Nested RESTful handler."""
+        cls_restful.nested = True
+        return cls_restful
 
 
 # vim: et:ts=4:sw=4

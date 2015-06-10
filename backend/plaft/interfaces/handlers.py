@@ -8,23 +8,27 @@
 
 """
 import plaft.application
-from plaft.interfaces import RESTHandler, handler_method
+from plaft.interfaces import RESTful, handler_method
 from plaft.domain import model
 
 
-class Customer(RESTHandler):
+class Customer(RESTful):
     """Customer RESTful."""
 
 
-class Dispatch(RESTHandler):
+class Dispatch(RESTful):
     """Dispatch RESTful."""
 
 
-class Stakeholder(RESTHandler):
+class Stakeholder(RESTful):
     """Stakeholder RESTful."""
 
+    @RESTful.nested
+    class Customer(Customer):
+        """Nested Customer RESTful."""
 
-class Declarant(RESTHandler):
+
+class Declarant(RESTful):
     """Declarant RESTful."""
 
 
@@ -304,6 +308,52 @@ def dispatch_delete(handler, id):
     dispatch.delete()
 
     handler.write_json('{}')
+
+
+# TODO: Cambiar nombre a Dispatch (quitar el '_')
+#       y borrar la clase Dispatch anterior.
+#       De momento cubre lo mismo que las urls
+#         uri('dispatch', handlers.Dispatch)
+#         ('/api/dispatch/(\d+)/numerate', handlers.numerate),
+#         ('/api/dispatch/(\d+)/accept', handlers.accept_dispatch),
+#         ('/api/dispatch/(\d+)/anexo_seis', handlers.anexo_seis),
+#         ('/api/dispatch/list', handlers.dispatches),
+#         ('/api/dispatch/(\d+)/delete', handlers.dispatch_delete),
+class _Dispatch(RESTful):
+
+    def get(self, id=None):
+        self.write('Disabled')
+
+    def post(self):
+        self.write('Crear despacho')
+
+    def put(self, id):
+        self.write('Actualizar despacho')  # podría usarse para numerar
+
+    def delete(self, id):
+        # acá debería estar la funcionalidad de '/api/dispatch/(\d+)/delete
+        self.write('Disabled')
+
+    @RESTful.method('post')
+    def numerate(self, dispatch_id):
+        self.write('Numerar')
+
+    @RESTful.method('post')
+    def accept(self, dispatch_id):
+        self.write('Aceptar')
+
+    @RESTful.method('post')  # ?
+    def anexo_seis(self, dispatch_id):
+        self.write('¿Anexar?')
+
+    @RESTful.method  # get
+    def list(self):
+        self.write('Listar')
+
+    # Esto debería borrarse. Usar el `delete` REST de arriba.
+    @RESTful.method('delete')
+    def delete(self, dispatch_id):
+        self.write('Borrar')
 
 
 # vim: et:ts=4:sw=4
