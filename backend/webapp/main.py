@@ -24,7 +24,6 @@ urls = [
     # Handlers: see RESTful classes
 
     # Handler methods
-    ('/api/customs_agency/list_dispatches', handlers.pending_and_accepting),
     ('/api/operation/list', handlers.list_operation),
     ('/api/reporte_operaciones', handlers.reporte_operaciones),
     ('/generate_user/(\\d+)', handlers.generate_user),
@@ -63,8 +62,8 @@ def restful_init():
     for restful in (restful
                     for _, restful in handlers.__dict__.items()
                     if (isinstance(restful, type) and
-                            restful != RESTful and
-                            issubclass(restful, RESTful))):
+                        restful != RESTful and
+                        issubclass(restful, RESTful))):
         prefix = '/' + restful.path
         routes = [
             Route(prefix, restful),
@@ -74,7 +73,7 @@ def restful_init():
         for subrestful in (subrestful
                            for _, subrestful in restful.__dict__.items()
                            if (isinstance(subrestful, type) and
-                                   issubclass(subrestful, BaseRESTful))):
+                               issubclass(subrestful, BaseRESTful))):
 
             if subrestful.nested:
                 nestedprefix = ('%s/%s'
@@ -89,7 +88,9 @@ def restful_init():
                 routes.append(Route('%s/%s' % (subprefix,
                                                subrestful.__name__),
                                     subrestful))
-
+        print '===================================='
+        from pprint import pprint
+        pprint(routes)
         urls.append(PathPrefixRoute('/api', routes))
 
 

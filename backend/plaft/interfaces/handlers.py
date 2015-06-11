@@ -69,42 +69,6 @@ class User(RESTful):
 
 
 @handler_method
-def pending_and_accepting(handler):
-    """ (Handler) -> None
-
-    => {
-        'pending': [Dispatch],
-        'accepting': [Dispatch]
-    }
-    """
-    customs_agency = handler.user.customs_agency
-    handler.render_json(
-        plaft.application.dispatch.pending_and_accepting(customs_agency)
-    )
-
-
-@handler_method('post')
-def register(handler, dispatch_id):
-    """ (Handler) -> None
-
-    => {}
-
-    ~> NOT_FOUND: No existe despacho.
-    """
-    query = handler.query
-
-    dispatch = model.Dispatch.find(int(dispatch_id))
-    if dispatch:
-        plaft.application.dispatch.register(dispatch,
-                                            query['country_source'],
-                                            query['country_target'])
-        handler.write_json('{}')
-    else:
-        handler.status.NOT_FOUND('No existe el despacho con el id: ' +
-                                 dispatch_id)
-
-
-@handler_method
 def reporte_operaciones(handler):
     """ (Handler) -> None
 
@@ -211,17 +175,23 @@ def list_operation(handler):
     )
 
 
+class Customs_Agency(RESTful):
+
+    @RESTful.method
+    def list_dispatches(self):
+        """ (Handler) -> None
+
+        => {
+            'pending': [Dispatch],
+            'accepting': [Dispatch]
+        }
+        """
+        customs_agency = self.user.customs_agency
+        self.render_json(
+            plaft.application.dispatch.pending_and_accepting(customs_agency)
+        )
 
 
-# TODO: Cambiar nombre a Dispatch (quitar el '_')
-#       y borrar la clase Dispatch anterior.
-#       De momento cubre lo mismo que las urls
-#         uri('dispatch', handlers.Dispatch) (-)
-#         ('/api/dispatch/(\d+)/numerate', handlers.numerate),
-#         ('/api/dispatch/(\d+)/accept', handlers.accept_dispatch),
-#         ('/api/dispatch/(\d+)/anexo_seis', handlers.anexo_seis),
-#         ('/api/dispatch/list', handlers.dispatches), (-)
-#         ('/api/dispatch/(\d+)/delete', handlers.dispatch_delete), (-)
 class Dispatch(RESTful):
 
     def post(self):
@@ -271,7 +241,7 @@ class Dispatch(RESTful):
             self.write_json('{}')
         else:
             self.status.NOT_FOUND('No existe el despacho con el id: ' +
-                                     dispatch_id)
+                                  dispatch_id)
 
     def delete(self, id):
         dispatch = model.Dispatch.find(int(id))
@@ -301,7 +271,7 @@ class Dispatch(RESTful):
             self.write_json('{}')
         else:
             self.status.NOT_FOUND('No existe el despacho con el id: ' +
-                                     dispatch_id)
+                                  dispatch_id)
 
     @RESTful.method('post')
     def accept(self, dispatch_id):
@@ -335,7 +305,7 @@ class Dispatch(RESTful):
             self.write_json('{}')
         else:
             self.status.NOT_FOUND('No existe el despacho con el id: ' +
-                                     dispatch_id)
+                                  dispatch_id)
 
     @RESTful.method  # get
     def list(self):
