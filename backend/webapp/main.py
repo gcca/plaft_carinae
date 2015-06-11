@@ -2,7 +2,7 @@
 .. module:: webapp.main
    :synopsis: WSGI Application main.
 
-.. moduleauthor:: Gonzales Castillo, Cristhian A. <cristhian.gz@aol.com>
+.. moduleauthor:: Gonzales Castillo, Cristhian A. <gcca@gcca.tk>
 
 
 """
@@ -61,9 +61,11 @@ def restful_init():
     from plaft.interfaces import RESTful, BaseRESTful
     for restful in (restful
                     for _, restful in handlers.__dict__.items()
-                    if (isinstance(restful, type) and
-                        restful != RESTful and
-                        issubclass(restful, RESTful))):
+                    if (
+                            isinstance(restful, type) and
+                            restful != RESTful and
+                            issubclass(restful, RESTful)
+                    )):
         prefix = '/' + restful.path
         routes = [
             Route(prefix, restful),
@@ -72,9 +74,10 @@ def restful_init():
 
         for subrestful in (subrestful
                            for _, subrestful in restful.__dict__.items()
-                           if (isinstance(subrestful, type) and
-                               issubclass(subrestful, BaseRESTful))):
-
+                           if (
+                                   isinstance(subrestful, type) and
+                                   issubclass(subrestful, BaseRESTful)
+                           )):
             if subrestful.nested:
                 nestedprefix = ('%s/%s'
                                 % (prefix + ('/<%s_id:\\d+>' % restful.path),

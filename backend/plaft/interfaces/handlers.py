@@ -19,10 +19,6 @@ class Customer(RESTful):
 class Stakeholder(RESTful):
     """Stakeholder RESTful."""
 
-    @RESTful.nested
-    class Customer(Customer):
-        """Nested Customer RESTful."""
-
 
 class Declarant(RESTful):
     """Declarant RESTful."""
@@ -176,6 +172,7 @@ def list_operation(handler):
 
 
 class Customs_Agency(RESTful):
+    """Custom Agency RESTful handler."""
 
     @RESTful.method
     def list_dispatches(self):
@@ -193,6 +190,7 @@ class Customs_Agency(RESTful):
 
 
 class Dispatch(RESTful):
+    """Dispatch RESTful handler."""
 
     def post(self):
         """ (Handler) -> None
@@ -213,8 +211,8 @@ class Dispatch(RESTful):
             customer_id = payload['customer']
             customer = model.Customer.find(customer_id)
             if not customer:
-                handler.status.BAD_REQUEST('No existe el cliente: ' +
-                                           customer_id)
+                self.status.BAD_REQUEST('No existe el cliente: ' +
+                                        customer_id)
                 return
 
         dispatch = plaft.application.dispatch.create(payload,
@@ -237,11 +235,11 @@ class Dispatch(RESTful):
         payload = self.query
         dispatch = model.Dispatch.find(int(id))
         if dispatch:
-            dd = plaft.application.dispatch.update(dispatch, payload)
+            plaft.application.dispatch.update(dispatch, payload)
             self.write_json('{}')
         else:
             self.status.NOT_FOUND('No existe el despacho con el id: ' +
-                                  dispatch_id)
+                                  id)
 
     def delete(self, id):
         dispatch = model.Dispatch.find(int(id))
@@ -296,7 +294,7 @@ class Dispatch(RESTful):
 
         ~> NOT_FOUND: No existe despacho.
         """
-        playload = handler.query
+        playload = self.query
 
         dispatch = model.Dispatch.find(int(dispatch_id))
         if dispatch:

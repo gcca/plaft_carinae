@@ -407,7 +407,7 @@ class BaseRESTful(Handler):
         else:
             self.status.BAD_REQUEST('No query')
 
-    def put(self, id=None):
+    def put(self, id):
         """EDIT."""
         try:
             instance = self._model.find(int(id))
@@ -429,7 +429,7 @@ class BaseRESTful(Handler):
             else:
                 self.status.NOT_FOUND('Not found by id %s' % id)
 
-    def delete(self, id=None):
+    def delete(self, id):
         """REMOVE."""
         try:
             instance = self._model.find(int(id))
@@ -458,11 +458,10 @@ class RESTful(BaseRESTful):
                             {method_or_fn: fn,
                              'with_id': fn.func_code.co_argcount > 1})
             return wrapper
-        return type(
-            method_or_fn.func_name,
-            (BaseRESTful,),
-            {'get': method_or_fn,
-             'with_id': method_or_fn.func_code.co_argcount > 1})  # fn
+        return type(method_or_fn.func_name,  # fn
+                    (BaseRESTful,),
+                    {'get': method_or_fn,
+                     'with_id': method_or_fn.func_code.co_argcount > 1})
 
     @staticmethod
     def nested(cls_restful):
