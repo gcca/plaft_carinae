@@ -69,14 +69,13 @@ class NewUsers(Handler):
                 </form>
             </div>
             <br/>""") % {
-        'agency_name': agency.name,
-        'office_name': officer.username,
-        'agency_id': agency.id
+            'agency_name': agency.name,
+            'office_name': officer.username,
+            'agency_id': agency.id
         }
 
     def template(self, agency='', username='', password='',
                  msg='', mode='create'):
-
 
         agencies = ''.join(self.to_li(a) for a in model.CustomsAgency.all())
 

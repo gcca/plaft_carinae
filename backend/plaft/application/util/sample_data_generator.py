@@ -29,11 +29,12 @@ DOCNUMS = ('0', '1', '2', '3', '4',
            '0', '1', '2', '3', '4',
            '5', '6', '7', '8', '9')
 
+
 def pick_document_number_by(document_type):
     return ''.join(random.sample(DOCNUMS, TYPE2NUMBER[document_type]))
 
-
 # Creations
+
 
 def create_stakeholders():
     for stakeholder in stakeholders:
@@ -202,21 +203,22 @@ def _data_debug():
         customer.store()
         customers.append(customer)
 
-    Data = namedtuple('Data', 'customs_agency officer username password signals modules')
+    Data = namedtuple('Data', 'customs_agency officer'
+                              ' username password signals modules')
 
     init_data = [
         Data('Massive Dynamic',
              'Nina Sharp',
              'gcca@mail.io',
              '789',
-             ['WEL-HASH','NUM-HASH','ANEXO2-HASH'],
-             ['WEL-HASH','NUM-HASH','ANEXO2-HASH']),
+             ['WEL-HASH', 'NUM-HASH', 'ANEXO2-HASH'],
+             ['WEL-HASH', 'NUM-HASH', 'ANEXO2-HASH']),
         Data('Cyberdine',
              'Mice Dyson',
              'mice@cd.io',
              '123',
-             ['WEL-HASH','NUM-HASH','ANEXO2-HASH'],
-             ['WEL-HASH','NUM-HASH','ANEXO2-HASH'])
+             ['WEL-HASH', 'NUM-HASH', 'ANEXO2-HASH'],
+             ['WEL-HASH', 'NUM-HASH', 'ANEXO2-HASH'])
     ]
 
     for data in init_data:

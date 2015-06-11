@@ -254,6 +254,7 @@ class Stakeholder(dom.Model):
                                            s.father_name,
                                            s.mother_name))
 
+
 class Dispatch(dom.Model):
     """."""
     order = dom.String()
@@ -310,7 +311,7 @@ class Dispatch(dom.Model):
     @property
     def declaration(self):
         d = self.Declaration(customer=self.historical_customer,
-                        third=self.third)
+                             third=self.third)
         # setattr(self, 'declaration', d)
         return d
 
