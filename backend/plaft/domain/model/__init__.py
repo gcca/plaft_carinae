@@ -63,6 +63,7 @@ class CustomsAgency(dom.Model):
 
     @property
     def datastore(self):
+        """Customs agency datastore model."""
         return Datastore.find(customs_agency_key=self.key)
 
 
@@ -166,9 +167,10 @@ class Customer(dom.Model, dom.PolyModel):
         if cls is Customer and kwargs:
             if 'document_type' not in kwargs:
                 return super(Customer, cls).__new__(Business, **kwargs)
-                raise AttributeError('Customer needs the attribute'
-                                     ' `document_type` to construct'
-                                     ' a Business or Person.')
+                # TODO: Needs refactorization.
+                # raise AttributeError('Customer needs the attribute'
+                #                      ' `document_type` to construct'
+                #                      ' a Business or Person.')
 
             document_type = kwargs['document_type']
 
@@ -310,6 +312,7 @@ class Dispatch(dom.Model):
 
     @property
     def declaration(self):
+        """Emulate declaration model property."""
         d = self.Declaration(customer=self.historical_customer,
                              third=self.third)
         # setattr(self, 'declaration', d)
@@ -317,6 +320,7 @@ class Dispatch(dom.Model):
 
     @declaration.setter
     def declaration(self, d):
+        """Set pieces data declaration."""
         self.historical_customer = d.customer
         self.third = d.third
         self.money_source = d.customer.money_source_type

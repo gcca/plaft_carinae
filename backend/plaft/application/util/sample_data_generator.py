@@ -3,7 +3,7 @@
 .. module:: plaft.application.util
    :synopsis: Provides sample data.
 
-.. moduleauthor:: Gonzales Castillo, Cristhian A. <cristhian.gz@aol.com>
+.. moduleauthor:: Gonzales Castillo, Cristhian A. <gcca@gcca.tk>
 
 
 """
@@ -11,9 +11,8 @@
 from __future__ import unicode_literals
 import random
 import plaft.config
-from plaft.domain.model import (User, Dispatch, CodeName,
-                                Customer, Third, Declarant, Stakeholder,
-                                Business, Datastore, CustomsAgency,
+from plaft.domain.model import (Dispatch, CodeName, Declarant, Stakeholder,
+                                Business, Person, Datastore, CustomsAgency,
                                 Operation, Officer, Employee, Permissions)
 
 
@@ -100,7 +99,7 @@ def create_employees(agency, j=7):
 
 
 def create_dispatches(agency, datastore, customers, n=30):
-    from string import digits, letters
+    from string import digits
 
     years = ['2014', '2015', '2016']
     list_dispatches = []
@@ -192,19 +191,25 @@ def _data_debug():
                   'dni'),
     ]
 
+    customer_by = {
+        'ruc': Business,
+        'dni': Person
+    }
+
     customers = []
     for data in init_customers:
         document_number = pick_document_number_by(data.document_type)
 
-        customer = Customer(name=data.name,
-                            document_type=data.document_type,
-                            document_number=document_number,
-                            declarants=[random.choice(declarants)])
+        customer = customer_by[data.document_type](
+            name=data.name,
+            document_type=data.document_type,
+            document_number=document_number,
+            declarants=[random.choice(declarants)])
         customer.store()
         customers.append(customer)
 
-    Data = namedtuple('Data', 'customs_agency officer'
-                              ' username password signals modules')
+    Data = namedtuple('Data', ('customs_agency officer'
+                               ' username password signals modules'))
 
     init_data = [
         Data('Massive Dynamic',
