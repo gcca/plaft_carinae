@@ -5,8 +5,8 @@ panelgroup = App.widget.panelgroup
 table = App.widget.table
   Table = ..Table
 
-MessageBox = App.widget.message-box
-
+modal = App.widget.message-box
+MessageBox = modal.MessageBox
 declaration = require './declaration'
 DeclarantBody = require './declarant'
 DispatchBody = require './dispatch'
