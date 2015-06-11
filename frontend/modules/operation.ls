@@ -161,27 +161,28 @@ class OperationEdit extends Module
                 App.lists.anexo2.operation._display,
                 _list-operation
 
-  load-list-third: (_third) ->
+  load-list-third: (_third) ->  # HARDCODE
     list-third = []
-    if _third.'document_type'?
-      if _third.'document_type' is \ruc
-        _third-type = 'Persona Jurídica'
-        _third-name = _third.'name'
-        _name69 = 'No aplica'
-        _dtype = 'No aplica'
-      else
-        _third-type = 'Persona Natural'
-        _third-name = _third.'father_name'
-        _name69 = _third.'name'
-        _dtype = _third.'document_type'
+    if _third?
+      if _third.'document_type'?
+        if _third.'document_type' is \ruc
+          _third-type = 'Persona Jurídica'
+          _third-name = _third.'name'
+          _name69 = 'No aplica'
+          _dtype = 'No aplica'
+        else
+          _third-type = 'Persona Natural'
+          _third-name = _third.'father_name'
+          _name69 = _third.'name'
+          _dtype = _third.'document_type'
 
-      list-third._push @empty-field _third-type
-      list-third._push @upper-field _dtype
-      list-third._push @empty-field _third.'document_number'
-      list-third._push @empty-field _third-name
-      list-third._push @empty-field _third.'mother_name'
-      list-third._push @empty-field _name69
-      list-third._push @empty-field _third.'third_ok'
+        list-third._push @empty-field _third-type
+        list-third._push @upper-field _dtype
+        list-third._push @empty-field _third.'document_number'
+        list-third._push @empty-field _third-name
+        list-third._push @empty-field _third.'mother_name'
+        list-third._push @empty-field _name69
+        list-third._push @empty-field _third.'third_ok'
     else
         list-third = ['No aplica' for til 7]
 

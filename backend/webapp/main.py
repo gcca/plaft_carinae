@@ -88,9 +88,7 @@ def restful_init():
                 routes.append(Route('%s/%s' % (subprefix,
                                                subrestful.__name__),
                                     subrestful))
-        print '===================================='
-        from pprint import pprint
-        pprint(routes)
+
         urls.append(PathPrefixRoute('/api', routes))
 
 
