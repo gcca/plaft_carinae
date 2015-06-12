@@ -140,10 +140,14 @@ class Handler(RequestHandler):
         def _default(self, o):
             """Serialize ``o``."""
             if isinstance(o, date):
-                return '%s/%s/%s' % (o.day, o.month, o.year)
+                day = o.day if o.day > 9 else '0' + str(o.day)
+                month = o.month if o.month > 9 else '0' + str(o.month)
+                return '%s/%s/%s' % (day, month, o.year)
 
             if isinstance(o, datetime):
-                return '%i-%i-%i %s:%s:%s' % (o.year, o.month, o.day,
+                day = o.day if o.day > 9 else '0' + str(o.day)
+                month = o.month if o.month > 9 else '0' + str(o.month)
+                return '%i-%i-%i %s:%s:%s' % (o.year, month, day,
                                               o.hour, o.minute, o.second)
             return super(Handler.JSON, self)._default(o)
 

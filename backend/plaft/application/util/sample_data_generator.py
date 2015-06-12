@@ -91,7 +91,9 @@ def create_employees(agency, j=7):
     j = random.randint(2, j)
     while j:
         username = ''.join(random.sample(ascii_lowercase, 3))
-        employee = Employee(username=username, password='123')
+        employee = Employee(username=username,
+                            password='123',
+                            customs_agency_key=agency.key)
         employee.store()
         agency.employees_key.append(employee.key)
         j -= 1

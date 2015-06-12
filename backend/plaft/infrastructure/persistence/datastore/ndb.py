@@ -4,7 +4,7 @@
    :synopsis: Pattern interfaces and support code for the datastore
               implementation.
 
-.. moduleauthor:: Gonzales Castillo, Cristhian A. <cristhian.gz@aol.com>
+.. moduleauthor:: Gonzales Castillo, Cristhian A. <gcca@gcca.tk>
 
 
 """
@@ -73,6 +73,7 @@ class JSONEncoder(json.JSONEncoder):
         a JSON document) to a Python object."""
         return json.loads(s, 'utf-8')
 
+
 Boolean = ndb.BooleanProperty
 Integer = ndb.IntegerProperty
 Float = ndb.FloatProperty
@@ -90,11 +91,14 @@ LocalStructured = ndb.LocalStructuredProperty
 Generic = ndb.GenericProperty
 Computed = ndb.ComputedProperty
 Structured = ndb.StructuredProperty
-
 PolyModel = polymodel.PolyModel
 
 
 def convert_keys(dct, hist):
+    for k in (k for k in dct if k.endswith('_key') and dct[k] is None):
+        del dct[k]
+        dct[k[:-4]] = None
+
     for k in (k for k in dct if isinstance(dct[k], ndb.Key)):
         nkey = dct[k]
         if nkey in hist:
@@ -107,8 +111,9 @@ def convert_keys(dct, hist):
             dct[k[:-4]] = obj
 
     for k in (k for k in dct
-              if isinstance(dct[k], list) and dct[k] and
-              isinstance(dct[k][0], ndb.Key)):
+              if (isinstance(dct[k], list) and
+                  dct[k] and
+                  isinstance(dct[k][0], ndb.Key))):
         dct[k[:-4]] = dct[k]
         del dct[k]
         value = dct[k[:-4]]
@@ -314,8 +319,6 @@ class JSONEncoderNDB(JSONEncoder):
             return d
         if isinstance(o, Q.Query):
             return o.fetch(666)
-        if isinstance(o, ndb.Key):
-            return 'XXXXXXXXXXX'
         if isinstance(o, GeneratorType):
             return list(o)
         return JSONEncoder.default(self, o)
@@ -349,11 +352,11 @@ class DocumentProperty(ndb.StructuredProperty):
         # if not isinstance(value, (int, long)):
         #     raise TypeError('expected an integer, got %s' % repr(value))
 
-    def _to_base_type(self, value):
-        return value
+    # def _to_base_type(self, value):
+    #     return value
 
-    def _from_base_type(self, value):
-        return value
+    # def _from_base_type(self, value):
+    #     return value
 
 
 class Date(ndb.DateProperty):
@@ -362,21 +365,22 @@ class Date(ndb.DateProperty):
     RE_DATE = re.compile(r'(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})')
 
     def _validate(self, value):
-        if isinstance(value, basestring) and self.RE_DATE.match(value):
-            return value
-
-    def _to_base_type(self, value):
         if isinstance(value, datetime.date):
             return value
-        elif isinstance(value, basestring):
-            dvalue = self.RE_DATE.match(value)
-            day, month, year = dvalue.groups()
-            value = datetime.date(int(year), int(month), int(day))
-            return value
-        else:
-            raise TypeError('Bad value type: ' + type(value))
+        if isinstance(value, basestring):
+            match = self.RE_DATE.match(value)
+            if match:
+                day, month, year = match.groups()
+                value = datetime.date(int(year), int(month), int(day))
+                return value
+        if value is None or value == '':
+            return datetime.date(1970, 1, 1)
+        raise TypeError('Bad date from %s: %s.' % (type(value), repr(value)))
 
-    def _from_base_type(self, value):
+    def _db_get_value(self, v, unused_p):
+        value = super(Date, self)._db_get_value(v, unused_p)
+        if datetime.datetime(1970, 1, 1) == value:
+            return None
         return value
 
 
