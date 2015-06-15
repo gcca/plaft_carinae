@@ -82,13 +82,19 @@ class exports.Form extends Array implements PoolMixin
    * @param {String} _tip
    * @private
    */
-  __enable-tip = (_label, _tip)->
+  __enable-tip = (_label, _tip) ->
     _info = App.dom._new \i
       .._class = "#{gz.Css \glyphicon}
                \ #{gz.Css \glyphicon}-#{gz.Css \info}-#{gz.Css \sign}
                \ #{gz.Css \pull-right}
                \ #{gz.Css \toggle}"
       ..title = _tip
+      $ .. ._tooltip do
+        'template': "<div class='#{gz.Css \tooltip}' role='tooltip'
+                          style='min-width:175px'>
+                       <div class='#{gz.Css \tooltip-arrow}'></div>
+                       <div class='#{gz.Css \tooltip-inner}'></div>
+                     </div>"
     _label._append _info
 
   /**
