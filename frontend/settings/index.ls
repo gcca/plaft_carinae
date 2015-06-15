@@ -49,13 +49,12 @@ class EmployeeItem extends panelgroup.FormBody
   on-save: ->
     if not @employee?
       @employee = new Employee
-    console.log @_json
-#    @employee._save @_json, do
-#      _success:     ~>
-#        @_save.html = "Modificar"
-#        console.log 'Registrado correctamente.'
-#      _bad-request: ~>
-#        alert 'ERROR: e746ae94-5a3a-11e4-9a1d-88252caeb7e8'
+    @employee._save @_json, do
+      _success:     ~>
+        @_save.html = "Modificar"
+        console.log 'Registrado correctamente.'
+      _bad-request: ~>
+        alert 'ERROR: e746ae94-5a3a-11e4-9a1d-88252caeb7e8'
 
   /** @override */
   render: ->
