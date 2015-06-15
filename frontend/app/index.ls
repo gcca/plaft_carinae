@@ -271,6 +271,8 @@ App.lists = require './lists'
 /** @export */
 App.ajax = require './ajax'
 
+App.form-ratio = require './form-ratio'
+
 
 /** @export */
 App._form =
