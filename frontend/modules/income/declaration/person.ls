@@ -7,11 +7,28 @@ App.widget.codename
   InputName = ..InputName
   CodeNameField = ..CodeNameField
 
+FormRatio = App.form-ratio
+
 FieldType = App.builtins.Types.Field
 DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
 
 
 class Person extends Customer
+
+  _json-getter: ->
+    r = super!
+    _ratio =  @ratio._calculate r
+    @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
+    r
+
+  _json-setter: (_dto) ->
+    super _dto
+    # Progress Bar
+    @ratio = new FormRatio do
+      fields: _FIELD_PERSON
+    _ratio =  @ratio._calculate _dto
+    if _ratio isnt 0
+      @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
 
   clean-text-partner: ~>
     @el.query('[name=partner]')._disabled = on
@@ -67,10 +84,10 @@ class Person extends Customer
   /** Local variable for settings. */
   _GRID = App.builder.Form._GRID
   _FIELD_ATTR = App.builder.Form._FIELD_ATTR
+  ratio: null
 
   /** FIELD */
   _FIELD_PERSON =
-
     * _name: 'name'
       _label: 'a) Nombres'
 
@@ -167,14 +184,10 @@ class Person extends Customer
     * _name: 'is_obligated'
       _label: 'j) Si es Sujeto obligado'
       _type: FieldType.kYesNo
-#      _type: FieldType.kRadioGroup
-#      _options: <[Si No]>
 
     * _name: 'has_officer'
       _label: 'Oficial cumplimiento'
       _type: FieldType.kYesNo
-#      _type: FieldType.kRadioGroup
-#      _options: <[Sí No]>
 
     * _name: 'reference'
       _label: 'Ref. Cliente'

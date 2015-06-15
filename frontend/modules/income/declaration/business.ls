@@ -9,6 +9,8 @@ App.widget.codename
 
 Shareholders = require './shareholders'
 
+FormRatio = App.form-ratio
+
 FieldType = App.builtins.Types.Field
 DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
 
@@ -24,10 +26,21 @@ class Business extends Customer
     shareholders = @shareholders-view._toJSON!
     if shareholders._length
       r.'shareholders' = shareholders
+
+    _ratio =  @ratio._calculate r
+    @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
+
     r
 
   _json-setter: (_dto) ->
     super _dto
+    # Progress Bar
+    @ratio = new FormRatio do
+      fields: _FIELD_BUSINESS
+    _ratio =  @ratio._calculate _dto
+    if _ratio isnt 0
+      @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
+
     @el.query '[name=document_type]'
       .._value = 'ruc'
     if _dto.'shareholders'?
@@ -67,6 +80,7 @@ class Business extends Customer
 
   /** Local variable for settings. */
   _GRID = App.builder.Form._GRID
+  ratio: null
 
   /** FIELD */
   _FIELD_BUSINESS =
@@ -120,14 +134,10 @@ class Business extends Customer
     * _name: 'is_obligated'
       _label: 'j) Si es Sujeto obligado'
       _type: FieldType.kYesNo
-#      _type: FieldType.kRadioGroup
-#      _options: <[Si No]>
 
     * _name: 'has_officer'
       _label: 'Oficial cumplimiento'
       _type: FieldType.kYesNo
-#      _type: FieldType.kRadioGroup
-#      _options: <[Sí No]>
 
     * _name: 'reference'
       _label: 'Ref. Cliente'

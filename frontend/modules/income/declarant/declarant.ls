@@ -9,6 +9,7 @@ panelgroup = App.widget.panelgroup
 FieldType = App.builtins.Types.Field
 DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
 
+FormRatio = App.form-ratio
 
 /**
  * Declarant
@@ -19,6 +20,20 @@ DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
  */
 class Declarant extends panelgroup.FormBody
 
+  _json-getter: ->
+    _r = super!
+    _ratio =  @ratio._calculate _r
+    @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
+    _r
+
+  _json-setter: (_dto) ->
+    super _dto
+    # Progress Bar
+    @ratio = new FormRatio do
+      fields: _FIELD_DECLARANT
+    _ratio =  @ratio._calculate _dto
+    if _ratio isnt 0
+      @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
 
   read-dto: (dto) ->
     @_body._first._fromJSON @_options.dto
@@ -38,6 +53,8 @@ class Declarant extends panelgroup.FormBody
   /** Local variable for settings. */
   _GRID = App.builder.Form._GRID
   _FIELD_ATTR = App.builder.Form._FIELD_ATTR
+
+  ratio: null
 
   # FIELDS
   _FIELD_DECLARANT =

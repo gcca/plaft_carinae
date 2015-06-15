@@ -9,6 +9,7 @@ panelgroup = App.widget.panelgroup
 FieldType = App.builtins.Types.Field
 DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
 
+FormRatio = App.form-ratio
 
 /**
  * Linked
@@ -28,12 +29,21 @@ class FormLinked extends panelgroup.FormBody
         FIELD = @_FIELD_BUSINESS
         TYPE = @@Type.kBusiness
 
+      # Progress Bar
+      @ratio = new FormRatio do
+        fields: FIELD
+      _ratio =  @ratio._calculate _dto
+      if _ratio isnt 0
+        @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
+
       @render-skateholder FIELD, TYPE
     super _dto
 
   _json-getter: ->
     _dto = super!
     delete! _dto.'customer_type'
+    _ratio =  @ratio._calculate _dto
+    @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
     _dto
 
   /**
@@ -110,6 +120,8 @@ class FormLinked extends panelgroup.FormBody
   /** Local variable for settings. */
   _GRID = App.builder.Form._GRID
   _FIELD_ATTR = App.builder.Form._FIELD_ATTR
+
+  ratio: null
 
   /** FIELD */
   _FIELD_HEAD :
