@@ -9,7 +9,7 @@ modal = App.widget.message-box
 MessageBox = modal.MessageBox
 declaration = require './declaration'
 DeclarantBody = require './declarant'
-DispatchBody = require './dispatch'
+dispatch = require './dispatch'
 StakeholderBody = require './stakeholder'
 
 Module = require '../../workspace/module'
@@ -136,8 +136,8 @@ class Income extends Module
 
     @_panels =  # To build dispatch DTO.
       _dispatch:  _panel-group.new-panel do
-                    _panel-heading: panelgroup.PanelHeading
-                    _panel-body: DispatchBody
+                    _panel-heading: dispatch.DispatchHeading
+                    _panel-body: dispatch.DispatchBody
       _stakeholders: _panel-group.new-panel do
                       _panel-heading: panelgroup.PanelHeading
                       _panel-body: StakeholderBody
