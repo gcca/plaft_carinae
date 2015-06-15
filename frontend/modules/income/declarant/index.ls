@@ -7,6 +7,7 @@ FormBodyDeclarant = require './declarant'
 class DeclarantHeading extends panelgroup.PanelHeading
 
   _controls: [panelgroup.ControlTitle,
+              panelgroup.ControlBar,
               panelgroup.ControlSearch,
               panelgroup.ControlClose]
 

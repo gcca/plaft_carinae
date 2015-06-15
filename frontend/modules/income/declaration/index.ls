@@ -43,7 +43,7 @@ class ControlPDF extends App.View
 
 class DeclarationHeading extends panelgroup.PanelHeading
 
-  _controls: [panelgroup.ControlTitle, ControlPDF]
+  _controls: [panelgroup.ControlTitle, panelgroup.ControlBar, ControlPDF]
 
 
 # BODY
