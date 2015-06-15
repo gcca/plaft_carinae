@@ -76,6 +76,7 @@ class Customer extends App.View
    */ form-builder: null
 
   /** @private */ _select: null
+  /** @protected */ _panel: null
 
   /** Local variable for settings. */
   _GRID = App.builder.Form._GRID

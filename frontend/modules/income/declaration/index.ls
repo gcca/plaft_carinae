@@ -23,7 +23,7 @@ class ControlPDF extends App.View
     @el.css.'display' = ''
 
   initialize: ({_heading}) ->
-    @el.css = 'flex:1;margin:5px;display:-webkit-inline-box;'
+    @el.css = 'flex:1;margin-right:5px;display:none;'
     _icon = App.dom._new \i
       .._class = "#{gz.Css \glyphicon}
                   \ #{gz.Css \glyphicon-bookmark}"
@@ -84,6 +84,7 @@ class DeclarationBody extends panelgroup.JSONBody
 
     # adding customer
     @_customer = new _customer-class
+    @_customer._panel = @_panel
     @_customer.on (gz.Css \change), @on-customer-type-change
     @el._append @_customer.render!.el
     @_customer._json = _customer-dto
