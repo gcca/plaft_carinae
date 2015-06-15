@@ -1,5 +1,30 @@
 /** @module app.widget */
 
+class ControlBar extends App.View
+
+  @@__hash__ = 'progressbar'
+
+  _tagName: \div
+
+  _className: gz.Css \progress
+
+  _set-bar: (_ratio) ->
+    @el.css\display = \block
+    @_div
+      ..html = "#{_ratio}%"
+      ..css = "width:#{_ratio}%"
+
+  initialize: ({heading}) ->
+    @el.css = 'width:150px;margin:5px;background-color:white;display:none'
+    @_div = App.dom._new \div
+      .._class = "#{gz.Css \progress-bar}"
+      ..rol = 'progressbar'
+      ..attr 'aria-valuenow', '0'
+      ..attr 'aria-valuemin', '0'
+      ..attr 'aria-valuemax', '100'
+    @el._append @_div
+
+  /** @private */ _div: null
 
 class ControlTitle extends App.View
 
@@ -184,7 +209,7 @@ class FormBody extends JSONBody
   _json-getter: -> @el._toJSON!
 
   _json-setter: (_dto) ->
-      @el._fromJSON _dto
+    @el._fromJSON _dto
 
 
 class Panel extends App.View
@@ -317,6 +342,7 @@ exports <<<
   ControlTitle: ControlTitle
   ControlClose: ControlClose
   ControlSearch: ControlSearch
+  ControlBar: ControlBar
   FormBody: FormBody
   JSONBody: JSONBody
 
