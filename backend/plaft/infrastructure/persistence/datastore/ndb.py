@@ -218,7 +218,7 @@ class Model(Entity, ndb.Model):
         properties = {}
         _properties = cls._properties
         for property in _properties:
-            if property in payload:
+            if property in payload or property[:-4] in payload:
                 prop_type = _properties[property]
                 dtype = type(prop_type)
                 if dtype is not Key:

@@ -25,6 +25,11 @@ class EmployeeItem extends panelgroup.FormBody
     _cmodules = @el._elements.'permissions[modules]'
     _csignals = @el._elements.'permissions[signals]'
 
+    if not _dto.'permissions'
+      _dto.'permissions' =
+        'modules': []
+        'signals': []
+
     for m, i in _cmodules
       if _cmodules.options[i].value in _dto.'permissions'.'modules'
         _cmodules.options[i].selected = true
@@ -49,7 +54,17 @@ class EmployeeItem extends panelgroup.FormBody
   on-save: ->
     if not @employee?
       @employee = new Employee
-    @employee._save @_json, do
+    _dto = @_json
+
+    if (not _dto.'password') or (_dto.'password' is '')
+      delete _dto.'password'
+
+    _id = @employee._id
+
+    # TODO: check on creation
+    _dto.'permissions'.'id' = @employee._attributes.'permissions'.'id'
+
+    App.ajax._put "/api/user/#{_id}", _dto, do
       _success:     ~>
         @_save.html = "Modificar"
         console.log 'Registrado correctamente.'
