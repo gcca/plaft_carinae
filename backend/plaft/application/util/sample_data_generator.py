@@ -89,11 +89,19 @@ def create_employees(agency, j=7):
     from string import ascii_lowercase
 
     j = random.randint(2, j)
+    modules = ['WEL-HASH', 'NUM-HASH', 'ANEXO2-HASH', 'INCOME-HASH']
+    signals = ['WEL-HASH', 'NUM-HASH', 'ANEXO2-HASH', 'INCOME-HASH']
     while j:
         username = ''.join(random.sample(ascii_lowercase, 3))
-        employee = Employee(username=username,
+        name = ''.join(random.sample(ascii_lowercase, 6))
+        permission = Permissions(modules=modules,
+                                 signals=signals)
+        permission.store()
+        employee = Employee(name=name,
+                            username=username,
                             password='123',
-                            customs_agency_key=agency.key)
+                            customs_agency_key=agency.key,
+                            permissions_key=permission.key)
         employee.store()
         agency.employees_key.append(employee.key)
         j -= 1
