@@ -158,6 +158,29 @@ class OperationList extends Module
     @$el._append "<a class='#{gz.Css \btn} #{gz.Css \btn-success}'
                      href='api/reporte_operaciones'>
                     Generar reporte
+                  </a>
+
+                  <select class='#{gz.Css \form-control}
+                               \ #{gz.Css \pull-right}'
+                          style='width:125px;margin-left:8px'>
+                    <option>Enero</option>
+                    <option>Febrero</option>
+                    <option>Marzo</option>
+                    <option>Abril</option>
+                    <option>Mayo</option>
+                    <option>Junio</option>
+                    <option>Agosto</option>
+                    <option>Setiembre</option>
+                    <option>Octubre</option>
+                    <option>Noviembre</option>
+                    <option>Diciembre</option>
+                  </select>
+
+                  <a class='#{gz.Css \btn}
+                          \ #{gz.Css \btn-default}
+                          \ #{gz.Css \pull-right}'
+                     href='#'>
+                    Procesar operaciones múltiples de
                   </a>"
 
     super!
