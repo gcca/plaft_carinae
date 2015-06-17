@@ -113,8 +113,15 @@ def create_dispatches(agency, datastore, customers, n=30):
 
     years = ['2014', '2015', '2016']
     list_dispatches = []
+    from datetime import datetime
 
     while n:
+
+        year = 2015
+        month = 6  # random.randint(5, 6)
+        day = random.randint(1, 17)
+        rdate = datetime(year, month, day)
+        amounts = [str(x) for x in range(3999, 9999)]
         order = '%s-%s' % (random.choice(years),
                            ''.join(random.sample(digits, 5)))
         customer = random.choice(customers)
@@ -126,7 +133,9 @@ def create_dispatches(agency, datastore, customers, n=30):
                             customs_agency_key=agency.key,
                             jurisdiction=jurisdiction,
                             regime=regime,
-                            stakeholders=[random.choice(stakeholders)])
+                            stakeholders=[random.choice(stakeholders)],
+                            amount=random.choice(amounts),
+                            income_date=rdate)
         dispatch.declaration = declaration
         dispatch.store()
         datastore.pending_key.append(dispatch.key)
@@ -237,8 +246,8 @@ def _data_debug():
              'Mice Dyson',
              'mice@cd.io',
              '123',
-             ['WEL-HASH', 'NUM-HASH', 'ANEXO2-HASH'],
-             ['WEL-HASH', 'NUM-HASH', 'ANEXO2-HASH'])
+             ['WEL-HASH', 'NUM-HASH', 'ANEXO2-HASH', 'OPLIST-HASH'],
+             ['WEL-HASH', 'NUM-HASH', 'ANEXO2-HASH', 'OPLIST-HASH'])
     ]
 
     for data in init_data:
@@ -265,7 +274,7 @@ def _data_debug():
         agency.store()
 
         list_dispatches = create_dispatches(agency, datastore, customers)
-        operations(agency, list_dispatches, datastore)
+        #operations(agency, list_dispatches, datastore)
 
     create_autocomplete()  # TODO: Remove when update domain model
 
@@ -283,10 +292,19 @@ def _data_deploy():
     ds = Datastore(customs_agency_key=ca.key)
     ds.store()
 
+    perms = Permissions(modules=['WEL-HASH',
+                                 'NUM-HASH',
+                                 'ANEXO2-HASH',
+                                 'INCOME-HASH',
+                                 'OPLIST-HASH'],
+                        signals=[])
+    perms.store()
+
     of = Officer(customs_agency_key=ca.key,
                  name='César Vargas',
                  username='cesarvargas@cavasoftsac.com',
-                 password='123')
+                 password='123',
+                 permissions_key=perms.key)
     ca.officer_key = of.store()
     ca.store()
 
