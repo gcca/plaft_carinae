@@ -264,9 +264,12 @@ class Dispatch(RESTful):
 
         dispatch = model.Dispatch.find(int(dispatch_id))
         if dispatch:
-            plaft.application.dispatch.numerate(dispatch, **playload)
+            is_accepted = plaft.application.dispatch.numerate(dispatch,
+                                                              **playload)
 
-            self.write_json('{}')
+            self.render_json({
+                'accepted': is_accepted
+            })
         else:
             self.status.NOT_FOUND('No existe el despacho con el id: ' +
                                   dispatch_id)

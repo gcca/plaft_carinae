@@ -3,6 +3,7 @@
 from plaft.domain.model import (Dispatch, Customer, Operation,
                                 Declarant, Stakeholder)
 from plaft.domain.model.dispatch import UniqueSpecification
+from plaft.application import operation
 
 
 def it_satisfies(specs, *args):
@@ -180,6 +181,14 @@ def numerate(dispatch, **args):
     """
     dispatch << args
     dispatch.store()
+    is_accepted = False
+
+    if dispatch.amount != '':
+        if float(dispatch.amount) >= 10000:
+            operation.accept(dispatch)
+            is_accepted = True
+
+    return is_accepted
 
 
 def register(dispatch, country_source, country_target):
