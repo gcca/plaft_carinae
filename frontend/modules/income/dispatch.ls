@@ -25,24 +25,26 @@ class DispatchHeading extends panelgroup.PanelHeading
  */
 class DispatchBody extends panelgroup.FormBody
 
-  _calculate-ratio = ->
+  _json-getter: ->
+    _r = super!
     if not @ratio?
       @ratio = new FormRatio do
-        fields: _FIELD_DECLARANT
+        fields: _FIELD_DISPATCH
     _ratio =  @ratio._calculate _r
     if _ratio isnt 0
       @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
-
-  _json-getter: ->
-    _r = super!
-    _calculate-ratio!
     _r
 
   _json-setter: (_dto) ->
     if _dto.'regime'?
       @_display = _dto.'regime'.'name'
     super _dto
-    _calculate-ratio!
+    if not @ratio?
+      @ratio = new FormRatio do
+        fields: _FIELD_DISPATCH
+    _ratio =  @ratio._calculate _dto
+    if _ratio isnt 0
+      @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
 
   _get-type: ->
     if @_display?
