@@ -199,6 +199,66 @@ class App.Model extends BaseModel
 
   @@API = '/api/'
 
+  is-null = (x) ->
+    | not x  => true
+    | x.__proto__.constructor is Array => not x.length
+    | x.__proto__.constructor is String => x is ''
+    | x.__proto__.constructor is Object =>
+      for k of x
+        return false
+      return true
+    | otherwise => not x?
+
+  get-array = (a, b, list) ->
+    if are-diff a, b
+      list.push b
+    else
+      list.push a
+
+  process = (a, b) ->
+    | b.__proto__.constructor is Object => get-diff a, b
+    | b.__proto__.constructor is Array =>
+      list = []
+      for i, k in b
+        get-array a[k], b[k], list
+      list
+    | otherwise => b
+
+  are-diff = (a, b) ->
+    | b.__proto__.constructor is Object =>
+      if a?
+        not is-null get-diff a, b
+      else
+        false
+    | b.__proto__.constructor is Array =>
+      if a?
+        for i, k in b
+          return are-diff a[k], b[k]
+      else
+        false
+    | otherwise => a != b
+
+  get-diff = (a, b) ->
+    c = {}
+    for k of b
+      if (not is-null b[k]) and (are-diff a[k], b[k])
+        r = process a[k], b[k]
+        if not is-null r
+          c[k] = r
+    c
+
+  _set-diff = (a, b) ->
+    for k of b
+      if b.__proto__.constructor is Object
+        if a[k]?
+          _set-diff a[k], b[k]
+        else
+          a[k] = b[k]
+      else if b.__proto__.constructor is Array
+        a[k] = b[k]
+      else
+        a[k] = b[k]
+
   _url: ->
     if @_parent? then "#{@_parent._url!}/#{super!}" else "/api/#{super!}"
 
@@ -207,6 +267,24 @@ class App.Model extends BaseModel
 
   _save: (keys, opts = App._void._SyncOptions) ->
     super keys, \success : opts._success, \error : opts._error
+
+  _store: (keys, opts = App._void._SyncOptions) ->
+    if @isNew!
+      App.ajax._post @_url!, keys, do
+        _success: (_dto) ~>
+          _set-diff @_attributes, keys
+          @_attributes['id'] = _dto.id
+          opts._success ...
+        _error: opts._error
+      @_save keys, opts
+    else
+      final-attributes = get-diff @_attributes, keys
+      final-attributes['id'] = @_attributes['id']
+      App.ajax._put @_url!, final-attributes, do
+        _success: ~>
+          _set-diff @_attributes, final-attributes
+          opts._success ...
+        _error: opts._error
 
 
 class BaseCollection extends Backbone\Collection
@@ -251,7 +329,6 @@ class App.Collection extends BaseCollection
 
   _save: (keys, opts = App._void._SyncOptions) ->
     super keys, \success : opts._success, \error : opts._error
-
 
 
 /**

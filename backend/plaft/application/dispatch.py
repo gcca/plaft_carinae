@@ -146,15 +146,22 @@ def update(dispatch, payload):
 
     """
     declaration = dispatch.declaration
-    declaration << payload['declaration']
+    if 'declaration' in payload:
+        declaration << payload['declaration']
+        del payload['declaration']  # HARDCODE
 
-    del payload['declaration']  # HARDCODE
-    del payload['customer']  # HARDCODE
-    del payload['customs_agency']  # HARDCODE
+    if 'customer' in payload:
+        del payload['customer']  # HARDCODE
+
+    if 'customs_agency' in payload:
+        del payload['customs_agency']  # HARDCODE
+
     if 'historical_customer' in payload:
         del payload['historical_customer']
+
     if 'third' in payload:
         del payload['third']
+
     dispatch << payload
     dispatch.declaration = declaration
     dispatch.store()
