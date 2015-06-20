@@ -54,7 +54,8 @@ class Modal extends App.View
     @_footer = @el.query ".#{gz.Css \modal-footer}"
     @_head   = @el.query ".#{gz.Css \modal-header}"
     @_body   = @el.query ".#{gz.Css \modal-body}"
-    if typeof _body is String
+
+    if typeof _body is 'string'
       @_body.html = _body
     else
       @_body._append _body
