@@ -25,22 +25,24 @@ class DispatchHeading extends panelgroup.PanelHeading
  */
 class DispatchBody extends panelgroup.FormBody
 
+  _calculate-ratio = ->
+    if not @ratio?
+      @ratio = new FormRatio do
+        fields: _FIELD_DECLARANT
+    _ratio =  @ratio._calculate _r
+    if _ratio isnt 0
+      @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
+
   _json-getter: ->
     _r = super!
-    _ratio =  @ratio._calculate _r
-    @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
+    _calculate-ratio!
     _r
 
   _json-setter: (_dto) ->
     if _dto.'regime'?
       @_display = _dto.'regime'.'name'
     super _dto
-    # Progress Bar
-    @ratio = new FormRatio do
-      fields: _FIELD_DISPATCH
-    _ratio =  @ratio._calculate _dto
-    if _ratio isnt 0
-      @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
+    _calculate-ratio!
 
   _get-type: ->
     if @_display?
@@ -68,6 +70,7 @@ class DispatchBody extends panelgroup.FormBody
 
       * _name: 'jurisdiction'
         _label: 'Aduana despacho/ Juridiccion'
+        _tip: '([ctrl+Q] para ver la tabla completa)'
         _type: FieldType.kView
         _options : new CodeNameField do
                      _code : App.lists.jurisdiction._code
@@ -76,7 +79,6 @@ class DispatchBody extends panelgroup.FormBody
 
       * _name: 'order'
         _label: 'N&ordm; Orden despacho'
-        _tip: 'ORDEN DE DESPACHO'
 
       * _name: 'income_date'
         _label: 'Fecha ingreso orden de despacho'
@@ -84,6 +86,7 @@ class DispatchBody extends panelgroup.FormBody
 
       * _name: 'regime'
         _label: 'Regimen Aduanero'
+        _tip: '([ctrl+Q] para ver la tabla completa)'
         _type: FieldType.kView
         _options : new CodeNameField do
                      _code : App.lists.regime._code

@@ -22,6 +22,9 @@ class Declarant extends panelgroup.FormBody
 
   _json-getter: ->
     _r = super!
+    if not @ratio?
+      @ratio = new FormRatio do
+        fields: _FIELD_DECLARANT
     _ratio =  @ratio._calculate _r
     @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
     _r
@@ -59,53 +62,58 @@ class Declarant extends panelgroup.FormBody
   # FIELDS
   _FIELD_DECLARANT =
     * _name: 'represents_to'
-      _label: 'Actua en representacion'
+      _label: '9. Actua en representacion'
       _type: FieldType.kComboBox
+      _tip: 'La persona que solicita o fisicamente realiza la operación
+           \ actúa en representación del: (1)Ordenante o (2)Beneficiario.'
       _options:
         'Ordenante'
         'Beneficiario'
 
     * _name: 'residence_status'
-      _label: 'Condición de residencia'
+      _label: '10. Condición de residencia'
       _tip: 'Condición de residencia de la persona que solicita o físicamente
-           \ realiza la operación.'
+           \ realiza la operación: (1)Residente o (2)No residente.'
       _type: FieldType.kComboBox
       _options:
         'Residente'
         'No residente'
 
     * _name: 'document_type'
-      _label: 'Tipo de Documento'
+      _label: '11. Tipo de Documento'
       _tip: 'Tipo de documento de la persona que solicita o físicamente realiza
            \ la operación.'
       _type: FieldType.kComboBox
       _options: DOCUMENT_TYPE_PAIR
 
     * _name: 'document_number'
-      _label: 'Número de Documento'
+      _label: '12. Número de Documento'
       _tip: 'Número de documento de la persona que solicita o físicamente realiza
            \ la operación.'
 
     * _name: 'issuance_country'
-      _label: 'País emisión del documento'
+      _label: '13. País emisión del documento'
       _tip: 'País de emisión del documento de la persona que solicita o físicamente
            \ realiza la operación, en caso sea un documento emitido en el extranjero.'
 
     * _name: 'father_name'
-      _label: 'Apellido Paterno'
+      _label: '14. Apellido Paterno'
+      _tip: 'Apellido Paterno de la persona que solicita o fisicamente la operación.'
 
     * _name: 'mother_name'
-      _label: 'Apellido Materno'
+      _label: '15. Apellido Materno'
+      _tip: 'Apellido Materno de la persona que solicita o fisicamente la operación.'
 
     * _name: 'name'
-      _label: 'Nombre'
+      _label: '16. Nombre'
+      _tip: 'Nombre de la persona que solicita o fisicamente la operación.'
 
     * _name: 'nationality'
-      _label: 'Nacionalidad'
+      _label: '17. Nacionalidad'
       _tip: 'Nacionalidad de la persona que solicita o físicamente realiza la operación.'
 
     * _name: 'activity'
-      _label: 'Ocupación, profesión'
+      _label: '18. Ocupación, profesión'
       _tip: 'Ocupación, oficio o profesión de la persona que solicita o físicamente
            \ realiza la operación.'
       _type: FieldType.kView
@@ -114,9 +122,9 @@ class Declarant extends panelgroup.FormBody
                    _field : 'activity'
 
     * _name: 'ciiu'
-      _label: 'Código CIIU de la ocupación'
+      _label: '20. Código CIIU de la ocupación'
       _tip: 'Código CIIU de la ocupación de la persona que solicita o físicamente
-           \ realiza la operación.'
+           \ realiza la operación.([ctrl+Q] para ver la tabla completa)'
       _type: FieldType.kView
       _options : new CodeNameField do
                    _code : App.lists.ciiu._code
@@ -124,7 +132,7 @@ class Declarant extends panelgroup.FormBody
                    _field : 'ciiu'
 
     * _name: 'position'
-      _label : 'Cargo'
+      _label : '21. Cargo'
       _tip: 'Cargo de la persona que solicita de la persona que solicita o
            \ físicamente realiza la operación.'
       _type: FieldType.kView
@@ -134,16 +142,17 @@ class Declarant extends panelgroup.FormBody
 
 
     * _name: 'address'
-      _label: 'Nombre y N&ordm; de la via de la direccion'
+      _label: '22. Nombre y N&ordm; de la via de la direccion'
       _tip: 'Nombre y número de la vía de la dirección de la persona
            \ que solicita o físicamente realiza la operación.'
 
     * _name: 'ubigeo'
-      _label: 'Código ubigeo'
+      _label: '23. Código ubigeo'
       _grid: _GRID._full
       _tip: 'Código ubigoe del departamento, provincia y distrito de la dirección
            \ de la persona que solicita o físicamente realiza la operación: de
-           \ acuerdo a la codificación vigente y publicada por el INEI.'
+           \ acuerdo a la codificación vigente y publicada por el INEI.([ctrl+Q]
+           \ para ver la tabla completa)'
       _type: FieldType.kView
       _options : new CodeNameField do
                    _code: App.lists.ubigeo._pool._code
@@ -152,7 +161,7 @@ class Declarant extends panelgroup.FormBody
                    _field: 'ubigeo'
 
     * _name: 'phone'
-      _label: 'Teléfono de la persona'
+      _label: '24. Teléfono de la persona'
       _tip: 'Teléfono de la persona que solicita o físicamente realiza la operación.'
 
 /** @export */

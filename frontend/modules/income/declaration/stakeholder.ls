@@ -60,7 +60,7 @@ class Stakeholder extends App.View
     * _name: 'ciiu'
       _label: 'Código CIIU de ocupacion'
       _tip: 'Código CIIU de la ocupación de la persona en cuyo nombre se
-            \ realiza la operación'
+            \ realiza la operación([ctrl+Q] para ver la tabla completa)'
       _type: FieldType.kView
       _options : new CodeNameField do
                    _code : App.lists.ciiu._code
@@ -72,7 +72,7 @@ class Stakeholder extends App.View
       _tip: 'Código UBIGEO del Departamento, provincia y distrito de la
             \ dirección de la persona en cuyo nombre se realiza la
             \ operación: de acuerdo a la codificación vigente y
-            \ publicada por el INEI.'
+            \ publicada por el INEI.([ctrl+Q] para ver la tabla completa)'
       _grid: _GRID._full
       _type: FieldType.kView
       _options : new CodeNameField do

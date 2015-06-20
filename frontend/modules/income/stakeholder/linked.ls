@@ -22,26 +22,29 @@ class FormLinked extends panelgroup.FormBody
   _json-setter: (_dto) ->
     if _dto.'document_type'?
       if _dto.'document_type' isnt \ruc
-        FIELD = @_FIELD_PERSON
+        @_FIELD = @_FIELD_PERSON
         TYPE = @@Type.kPerson
 
       else
-        FIELD = @_FIELD_BUSINESS
+        @_FIELD = @_FIELD_BUSINESS
         TYPE = @@Type.kBusiness
 
       # Progress Bar
       @ratio = new FormRatio do
-        fields: FIELD
+        fields: @_FIELD
       _ratio =  @ratio._calculate _dto
       if _ratio isnt 0
         @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
 
-      @render-skateholder FIELD, TYPE
+      @render-skateholder @_FIELD, TYPE
     super _dto
 
   _json-getter: ->
     _dto = super!
     delete! _dto.'customer_type'
+    if not @ratio?
+      @ratio = new FormRatio do
+        fields: @_FIELD
     _ratio =  @ratio._calculate _dto
     @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
     _dto
@@ -66,10 +69,12 @@ class FormLinked extends panelgroup.FormBody
     _type = @_type!
 
     if _type is @@Type.kPerson
-      @render-skateholder @_FIELD_PERSON, _type
+      @_FIELD = @_FIELD_PERSON
 
     if _type is @@Type.kBusiness
-      @render-skateholder @_FIELD_BUSINESS, _type
+      @_FIELD = @_FIELD_BUSINESS
+
+    @render-skateholder @_FIELD, _type
 
   /**
    * Obtiene el codigo de customer_type
@@ -88,7 +93,8 @@ class FormLinked extends panelgroup.FormBody
       ..render!
       .._free!
     @$el._append "<div></div>"
-    @render-skateholder @_FIELD_BUSINESS, @@Type.kBusiness
+    @_FIELD = @_FIELD_BUSINESS
+    @render-skateholder @_FIELD, @@Type.kBusiness
     @_panel.on (gz.Css \load-body), (_dto) ~>
       @_json = _dto
     ret
@@ -117,6 +123,7 @@ class FormLinked extends panelgroup.FormBody
     kPerson: 0
     kBusiness: 1
 
+  _FIELD : null
   /** Local variable for settings. */
   _GRID = App.builder.Form._GRID
   _FIELD_ATTR = App.builder.Form._FIELD_ATTR
