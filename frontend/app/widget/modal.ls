@@ -18,7 +18,6 @@ class Modal extends App.View
     super!
 
   _show: (type=@@CLASS.none) ->
-    console.log @el._first._class
     @el._first._class._add type
     @$el.modal 'show'
 
@@ -50,14 +49,12 @@ class Modal extends App.View
           </div>
         </div>
       </div>"
-    console.log typeof _body
 
     @_close  = @el.query ".#{gz.Css \close}"
     @_footer = @el.query ".#{gz.Css \modal-footer}"
     @_head   = @el.query ".#{gz.Css \modal-header}"
     @_body   = @el.query ".#{gz.Css \modal-body}"
-
-    if typeof _body is 'string'  # HARDCODE
+    if typeof _body is String
       @_body.html = _body
     else
       @_body._append _body
