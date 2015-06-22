@@ -6,7 +6,7 @@
 
 """
 
-from plaft.interfaces import Handler, RESTHandler
+from plaft.interfaces import Handler, RESTful
 from plaft.domain import model
 
 
@@ -69,14 +69,13 @@ class NewUsers(Handler):
                 </form>
             </div>
             <br/>""") % {
-        'agency_name': agency.name,
-        'office_name': officer.username,
-        'agency_id': agency.id
+            'agency_name': agency.name,
+            'office_name': officer.username,
+            'agency_id': agency.id
         }
 
     def template(self, agency='', username='', password='',
                  msg='', mode='create'):
-
 
         agencies = ''.join(self.to_li(a) for a in model.CustomsAgency.all())
 
@@ -222,11 +221,12 @@ class UsersFromFile(Handler):
 
 
 # REST Handlers
-class Operation(RESTHandler):
+
+class Operation(RESTful):
     """Operation RESTful."""
 
 
-class Datastore(RESTHandler):
+class Datastore(RESTful):
     """Datastore RESTful."""
 
 

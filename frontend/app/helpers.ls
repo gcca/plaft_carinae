@@ -381,10 +381,12 @@ $\fn <<<
   add-class: ref$\addClass
   remove-class: ref$\removeClass
   typeahead: ref$\typeahead
+  _typeahead: ref$\typeahead
   _popover: ref$\popover
   _hide: ref$\hide
   _show: ref$\show
   _remove: ref$\remove
+  _tooltip: ref$\tooltip
 
 
 /**

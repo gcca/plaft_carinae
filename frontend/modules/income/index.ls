@@ -5,11 +5,11 @@ panelgroup = App.widget.panelgroup
 table = App.widget.table
   Table = ..Table
 
-MessageBox = App.widget.message-box
-
+modal = App.widget.message-box
+MessageBox = modal.MessageBox
 declaration = require './declaration'
 DeclarantBody = require './declarant'
-DispatchBody = require './dispatch'
+dispatch = require './dispatch'
 StakeholderBody = require './stakeholder'
 
 Module = require '../../workspace/module'
@@ -17,7 +17,7 @@ Module = require '../../workspace/module'
 
 class Dispatch extends App.Model
   /** @oevrride */
-  urlRoot: \income
+  urlRoot: \dispatch
 
 
 /**
@@ -63,7 +63,6 @@ class Income extends Module
           _dispatch_dto =
             'declaration':
               'customer': _customer-dto
-            'declarants': [_customer-dto.'declarant']
           @render-panels _dispatch_dto
         _not-found: ~>  # income with new customer
           _dispatch_dto =
@@ -114,9 +113,11 @@ class Income extends Module
    * @private
    */
   panels2dispatchDTO: ->
+    _declaration = @_panels._declaration._body._json
+    _declaration.'customer'.'declarants' = @_panels._declarants._body._json
+
     _dispatch-dto =
-      declaration: @_panels._declaration._body._json
-      declarants: @_panels._declarants._body._json
+      declaration: _declaration
       stakeholders: @_panels._stakeholders._body._json
     _dispatch-dto <<<< @_panels._dispatch._body._json
 
@@ -135,8 +136,8 @@ class Income extends Module
 
     @_panels =  # To build dispatch DTO.
       _dispatch:  _panel-group.new-panel do
-                    _panel-heading: panelgroup.PanelHeading
-                    _panel-body: DispatchBody
+                    _panel-heading: dispatch.DispatchHeading
+                    _panel-body: dispatch.DispatchBody
       _stakeholders: _panel-group.new-panel do
                       _panel-heading: panelgroup.PanelHeading
                       _panel-body: StakeholderBody
@@ -169,7 +170,7 @@ class Income extends Module
       .._dispatch._body.on (gz.Css \code-regime), ~>
         .._declaration._body.set-type it
 
-      .._declarants._body._json = _dispatch-dto.'declarants'
+      .._declarants._body._json = _dispatch-dto.'declaration'.'customer'.'declarants'
       .._stakeholders._body._json = _dispatch-dto.'stakeholders'
 
     if _dispatch-dto.'id'?  # Añadiendo botón PDF(en modo edición).
@@ -198,7 +199,7 @@ class Income extends Module
           see-button = (_value) ->
             if _value
               _id = _tr._model._id
-              App.ajax._delete "/api/dispatch/#{_id}/delete", do
+              App.ajax._delete "/api/dispatch/#{_id}", do
                 _success: ->
                   $ _tr ._remove!
 
@@ -292,6 +293,7 @@ class Income extends Module
 
   /** @protected*/ @@_caption = 'OPERACION'
   /** @protected*/ @@_icon    = gz.Css \cloud
+  /** @protected */ @@_hash   = 'INCOME-HASH'
   /** @protected*/
   @@_search-menu =
     * _caption: 'C'

@@ -1,5 +1,8 @@
 /** @module modules */
 
+
+Modal = modal.Modal
+
 class exports.CodeNameField extends App.View
 
   _tagName: \div
@@ -89,6 +92,8 @@ class exports.CodeNameField extends App.View
     @el._append @_span
     @_typeahead = (new App.widget.Typeahead do
       el          : @_input
+      full-args: [@_code, @_name]
+      full-headers: <[Código Descripción]>
       _source     :
         _display : App.widget.Typeahead.Source.kDisplay
         _tokens  : App.widget.Typeahead.Source.kTokens
@@ -139,6 +144,8 @@ class exports.InputName extends App.View
     @el._append @_input
     (new App.widget.Typeahead do
       el: @_input
+      full-args: [@_name]
+      full-headers: <[Descripción]>
       _source:
         _display: App.widget.Typeahead.Source.kDisplay
         _tokens: App.widget.Typeahead.Source.kTokens
@@ -152,6 +159,7 @@ class exports.InputName extends App.View
         <p style='font-size:14px;text-align:justify'>#{p._name}</p>")
       ..onCursorChanged @changeName
       ..render!
+
     super!
 
   /** @private */ _field  : null

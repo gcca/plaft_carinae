@@ -2,24 +2,15 @@
 .. module:: webapp.main
    :synopsis: WSGI Application main.
 
-.. moduleauthor:: Gonzales Castillo, Cristhian A. <cristhian.gz@aol.com>
+.. moduleauthor:: Gonzales Castillo, Cristhian A. <gcca@gcca.tk>
 
 
 """
 
 from webapp2 import WSGIApplication, Route
 from webapp2_extras.routes import PathPrefixRoute
-from plaft.interfaces import views, handlers, admin
+from plaft.interfaces import views, handlers
 import plaft.config
-
-
-def uri(prefix, handler):
-    prefix = '/' + prefix
-    routes = [
-        Route(prefix, handler),
-        Route(prefix+'/<id:\d+>', handler)
-    ]
-    return PathPrefixRoute('/api', routes)
 
 
 urls = [
@@ -28,33 +19,30 @@ urls = [
     ('/dashboard', views.Dashboard),
 
     # Views (no html-json.)
-    ('/declaration/pdf/(\d+)', views.DeclarationPDF),
+    ('/declaration/pdf/(\\d+)', views.DeclarationPDF),
 
-
-    # Handlers
-    uri('customer', handlers.Customer),
-    uri('dispatch', handlers.Dispatch),
-    uri('stakeholder', handlers.Stakeholder),
-    uri('declarant', handlers.Declarant),
+    # Handlers: see RESTful classes
 
     # Handler methods
-    ('/api/income', handlers.create),
-    ('/api/income/(\d+)', handlers.update),
-    ('/api/dispatch/(\d+)/numerate', handlers.numerate),
-    ('/api/dispatch/(\d+)/accept', handlers.accept_dispatch),
-    ('/api/dispatch/(\d+)/anexo_seis', handlers.anexo_seis),
-    ('/api/customs_agency/list_dispatches', handlers.pending_and_accepting),
     ('/api/operation/list', handlers.list_operation),
-    ('/api/dispatch/list', handlers.dispatches),
     ('/api/reporte_operaciones', handlers.reporte_operaciones),
-    ('/generate_user/(\d+)', handlers.generate_user),
+    ('/generate_user/(\\d+)', handlers.generate_user),
     ('/update_data', handlers.update_data),
-    ('/api/dispatch/(\d+)/delete', handlers.dispatch_delete),
 ]
 
 
 if plaft.config.DEBUG or True:
     from plaft.interfaces import debug
+
+    def uri(prefix, handler):
+        """URI prefix."""
+        prefix = '/' + prefix
+        routes = [
+            Route(prefix, handler),
+            Route(prefix+'/<id:\\d+>', handler)
+        ]
+        return PathPrefixRoute('/api', routes)
+
     urls += [
         # Handlers
         uri('operation', debug.Operation),
@@ -63,11 +51,51 @@ if plaft.config.DEBUG or True:
         ('/isdebug', debug.IsDebug),
         ('/debug', debug.Debug),
         ('/new-user', debug.NewUsers),
-        ('/new-user/(\d+)', debug.NewUsers),
+        ('/new-user/(\\d+)', debug.NewUsers),
         ('/users-from-file', debug.UsersFromFile)
     ]
 
 
+def restful_init():
+    """Initialize RESTful URI's."""
+    from plaft.interfaces import RESTful, BaseRESTful
+    for restful in (restful
+                    for _, restful in handlers.__dict__.items()
+                    if (
+                            isinstance(restful, type) and
+                            restful != RESTful and
+                            issubclass(restful, RESTful)
+                    )):
+        prefix = '/' + restful.path
+        routes = [
+            Route(prefix, restful),
+            Route(prefix+'/<id:\\d+>', restful)
+        ]
+
+        for subrestful in (subrestful
+                           for _, subrestful in restful.__dict__.items()
+                           if (
+                                   isinstance(subrestful, type) and
+                                   issubclass(subrestful, BaseRESTful)
+                           )):
+            if subrestful.nested:
+                nestedprefix = ('%s/%s'
+                                % (prefix + ('/<%s_id:\\d+>' % restful.path),
+                                   subrestful.path))
+                routes.append(Route(nestedprefix, subrestful))
+                routes.append(Route(nestedprefix+'/<id:\\d+>', subrestful))
+            else:
+                subprefix = (prefix + ('/<%s_id:\\d+>' % restful.path)
+                             if subrestful.with_id
+                             else prefix)
+                routes.append(Route('%s/%s' % (subprefix,
+                                               subrestful.__name__),
+                                    subrestful))
+
+        urls.append(PathPrefixRoute('/api', routes))
+
+
+restful_init()
 app = WSGIApplication(urls, debug=plaft.config.DEBUG)
 
 

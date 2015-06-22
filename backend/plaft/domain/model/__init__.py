@@ -63,10 +63,17 @@ class CustomsAgency(dom.Model):
 
     @property
     def datastore(self):
+        """Customs agency datastore model."""
         return Datastore.find(customs_agency_key=self.key)
 
 
 # Usuarios
+class Permissions(dom.Model):
+    """."""
+    modules = dom.Text(repeated=True)
+    signals = dom.Text(repeated=True)
+
+
 class User(dom.User, dom.PolyModel):
     """Usuario de PLAFT.
 
@@ -83,6 +90,7 @@ class User(dom.User, dom.PolyModel):
     name = dom.String()
     is_officer = dom.Boolean(default=False)  # (-o-) Retirar.
     customs_agency_key = dom.Key(CustomsAgency)
+    permissions_key = dom.Key(Permissions)
 
 
 class Officer(User):
@@ -135,17 +143,17 @@ class Customer(dom.Model, dom.PolyModel):
     activity = dom.String()  # actividad (jurídica)
     # o profesión-ocupación (natural)
 
-    birthday = dom.String()  # fecha de registro (jurídica)
+    birthday = dom.Date()  # fecha de registro (jurídica)
     # o fecha de nacimiento (natural)
 
     address = dom.String()
     phone = dom.String()
     ubigeo = dom.Structured(CodeName)  # (-o-) to string
-    is_obligated = dom.String()  # (-o-) boolean
-    has_officer = dom.String()  # (-o-) boolean
+    is_obligated = dom.Boolean()
+    has_officer = dom.Boolean()
     condition = dom.String()  # residencia
 
-    declarant_key = dom.Key(Declarant)
+    declarants = dom.Structured(Declarant, repeated=True)
 
     def __new__(cls, **kwargs):
         """Polymorphic creation to implement the factory pattern
@@ -159,9 +167,10 @@ class Customer(dom.Model, dom.PolyModel):
         if cls is Customer and kwargs:
             if 'document_type' not in kwargs:
                 return super(Customer, cls).__new__(Business, **kwargs)
-                raise AttributeError('Customer needs the attribute'
-                                     ' `document_type` to construct'
-                                     ' a Business or Person.')
+                # TODO: Needs refactorization.
+                # raise AttributeError('Customer needs the attribute'
+                #                      ' `document_type` to construct'
+                #                      ' a Business or Person.')
 
             document_type = kwargs['document_type']
 
@@ -228,41 +237,24 @@ class Stakeholder(dom.Model):
     # (-o-) A los dos.
     document_type = dom.String()
     document_number = dom.String()
-
-    issuance_country = dom.String()  # país de emisión
-    social_object = dom.String()
-    country = dom.String()
-    residence_status = dom.String()
-    is_pep = dom.String()  # (-o-) boolean
-    pep_position = dom.String()  # cargo público que ocupa u ocupó.
-    birthday = dom.String()  # (-o-) date
+    represents_to = dom.String()
+    condition = dom.String()  # residencia
+    address = dom.String()
     name = dom.String()
     father_name = dom.String(default='')
     mother_name = dom.String(default='')
-    nationality = dom.String()
+
+    country = dom.String()
     activity = dom.String()
-    ciiu = dom.Structured(CodeName)  # (-o-) str
-    address = dom.String()
-    employer = dom.String()
-    average_monthly_income = dom.String()
-    position = dom.String()  # cargo que ocupa
-    ubigeo = dom.Structured(CodeName)  # (-o-) str
     phone = dom.String()
-    represents_to = dom.String()
-    condition = dom.String()  # residencia
-    linked_type = dom.String()  # tipo de vinculación.
+    nationality = dom.String()
+    social_object = dom.String()
 
     slug = dom.Computed(lambda s: s.name
                         if 'ruc' == s.document_type
                         else '%s %s %s' % (s.name,
                                            s.father_name,
                                            s.mother_name))
-
-
-class Declaration(dom.Model):
-    """."""
-    customer = dom.Structured(Customer)
-    third = dom.Structured(Third)
 
 
 class Dispatch(dom.Model):
@@ -273,17 +265,20 @@ class Dispatch(dom.Model):
     regime = dom.Structured(CodeName)
     jurisdiction = dom.Structured(CodeName)
     description = dom.String()
-    income_date = dom.String()  # (-o-) date
+    # income_date = dom.String()  # (-o-) date
+    income_date = dom.Date()
     customer_key = dom.Key(Customer)
-    declaration_key = dom.Key(Declaration)
-    declarants = dom.Structured(Declarant, repeated=True)
+
+    third = dom.Structured(Third)
+    historical_customer = dom.Structured(Customer)
+    money_source = dom.String()
 
     stakeholders = dom.Structured(Stakeholder, repeated=True)
 
     # Numeration
     dam = dom.String()
     # diferencia entre el income_date y el numeration_date
-    numeration_date = dom.String()  # (-o-) date
+    numeration_date = dom.Date()  # (-o-) date
     amount = dom.String()
     currency = dom.String()
     channel = dom.String()
@@ -309,6 +304,31 @@ class Dispatch(dom.Model):
     country_target = dom.String()
 
     operation_key = dom.Key(kind='Operation')
+
+    class Declaration(dom.Model):
+        """."""
+        customer = dom.Structured(Customer)
+        third = dom.Structured(Third)
+
+    @property
+    def declaration(self):
+        """Emulate declaration model property."""
+        d = self.Declaration(customer=self.historical_customer,
+                             third=self.third)
+        # setattr(self, 'declaration', d)
+        return d
+
+    @declaration.setter
+    def declaration(self, d):
+        """Set pieces data declaration."""
+        self.historical_customer = d.customer
+        self.third = d.third
+        self.money_source = d.customer.money_source_type
+
+    def to_dict(self):
+        dct = super(Dispatch, self).to_dict()
+        dct['declaration'] = self.declaration.to_dict()
+        return dct
 
 
 class Operation(dom.Model):

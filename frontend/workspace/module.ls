@@ -48,8 +48,9 @@ class Module extends App.View
   /** @protected */ _desktop: null
 
   /** @protected */ @@_search-menu = null
-  /** @protected */ @@_caption = ''
-  /** @protected */ @@_icon    = ''
+  /** @protected */ @@_caption     = ''
+  /** @protected */ @@_icon        = ''
+  /** @protected */ @@_hash        = ''
 
 
 /** @export */

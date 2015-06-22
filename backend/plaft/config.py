@@ -17,4 +17,8 @@ if DEBUG:
     logging.getLogger().setLevel(logging.DEBUG)
 
 
+def init():  # dummy
+    pass
+
+
 # vim: ts=4:sw=4:sts=4:et

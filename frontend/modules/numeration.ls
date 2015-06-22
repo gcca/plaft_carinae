@@ -5,6 +5,8 @@
 
 
 Module = require '../workspace/module'
+modal = App.widget.message-box
+Modal = modal.Modal
 table = App.widget.table
   Table = ..Table
 FieldType = App.builtins.Types.Field
@@ -49,8 +51,6 @@ class NumerationEdit extends Module
     _dto = @model._attributes
     for stk in _dto.'stakeholders'
       delete stk.'slug'
-    for declarant in _dto.'declarants'
-      delete declarant.'slug'
     ########################################################################
 
     _dto = @el._toJSON!
@@ -134,10 +134,10 @@ class NumerationEdit extends Module
 
     _template = "
       <div class='#{gz.Css \form-group} #{gz.Css \col-md-12}'>
-        <a href='http://ww1.sunat.gob.pe/cl-at-ittipcam/tcS01Alias'
-           target='_blank'>
-          Consultar tipo de cambio
-        </a>
+        <button type='button' class='#{gz.Css \btn}
+                                   \ #{gz.Css \btn-primary}'>
+          Ver Tipo de Cambio
+        </button>
       </div>
       <div class='#{gz.Css \form-group} #{gz.Css \col-md-12}'
            style='margin-top:1em'>
@@ -180,6 +180,19 @@ class NumerationEdit extends Module
       </div>"
 
     @$el._append _template
+
+    button = @el.query ".#{gz.Css \btn-primary}"
+
+    button.on-click ~>
+        _iframe = App.dom._new \iframe
+          ..src = 'http://ww1.sunat.gob.pe/cl-at-ittipcam/tcS01Alias'
+          ..width = '850px'
+          ..height = '350px'
+          ..css = 'border:none'
+        mdl = Modal._new do
+            _title: 'Ver tipo de cambio.'
+            _body: _iframe
+        mdl._show Modal.CLASS.large
 
     @_amount-display = @el.query "##{_amount-id}"
     @_last-day-display = @el.query "##{_last-day-id}"
@@ -294,6 +307,7 @@ class Numeration extends Module
 
   /** @protected */ @@_caption = 'NUMERACIÓN'
   /** @protected */ @@_icon    = gz.Css \print
+  /** @protected */ @@_hash    = 'NUM-HASH'
 
 
 /** @export */

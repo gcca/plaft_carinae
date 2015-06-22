@@ -1,8 +1,9 @@
 """Dispatch use cases."""
 
-from plaft.domain.model import (Dispatch, Customer, Declaration, Operation,
+from plaft.domain.model import (Dispatch, Customer, Operation,
                                 Declarant, Stakeholder)
 from plaft.domain.model.dispatch import UniqueSpecification
+from plaft.application import operation
 
 
 def it_satisfies(specs, *args):
@@ -14,10 +15,18 @@ def it_satisfies(specs, *args):
 create_pre = [UniqueSpecification]
 
 
-def update_stakeholders(dispatch):
-    customer = dispatch.customer
-    customer << dispatch.declaration.dict['customer']
-    customer.store()
+def update_stakeholders(dispatch, flag=False):
+    if flag:
+        cst = dispatch.declaration.customer
+        declaration = cst.to_dict()
+        declarant = []
+        for x in declaration['declarants']:
+            del x['slug']
+            declarant.append(x)
+        declaration['declarants'] = declarant
+        customer = dispatch.customer
+        customer << declaration
+        customer.store()
 
     for stakeholder in dispatch.stakeholders:
         new_stakeholder = Stakeholder.find(slug=stakeholder.slug)
@@ -28,15 +37,14 @@ def update_stakeholders(dispatch):
         new_stakeholder << dct
         new_stakeholder.store()
 
-    for dcl in dispatch.declarants:
+    for dcl in dispatch.declaration.customer.declarants:
         new_dcl = Declarant.find(slug=dcl.slug)
         if not new_dcl:
             new_dcl = Declarant()
         dct = dcl.dict
         del dct['slug']
         new_dcl << dct
-        customer.declarant_key = new_dcl.store()  # WARNING: only a declarant
-        customer.store()  # TODO: Change this when update domain model.
+        new_dcl.store()
 
 
 def create(payload, customs_agency, customer=None):
@@ -79,11 +87,13 @@ def create(payload, customs_agency, customer=None):
     """
     # it_satisfies(create_pre, payload)
 
-    declaration = Declaration.new(payload['declaration'])
-    declaration.store()
+    declaration = Dispatch.Declaration.new(payload['declaration'])
 
     if not customer:
-        customer = Customer.new(payload['declaration']['customer'])
+        document_number = payload['declaration']['customer']['document_number']
+        customer = Customer.find(document_number=document_number)
+        if not customer:
+            customer = Customer.new(payload['declaration']['customer'])
         customer.store()
 
     del payload['declaration']
@@ -91,7 +101,7 @@ def create(payload, customs_agency, customer=None):
     dispatch = Dispatch.new(payload)
     dispatch.customs_agency_key = customs_agency.key
     dispatch.customer_key = customer.key
-    dispatch.declaration_key = declaration.key
+    dispatch.declaration = declaration
     dispatch.store()
 
     update_stakeholders(dispatch)
@@ -136,14 +146,27 @@ def update(dispatch, payload):
 
     """
     declaration = dispatch.declaration
-    declaration << payload['declaration']
-    declaration.store()
+    if 'declaration' in payload:
+        declaration << payload['declaration']
+        del payload['declaration']  # HARDCODE
 
-    del payload['declaration']
+    if 'customer' in payload:
+        del payload['customer']  # HARDCODE
+
+    if 'customs_agency' in payload:
+        del payload['customs_agency']  # HARDCODE
+
+    if 'historical_customer' in payload:
+        del payload['historical_customer']
+
+    if 'third' in payload:
+        del payload['third']
+
     dispatch << payload
+    dispatch.declaration = declaration
     dispatch.store()
 
-    update_stakeholders(dispatch)
+    update_stakeholders(dispatch, True)
 
     return dispatch
 
@@ -167,6 +190,14 @@ def numerate(dispatch, **args):
     """
     dispatch << args
     dispatch.store()
+    is_accepted = False
+
+    if dispatch.amount != '':
+        if float(dispatch.amount) >= 10000:
+            operation.accept(dispatch)
+            is_accepted = True
+
+    return is_accepted
 
 
 def register(dispatch, country_source, country_target):

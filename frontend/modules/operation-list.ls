@@ -5,10 +5,7 @@
 Module = require '../workspace/module'
 Table = App.widget.table.Table
 
-App.widget.panelgroup
-  PanelGroup = ..PanelGroup
-  PanelHeading = ..PanelHeading
-  PanelBody = ..PanelBody
+panelgroup = App.widget.panelgroup
 
 /**
  * @class DispatchModel
@@ -36,20 +33,15 @@ class Operations extends App.Collection
   model: Operation
 
 
-/**
- * @Class OperationList
- * @extends Module
- */
-class OperationList extends Module
+class ControlHeadTable extends panelgroup.ControlTitle
 
-  /**
-   * Carga el heading de acuerdo al dto de la operacion.
-   * @param {Object} _dto
-   * @return {PanelHeading} _head
-   */
-  render-head: (_dto) ->
-    _title = "<table class='#{gz.Css \table}' style='margin:0'>
-                <tbody>
+  _tagName: \table
+
+  _className: gz.Css \table
+
+  load-head: (_dto) ->
+    @el.css\width = \1000
+    @el.html = "<tbody>
                   <tr>
                     <td style='border-top-style:none;
                                margin:auto;
@@ -67,17 +59,16 @@ class OperationList extends Module
                     #{_dto.dispatches.length}
                     </td>
                   </tr>
-                </tbody>
-              </table>"
+                </tbody>"
 
-    _head = new PanelHeading _title: _title
+class PanelHeadingTable extends panelgroup.PanelHeading
 
-  /**
-   * Carga la tabla de despachos de una operacion.
-   * @param {Object} _dispatches
-   * @return {PanelBody} _body
-   */
-  render-body: (_dispatches) ->
+  _controls : [ControlHeadTable]
+
+class PanelBodyTable extends panelgroup.PanelBody
+
+  load-table: (_dispatches) ->
+    @el.css\padding = \0
     _labels =
       '**'
       'N Orden'
@@ -103,7 +94,13 @@ class OperationList extends Module
 
     _tabla.el.css.\margin = \0
 
-    _body = new PanelBody _element: _tabla.render!.el
+    @el._append _tabla.render!.el
+
+/**
+ * @Class OperationList
+ * @extends Module
+ */
+class OperationList extends Module
 
   /**
    * Carga el panel de acuerdo a las operaciones.
@@ -112,19 +109,19 @@ class OperationList extends Module
    */
   render-panel: (_dto, pnl-group) ->
     _panel = pnl-group.new-panel do
-      _panel-heading: @render-head _dto
-      _panel-body: @render-body _dto.dispatches
+          _panel-heading: PanelHeadingTable
+          _panel-body: PanelBodyTable
+    _panel._header._get ControlHeadTable .load-head _dto
+    _panel._body.load-table _dto.dispatches
+
+    # styles
+    _panel._header.el.css
+      ..\margin = \0
+      ..\background = \white
+      ..\padding = \0
 
     _panel.el.css.\border = \none
 
-    _panel._body.el._first.css = "padding:0"
-
-    # Se cambia el header para se paresca a una tabla.
-    _panel._header.el.css.\background = \white
-    _panel._header.el.css.\padding = \0
-
-    # Se modifica el titulo para que pueda entrar la cabecera.
-    _panel._header.el._first._first.css.\width = \1000
 
     pnl-group.close-all!
 
@@ -148,7 +145,7 @@ class OperationList extends Module
                 </table>"
 
     op = new Operations
-    pnl-group = new PanelGroup
+    pnl-group = new panelgroup.PanelGroup
     op._fetch do
       _success: (dispatches) ~>
         for _model in dispatches._models
@@ -158,15 +155,39 @@ class OperationList extends Module
         alert 'Error!!! Numeration list'
 
     @el._append pnl-group.render!el
-    @$el._append "<a class='#{gz.Css \btn} #{gz.Css \btn-success}'
-                     href='api/reporte_operaciones'>
-                    Generar reporte
-                  </a>"
+#    @$el._append "<a class='#{gz.Css \btn} #{gz.Css \btn-success}'
+#                     href='api/reporte_operaciones'>
+#                    Generar reporte
+#                  </a>
+
+#                  <select class='#{gz.Css \form-control}
+#                               \ #{gz.Css \pull-right}'
+#                          style='width:125px;margin-left:8px'>
+#                    <option>Enero</option>
+#                    <option>Febrero</option>
+#                    <option>Marzo</option>
+#                    <option>Abril</option>
+#                    <option>Mayo</option>
+#                    <option>Junio</option>
+#                    <option>Agosto</option>
+#                    <option>Setiembre</option>
+#                    <option>Octubre</option>
+#                    <option>Noviembre</option>
+#                    <option>Diciembre</option>
+#                  </select>
+
+#                  <a class='#{gz.Css \btn}
+#                          \ #{gz.Css \btn-default}
+#                          \ #{gz.Css \pull-right}'
+#                     href='#'>
+#                    Procesar operaciones múltiples de
+#                  </a>"
 
     super!
 
   /** @protected */ @@_caption = 'LISTA OPERACION'
   /** @protected */ @@_icon    = gz.Css \th-list
+  /** @protected */ @@_hash    = 'OPLIST-HASH'
 
 /** @export */
 module.exports = OperationList

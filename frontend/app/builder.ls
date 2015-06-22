@@ -82,13 +82,19 @@ class exports.Form extends Array implements PoolMixin
    * @param {String} _tip
    * @private
    */
-  __enable-tip = (_label, _tip)->
+  __enable-tip = (_label, _tip) ->
     _info = App.dom._new \i
       .._class = "#{gz.Css \glyphicon}
                \ #{gz.Css \glyphicon}-#{gz.Css \info}-#{gz.Css \sign}
                \ #{gz.Css \pull-right}
                \ #{gz.Css \toggle}"
       ..title = _tip
+      $ .. ._tooltip do
+        'template': "<div class='#{gz.Css \tooltip}' role='tooltip'
+                          style='min-width:175px'>
+                       <div class='#{gz.Css \tooltip-arrow}'></div>
+                       <div class='#{gz.Css \tooltip-inner}'></div>
+                     </div>"
     _label._append _info
 
   /**
@@ -147,6 +153,42 @@ class exports.Form extends Array implements PoolMixin
         ..type = 'hidden'
         ..name = _name
         ..value = _options
+
+    | _type is FieldType.kYesNo =>
+      _div = App.dom._new \div
+        _check = App.dom._new \input
+          ..type = 'checkbox'
+          ..name = _name
+          ..css = "display:none"
+
+        _label-first = App.dom._new \label
+          .._class = gz.Css \radio-inline
+          _radio-first = App.dom._new \input
+            ..type = 'radio'
+          .._append _radio-first
+          $ .. ._append ' Si'
+
+        _label-second = App.dom._new \label
+          .._class = gz.Css \radio-inline
+          _radio-second = App.dom._new \input
+            ..type = 'radio'
+          .._append _radio-second
+          $ .. ._append ' No'
+
+        .._append _label-first
+        .._append _label-second
+        .._append _check
+
+      _radio-first.on-change ~>
+        _radio-first._checked = true
+        _radio-second._checked = false
+        _check._checked = true
+
+      _radio-second.on-change ~>
+        _radio-first._checked = false
+        _radio-second._checked = true
+        _check._checked = false
+      _div
     | otherwise => throw "Error: Bad type"
 
   /**
@@ -202,6 +244,7 @@ class exports.Form extends Array implements PoolMixin
       #    @el._elements[_name]
       #@_elements[_name] = _element-t
 
+      # Extra `element` attribute ############################
       if _type is FieldType.kView
         @_elements[_name]._view = _options._options
       ########################################################
@@ -212,6 +255,13 @@ class exports.Form extends Array implements PoolMixin
       ########################################################
       if _type is FieldType.kHidden
         ..css\display = \none
+
+      if _type is FieldType.kYesNo
+        @_elements[_name]._radios =
+          _yes: _el._first._first
+          _no: _el._first._next._first
+        @_elements[_name]._checkbox = _el._last
+      # END ###################################################
 
       # Field attributes
       _el._disabled = on if _field-attrs .&. @@_FIELD_ATTR._disabled

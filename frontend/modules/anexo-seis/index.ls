@@ -166,6 +166,7 @@ class Operations extends Module
 
   /** @protected */ @@_caption = 'ANEXO 6'
   /** @protected */ @@_icon    = gz.Css \flash
+  /** @protected */ @@_hash    = 'ANX6-HASH'
 
 
 /** @export */

@@ -7,11 +7,28 @@ App.widget.codename
   InputName = ..InputName
   CodeNameField = ..CodeNameField
 
+FormRatio = App.form-ratio
+
 FieldType = App.builtins.Types.Field
 DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
 
 
 class Person extends Customer
+
+  _json-getter: ->
+    r = super!
+    _ratio =  @ratio._calculate r
+    @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
+    r
+
+  _json-setter: (_dto) ->
+    super _dto
+    # Progress Bar
+    @ratio = new FormRatio do
+      fields: _FIELD_PERSON
+    _ratio =  @ratio._calculate _dto
+    if _ratio isnt 0
+      @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
 
   clean-text-partner: ~>
     @el.query('[name=partner]')._disabled = on
@@ -24,15 +41,20 @@ class Person extends Customer
       | otherwise => @clean-text-partner!
 
   on-is_obligated-change: ~>
-    @form-builder._elements'has_officer'._element
-      _officer-yes = ..query '[value=Sí]'
-      _officer-no = ..query '[value=No]'
-    is_obligated = @el.query('[name=is_obligated]:checked').value
-    if is_obligated === 'No'
+    officer = @form-builder._elements.'has_officer'
+    officer._radios
+      _officer-yes = .._yes
+      _officer-no = .._no
+    chk-officer = officer._checkbox
+    is_obligated = @form-builder._elements.'is_obligated'._radios._no
+    if is_obligated._checked
       _officer-yes._disabled = on
+      _officer-yes._checked = off
       _officer-no._checked = on
+      chk-officer._checked = off
     else
       _officer-yes._disabled = off
+      _officer-no._checked = off
 
   /** @protected */
   set-default-type: -> @set-type 'n'
@@ -62,10 +84,10 @@ class Person extends Customer
   /** Local variable for settings. */
   _GRID = App.builder.Form._GRID
   _FIELD_ATTR = App.builder.Form._FIELD_ATTR
+  ratio: null
 
   /** FIELD */
   _FIELD_PERSON =
-
     * _name: 'name'
       _label: 'a) Nombres'
 
@@ -126,7 +148,7 @@ class Person extends Customer
     * _name: 'activity'
       _label: 'j) Profesión u ocupación'
       _tip: 'Ocupación, oficio o profesión de la persona en cuyo nombre se
-           \ realiza la operación.'
+           \ realiza la operación.([ctrl+M] para ver la tabla completa)'
       _type: FieldType.kView
       _options : new InputName do
                    _name : App.lists.activity._display
@@ -160,15 +182,12 @@ class Person extends Customer
       _label: 'Origen de los fondos'
 
     * _name: 'is_obligated'
-      _label: 'n) Si es Sujeto obligado'
-      _tip: 'Es sujeto obligado informar a la UIF-Perú.'
-      _type: FieldType.kRadioGroup
-      _options: <[Sí No]>
+      _label: 'j) Si es Sujeto obligado'
+      _type: FieldType.kYesNo
 
     * _name: 'has_officer'
       _label: 'Oficial cumplimiento'
-      _type: FieldType.kRadioGroup
-      _options: <[Sí No]>
+      _type: FieldType.kYesNo
 
     * _name: 'reference'
       _label: 'Ref. Cliente'

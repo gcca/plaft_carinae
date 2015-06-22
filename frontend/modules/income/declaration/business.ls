@@ -9,6 +9,8 @@ App.widget.codename
 
 Shareholders = require './shareholders'
 
+FormRatio = App.form-ratio
+
 FieldType = App.builtins.Types.Field
 DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
 
@@ -24,10 +26,21 @@ class Business extends Customer
     shareholders = @shareholders-view._toJSON!
     if shareholders._length
       r.'shareholders' = shareholders
+
+    _ratio =  @ratio._calculate r
+    @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
+
     r
 
   _json-setter: (_dto) ->
     super _dto
+    # Progress Bar
+    @ratio = new FormRatio do
+      fields: _FIELD_BUSINESS
+    _ratio =  @ratio._calculate _dto
+    if _ratio isnt 0
+      @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
+
     @el.query '[name=document_type]'
       .._value = 'ruc'
     if _dto.'shareholders'?
@@ -35,15 +48,20 @@ class Business extends Customer
 
   /** @private */
   on-is_obligated-change: ~>
-    @form-builder._elements'has_officer'._element
-      _officer-yes = ..query '[value=Sí]'
-      _officer-no = ..query '[value=No]'
-    is_obligated = @el.query('[name=is_obligated]:checked').value
-    if is_obligated === 'No'
+    officer = @form-builder._elements.'has_officer'
+    officer._radios
+      _officer-yes = .._yes
+      _officer-no = .._no
+    chk-officer = officer._checkbox
+    is_obligated = @form-builder._elements.'is_obligated'._radios._no
+    if is_obligated._checked
       _officer-yes._disabled = on
+      _officer-yes._checked = off
       _officer-no._checked = on
+      chk-officer._checked = off
     else
       _officer-yes._disabled = off
+      _officer-no._checked = off
 
   /** @protected */
   set-default-type: -> @set-type 'j'
@@ -62,6 +80,7 @@ class Business extends Customer
 
   /** Local variable for settings. */
   _GRID = App.builder.Form._GRID
+  ratio: null
 
   /** FIELD */
   _FIELD_BUSINESS =
@@ -114,13 +133,11 @@ class Business extends Customer
 
     * _name: 'is_obligated'
       _label: 'j) Si es Sujeto obligado'
-      _type: FieldType.kRadioGroup
-      _options: <[Si No]>
+      _type: FieldType.kYesNo
 
     * _name: 'has_officer'
       _label: 'Oficial cumplimiento'
-      _type: FieldType.kRadioGroup
-      _options: <[Sí No]>
+      _type: FieldType.kYesNo
 
     * _name: 'reference'
       _label: 'Ref. Cliente'

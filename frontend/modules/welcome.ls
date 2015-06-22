@@ -56,6 +56,7 @@ class Welcome extends Module
 
   /** @protected */ @@_caption = 'INICIO'
   /** @protected */ @@_icon    = gz.Css \certificate
+  /** @protected */ @@_hash  = 'WEL-HASH'
 
 
 /** @export */

@@ -57,8 +57,10 @@ class Modules extends App.View
 
   /** @override */
   render: ->
+    _modules-see = App.permissions.modules  # change name
     for module in MODULES
-      @el._append @_add module
+      if module._hash in _modules-see # autorización de usuarios
+        @el._append @_add module
     super!
 
 

@@ -4,7 +4,7 @@
    :synopsis: Pattern interfaces and support code for the datastore
               implementation.
 
-.. moduleauthor:: Gonzales Castillo, Cristhian A. <cristhian.gz@aol.com>
+.. moduleauthor:: Gonzales Castillo, Cristhian A. <gcca@gcca.tk>
 
 
 """
@@ -16,8 +16,8 @@ from types import GeneratorType
 
 from google.appengine.ext.ndb import model as ndb, query as Q, polymodel
 from google.appengine.api.datastore_errors import TransactionFailedError
+import plaft.config
 from plaft.domain.shared import Entity
-# from plaft.application.util import JSONEncoder
 from plaft.infrastructure.support import util
 
 
@@ -59,19 +59,20 @@ class JSONEncoder(json.JSONEncoder):
     @classmethod
     def dumps(cls, obj):
         """Serialize ``obj`` to a JSON formatted ``str``."""
+        kwargs = (dict(sort_keys=True, indent=4, separators=(',', ': '))
+                  if plaft.config.DEBUG
+                  else dict(separators=(',', ':')))
         return unicode(json.dumps(obj,
                                   cls=cls,
-                                  separators=(',', ':'),
-                                  # sort_keys=True,
-                                  # indent=4,
-                                  # separators=(',', ': '),
-                                  check_circular=False)).decode('utf-8')
+                                  check_circular=False,
+                                  **kwargs)).decode('utf-8')
 
     @classmethod
     def loads(cls, s):
         """Deserialize ``s`` (a ``str`` or ``unicode`` instance containing
         a JSON document) to a Python object."""
         return json.loads(s, 'utf-8')
+
 
 Boolean = ndb.BooleanProperty
 Integer = ndb.IntegerProperty
@@ -85,18 +86,20 @@ Json = ndb.JsonProperty
 Key = ndb.KeyProperty
 BlobKey = ndb.BlobKeyProperty
 DateTime = ndb.DateTimeProperty
-Date = ndb.DateProperty
 Time = ndb.TimeProperty
 LocalStructured = ndb.LocalStructuredProperty
 Generic = ndb.GenericProperty
 Computed = ndb.ComputedProperty
 Structured = ndb.StructuredProperty
-
 PolyModel = polymodel.PolyModel
 
 
 def convert_keys(dct, hist):
-    for k in (k for k in dct if type(dct[k]) is ndb.Key):
+    for k in (k for k in dct if k.endswith('_key') and dct[k] is None):
+        del dct[k]
+        dct[k[:-4]] = None
+
+    for k in (k for k in dct if isinstance(dct[k], ndb.Key)):
         nkey = dct[k]
         if nkey in hist:
             del dct[k]
@@ -108,8 +111,9 @@ def convert_keys(dct, hist):
             dct[k[:-4]] = obj
 
     for k in (k for k in dct
-              if type(dct[k]) is list and dct[k] and
-              type(dct[k][0]) is ndb.Key):
+              if (isinstance(dct[k], list) and
+                  dct[k] and
+                  isinstance(dct[k][0], ndb.Key))):
         dct[k[:-4]] = dct[k]
         del dct[k]
         value = dct[k[:-4]]
@@ -123,17 +127,18 @@ def convert_keys(dct, hist):
 
 class KeyAccessor(ndb.MetaModel):
 
-    def __new__(cls, name, bases, dct):
+    def __new__(mcs, name, bases, dct):
         for k, v in dct.items():
-            if type(v) is ndb.KeyProperty:
+            if isinstance(v, ndb.KeyProperty):
                 if v._repeated:
-                    accessor = (lambda k: lambda self: [m.get()
-                                for m in getattr(self, k)])(k)
+                    accessor = (lambda k:
+                                lambda self: [m.get()
+                                              for m in getattr(self, k)])(k)
                 else:
                     accessor = (lambda k:
                                 lambda self: getattr(self, k).get())(k)
                 dct[k[:-4]] = property(accessor)
-        return super(KeyAccessor, cls).__new__(cls, name, bases, dct)
+        return super(KeyAccessor, mcs).__new__(mcs, name, bases, dct)
 
 
 class Model(Entity, ndb.Model):
@@ -155,7 +160,7 @@ class Model(Entity, ndb.Model):
         return dct
 
     # filter_node = staticmethod(
-    #     lambda prop, val: Q.FilterNode(  # pylint: disable=I0011,W0142
+    #     lambda prop, val: Q.FilterNode(  lint: disable=I0011,W0142
     #         prop, *(('=', val) if not val or '\\' != val[0]
     #                 else ((val[1:2], val[3:]) if '\\' == val[2]
     #                       else ((val[1:3], val[4:]) if '\\' == val[3]
@@ -163,20 +168,19 @@ class Model(Entity, ndb.Model):
 
     @staticmethod
     def filter_node(prop, val):
-        if type(val) is ndb.Key:  # TODO: remove hardcode for Key
+        if isinstance(val, ndb.Key):  # TODO: remove hardcode for Key
             return Q.FilterNode(prop, '=', val)
-        return Q.FilterNode(  # pylint: disable=I0011,W0142
-                    prop, *(('=', val) if not val or '\\' != val[0]
-                            else ((val[1:2], val[3:]) if '\\' == val[2]
-                                  else ((val[1:3], val[4:]) if '\\' == val[3]
-                                        else (val, None)))))
+        return Q.FilterNode(
+            prop, *(('=', val) if not val or '\\' != val[0]
+                    else ((val[1:2], val[3:]) if '\\' == val[2]
+                          else ((val[1:3], val[4:]) if '\\' == val[3]
+                                else (val, None)))))
 
     @classmethod
     def __all(cls, dto, **filters):
         """."""
         if dto:
             filters = dto
-        # pylint: disable=I0011,W0142
         return cls.query().filter(*(cls.filter_node(*item)
                                     for item in filters.items()))
 
@@ -214,16 +218,18 @@ class Model(Entity, ndb.Model):
         properties = {}
         _properties = cls._properties
         for property in _properties:
-            if property in payload:
+            if property in payload or property[:-4] in payload:
                 prop_type = _properties[property]
                 dtype = type(prop_type)
-                value = payload[property]
+                if dtype is not Key:
+                    value = payload[property]
 
                 if dtype is Key:
+                    value = payload[property[:-4]]
                     if not value:
                         continue
-                    # TODO(): hot update nested models
-                    if type(value) is dict:
+                    # TODO: hot update nested models
+                    if isinstance(value, dict):
                         if 'id' in value:
                             k = ndb.Key(prop_type._kind, int(value['id']))
                             sub = k.get()
@@ -237,7 +243,7 @@ class Model(Entity, ndb.Model):
                     if isinstance(value, (int, long)):
                         value = ndb.Key(prop_type._kind, value)
 
-                elif dtype is Structured and not type(value) is list:
+                elif dtype is Structured and not isinstance(value, list):
                     svalue = {}
                     for sprop in prop_type._modelclass._properties:
                         if value and sprop in value:
@@ -245,8 +251,9 @@ class Model(Entity, ndb.Model):
 
                     value = svalue
 
-                elif dtype is Structured and type(value) is list:
-                    _list = value
+                elif dtype is Structured and isinstance(value, list):
+                    pass
+                    # _list = value
                     # for value in _list:
                     #     svalue = {}list_dispatches
                     #     for sprop in prop_type._modelclass._properties:
@@ -312,8 +319,6 @@ class JSONEncoderNDB(JSONEncoder):
             return d
         if isinstance(o, Q.Query):
             return o.fetch(666)
-        if isinstance(o, ndb.Key):
-            return 'XXXXXXXXXXX'
         if isinstance(o, GeneratorType):
             return list(o)
         return JSONEncoder.default(self, o)
@@ -347,33 +352,35 @@ class DocumentProperty(ndb.StructuredProperty):
         # if not isinstance(value, (int, long)):
         #     raise TypeError('expected an integer, got %s' % repr(value))
 
-    def _to_base_type(self, value):
-        return value
+    # def _to_base_type(self, value):
+    #     return value
 
-    def _from_base_type(self, value):
-        return value
+    # def _from_base_type(self, value):
+    #     return value
 
 
-class DateProperty(ndb.DateProperty):
+class Date(ndb.DateProperty):
 
     import re
-    RE_DATE = re.compile(r'\d{2}/\d{2}/\d{4}')
+    RE_DATE = re.compile(r'(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})')
 
     def _validate(self, value):
-        if isinstance(value, basestring) and self.RE_DATE.match(value):
-            return value
-
-    def _to_base_type(self, value):
         if isinstance(value, datetime.date):
             return value
-        elif isinstance(value, basestring):
-            day, month, year = value.split('/')
-            value = datetime.date(int(year), int(month), int(day))
-            return value
-        else:
-            raise TypeError('Bad value type: ' + type(value))
+        if isinstance(value, basestring):
+            match = self.RE_DATE.match(value)
+            if match:
+                day, month, year = match.groups()
+                value = datetime.date(int(year), int(month), int(day))
+                return value
+        if value is None or value == '':
+            return datetime.date(1970, 1, 1)
+        raise TypeError('Bad date from %s: %s.' % (type(value), repr(value)))
 
-    def _from_base_type(self, value):
+    def _db_get_value(self, v, unused_p):
+        value = super(Date, self)._db_get_value(v, unused_p)
+        if datetime.datetime(1970, 1, 1) == value:
+            return None
         return value
 
 

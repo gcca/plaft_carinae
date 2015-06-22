@@ -1,5 +1,7 @@
 /** @module app */
 
+modal = require './modal'
+
 class exports.Typeahead extends App.View
 
   /**
@@ -67,6 +69,33 @@ class exports.Typeahead extends App.View
             </div>"
           \suggestion : options._template)
 
+    @el.on-key-up (evt) ~>
+      if evt.key-code is 77 and evt.ctrl-key   # [ctrl+M]
+        mdl = modal.Modal._new do
+            _title: 'Tabla completa'
+            _body: @template-table @options.full-args
+        mdl._show!
+
+  template-table: ->
+    if not @options.full-template?
+      @options.full-template = -> ["<td>#{..}</td>" for &]._join ''
+    t-body = App.dom._new \tbody
+    for i from 0 to @options.full-args.0._length - 1
+      args = [_list[i] for _list in @options.full-args]
+      _tr = App.dom._new \tr
+        ..html = @options.full-template.apply @, args
+      t-body._append _tr
+    tb = App.dom._new \table
+    tb._class = "#{gz.Css \table}
+               \ #{gz.Css \table-hover}"
+    tb.html = "<thead>
+                <tr>
+                 #{["<th>#{..}</th>" for @options.full-headers]._join ''}
+                </tr>
+              </thead>"
+    tb._append t-body
+    tb
+
   /**
    * Flag to data source.
    */
@@ -84,6 +113,6 @@ class exports.Typeahead extends App.View
 exports.panelgroup = require './panelgroup'
 exports.codename = require './codename'
 exports.table = require './table'
-exports.message-box = require './modal'
+exports.message-box = modal
 
 # vim: ts=2:sw=2:sts=2:et
