@@ -156,6 +156,9 @@ def update(dispatch, payload):
     if 'customs_agency' in payload:
         del payload['customs_agency']  # HARDCODE
 
+    if 'operation' in payload:
+        del payload['operation']  # HARDCODE
+
     if 'historical_customer' in payload:
         del payload['historical_customer']
 
