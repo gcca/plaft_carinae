@@ -274,7 +274,7 @@ def _data_debug():
         agency.store()
 
         list_dispatches = create_dispatches(agency, datastore, customers)
-        #operations(agency, list_dispatches, datastore)
+        operations(agency, list_dispatches, datastore)
 
     create_autocomplete()  # TODO: Remove when update domain model
 
