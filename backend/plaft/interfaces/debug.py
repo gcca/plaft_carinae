@@ -208,10 +208,19 @@ class UsersFromFile(Handler):
             agency = model.CustomsAgency(name=agency_name)
             agency.store()
 
+            permission = model.Permissions(modules=['WEL-HASH',
+                                                    'NUM-HASH',
+                                                    'ANEXO2-HASH',
+                                                    'INCOME-HASH',
+                                                    'OPLIST-HASH'],
+                                           signals=[])
+            permission.store()
+
             datastore = model.Datastore(customs_agency_key=agency.key)
             datastore.store()
 
-            officer = model.Officer(customs_agency_key=agency.key)
+            officer = model.Officer(customs_agency_key=agency.key,
+                                    permissions_key=permission.key)
             officer.populate(username=username, password=password)
 
             agency.officer_key = officer.store()
