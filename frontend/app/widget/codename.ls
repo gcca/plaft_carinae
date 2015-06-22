@@ -65,22 +65,6 @@ class exports.CodeNameField extends App.View
   /** @private */ _max-length : null
   /** @private */ _typeahead : null
 
-  template-table = (_code, _name) ->
-    tbody = "#{for i from 0 to _code._length-1 then
-                \ '<tr><td>'+_code[i]+'</td><td>'+_name[i]+'</td></tr>'}"
-    tb = App.dom._new \table
-    tb._class = "#{gz.Css \table}
-               \ #{gz.Css \table-hover}"
-    tb.html = "<thead>
-                <tr>
-                  <th>CÓDIGO</th>
-                  <th>DESCRIPCIÓN</th>
-                </tr>
-              </thead>"
-    $ tb ._append tbody
-    tb
-
-
   /** @override */
   render: ->
     @el.html = ''
@@ -108,6 +92,8 @@ class exports.CodeNameField extends App.View
     @el._append @_span
     @_typeahead = (new App.widget.Typeahead do
       el          : @_input
+      full-args: [@_code, @_name]
+      full-headers: <[Código Descripción]>
       _source     :
         _display : App.widget.Typeahead.Source.kDisplay
         _tokens  : App.widget.Typeahead.Source.kTokens
@@ -125,13 +111,6 @@ class exports.CodeNameField extends App.View
       ..onClosed @changeValue
       ..render!
     @_hidden.onChange @changeCode
-
-    @_input.on-key-press (_) ~>
-      if _.key-code is 17 and _.ctrl-key  # [ctrl+Q]
-        mdl = Modal._new do
-            _title: 'Tabla completa'
-            _body: template-table @_code, @_name
-        mdl._show!
 
     super!
 /**
@@ -165,6 +144,8 @@ class exports.InputName extends App.View
     @el._append @_input
     (new App.widget.Typeahead do
       el: @_input
+      full-args: [@_name]
+      full-headers: <[Descripción]>
       _source:
         _display: App.widget.Typeahead.Source.kDisplay
         _tokens: App.widget.Typeahead.Source.kTokens
@@ -178,6 +159,7 @@ class exports.InputName extends App.View
         <p style='font-size:14px;text-align:justify'>#{p._name}</p>")
       ..onCursorChanged @changeName
       ..render!
+
     super!
 
   /** @private */ _field  : null

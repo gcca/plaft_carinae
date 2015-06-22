@@ -148,7 +148,7 @@ class Person extends Customer
     * _name: 'activity'
       _label: 'j) Profesión u ocupación'
       _tip: 'Ocupación, oficio o profesión de la persona en cuyo nombre se
-           \ realiza la operación.'
+           \ realiza la operación.([ctrl+M] para ver la tabla completa)'
       _type: FieldType.kView
       _options : new InputName do
                    _name : App.lists.activity._display

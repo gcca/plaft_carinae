@@ -115,7 +115,7 @@ class Declarant extends panelgroup.FormBody
     * _name: 'activity'
       _label: '18. Ocupación, profesión'
       _tip: 'Ocupación, oficio o profesión de la persona que solicita o físicamente
-           \ realiza la operación.'
+           \ realiza la operación.([ctrl+M] para ver la tabla completa)'
       _type: FieldType.kView
       _options : new InputName do
                    _name : App.lists.activity._display
@@ -124,7 +124,7 @@ class Declarant extends panelgroup.FormBody
     * _name: 'ciiu'
       _label: '20. Código CIIU de la ocupación'
       _tip: 'Código CIIU de la ocupación de la persona que solicita o físicamente
-           \ realiza la operación.([ctrl+Q] para ver la tabla completa)'
+           \ realiza la operación.([ctrl+M] para ver la tabla completa)'
       _type: FieldType.kView
       _options : new CodeNameField do
                    _code : App.lists.ciiu._code
@@ -134,7 +134,7 @@ class Declarant extends panelgroup.FormBody
     * _name: 'position'
       _label : '21. Cargo'
       _tip: 'Cargo de la persona que solicita de la persona que solicita o
-           \ físicamente realiza la operación.'
+           \ físicamente realiza la operación.([ctrl+M] para ver la tabla completa)'
       _type: FieldType.kView
       _options : new InputName do
                    _name : App.lists.office._display
@@ -151,7 +151,7 @@ class Declarant extends panelgroup.FormBody
       _grid: _GRID._full
       _tip: 'Código ubigoe del departamento, provincia y distrito de la dirección
            \ de la persona que solicita o físicamente realiza la operación: de
-           \ acuerdo a la codificación vigente y publicada por el INEI.([ctrl+Q]
+           \ acuerdo a la codificación vigente y publicada por el INEI.([ctrl+M]
            \ para ver la tabla completa)'
       _type: FieldType.kView
       _options : new CodeNameField do

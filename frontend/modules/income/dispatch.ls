@@ -72,7 +72,7 @@ class DispatchBody extends panelgroup.FormBody
 
       * _name: 'jurisdiction'
         _label: 'Aduana despacho/ Juridiccion'
-        _tip: '([ctrl+Q] para ver la tabla completa)'
+        _tip: '([ctrl+M] para ver la tabla completa)'
         _type: FieldType.kView
         _options : new CodeNameField do
                      _code : App.lists.jurisdiction._code
@@ -88,7 +88,7 @@ class DispatchBody extends panelgroup.FormBody
 
       * _name: 'regime'
         _label: 'Regimen Aduanero'
-        _tip: '([ctrl+Q] para ver la tabla completa)'
+        _tip: '([ctrl+M] para ver la tabla completa)'
         _type: FieldType.kView
         _options : new CodeNameField do
                      _code : App.lists.regime._code
