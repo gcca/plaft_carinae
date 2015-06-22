@@ -89,7 +89,7 @@ document.body.innerHTML = "
 
 </div>
 
-<div class='#{gz.Css \jumbotron}'>
+<div class='#{gz.Css \jumbotron}' style='padding-bottom: 11px'>
 
   <div class='#{gz.Css \container}'>
     #{
@@ -103,9 +103,8 @@ document.body.innerHTML = "
       PLAFT<small>sw</small>
     </h1>
 
-    <p>Prevención del Lavado de Activos y Financiamiento del Terrorismo.</p>
-
-    <p class='#{gz.Css \jumbotron-options}'>
+    <p class='#{gz.Css \jumbotron-options}
+            \ #{gz.Css \pull-right}'>
 
       <a class='#{gz.Css \btn}
               \ #{gz.Css \btn-primary}
@@ -160,6 +159,7 @@ document.body.innerHTML = "
         </form>
       </a>
     </p>
+    <p>Prevención del Lavado de Activos y Financiamiento del Terrorismo.</p>
 
   </div>
 
@@ -218,7 +218,30 @@ document.body.innerHTML = "
     <hr>
 
     <footer>
-      <p>&copy; CavaSoft 2014</p>
+      <p class='#{gz.Css \pull-left}'>Navegadores recomendados: &nbsp;&nbsp;
+      <a title='Mozilla Firefox' href='https://www.mozilla.org/en-US/firefox/new/'
+         target='_blank'>
+        <img src='/static/img/mozilla.png' style='width:32px' />
+      </a>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <a title='Google Chrome'
+         href='https://www.google.com/chrome/browser/desktop/index.html'
+         target='_blank'>
+        <img src='/static/img/chrome.png' style='width:32px' />
+      </a>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <a title='Opera' href='http://www.opera.com/es'
+         target='_blank'>
+        <img src='/static/img/opera.png' style='width:32px' />
+      </a>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <a title='Safari' href='https://www.apple.com/safari/'
+         target='_blank'>
+        <img src='/static/img/safari.png' style='width:32px' />
+      </a>
+
+      </p>
+      <p class='#{gz.Css \pull-right}'>&copy; CavaSoft 2014</p>
       <!-- cristHian Gz. (gcca) - http://gcca.tk -->
       <!-- Cristhian Alberto Gonzales Castillo -->
     </footer>
