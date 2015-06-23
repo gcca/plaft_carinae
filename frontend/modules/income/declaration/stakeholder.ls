@@ -23,7 +23,8 @@ class Stakeholder extends App.View
   /** @override */
   initialize: ->
     super!
-
+    @$el._append 'Datos identificación adicionales para el
+                \ Anexo 2'
     App.builder.Form._new @el, _FIELDS
       ..render!
 
@@ -58,7 +59,7 @@ class Stakeholder extends App.View
         'No residente'
 
     * _name: 'ciiu'
-      _label: 'Código CIIU de ocupacion'
+      _label: '40. Código CIIU de ocupacion'
       _tip: 'Código CIIU de la ocupación de la persona en cuyo nombre se
             \ realiza la operación([ctrl+M] para ver la tabla completa)'
       _type: FieldType.kView
@@ -68,7 +69,7 @@ class Stakeholder extends App.View
                    _field : 'ciiu'
 
     * _name: 'ubigeo'
-      _label: 'Código Ubigeo'
+      _label: '43. Código UBIGEO'
       _tip: 'Código UBIGEO del Departamento, provincia y distrito de la
             \ dirección de la persona en cuyo nombre se realiza la
             \ operación: de acuerdo a la codificación vigente y

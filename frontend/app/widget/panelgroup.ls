@@ -38,7 +38,7 @@ class ControlTitle extends App.View
       @el.html = title
 
   initialize: ({_heading}) ->
-    @el.css = 'margin:5px;width:400px;cursor:pointer'
+    @el.css = 'margin:5px;width:500px;cursor:pointer'
     @el.html = '&nbsp;'*8
     @el._data.'toggle' = 'collapse'
     @el._data.'parent' = "##{_heading._parent-uid}"
@@ -156,7 +156,7 @@ class PanelHeading extends App.View
   initialize: ({@_parent-uid, @_panel, @_collapse-id}) ->
     super!
     @_control = {}
-    @el.css = "padding:5px"
+    @el.css = "padding:0px"
     @el.html = "<div class='#{gz.Css \panel-title}' style='display:flex'>
                 </div>"
     @_container = @el._first

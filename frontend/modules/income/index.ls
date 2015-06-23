@@ -150,10 +150,13 @@ class Income extends Module
 
     c-title = panelgroup.ControlTitle
     @_panels
-      .._dispatch._header._get c-title ._text = 'Despacho'
-      .._declaration._header._get c-title ._text = 'Anexo 5'
+      .._dispatch._header._get c-title ._text = 'N&ordm; Orden despacho'
+      .._declaration._header._get c-title ._text = 'Anexo 5 - Declaración
+                                            \ Jurada de Conocimiento del
+                                            \ Cliente'
       .._declarants._header._get c-title ._text = 'Declarantes'
-      .._stakeholders._header._get c-title ._text = 'Vinculados'
+      .._stakeholders._header._get c-title ._text = 'Vinculado o involucrado
+                                                  \ en la operación.'
 
     @_panels
       .._dispatch._body._json = _dispatch-dto
