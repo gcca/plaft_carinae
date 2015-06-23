@@ -61,17 +61,12 @@ class DeclarationPDF(Handler):
     @staticmethod
     def shareholdersList(shareholders):
         html = []
-        i = 1
         for s in shareholders:
-            j = '0'+str(i) if i < 10 else str(i)
             html.append('<br/>')
-            html.append('%s. %s <br/>%s %s<br/>' % (j,
-                                                    s.document_number,
-                                                    '&nbsp;'*(len(j)+3),
+            html.append('%s - %s<br/>%s<br/>' % (s.document_number,
+                                                 (s.document_type).upper(),
                                                     s.name))
-            html.append('%s %s<br/>' % ('&nbsp;'*(len(j)+3),
-                                        s.ratio))
-            i += 1
+            html.append('%s<br/>' % (s.ratio))
         html.append('<br/>')
         return ''.join(html)
 
@@ -244,7 +239,7 @@ class DeclarationPDF(Handler):
         content = []
 
         content.append(['a)', 'Denominación o razón social',
-                        self.checkEmpty(customer, 'name')])
+                        (self.checkEmpty(customer, 'name')).upper()])
 
         content.append(['b)', 'Registro Unico de Contribuyentes RUC',
                         self.checkEmpty(customer, 'document_number')])
