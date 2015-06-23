@@ -154,23 +154,45 @@ class NewUsers(Handler):
                 customs_agency.store()
 
                 officer = customs_agency.officer
+                if not officer.permissions_key:
+
+                    permission = model.Permissions(modules=['WEL-HASH',
+                                                            'NUM-HASH',
+                                                            'ANEXO2-HASH',
+                                                            'INCOME-HASH',
+                                                            'OPLIST-HASH'],
+                                                   signals=[])
+                    permission.store()
+                    officer.permissions_key = permission.key
+
                 officer.populate(username=username,
                                  password=password)
                 officer.store()
                 self.write(self.template())
             else:
-                return
+                customs_agency = model.CustomsAgency.find(int(customs_id))
+                customs_agency.delete()
+                self.write(self.template())
 
         else:
             customs_agency = model.CustomsAgency(name=agency_name)
             customs_agency.store()
+
+            permission = model.Permissions(modules=['WEL-HASH',
+                                                    'NUM-HASH',
+                                                    'ANEXO2-HASH',
+                                                    'INCOME-HASH',
+                                                    'OPLIST-HASH'],
+                                           signals=[])
+            permission.store()
 
             datastore = model.Datastore(customs_agency_key=customs_agency.key)
             datastore.store()
 
             officer = model.Officer(username=username,
                                     password=password,
-                                    customs_agency_key=customs_agency.key)
+                                    customs_agency_key=customs_agency.key,
+                                    permissions_key=permission.key)
             officer.store()
 
             customs_agency.officer_key = officer.key
