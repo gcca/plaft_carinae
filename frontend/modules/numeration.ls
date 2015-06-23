@@ -65,7 +65,12 @@ class NumerationEdit extends Module
 
   _calculate-working-days: (dt) ->
     if dt?
-      _date = new Date (parseInt dt[2]), (parseInt dt[1])-1, (parseInt dt[0])
+      re-date = /^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/
+      array-date = re-date.'exec' dt
+      array-date._shift!
+      _date = new Date (parseInt array-date[2]),
+                       (parseInt array-date[1])-1,
+                       (parseInt array-date[0])
       days = 15
       while days
         _date.set-date _date.get-date! + 1
@@ -83,9 +88,12 @@ class NumerationEdit extends Module
 
   _calculate-storage-years: (dt) ->
     if dt?
-      @_five-years-display.html = "#{dt[0]}/
-                           #{dt[1]}/
-                           #{(parseInt dt[2])+5}"
+      re-date = /^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/
+      array-date = re-date.'exec' dt
+      array-date._shift!
+      @_five-years-display.html = "#{array-date[0]}/
+                                   #{array-date[1]}/
+                                   #{(parseInt array-date[2])+5}"
     else
       @_five-years-display.html = ''
 
