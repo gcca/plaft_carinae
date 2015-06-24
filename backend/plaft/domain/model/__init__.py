@@ -66,6 +66,14 @@ class CustomsAgency(dom.Model):
         """Customs agency datastore model."""
         return Datastore.find(customs_agency_key=self.key)
 
+    @property
+    def officers(self):
+        officer = self.officer
+        return {'agency': self.name,
+                'name': officer.name,
+                'username': officer.username,
+                'id': self.id}
+
 
 # Usuarios
 class Permissions(dom.Model):
@@ -206,6 +214,7 @@ class Customer(dom.Model, dom.PolyModel):
     legal = dom.String()  # Representante legal
     legal_type = dom.String()
     fiscal_address = dom.String()
+    position = dom.String()
 
     class Shareholder(dom.Model):
         """."""

@@ -23,6 +23,58 @@ class Stakeholder(RESTful):
 class Declarant(RESTful):
     """Declarant RESTful."""
 
+class Officer(RESTful):
+    """Officer RESTful."""
+
+    def post(self):
+        payload = self.query
+        agency_name = payload['agency']
+        username = payload['username']
+        password = payload['password']
+        officer_name = payload['name']
+        customs_agency = model.CustomsAgency(name=agency_name)
+        customs_agency.store()
+
+        permission = model.Permissions(modules=['WEL-HASH',
+                                                'NUM-HASH',
+                                                'ANEXO2-HASH',
+                                                'INCOME-HASH',
+                                                'OPLIST-HASH'],
+                                       signals=[])
+        permission.store()
+
+        datastore = model.Datastore(customs_agency_key=customs_agency.key)
+        datastore.store()
+
+        officer = model.Officer(username=username,
+                                password=password,
+                                name=officer_name,
+                                customs_agency_key=customs_agency.key,
+                                permissions_key=permission.key)
+        officer.store()
+
+        customs_agency.officer_key = officer.key
+        customs_agency.store()
+        self.render_json({'id': customs_agency.id})
+
+    def put(self, id):
+        payload = self.query
+        agency_name = payload['agency']
+        customs_agency = model.CustomsAgency.find(int(id))
+        customs_agency.name = agency_name
+        customs_agency.store()
+
+        del payload['agency']
+
+        officer = customs_agency.officer
+        officer << payload
+        officer.store()
+
+        self.write_json('{}')
+
+    def delete(self, id):
+        customs_agency = model.CustomsAgency.find(int(id))
+        customs_agency.delete()
 
 class User(RESTful):
     """User RESTful."""
@@ -196,6 +248,11 @@ class Customs_Agency(RESTful):
         self.render_json(
             plaft.application.dispatch.pending_and_accepting(customs_agency)
         )
+
+    @RESTful.method
+    def officers(self):
+        users = [customs.officers for customs in model.CustomsAgency.all()]
+        self.render_json(users)
 
 
 class Dispatch(RESTful):
