@@ -170,6 +170,15 @@ def list_operation(handler):
         plaft.application.dispatch.list_operations(customs_agency)
     )
 
+@handler_method
+def autocompleters(handler):
+    autocompleter = {
+        'stakeholder': {stk.slug: stk.id for stk in model.Stakeholder.all()},
+        'declarant': {dcl.slug: dcl.id for dcl in model.Declarant.all()}
+    }
+
+    handler.render_json(autocompleter)
+
 
 class Customs_Agency(RESTful):
     """Custom Agency RESTful handler."""

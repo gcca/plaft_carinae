@@ -475,4 +475,21 @@ App.permissions =
   modules: window.plaft.'user'.'permissions'.'modules'
   signals: window.plaft.'user'.'permissions'.'signals'
 
+
+App.GLOBALS =
+  _declarants:~
+    -> window.plaft.'declarant'
+    (x) -> window.plaft.'declarant' = x
+
+  _stakeholders:~
+    -> window.plaft.'stakeholder'
+    (x) -> window.plaft.'stakeholder' = x
+
+  update_autocompleter: ->
+    App.ajax._get '/autocompleters', do
+      _success: (_autocompleters) ->
+        @_declarants = _autocompleters.'declarant'
+        @_stakeholders = _autocompleters.'stakeholder'
+
+
 # vim: ts=2:sw=2:sts=2:et

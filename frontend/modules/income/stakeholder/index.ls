@@ -38,7 +38,7 @@ class LinkedGroup extends panelgroup.PanelGroup
       _panel-body: LinkedBody
     _stkholder._header._get panelgroup.ControlTitle ._text = 'Vinculado'
     _stkholder._header._get panelgroup.ControlSearch ._apply-attr 'stakeholder',
-                                                              window.'plaft'.'stakeholder'
+                                                                  App.GLOBALS._stakeholders
     _stkholder
 
 

@@ -26,7 +26,7 @@ class DeclarantGroup extends panelgroup.PanelGroup
       _panel-body: FormBodyDeclarant
     _declarant._header._get panelgroup.ControlTitle ._text = 'Declarante'
     _declarant._header._get panelgroup.ControlSearch ._apply-attr 'declarant',
-                                                                  window.'plaft'.'declarant'
+                                                                  App.GLOBALS._declarants
     _declarant
 
   /** @override */

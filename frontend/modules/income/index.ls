@@ -101,6 +101,7 @@ class Income extends Module
           _type: @_desktop.notifier.kSuccess
         @_panels._declaration._header.\
           _get declaration.ControlPDF ._show @model.'id'
+        App.GLOBALS.update_autocompleter!
 
       _error: ~>
         @_desktop.notifier.notify do
