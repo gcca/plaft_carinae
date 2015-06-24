@@ -55,7 +55,7 @@ class NumerationEdit extends Module
 
     _dto = @el._toJSON!
     App.ajax._post "/api/dispatch/#{@model._id}/numerate", _dto, do
-      _success:     ~>
+      _success: ~>
         @model._set _dto  # update data for change on (event)
         @_desktop.notifier.notify do
           _message : 'Se actualizó correctamente los datos'
@@ -65,9 +65,13 @@ class NumerationEdit extends Module
 
   _calculate-working-days: (dt) ->
     if dt?
-      re-date = /^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/
-      array-date = re-date.'exec' dt
-      array-date._shift!
+      array-date = dt
+      if typeof dt is 'string'
+        re-date = /^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/
+
+        array-date = re-date.'exec' dt
+        array-date._shift!
+
       _date = new Date (parseInt array-date[2]),
                        (parseInt array-date[1])-1,
                        (parseInt array-date[0])
@@ -88,9 +92,12 @@ class NumerationEdit extends Module
 
   _calculate-storage-years: (dt) ->
     if dt?
-      re-date = /^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/
-      array-date = re-date.'exec' dt
-      array-date._shift!
+      array-date = dt
+      if typeof dt is 'string'
+        re-date = /^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/
+        array-date = re-date.'exec' dt
+        array-date._shift!
+
       @_five-years-display.html = "#{array-date[0]}/
                                    #{array-date[1]}/
                                    #{(parseInt array-date[2])+5}"
@@ -116,6 +123,8 @@ class NumerationEdit extends Module
     else
       @_last-day-display.html = ''
       @_five-years-display.html = ''
+
+  initialize: ({@model, @tr}) -> super!
 
 
   /** @override */
@@ -224,6 +233,8 @@ class NumerationEdit extends Module
   /** @private */ _amount-display: null
   /** @private */ _last-day-display: null
   /** @private */ _five-years-display: null
+  model: null
+  tr: null
 
   /** Field list for numeration form. (Array.<FieldOptions>) */
   _FIELDS =
@@ -306,8 +317,9 @@ class Numeration extends Module
           _templates: _templates
           _column-cell-style: _column-cell-style
           on-dblclick-row: (evt) ~>
-            @_desktop.load-next-page(NumerationEdit,
-                                     model: evt._target._model)
+            @_desktop.load-next-page(NumerationEdit, do
+                                     model: evt._target._model,
+                                     _tr: evt._target)
 
         _table.set-rows _pending
 
