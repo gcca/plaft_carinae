@@ -23,8 +23,6 @@ class Stakeholder extends App.View
   /** @override */
   initialize: ->
     super!
-    @$el._append 'Datos identificación adicionales para el
-                \ Anexo 2'
     App.builder.Form._new @el, _FIELDS
       ..render!
 

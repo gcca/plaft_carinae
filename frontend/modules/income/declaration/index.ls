@@ -98,6 +98,7 @@ class DeclarationBody extends panelgroup.JSONBody
     @_stakeholder = new Stakeholder
     App.dom._new \div
       .._class = gz.Css \col-md-12
+      $ .. ._append '<h4>Datos identificación adicionales para el Anexo 2</h4>'
       .._append App.dom._new \hr
       @el._append ..
     @el._append @_stakeholder.render!.el
