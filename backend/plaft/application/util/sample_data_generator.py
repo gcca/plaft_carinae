@@ -241,7 +241,8 @@ def _data_debug():
               'ANEXO2-HASH',
               'INCOME-HASH',
               'ANEXO 6',
-              'OPLIST-HASH']),
+              'OPLIST-HASH',
+              'NEWUSER-HASH']),
         Data('Cyberdine',
              'Mice Dyson',
              'mice@cd.io',
@@ -296,7 +297,8 @@ def _data_deploy():
                                  'NUM-HASH',
                                  'ANEXO2-HASH',
                                  'INCOME-HASH',
-                                 'OPLIST-HASH'],
+                                 'OPLIST-HASH',
+                                 'NEWUSER-HASH'],
                         signals=[])
     perms.store()
 
