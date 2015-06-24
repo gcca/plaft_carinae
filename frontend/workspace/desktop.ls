@@ -49,6 +49,7 @@ class Desktop extends App.View
     # Module
     #-------
     @clean-current!
+    @_search.clean-input!
     @_search._menu @Module._search-menu
     @el._append (@_new Module).render!.el
 

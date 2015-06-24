@@ -61,6 +61,9 @@ class Search extends App.View
     @_menu-caption.html = _item._caption
     @_menu-current-value = _item._value
 
+  clean-input: ->
+    @_input-query.value=""
+
   /**
    * Enable (disable) menu.
    * Menu is disabled when {@code _items} is {@code null}
