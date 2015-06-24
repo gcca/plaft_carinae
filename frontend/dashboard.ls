@@ -13,6 +13,7 @@ App.MODULES =
   Operation     = require './modules/operation'
   Anexo6        = require './modules/anexo-seis'
   OperationList = require './modules/operation-list'
+  NewUser       = require './modules/new-user'
   ## Alerts        = r equire './modules/alerts'  TODO: port panelgroup
 
 
