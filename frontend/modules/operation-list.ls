@@ -127,6 +127,8 @@ class OperationList extends Module
 
   /** @override */
   render: ->
+    @_desktop._spinner-start!
+
     @clean!
     @el.html = "<table class='#{gz.Css \table}' style='margin:0'>
                   <thead>
@@ -150,6 +152,7 @@ class OperationList extends Module
       _success: (dispatches) ~>
         for _model in dispatches._models
           @render-panel _model._attributes, pnl-group
+          @_desktop._spinner-stop!
 
       _error: ->
         alert 'Error!!! Numeration list'

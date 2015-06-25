@@ -138,6 +138,10 @@ class Desktop extends App.View
 
   _unlock: -> @_is-locked = false
 
+  _spinner-start: -> document.body._append @_spinner
+
+  _spinner-stop: -> document.body._remove @_spinner if @_spinner._parent?
+
   #-----
   # View
   #-----
@@ -230,6 +234,15 @@ class Desktop extends App.View
    * @private
    */
   _is-locked: null
+
+  /**
+   * Avoid re-render. Useful when use tables on main module.
+   * @type {boolean}
+   * @private
+   */
+  _spinner: (App.dom._new \div
+    .._id = gz.Css \loader-wrapper
+    ..html = "<div id='#{gz.Css \loader}'></div>")
 
 
 /** @export */

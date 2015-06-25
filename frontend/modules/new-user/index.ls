@@ -6,11 +6,15 @@ Officer = require './user'
 class NewOfficer extends Module
 
   render: ->
+    @_desktop._spinner-start!
+
     App.ajax._get '/api/customs_agency/officers', do
       _success: (dto) ~>
         @_officer = Officer._new!
         @el._append @_officer.render!.el
         @_officer._fromJSON dto
+        @_desktop._spinner-stop!
+
     super!
 
   /** @private */ _officer: null

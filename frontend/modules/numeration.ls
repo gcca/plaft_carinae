@@ -45,6 +45,8 @@ class NumerationEdit extends Module
 
   /** @override */
   on-save: ~>
+    @_desktop._spinner-start!
+
     ########################################################################
     # VER ON-SAVE DE OPERATION.LS
     # TODO: Remove deprecated code
@@ -60,6 +62,8 @@ class NumerationEdit extends Module
         @_desktop.notifier.notify do
           _message : 'Se actualizó correctamente los datos'
           _type    : @_desktop.notifier.kSuccess
+        @_desktop._spinner-stop!
+
       _bad-request: ~>
         alert 'ERROR: e746ae94-5a3a-11e4-9a1d-88252caeb7e8'
 
@@ -267,6 +271,7 @@ class Numeration extends Module
   /** @override */
   render: ->
     @_desktop._lock!
+    @_desktop._spinner-start!
 
     _labels =
       'Aduana'
@@ -327,6 +332,7 @@ class Numeration extends Module
 
         @el._append _table.render!.el
         @_desktop._unlock!
+        @_desktop._spinner-stop!
 
       _error: ->
         alert 'Error!!! Numeration list'

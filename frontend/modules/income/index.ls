@@ -94,6 +94,8 @@ class Income extends Module
    * @protected
    */
   on-save: ->
+    @_desktop._spinner-start!
+
     @model._save @panels2dispatchDTO!, do
       _success: ~>
         @_desktop.notifier.notify do
@@ -102,6 +104,7 @@ class Income extends Module
         @_panels._declaration._header.\
           _get declaration.ControlPDF ._show @model.'id'
         App.GLOBALS.update_autocompleter!
+        @_desktop._spinner-stop!
 
       _error: ~>
         @_desktop.notifier.notify do
@@ -218,6 +221,7 @@ class Income extends Module
   /** @override */
   render: ->
     @_desktop._lock!
+    @_desktop._spinner-start!
 
     _labels =
       'Aduana'
@@ -277,6 +281,7 @@ class Income extends Module
 
         @el._append _table.render!.el
         @_desktop._unlock!
+        @_desktop._spinner-stop!
 
       _error: ->
         alert 'Error!!! Numeration list'
