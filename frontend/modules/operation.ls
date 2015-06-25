@@ -498,6 +498,8 @@ class Operations extends Module
 
   /** @override */
   render: ->
+    @_desktop._lock!
+
     _labels =
       'Aduana'
       'Orden N&ordm;'
@@ -568,6 +570,8 @@ class Operations extends Module
 
         @$el._append '<h4>Lista de despachos aceptados</h4>'
         @el._append _table-accepting.render!.el
+        @_desktop._unlock!
+
       _error: ->
         alert 'Error!!! NumerationP list'
 

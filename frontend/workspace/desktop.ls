@@ -40,6 +40,10 @@ class Desktop extends App.View
    * @public
    */
   load-module: (@Module) ~>
+    if @_is-locked
+      # TODO: Check if @Module is the same last module. Otherwise
+      #       set lock to false and continue.
+      return
     #---------------------
     # Sub-module extension
     #---------------------
@@ -130,6 +134,10 @@ class Desktop extends App.View
 
   _return-div: null
 
+  _lock: -> @_is-locked = true
+
+  _unlock: -> @_is-locked = false
+
   #-----
   # View
   #-----
@@ -215,6 +223,13 @@ class Desktop extends App.View
    * @public
    */
   notifier: null
+
+  /**
+   * Avoid re-render. Useful when use tables on main module.
+   * @type {boolean}
+   * @private
+   */
+  _is-locked: null
 
 
 /** @export */

@@ -266,6 +266,8 @@ class Numeration extends Module
 
   /** @override */
   render: ->
+    @_desktop._lock!
+
     _labels =
       'Aduana'
       'Orden N&ordm;'
@@ -324,6 +326,7 @@ class Numeration extends Module
         _table.set-rows _pending
 
         @el._append _table.render!.el
+        @_desktop._unlock!
 
       _error: ->
         alert 'Error!!! Numeration list'
