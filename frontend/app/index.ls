@@ -477,19 +477,18 @@ App.permissions =
 
 
 App.GLOBALS =
-  _declarants:~
-    -> window.plaft.'declarant'
-    (x) -> window.plaft.'declarant' = x
+  _declarants: window.plaft.'declarant'
 
-  _stakeholders:~
-    -> window.plaft.'stakeholder'
-    (x) -> window.plaft.'stakeholder' = x
+  _stakeholders: window.plaft.'stakeholder'
 
   update_autocompleter: ->
     App.ajax._get '/autocompleters', do
       _success: (_autocompleters) ->
         @_declarants = _autocompleters.'declarant'
         @_stakeholders = _autocompleters.'stakeholder'
+
+window.plaft.'declarant' = void
+window.plaft.'stakeholder' = void
 
 
 # vim: ts=2:sw=2:sts=2:et
