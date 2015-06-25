@@ -27,8 +27,12 @@ class Business extends Customer
     if shareholders._length
       r.'shareholders' = shareholders
 
+    if not @ratio?
+      @ratio = new FormRatio do
+        fields: _FIELD_BUSINESS
     _ratio =  @ratio._calculate r
-    @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
+    if _ratio isnt 0
+      @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
 
     r
 
@@ -38,6 +42,7 @@ class Business extends Customer
     @ratio = new FormRatio do
       fields: _FIELD_BUSINESS
     _ratio =  @ratio._calculate _dto
+
     if _ratio isnt 0
       @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
 

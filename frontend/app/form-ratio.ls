@@ -35,7 +35,9 @@ class FormRatio
     if value?
       switch value.__proto__.constructor
         | Object => int-value = calculate-object value
-        | Array  => int-value = calculate-array value
+        | Array  =>
+          if value._length isnt 0
+             int-value = calculate-array value
         | otherwise =>
           if value isnt ''
             int-value = 1

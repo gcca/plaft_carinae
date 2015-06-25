@@ -17,8 +17,12 @@ class Person extends Customer
 
   _json-getter: ->
     r = super!
+    if not @ratio?
+      @ratio = new FormRatio do
+        fields: _FIELD_PERSON
     _ratio =  @ratio._calculate r
-    @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
+    if _ratio isnt 0
+      @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
     r
 
   _json-setter: (_dto) ->
@@ -27,6 +31,7 @@ class Person extends Customer
     @ratio = new FormRatio do
       fields: _FIELD_PERSON
     _ratio =  @ratio._calculate _dto
+
     if _ratio isnt 0
       @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
 
