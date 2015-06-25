@@ -16,23 +16,6 @@ class OperationEdit extends Module
   /** @override */
   _tagName: \form
 
-  /** @override */
-  on-save: ~>
-    ########################################################################
-    # VER ON-SAVE DE NUMERATION.LS
-    _dto = @model._attributes
-    for stk in _dto.'stakeholders'
-      delete stk.'slug'
-    ########################################################################
-
-    @model._save @el._toJSON!, do
-      _success: ->
-        @_desktop.notifier.notify do
-          _message : 'Se actualizó correctamente los datos'
-          _type    : @_desktop.notifier.kSuccess
-      _error: ->
-        alert 'ERROR: e746ae94-5a3a-11e4-9a1d-88252caeb7e8'
-
   /**
    * (Event) Accept dispatch (to operation).
    * @private
