@@ -139,7 +139,6 @@ class EmployeeList extends panelgroup.PanelGroup
 
   _toJSON: -> for @_panels then .._body._json
 
-
   new-panel: ->
     _declarant = super do
       _panel-heading: EmployeeHeading

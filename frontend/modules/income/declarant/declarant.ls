@@ -35,20 +35,33 @@ class Declarant extends panelgroup.FormBody
     @ratio = new FormRatio do
       fields: _FIELD_DECLARANT
     _ratio =  @ratio._calculate _dto
+
     if _ratio isnt 0
       @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
 
   read-dto: (dto) ->
     @_body._first._fromJSON @_options.dto
 
+  change-document: ->
+    _document-type = @el.query '[name=document_type]'
+    switch _document-type._selected-index
+        | 0 =>
+          (@el.query '[name=issuance_country]')._value = 'Perú'
+          (@el.query '[name=issuance_country]')._disabled = on
+        | otherwise =>
+          (@el.query '[name=issuance_country]')._value = ''
+          (@el.query '[name=issuance_country]')._disabled = off
+
   /** @override */
   render: ->
     ret = super!
     App.builder.Form._new @el, _FIELD_DECLARANT
-        .._elements.'document_type'._element._value = \dni
-        ..render!
-        .._free!
-
+      .._elements.'document_type'._element._value = \dni
+      ..render!
+      .._free!
+    _document-type = @el.query '[name=document_type]'
+    @change-document!
+    _document-type.on-change ~> @change-document!
     @_panel.on (gz.Css \load-body), (_dto) ~>
       @_json = _dto
     ret

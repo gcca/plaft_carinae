@@ -38,7 +38,7 @@ class ControlTitle extends App.View
       @el.html = title
 
   initialize: ({_heading}) ->
-    @el.css = 'margin:5px;width:500px;cursor:pointer'
+    @el.css = 'margin:5 205 5 15;cursor:pointer'
     @el.html = '&nbsp;'*8
     @el._data.'toggle' = 'collapse'
     @el._data.'parent' = "##{_heading._parent-uid}"

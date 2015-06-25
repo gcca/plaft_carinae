@@ -132,7 +132,7 @@ class OperationEdit extends Module
     _list-operation._push @empty-field _dto.'dam'
     _list-operation._push @empty-field _dto.'numeration_date'
     _list-operation._push @empty-field _customer.'money_source'
-    _list-operation._push 'D'
+    _list-operation._push 'USD'
     _list-operation._push 'No aplica'
     _list-operation._push @calculate-field _dto.'amount', _dto.'exchange_rate'
     _list-operation._push @empty-field _dto.'exchange_rate'
@@ -146,7 +146,7 @@ class OperationEdit extends Module
 
   load-list-third: (_third) ->  # HARDCODE
     list-third = []
-    if _third?
+    if (_third?) or (_third.'document_number'?)
       if _third.'document_type'?
         if _third.'document_type' is \ruc
           _third-type = 'Persona Jurídica'
@@ -166,8 +166,10 @@ class OperationEdit extends Module
         list-third._push @empty-field _third.'mother_name'
         list-third._push @empty-field _name69
         list-third._push @empty-field _third.'third_ok'
-    else
+      else
         list-third = ['No aplica' for til 7]
+    else
+      list-third = ['No aplica' for til 7]
 
     @load-table App.lists.anexo2.third._code,
                 App.lists.anexo2.third._display,
