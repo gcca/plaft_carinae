@@ -6,15 +6,31 @@
 
 App = require './app'
 
-App.MODULES =
+
+PRE-MODULES =
   Welcome       = require './modules/welcome'
   Income        = require './modules/income'
   Numeration    = require './modules/numeration'
   Operation     = require './modules/operation'
   Anexo6        = require './modules/anexo-seis'
   OperationList = require './modules/operation-list'
-  NewUser       = require './modules/new-user'
   ## Alerts        = r equire './modules/alerts'  TODO: port panelgroup
+
+MODULES = new Array
+
+_allowed-modules = App.permissions.modules
+for module in PRE-MODULES
+  if module._hash in _allowed-modules # autorización de usuarios
+    MODULES._push module
+
+# HARDCODE
+NewUser = require './modules/new-user'
+username = window.plaft.'user'.'username'
+
+if username in <[cesarvargas@cavasoftsac.com gcca@mail.io]>
+  MODULES._push NewUser
+
+App.MODULES = MODULES
 
 
 Workspace = require './workspace'
