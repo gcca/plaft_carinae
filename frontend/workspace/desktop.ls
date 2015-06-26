@@ -112,6 +112,7 @@ class Desktop extends App.View
     @_return-div._class._remove gz.Css \hidden
 
     @_aux-module = @module
+    mod._parent = @module
     @module = mod
 
     ########################################################################
