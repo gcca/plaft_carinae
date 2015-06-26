@@ -196,7 +196,7 @@ def numerate(dispatch, **args):
     is_accepted = False
 
     if dispatch.amount != '':
-        if float(dispatch.amount) >= 10000:
+        if not dispatch.is_accepted and float(dispatch.amount) >= 10000:
             operation.accept(dispatch)
             is_accepted = True
 

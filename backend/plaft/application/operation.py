@@ -2,7 +2,9 @@ from plaft.domain.model import Operation, Customer
 
 
 def accept(dispatch):
-    """Dispatch to operation."""
+    """Dispatch to operation.
+    TODO: Falta lanzar excepción cuando ya está aceptado.
+    """
     operation = Operation(dispatches_key=[dispatch.key],
                           customs_agency_key=dispatch.customs_agency_key,
                           customer_key=dispatch.customer_key)
