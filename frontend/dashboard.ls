@@ -12,9 +12,7 @@ PRE-MODULES =
   Income        = require './modules/income'
   Numeration    = require './modules/numeration'
   Operation     = require './modules/operation'
-  Anexo6        = require './modules/anexo-seis'
   OperationList = require './modules/operation-list'
-  ## Alerts        = r equire './modules/alerts'  TODO: port panelgroup
 
 MODULES = new Array
 
@@ -24,14 +22,19 @@ for module in PRE-MODULES
     MODULES._push module
 
 # HARDCODE
-NewUser = require './modules/new-user'
+BETAS =
+  NewUser = require './modules/new-user'
+  Anexo6  = require './modules/anexo-seis'
+  Alerts  = require './modules/alerts'
+
 username = window.plaft.'user'.'username'
 
 if username in <[cesarvargas@cavasoftsac.com gcca@mail.io]>
-  MODULES._push NewUser
+  MODULES ++= BETAS
+# END 1 HARDCODE
+
 
 App.MODULES = MODULES
-
 
 Workspace = require './workspace'
 Settings = require './settings'
@@ -97,6 +100,13 @@ class Dashboard extends App.View
     @el.query "##{gz.Css \id-settings-users}" .on-click @toggle-settings
 
     workspace.load-module Welcome
+
+    # HARDCODE
+    _m-ref = BETAS.0
+    _el = workspace.el.query ".#{gz.Css \glyphicon}-#{_m-ref._icon}"
+    _el = _el._parent._parent
+    _el.css = 'border-top:2px solid #bbb'
+    # END 2 HARDCODE
 
     super!
 
