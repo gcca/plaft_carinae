@@ -18,10 +18,9 @@ from reportlab.lib import colors
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.units import inch
+from reportlab.lib.units import inch, mm
 from reportlab.platypus import (SimpleDocTemplate, Paragraph,
                                 Table, TableStyle)
-
 
 plaft.config.init()
 
@@ -65,7 +64,7 @@ class DeclarationPDF(Handler):
             html.append('<br/>')
             html.append('%s - %s<br/>%s<br/>' % (s.document_number,
                                                  (s.document_type).upper(),
-                                                    s.name))
+                                                 s.name))
             html.append('%s<br/>' % (s.ratio))
         html.append('<br/>')
         return ''.join(html)
@@ -102,6 +101,12 @@ class DeclarationPDF(Handler):
                 return message
         else:
             return 'No se encontro informacion'
+
+    def checkLen(self, obj, value, message='-'):
+        msg = self.checkEmpty(obj, value, message)
+        if len(msg) <= 41:
+            msg = " <br/> " + msg + " <br/><br/>"
+        return msg
 
     # Only obj and value params are required!!
     @staticmethod
@@ -268,7 +273,7 @@ class DeclarationPDF(Handler):
                         self.checkEmpty(customer, 'address')])
 
         content.append(['g)', 'Domicilio fiscal',
-                        self.checkEmpty(customer, 'fiscal_address')])
+                        self.checkLen(customer, 'fiscal_address')])
 
         content.append(['h)', 'Telefonos fijos de la oficina y/o de la'
                               ' persona de contacto incluyendo el codigo'
@@ -295,7 +300,7 @@ class DeclarationPDF(Handler):
         content.append(['k)', '''Identificacion del tercero sea persona
                             natural (nombres y apellidos) o persona
                             juridica (razon o denominacion social)
-                            por cuyo</br> intermedio se realiza la operacion,
+                            por cuyo intermedio se realiza la operacion,
                             de ser el caso''',
                         self.checkComplexKey(dispatch.declaration,
                                              'third.name')])
@@ -317,10 +322,55 @@ class DeclarationPDF(Handler):
 
     def get(self, id):
         self.response.headers['Content-Type'] = 'application/pdf'
-
         dispatch = model.Dispatch.find(int(id))
-        customer = dispatch.declaration.customer
 
+        def _header(canvas, doc):
+            """."""
+            # Save the state of our canvas so we can draw on it
+            canvas.saveState()
+
+            # Header
+            data = [[self.checkEmpty(dispatch.jurisdiction, 'code'),
+                     self.checkEmpty(dispatch.jurisdiction, 'name')]]
+
+            s = getSampleStyleSheet()
+            s = s["BodyText"]
+            s.wordWrap = 'LTR'
+            jurisdiccionTable = [[Paragraph(cell, s) for cell in row]
+                                 for row in data]
+            table = Table(jurisdiccionTable, colWidths=(0.5*inch, 2.5*inch))
+            table.setStyle(TableStyle([
+                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER')]))
+
+            anexo5 = Paragraph('<b>ANEXO Nº5</b>', styles['Center'])
+            reference = Paragraph('<b>Ref. Cliente</b>', styles['Center'])
+            order = Paragraph('<b>N Orden Despacho</b>', styles['Center'])
+            jurisdiction = Paragraph('<b>Jurisdiccion</b>', styles['Center'])
+            titlePDF = Paragraph('<b>DECLARACIÓN JURADA DE CONOCIMIENTO \
+                                  DEL CLIENTE</b>',
+                                 styles['Center'])
+            headerTable = [[anexo5],
+                           [reference, order, jurisdiction],
+                           [dispatch.reference, dispatch.order, table],
+                           [titlePDF]]
+
+            table = Table(headerTable, colWidths='*')
+            table.setStyle(TableStyle([
+                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+                ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('SPAN', (0, 0), (-1, 0)),
+                ('SPAN', (0, 3), (-1, 3))
+                ]))
+            table.wrapOn(canvas, 540, 150)
+            table.drawOn(canvas, 12.7*mm, 240*mm)
+            # Release the canvas
+            canvas.restoreState()
+
+        customer = dispatch.declaration.customer
         styles = getSampleStyleSheet()
         styles.add(ParagraphStyle(name='Justify', alignment=TA_JUSTIFY))
         styles.add(ParagraphStyle(name='Center', alignment=TA_CENTER))
@@ -329,46 +379,16 @@ class DeclarationPDF(Handler):
                                 pagesize=letter,
                                 rightMargin=30,
                                 leftMargin=30,
-                                topMargin=20,
-                                bottomMargin=30)
-
+                                topMargin=105.54,
+                                bottomMargin=55)
         story = []
-
-        data = [[self.checkEmpty(dispatch.jurisdiction, 'code'),
-                 self.checkEmpty(dispatch.jurisdiction, 'name')]]
-
-        s = getSampleStyleSheet()
-        s = s["BodyText"]
-        s.wordWrap = 'LTR'
-        jurisdiccionTable = [[Paragraph(cell, s) for cell in row]
-                             for row in data]
-        table = Table(jurisdiccionTable, colWidths=(0.5*inch, 2.5*inch))
-        table.setStyle(TableStyle([
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER')]))
-
-        anexo5 = Paragraph('<b>ANEXO Nº5</b>', styles['Center'])
-        reference = Paragraph('<b>Ref. Cliente</b>', styles['Center'])
-        order = Paragraph('<b>N Orden Despacho</b>', styles['Center'])
-        jurisdiction = Paragraph('<b>Jurisdiccion</b>', styles['Center'])
-
-        headerTable = [[anexo5],
-                       [reference, order, jurisdiction],
-                       [dispatch.reference, dispatch.order, table]]
-
-        self.addTable(story, headerTable)
-
-        titlePDF = Paragraph('<b>DECLARACIÓN JURADA DE CONOCIMIENTO DEL CLIENTE</b>',
-                            styles['Center'])
 
         title_customer = Paragraph('<b>%s</b>' %
                                    ('PERSONA JURIDICA'
                                     if customer.document_type == 'ruc'
                                     else 'PERSONA NATURAL'),
                                    styles['Center'])
-        title = [[titlePDF],
-                 [''],
+        title = [[''],
                  ['Por el presente documento, declaro bajo'
                   ' juramento, lo siguiente:'],
                  [title_customer]]
@@ -377,7 +397,7 @@ class DeclarationPDF(Handler):
         table.setStyle(TableStyle([
             ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
             ('ALIGN', (0, 0), (0, 0), 'CENTER'),
-            ('BOX', (-1, -1), (0, 0), 0.25, colors.black),
+            ('BOX', (-1, 0), (1, 1), 0.25, colors.black),
             ('ALIGN', (-1, -1), (-1, -1), 'CENTER')
         ]))
         story.append(table)
@@ -414,8 +434,7 @@ class DeclarationPDF(Handler):
             ('SPAN', (0, 1), (-3, -2))
         ]))
         story.append(table)
-
-        doc.build(story)
+        doc.build(story, onFirstPage=_header, onLaterPages=_header)
 
 
 # vim: et:ts=4:sw=4
