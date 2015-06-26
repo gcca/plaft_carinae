@@ -57,11 +57,18 @@ class NumerationEdit extends Module
 
     _dto = @el._toJSON!
     App.ajax._post "/api/dispatch/#{@model._id}/numerate", _dto, do
-      _success: ~>
+      _success: (_response) ~>
         @model._set _dto  # update data for change on (event)
+
         @_desktop.notifier.notify do
           _message : 'Se actualizó correctamente los datos'
           _type    : @_desktop.notifier.kSuccess
+
+        if _response.'accepted'
+          @_tr._class._add gz.Css \success
+        else
+          @_tr._class._remove gz.Css \success
+
         @_desktop._spinner-stop!
 
       _bad-request: ~>
@@ -128,7 +135,10 @@ class NumerationEdit extends Module
       @_last-day-display.html = ''
       @_five-years-display.html = ''
 
-  initialize: ({@model, @tr}) -> super!
+  # TODO: Quitar `_tr`. Se debería crear una clase Child de Table para
+  #       manipular la tabla o al menos la fila representada por la
+  #       vista cargada desde algún evento de la tabla.
+  initialize: ({@model, @_tr}) -> super!
 
 
   /** @override */
@@ -238,7 +248,7 @@ class NumerationEdit extends Module
   /** @private */ _last-day-display: null
   /** @private */ _five-years-display: null
   model: null
-  tr: null
+  _tr: null
 
   /** Field list for numeration form. (Array.<FieldOptions>) */
   _FIELDS =
@@ -267,6 +277,15 @@ class NumerationEdit extends Module
  * @extends Module
  */
 class Numeration extends Module
+
+  update-dispatches: ->
+    App.ajax._get '/api/customs_agency/list_dispatches', do
+      _success: (dispatches) ~>
+        _pending = new Dispatches dispatches.'pending'
+        @_table.set-rows _pending
+
+      _error: ->
+        alert 'Error: 3f83b7ae-1c24-11e5-820f-001d7d7379f5'
 
   /** @override */
   render: ->
@@ -329,6 +348,7 @@ class Numeration extends Module
                                      _tr: evt._target)
 
         _table.set-rows _pending
+        @_table = _table
 
         @el._append _table.render!.el
         @_desktop._unlock!
@@ -338,6 +358,8 @@ class Numeration extends Module
         alert 'Error!!! Numeration list'
 
     super!
+
+  /** @private */ _table: null
 
   /** @protected */ @@_caption = 'NUMERACIÓN'
   /** @protected */ @@_icon    = gz.Css \print

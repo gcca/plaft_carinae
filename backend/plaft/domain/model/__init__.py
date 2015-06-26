@@ -339,8 +339,10 @@ class Dispatch(dom.Model):
         dct['declaration'] = self.declaration.to_dict()
         return dct
 
+    @property
     def is_accepted(self):
         return not self.operation_key is None
+
 
 class Operation(dom.Model):
     """Operación SBS.

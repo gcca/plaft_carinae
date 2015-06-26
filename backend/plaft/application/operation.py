@@ -1,9 +1,13 @@
+# encoding: utf-8
+
 from plaft.domain.model import Operation, Customer
 
 
 def accept(dispatch):
     """Dispatch to operation.
+
     TODO: Falta lanzar excepción cuando ya está aceptado.
+
     """
     operation = Operation(dispatches_key=[dispatch.key],
                           customs_agency_key=dispatch.customs_agency_key,
@@ -21,9 +25,8 @@ def accept(dispatch):
     return operation
 
 
-
 def accept_multiple(customs_agency):
-    """"""
+    """."""
     import datetime
     now = datetime.datetime.now()
     datastore = customs_agency.datastore
