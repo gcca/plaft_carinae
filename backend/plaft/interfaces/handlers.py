@@ -23,6 +23,7 @@ class Stakeholder(RESTful):
 class Declarant(RESTful):
     """Declarant RESTful."""
 
+
 class Officer(RESTful):
     """Officer RESTful."""
 
@@ -75,6 +76,7 @@ class Officer(RESTful):
     def delete(self, id):
         customs_agency = model.CustomsAgency.find(int(id))
         customs_agency.delete()
+
 
 class User(RESTful):
     """User RESTful."""
@@ -221,6 +223,7 @@ def list_operation(handler):
     handler.render_json(
         plaft.application.dispatch.list_operations(customs_agency)
     )
+
 
 @handler_method
 def autocompleters(handler):

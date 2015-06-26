@@ -195,8 +195,8 @@ def numerate(dispatch, **args):
     dispatch.store()
 
     if (not dispatch.is_accepted and
-        dispatch.amount and
-        float(dispatch.amount) >= 10000):
+       dispatch.amount and
+       float(dispatch.amount) >= 10000):
             plaft.application.operation.accept(dispatch)
 
     return dispatch.is_accepted

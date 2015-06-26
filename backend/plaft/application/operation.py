@@ -32,18 +32,19 @@ def accept_multiple(customs_agency):
     datastore = customs_agency.datastore
     pending = datastore.pending
 
-
     customers = {dispatch.customer_key for dispatch in pending}
 
     for customer_key in customers:
         pendings_customer = [dispatch for dispatch in pending
-                             if dispatch.customer_key == customer_key
-                             and dispatch.income_date.month == now.month]
+                             if dispatch.customer_key == customer_key and
+                             dispatch.income_date.month == now.month]
 
         if pendings_customer:
             amount = sum(float(d.amount) for d in pendings_customer)
             if amount >= 50000:
-                operation = Operation(dispatches_key=[d.key for d in pendings_customer],
+                operation = Operation(dispatches_key=[d.key
+                                                      for d
+                                                      in pendings_customer],
                                       customs_agency_key=customs_agency.key,
                                       customer_key=customer_key)
                 operation.store()

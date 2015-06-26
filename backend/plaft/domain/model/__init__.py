@@ -341,7 +341,7 @@ class Dispatch(dom.Model):
 
     @property
     def is_accepted(self):
-        return not self.operation_key is None
+        return self.operation_key is not None
 
 
 class Operation(dom.Model):
