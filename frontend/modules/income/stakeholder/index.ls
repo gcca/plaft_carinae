@@ -29,6 +29,9 @@ class LinkedGroup extends panelgroup.PanelGroup
    */
   _toJSON: -> for @_panels then .._body._json
 
+  _update-autocompleter: (stakeholders) ->
+    for @_panels then .._header._get panelgroup.ControlSearch ._update-autocompleter stakeholders
+
   /**
    * Mostrar un panel.
    */
@@ -37,7 +40,7 @@ class LinkedGroup extends panelgroup.PanelGroup
       _panel-heading: StakeholderHeading
       _panel-body: LinkedBody
     _stkholder._header._get panelgroup.ControlTitle ._text = 'Vinculado'
-    _stkholder._header._get panelgroup.ControlSearch ._apply-attr 'stakeholder',
+    _stkholder._header._get panelgroup.ControlSearch ._create-autocompleter 'stakeholder',
                                                                   App.GLOBALS._stakeholders
     _stkholder
 
@@ -71,6 +74,8 @@ class BodyLinked extends panelgroup.JSONBody
         @_pgStakeholder.new-panel!
           .._body._json = stakeholder
 
+  _update-autocompleter: (stakeholders) ->
+    @_pgStakeholder._update-autocompleter stakeholders
 
   set-type: (_type) ->
     @render!

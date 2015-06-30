@@ -76,7 +76,12 @@ class ControlSearch extends App.View
 
   _tagName: \span
 
-  _apply-attr: (_url, _items) ->
+  _update-autocompleter: (_items) ->
+    @el.html = ""
+    @_load-search!
+    @_create-autocompleter @_url, _items
+
+  _create-autocompleter: (_url, _items) ->
     @_url = _url
     @_items = _items
     (new App.widget.Typeahead do
@@ -104,14 +109,14 @@ class ControlSearch extends App.View
     @load-dto _heading
 
   load-dto: (_heading) ->
-    App.ajax._get ("/api/#{@_url}/" + @_value), null, do
+    App.ajax._get ("/api/#{@_url}/" + @_value), true, do
       _success: (_dto) ~>
         _heading._panel.trigger (gz.Css \load-body), _dto
 
   _search-dto: (_, _heading) ~>
     @load-dto _heading
 
-  initialize: ({@_heading}) ->
+  _load-search: ->
     @el.css = 'width: 200px;margin: 0;padding: 0;flex:4'
 
     @_search = App.dom._new \div
@@ -135,6 +140,9 @@ class ControlSearch extends App.View
 
     @_search._append _span
     @el._append @_search
+
+  initialize: ({@_heading}) ->
+    @_load-search!
 
   /** @private */ _field   : null
   /** @private */ _name    : null

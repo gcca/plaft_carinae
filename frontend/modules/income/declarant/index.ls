@@ -19,13 +19,15 @@ class DeclarantGroup extends panelgroup.PanelGroup
 
   _toJSON: -> for @_panels then .._body._json
 
+  _update-autocompleter: (declarants) ->
+    for @_panels then .._header._get panelgroup.ControlSearch ._update-autocompleter declarants
 
   new-panel: ->
     _declarant = super do
       _panel-heading: DeclarantHeading
       _panel-body: FormBodyDeclarant
     _declarant._header._get panelgroup.ControlTitle ._text = 'Declarante'
-    _declarant._header._get panelgroup.ControlSearch ._apply-attr 'declarant',
+    _declarant._header._get panelgroup.ControlSearch ._create-autocompleter 'declarant',
                                                                   App.GLOBALS._declarants
     _declarant
 
@@ -53,6 +55,9 @@ class BodyDeclarant extends panelgroup.JSONBody
       for _dto in _dtos
         @_group-declarant.new-panel!
           .._body._json = _dto
+
+  _update-autocompleter: (declarants) ->
+    @_group-declarant._update-autocompleter declarants
 
   render: ->
     @_group-declarant = new DeclarantGroup

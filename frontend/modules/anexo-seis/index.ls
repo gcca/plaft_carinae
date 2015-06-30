@@ -144,7 +144,7 @@ class Operations extends Module
            </span>
          </span>"
 
-    App.ajax._get '/api/customs_agency/list_dispatches', do
+    App.ajax._get '/api/customs_agency/list_dispatches', true, do
       _success: (dispatches) ~>
         _pending = new Dispatches dispatches.'pending'
         _tablaP = new Table do

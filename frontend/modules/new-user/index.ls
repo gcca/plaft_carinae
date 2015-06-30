@@ -8,7 +8,7 @@ class NewOfficer extends Module
   render: ->
     @_desktop._spinner-start!
 
-    App.ajax._get '/api/customs_agency/officers', do
+    App.ajax._get '/api/customs_agency/officers', true, do
       _success: (dto) ~>
         @_officer = Officer._new!
         @el._append @_officer.render!.el

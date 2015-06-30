@@ -279,7 +279,7 @@ class NumerationEdit extends Module
 class Numeration extends Module
 
   update-dispatches: ->
-    App.ajax._get '/api/customs_agency/list_dispatches', do
+    App.ajax._get '/api/customs_agency/list_dispatches', true, do
       _success: (dispatches) ~>
         _pending = new Dispatches dispatches.'pending'
         @_table.set-rows _pending
@@ -334,7 +334,7 @@ class Numeration extends Module
                                     overflow:hidden;
                                     max-width:27ch'
 
-    App.ajax._get '/api/customs_agency/list_dispatches', do
+    App.ajax._get '/api/customs_agency/list_dispatches', true, do
       _success: (dispatches) ~>
         _pending = new Dispatches dispatches.'pending'
         _table = new Table  do
