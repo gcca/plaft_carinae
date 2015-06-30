@@ -16,10 +16,37 @@ class HeadAlert extends panelgroup.PanelHeading
 
   _controls: [panelgroup.ControlTitle, panelgroup.ControlClose]
 
-  _remove-panel: ~>
+class PanelAlert extends panelgroup.FormBody
+
+  render: ->
     _r = super!
-    @trigger (gz.Css \removed-title), @el._first._first.html
+    App.builder.Form._new @el, _FIELD_SIGNAL
+      ..render!
+      .._free!
     _r
+
+  /** _FIELDS */
+  _FIELD_SIGNAL =
+    * _name: 'id_signal'
+      _label: 'Código'
+
+    * _name: 'signal'
+      _label: 'Descripción de la señal de alerta'
+      _type: FieldType.kComboBox
+      _options: App.lists.alerts._display
+
+    * _name: 'source'
+      _label: 'Fuenta de la señal de la alerta'
+      _type: FieldType.kComboBox
+      _options:
+        'Sistema de Monitoreo'
+        'Área Comercial'
+        'Análisis del SO'
+        'Medio Periodistico'
+        'Otras Fuentes'
+
+    * _name: 'description_source'
+      _label: 'Descripción de otros.'
 
 
 class PendingAlerts extends App.View
@@ -162,52 +189,23 @@ class CurrentAlerts extends PanelGroup
 
   /** @override */
   render: ->
-    @$el.removeAttr('class')
-    @$el.removeAttr('id')
-    @el.html = ''
     @el.html = "<div class='#{gz.Css \col-md-12}'></div>"
-    @root-el = @el._first
+    @_container = @el._first
 
-    _frm = App.dom._new \form
-    App.builder.Form._new _frm, _FIELD_SIGNAL
-      ..render!
-      .._free!
     if @_alerts
       for _alert in @_alerts
-        pnl-head = new HeadAlert _title: _alert
-        pnl-body = new PanelBody _element: _frm
-        @new-panel do
-          _panel-heading: pnl-head
-          _panel-body: pnl-body
+        panel-alert = @new-panel do
+          _panel-heading: HeadAlert
+          _panel-body: PanelAlert
+        panel-alert._header._get panelgroup.ControlTitle ._text = _alert
 
-        pnl-head.on (gz.Css \removed-title), ~>
-          @_alerts._remove it
-          @trigger (gz.Css \removed), it
-
+        _control-close = panel-alert._header._get panelgroup.ControlClose
+        _control-close.el._first.on-click ~>
+          _title = panel-alert._header._get panelgroup.ControlTitle ._text
+          @_alerts._remove _title
+          @trigger (gz.Css \removed), _title
+          _control-close.on-close!
     super!
-
-  /** _FIELDS */
-  _FIELD_SIGNAL =
-    * _name: 'id_signal'
-      _label: 'Código'
-
-    * _name: 'signal'
-      _label: 'Descripción de la señal de alerta'
-      _type: FieldType.kComboBox
-      _options: App.lists.alerts._display
-
-    * _name: 'source'
-      _label: 'Fuenta de la señal de la alerta'
-      _type: FieldType.kComboBox
-      _options:
-        'Sistema de Monitoreo'
-        'Área Comercial'
-        'Análisis del SO'
-        'Medio Periodistico'
-        'Otras Fuentes'
-
-    * _name: 'description_source'
-      _label: 'Descripción de otros.'
 
   /** @private */ _alerts: null
 
@@ -216,7 +214,7 @@ class Alerts extends Module
 
   /** @override */
   initialize: ->
-    @_dto = ["ADBadb","123123","asd123","bnm890","iopqwe"]
+    @_dto = App.lists.alerts._display
     super!
 
   /** @override */
