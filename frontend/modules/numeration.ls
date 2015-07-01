@@ -108,7 +108,8 @@ class NumerationEdit extends Module
       @_five-years-display.html = ''
 
   _calculate-amount-soles: (amount, exchange-rate) ->
-    amount = amount.replace /[,\s]/gi, ''
+    if amount?
+      amount = amount.replace /[,\s]/gi, ''
     _value = (parseFloat exchange-rate) * (parseFloat amount)
     @_amount-display.html = if _value then _value.'toFixed' 2 else '-'
 
