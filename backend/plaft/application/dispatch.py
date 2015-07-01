@@ -193,10 +193,11 @@ def numerate(dispatch, **args):
     """
     dispatch << args
     dispatch.store()
-
+    amount = dispatch.amount
+    amount = amount.replace(' ', '').replace(',', '')
     if (not dispatch.is_accepted and
        dispatch.amount and
-       float(dispatch.amount) >= 10000):
+       float(amount) >= 10000):
             plaft.application.operation.accept(dispatch)
 
     return dispatch.is_accepted

@@ -47,14 +47,6 @@ class NumerationEdit extends Module
   on-save: ~>
     @_desktop._spinner-start!
 
-    ########################################################################
-    # VER ON-SAVE DE OPERATION.LS
-    # TODO: Remove deprecated code
-    _dto = @model._attributes
-    for stk in _dto.'stakeholders'
-      delete stk.'slug'
-    ########################################################################
-
     _dto = @el._toJSON!
     App.ajax._post "/api/dispatch/#{@model._id}/numerate", _dto, do
       _success: (_response) ~>
@@ -116,6 +108,7 @@ class NumerationEdit extends Module
       @_five-years-display.html = ''
 
   _calculate-amount-soles: (amount, exchange-rate) ->
+    amount = amount.replace /[,\s]/gi, ''
     _value = (parseFloat exchange-rate) * (parseFloat amount)
     @_amount-display.html = if _value then _value.'toFixed' 2 else '-'
 
@@ -135,6 +128,32 @@ class NumerationEdit extends Module
       @_last-day-display.html = ''
       @_five-years-display.html = ''
 
+  check-dam: ~>
+    if @_dam-el._value is ''
+      return
+    year-current = (new Date()).get-full-year!
+    jcode = @model._attributes.'jurisdiction'.'code'
+    rcode = @model._attributes.'regime'.'code'
+    dam-array = @_dam-el._value._split '-'
+    dam-model = "#{jcode}-#{year-current}-#{rcode}"
+    dam-insert = "#{dam-array[0]}-#{dam-array[1]}-#{dam-array[2]}"
+    if dam-insert isnt dam-model
+      message-dam = ['<ul>']
+      if dam-array[0] isnt jcode
+        message-dam._push '<li><strong>Juridicción Aduana</strong>
+                          \ no conforme VERIFICAR</li>'
+      if dam-array[1] not in ["#{year-current - 1}", "#{year-current}"]
+        message-dam._push '<li><strong>Año</strong>
+                          \ no conforme VERIFICAR</li>'
+      if dam-array[2] isnt rcode
+        message-dam._push '<li><strong>Regimén Aduanero</strong>
+                          \ no conforme VERIFICAR</li>'
+      message-dam._push '</ul>'
+      mdl-dam = Modal._new do
+          _title: 'Advertencia'
+          _body: message-dam._join  ''
+      mdl-dam._show!
+
   # TODO: Quitar `_tr`. Se debería crear una clase Child de Table para
   #       manipular la tabla o al menos la fila representada por la
   #       vista cargada desde algún evento de la tabla.
@@ -144,6 +163,9 @@ class NumerationEdit extends Module
   /** @override */
   render: ->
     App.builder.Form._new @el, _FIELDS
+
+      @_dam-el = .._elements.'dam'._element
+        ..on-blur @check-dam
 
       .._elements.'numeration_date'._element
         ..on-blur @load-dates
