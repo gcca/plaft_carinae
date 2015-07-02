@@ -482,8 +482,8 @@ App.GLOBALS =
   _stakeholders: window.plaft.'stakeholder'
 
   update_autocompleter: ->
-    App.ajax._get '/autocompleters', do
-      _success: (_autocompleters) ->
+    App.ajax._get '/autocompleters', false, do
+      _success: (_autocompleters) ~>
         @_declarants = _autocompleters.'declarant'
         @_stakeholders = _autocompleters.'stakeholder'
 

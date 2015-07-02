@@ -559,7 +559,7 @@ class Operations extends Module
            aceptado
          </span>"
 
-    App.ajax._get '/api/customs_agency/list_dispatches', do
+    App.ajax._get '/api/customs_agency/list_dispatches', true, do
       _success: (dispatches) ~>
         _pending = new DispatchesP dispatches.'pending'
         _accepting = new DispatchesA dispatches.'accepting'

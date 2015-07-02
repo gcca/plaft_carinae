@@ -18,12 +18,13 @@ RC =
 
 /** @export */
 exports <<<
-  _get: (_url, _data, _options) ->
+  _get: (_url, _async, _data, _options) ->
     if not _options?
       _options = _data
       _data = null
     $\ajax do
       \url        : _url
+      \async      : _async
       \data       : _data
       \statusCode : {[RC[k], v] for k, v of _options}
 

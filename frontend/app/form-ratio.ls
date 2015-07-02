@@ -1,10 +1,10 @@
 /** @module App */
 
+FieldType    = builtins.Types.Field
 # Change type extends
 class FormRatio
 
-  ({@fields, _templates = {},}) ->
-
+  ({@fields, @el, _templates = {}}) ->
     @_names = [field._name for field in @fields ]
 
     for _field in @fields
@@ -34,25 +34,52 @@ class FormRatio
     int-value = 0
     if value?
       switch value.__proto__.constructor
-        | Object => int-value = calculate-object value
+        | Object =>
+          for k of value
+            int-value = calculate-object value
         | Array  =>
-          if value._length isnt 0
-             int-value = calculate-array value
-        | otherwise =>
+          if value._length?
+            int-value = calculate-array value
+        | String =>
           if value isnt ''
             int-value = 1
+        | otherwise =>
+          if value?
+            int-value = 1
+    else
+      int-value = 0
     int-value
+
+  _validate-field: (_field, _type) ->
+    if _field._type is FieldType.kView
+      _parent = _field._options.el._parent
+    else if _field._type is FieldType.kRadioGroup
+      _parent = (@el.query "[name=#{_field._name}]")._parent._parent
+    else
+      _parent = (@el.query "[name=#{_field._name}]")._parent
+
+    if _type?
+      _parent._class._add gz.Css \has-error
+    else
+      _parent._class._remove gz.Css \has-error
 
   _calculate: (_dto) ->
     _pon = 0
     for _field in @fields
       _name = _field._name
-      _pon += @_templates[_name] __get-values _dto, _name
+      if (@_templates[_name] __get-values _dto, _name) is 1
+        _pon += 1
+        @_validate-field _field
+      else
+        @_validate-field _field, 'NULO'
+
+#      _pon += @_templates[_name] __get-values _dto, _name
     App.math.trunc _pon/@_names.length* 100
 
-  fields: null
-  _templates: null
-  _names: null
+  /** @private */ fields: null
+  /** @private */ _templates: null
+  /** @private */ _names: null
+  /** @private */ el: null
 
 
 /** @export */

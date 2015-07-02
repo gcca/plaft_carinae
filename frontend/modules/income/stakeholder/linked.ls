@@ -29,14 +29,14 @@ class FormLinked extends panelgroup.FormBody
         @_FIELD = @_FIELD_BUSINESS
         TYPE = @@Type.kBusiness
 
+      @render-skateholder @_FIELD, TYPE
       # Progress Bar
       @ratio = new FormRatio do
         fields: @_FIELD
+        el: @el
       _ratio =  @ratio._calculate _dto
       if _ratio isnt 0
         @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
-
-      @render-skateholder @_FIELD, TYPE
     super _dto
 
   _json-getter: ->
@@ -45,6 +45,7 @@ class FormLinked extends panelgroup.FormBody
     if not @ratio?
       @ratio = new FormRatio do
         fields: @_FIELD
+        el: @el
     _ratio =  @ratio._calculate _dto
     @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
     _dto

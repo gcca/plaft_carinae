@@ -58,7 +58,7 @@ class Income extends Module
           _type: @_desktop.notifier.kWarning
         return
 
-      App.ajax._get '/api/customer', ('document_number': _query), do
+      App.ajax._get '/api/customer', true, ('document_number': _query), do
         _success: ([_customer-dto]) ~>  # income with registered customer
           _dispatch_dto =
             'declaration':
@@ -73,7 +73,7 @@ class Income extends Module
     # Find by order number (dispatch)
     else if _filter is @@_SEARCHENUM.kByOrder
       # TODO: valid order number.
-      App.ajax._get '/api/dispatch', ('order': _query), do
+      App.ajax._get '/api/dispatch', true, ('order': _query), do
         _success: ([_dispatch-dto]) ~>
           @render-panels _dispatch-dto
         _not-found: ~>
@@ -104,6 +104,8 @@ class Income extends Module
         @_panels._declaration._header.\
           _get declaration.ControlPDF ._show @model.'id'
         App.GLOBALS.update_autocompleter!
+        @_panels._stakeholders._body._update-autocompleter App.GLOBALS._stakeholders
+        @_panels._declarants._body._update-autocompleter App.GLOBALS._declarants
         @_desktop._spinner-stop!
 
       _error: ~>
@@ -265,7 +267,7 @@ class Income extends Module
                                     overflow:hidden;
                                     max-width:27ch'
 
-    App.ajax._get '/api/dispatch/list', do
+    App.ajax._get '/api/dispatch/list', true, do
       _success: (dispatches) ~>
         _pending = new Dispatches dispatches
         _table = new Table  do

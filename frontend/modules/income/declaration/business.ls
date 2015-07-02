@@ -30,6 +30,7 @@ class Business extends Customer
     if not @ratio?
       @ratio = new FormRatio do
         fields: _FIELD_BUSINESS
+        el: @el
     _ratio =  @ratio._calculate r
     if _ratio isnt 0
       @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
@@ -42,6 +43,7 @@ class Business extends Customer
     # Progress Bar
     @ratio = new FormRatio do
       fields: _FIELD_BUSINESS
+      el: @el
     _ratio =  @ratio._calculate _dto
 
     if _ratio isnt 0

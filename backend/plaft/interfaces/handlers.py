@@ -129,26 +129,47 @@ def reporte_operaciones(handler):
     import xlsxwriter
 
     operations = model.Operation.all()
-    filas = 0
+    filas = 2
 
     output = StringIO.StringIO()
     workbook = xlsxwriter.Workbook(output, {'in_memory': True})
     worksheet = workbook.add_worksheet()
+    # CENTER & BOLD FORMAT
+    bold_format = workbook.add_format({'bold': 1, 'align': 'center'})
+    # CENTER FORMAT
+    center_format = workbook.add_format({'align': 'center'})
+    # MERGE FORMAT
+    merge_format = workbook.add_format({
+    'bold': 1,
+    'border': 1,
+    'align': 'center',
+    'valign': 'vcenter',
+    'fg_color': '#B4B4B4'})
+    # COLUMNS
+    worksheet.set_column('B:B', 20)
+    worksheet.set_column('C:C', 30)
+    worksheet.set_column('D:D', 30)
+    title = ('LISTADO DE OPERACIONES')
+
+    # Write the data.
+    worksheet.merge_range('B2:D2', title, merge_format)
+    bold = workbook.add_format({'bold': True})
 
     for operation in operations:
-        worksheet.write(filas, 0, 'Order')
-        worksheet.write(filas, 1, 'Nombre/ Razon social')
-        worksheet.write(filas, 2, 'Cantidad de despachos')
-        worksheet.write(filas+1, 0, str(operation.id))
-        worksheet.write(filas+1, 1, operation.customer.name)
-        worksheet.write(filas+1, 2, operation.dispatches.__len__())
-        worksheet.write(filas+2, 1, 'Lista de despachos')
-        worksheet.write(filas+3, 1, 'N. Order')
-        worksheet.write(filas+3, 2, 'N. Dam')
+        worksheet.write(filas, 1, 'Operacion', bold_format)
+        worksheet.write(filas, 2, 'Nombre/ Razon social', bold_format)
+        worksheet.write(filas, 3, 'Cantidad de despachos', bold_format)
+        worksheet.write(filas+1, 1, str(operation.id), center_format)
+        worksheet.write(filas+1, 2, operation.customer.name, center_format)
+        worksheet.write(filas+1, 3, len(operation.dispatches), center_format)
+        worksheet.write(filas+2, 1, '--', bold_format)
+        worksheet.write(filas+2, 2, 'Lista de despachos', bold_format)
+        worksheet.write(filas+3, 2, 'N. Order', bold_format)
+        worksheet.write(filas+3, 3, 'N. Dam', bold_format)
         filas = filas + 4
         for despacho in operation.dispatches:
-            worksheet.write(filas, 1, despacho.order)
-            worksheet.write(filas, 2, despacho.dam)
+            worksheet.write(filas, 2, despacho.order, center_format)
+            worksheet.write(filas, 3, despacho.dam, center_format)
             filas = filas+1
 
     workbook.close()
