@@ -298,6 +298,7 @@ class Dispatch(dom.Model):
     description = dom.String()
     is_suspects = dom.String()
     suspects_by = dom.String()
+    ros = dom.String()
 
     class Signal(dom.Model):
         """."""

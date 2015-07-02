@@ -40,19 +40,13 @@ class OperationEdit extends Module
 
   /** @override */
   on-save: ~>
-    ########################################################################
-    # VER ON-SAVE DE NUMERATION.LS
-    _dto = @model._attributes
-    for stk in _dto.'stakeholders'
-      delete stk.'slug'
-    for declarant in _dto.'declarants'
-      delete declarant.'slug'
-    ########################################################################
+    console.log @_toJSON!
     App.ajax._post "/api/dispatch/#{@model._id}/anexo_seis", @_toJSON!, do
       _success: ~>
         @_desktop.notifier.notify do
           _message : 'Se actualizó correctamente los datos'
           _type    : @_desktop.notifier.kSuccess
+        @signalAlert.signalAlerts = []
       _bad-request: ~>
         alert 'ERROR: e746ae94-5a3a-11e4-9a1d-88252caeb7e8'
 
@@ -85,7 +79,7 @@ class OperationEdit extends Module
 
   /** Field list for numeration form. (Array.<FieldOptions>) */
   _FIELDS =
-    * _name: 'operation_description'
+    * _name: 'description'
       _label: 'Descripcion de la operación'
       _tip: 'Señale los argumentos que lo llevaron a calificar como inusual.'
       _grid: _GRID._full
@@ -100,7 +94,7 @@ class OperationEdit extends Module
       _label: 'Numero de ROS'
       _tip: 'Indicar el numero de ROS con el que se remitio en la UIF.'
 
-    * _name: 'suspects_description'
+    * _name: 'suspects_by'
       _label: 'Descripcion:'
       _tip: 'Describir los argumentos porque no fue calificada.'
 
