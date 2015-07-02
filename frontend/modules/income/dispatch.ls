@@ -30,6 +30,7 @@ class DispatchBody extends panelgroup.FormBody
     if not @ratio?
       @ratio = new FormRatio do
         fields: _FIELD_DISPATCH
+        el: @el
     _ratio =  @ratio._calculate _r
     if _ratio isnt 0
       @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
@@ -42,6 +43,7 @@ class DispatchBody extends panelgroup.FormBody
     if not @ratio?
       @ratio = new FormRatio do
         fields: _FIELD_DISPATCH
+        el: @el
     _ratio =  @ratio._calculate _dto
     if _ratio isnt 0
       @_panel._header._get panelgroup.ControlBar ._set-bar _ratio

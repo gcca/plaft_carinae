@@ -25,6 +25,7 @@ class Declarant extends panelgroup.FormBody
     if not @ratio?
       @ratio = new FormRatio do
         fields: _FIELD_DECLARANT
+        el: @el
     _ratio =  @ratio._calculate _r
     @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
     _r
@@ -34,6 +35,7 @@ class Declarant extends panelgroup.FormBody
     # Progress Bar
     @ratio = new FormRatio do
       fields: _FIELD_DECLARANT
+      el: @el
     _ratio =  @ratio._calculate _dto
 
     if _ratio isnt 0
