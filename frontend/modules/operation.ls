@@ -4,6 +4,8 @@
  */
 
 Module = require '../workspace/module'
+modal = App.widget.message-box
+  Modal = ..Modal
 table = App.widget.table
   Table = ..Table
 
@@ -31,32 +33,49 @@ class OperationEdit extends Module
     result = parseFloat n1*n2
     result.to-fixed 2
 
-  upper-field: (_field) ->
-    if _field?
-      return  _field.to-upper-case!
+  upper-field: (_value, _field='-') ->
+    if _value?
+      @empty-field _value.to-upper-case!, _field
     else
-      return 'No aplica'
+      @empty-field _value, _field
 
-  empty-field: (_field, message='No aplica') ->
+  empty-field: (value, _field) ->
     if _field?
-      if _field is ""
-        return message
+      _title = 'Campo no ingresado por favor verifique en el módulo de
+               \ numeración.'
+    else
+      _title = "Campo no ingresado por favor verifique en el módulo de
+               \ operación. #{@_tip-module}"
+
+    _span = App.dom._new \span
+      ..css = 'color:red;font-size:22px'
+      ..title = _title
+      ..html = '*'
+      $ .. ._tooltip do
+        'template': "<div class='#{gz.Css \tooltip}' role='tooltip'
+                          style='min-width:175px'>
+                       <div class='#{gz.Css \tooltip-arrow}'></div>
+                       <div class='#{gz.Css \tooltip-inner}'></div>
+                     </div>"
+    if value?
+      if value is ""
+        return _span
       else
-        return _field
+        return value
     else
-      return message
+      return _span
 
-  in-country: (_field) ->
+  in-country: (_value, _field='-') ->
     if @_type
-      return @empty-field _field
+      return @empty-field _value, _field
     else
-      return 'No aplica'
+      return '<span>No aplica</span>'
 
-  out-country: (_field) ->
+  out-country: (_value, _field='-') ->
     if not @_type
-      return @empty-field _field
+      return @empty-field _value, _field
     else
-      return 'No aplica'
+      return '<span>No aplica</span>'
 
   load-header: (_dto) ->
     _customer = _dto.'declaration'.'customer'
@@ -74,7 +93,7 @@ class OperationEdit extends Module
         </label>
         <label class='#{gz.Css \col-md-8}'
                style='border:solid'>
-          #{_dto.'order'}
+          #{@empty-field _dto.'order'}
         </label>
         <label class='#{gz.Css \col-md-4}'
                style='padding:0'>
@@ -82,7 +101,7 @@ class OperationEdit extends Module
         </label>
         <label class='#{gz.Css \col-md-8}'
                style='border:solid'>
-          #{_dto.'dam'}
+          #{@empty-field _dto.'dam', 'dam'}
         </label>
         <label class='#{gz.Css \col-md-4}'
                style='padding:0'>
@@ -107,14 +126,14 @@ class OperationEdit extends Module
         </label>
         <label class='#{gz.Css \col-md-8}'
                style='border:solid'>
-          #{_dto.'numeration_date'}
+          #{@empty-field _dto.'numeration_date', 'numeration_date'}
         </label>
         <label class='#{gz.Css \col-md-4}'>
           Descripción
         </label>
         <label class='#{gz.Css \col-md-8}'
                style='border:solid'>
-          #{_dto.'regime'.'name'}
+          #{@empty-field _dto.'regime'.'name'}
         </label>
       </div>"
 
@@ -125,17 +144,21 @@ class OperationEdit extends Module
     _code-sbs = @check-code-sbs _dto.'regime'.'name'
 
     _list-operation = []
+    @_tip-module = 'Ver en ANEXO 5.'
     _list-operation._push @empty-field _customer.'money_source_type'
     _list-operation._push _dto.'regime'.'name' + "("+_code-sbs+")"
-    _list-operation._push 'No aplica'
+    _list-operation._push '<span>No aplica</span>'
+    @_tip-module = 'Ver en Nº Orden despacho.'
     _list-operation._push @empty-field _dto.'description'
-    _list-operation._push @empty-field _dto.'dam'
-    _list-operation._push @empty-field _dto.'numeration_date'
+    _list-operation._push @empty-field _dto.'dam', 'dam'
+    _list-operation._push @empty-field _dto.'numeration_date', 'numeration_date'
+    @_tip-module = 'Ver en ANEXO 5.'
     _list-operation._push @empty-field _customer.'money_source'
     _list-operation._push 'USD'
-    _list-operation._push 'No aplica'
+    _list-operation._push '<span>No aplica</span>'
     _list-operation._push @calculate-field _dto.'amount', _dto.'exchange_rate'
-    _list-operation._push @empty-field _dto.'exchange_rate'
+    _list-operation._push @empty-field _dto.'exchange_rate', 'exchange_rate'
+    @_tip-module = 'Ver en Vinculados.'
     _list-operation._push @in-country _stk.'country'  # Verificar de donde sacar el dato.
     _list-operation._push @out-country _stk.'country'  # Verificar de donde sacar el dato.
 
@@ -145,14 +168,15 @@ class OperationEdit extends Module
                 _list-operation
 
   load-list-third: (_third) ->  # HARDCODE
+    @_tip-module = 'Ver Tercero.'
     list-third = []
-    if (_third?) or (_third.'document_number'?)
+    if _third?
       if _third.'document_type'?
         if _third.'document_type' is \ruc
           _third-type = 'Persona Jurídica'
           _third-name = _third.'name'
-          _name69 = 'No aplica'
-          _dtype = 'No aplica'
+          _name69 = '<span>No aplica</span>'
+          _dtype = '<span>No aplica</span>'
         else
           _third-type = 'Persona Natural'
           _third-name = _third.'father_name'
@@ -167,15 +191,16 @@ class OperationEdit extends Module
         list-third._push @empty-field _name69
         list-third._push @empty-field _third.'third_ok'
       else
-        list-third = ['No aplica' for til 7]
+        list-third = ['<span>No aplica</span>' for til 7]
     else
-      list-third = ['No aplica' for til 7]
+      list-third = ['<span>No aplica</span>' for til 7]
 
     @load-table App.lists.anexo2.third._code,
                 App.lists.anexo2.third._display,
                 list-third
 
   load-list-declarant: (_dto) ->
+    @_tip-module = 'Ver en declarante.'
     _declarant = _dto.'0'
     if not _declarant?
       list-declarant = ['-' for til 16]
@@ -203,7 +228,7 @@ class OperationEdit extends Module
     list-declarant._push @empty-field _declarant.'name'
     list-declarant._push @empty-field _declarant.'nationality'
     list-declarant._push @empty-field _declarant.'activity'
-    list-declarant._push 'No aplica'
+    list-declarant._push '<span>No aplica</span>'
     list-declarant._push @empty-field _ciiu
     list-declarant._push @empty-field _declarant.'position'
     list-declarant._push @empty-field _declarant.'address'
@@ -215,17 +240,21 @@ class OperationEdit extends Module
                 list-declarant
 
   load-list-customer: (_dto, _title, _isTrue=on) ->
+    @_tip-module = 'Ver en ANEXO 5'
     list-customer = []
     _customer = _dto.'declaration'.'customer'
     if _customer.'document_type' is \ruc
       _customer-type = 'Persona Jurídica'
-      _dnumber = 'No aplica'
+      _dnumber = '<span>No aplica </span>'
       _document-number = _customer.'document_number'
-      _document-type = 'No aplica'
+      _document-type = '<span>No aplica </span>'
       _name = _customer.'name'
-      _name35 = 'No aplica'
-      _ocupation = 'No aplica'
+      _name35 = '<span>No aplica </span>'
+      _ocupation = '<span>No aplica </span>'
       _activity = _customer.'activity'
+      _mother-name = '<span>No aplica </span>'
+      _customer.'issuance_country' = '<span>No aplica </span>'
+      _customer.'nationality' = '<span>No aplica </span>'
     else
       _customer-type = 'Persona Natural'
       _dnumber = _customer.'document_number'
@@ -233,10 +262,11 @@ class OperationEdit extends Module
       _name = _customer.'father_name'
       _name35 = _customer.'name'
       _ocupation = _customer.'activity'
-      _activity = 'No aplica'
+      _activity = '<span>No aplica </span>'
       _document-type = _customer.'document_type'
+      _mother-name = _customer.'mother_name'
 
-    list-customer._push  _title
+    list-customer._push _title
     if _isTrue
       _code-array = App.lists.anexo2.linked1._code
       _display-array = App.lists.anexo2.linked1._display
@@ -252,17 +282,17 @@ class OperationEdit extends Module
       _ubigeo = _customer.'ubigeo'.'code' + " " + _customer.'ubigeo'.'name'
 
     list-customer._push  @empty-field _customer.'condition'
-    list-customer._push  _customer-type
+    list-customer._push  @empty-field _customer-type
     list-customer._push  @empty-field _document-type
-    list-customer._push  _dnumber
+    list-customer._push  @empty-field _dnumber
     list-customer._push  @empty-field _customer.'issuance_country'
     list-customer._push  @empty-field _document-number
     list-customer._push  @empty-field _name
-    list-customer._push  @empty-field _customer.'mother_name'
+    list-customer._push  @empty-field _mother-name
     list-customer._push  @empty-field _name35
     list-customer._push  @empty-field _customer.'nationality'
     list-customer._push  @empty-field _ocupation
-    list-customer._push  'No aplica' # Ya no existe descripcion de otros
+    list-customer._push  '<span>No aplica</span>' # Ya no existe descripcion de otros
     list-customer._push  @empty-field _activity
     list-customer._push  @empty-field _ciiu
     list-customer._push  @empty-field _customer.'employment'
@@ -275,6 +305,7 @@ class OperationEdit extends Module
                 list-customer
 
   load-list-stakeholder: (_stakeholders, _isTrue=on) ->
+    @_tip-module = 'Ver en Vinculados.'
     for _stkholder in _stakeholders
       list-linked = []
 
@@ -282,13 +313,15 @@ class OperationEdit extends Module
       if _stkholder.'document_type' is \ruc
         _stkholder-type = 'Persona Jurídica'
         _name = _stkholder.'name'
-        _name35 = 'No aplica'
+        _name35 = '<span>No aplica</span>'
+        _mother-name = '<span>No aplica </span>'
       else
         _stkholder-type = 'Persona Natural'
         _name = _stkholder.'father_name'
         _name35 = _stkholder.'name' # Nombre de persona Natural
+        _mother-name = _stkholder.'mother_name'
 
-      list-linked._push  @empty-field _stkholder.'linked_type'
+      list-linked._push  @empty-field _stkholder.'link_type'
       if _isTrue
         _code-array = App.lists.anexo2.linked1._code
         _display-array = App.lists.anexo2.linked1._display
@@ -299,22 +332,22 @@ class OperationEdit extends Module
 
       list-linked._push  @empty-field _stkholder.'condition'
       list-linked._push  _stkholder-type  # Verificar tipo de persona
-      list-linked._push  @empty-field!
-      list-linked._push  @empty-field!
-      list-linked._push  @empty-field!
-      list-linked._push  @empty-field!
-      list-linked._push  _name
-      list-linked._push  @empty-field _stkholder.'mother_name'
-      list-linked._push  _name35
-      list-linked._push  @empty-field!
-      list-linked._push  @empty-field!
-      list-linked._push  @empty-field!
-      list-linked._push  @empty-field!
-      list-linked._push  @empty-field!
-      list-linked._push  @empty-field!
+      list-linked._push  '<span>No aplica</span>'
+      list-linked._push  '<span>No aplica</span>'
+      list-linked._push  '<span>No aplica</span>'
+      list-linked._push  '<span>No aplica</span>'
+      list-linked._push  @empty-field _name
+      list-linked._push  @empty-field _mother-name
+      list-linked._push  @empty-field _name35
+      list-linked._push  '<span>No aplica</span>'
+      list-linked._push  '<span>No aplica</span>'
+      list-linked._push  '<span>No aplica</span>'
+      list-linked._push  '<span>No aplica</span>'
+      list-linked._push  '<span>No aplica</span>'
+      list-linked._push  '<span>No aplica</span>'
       list-linked._push  @empty-field _stkholder.'address'
-      list-linked._push  @empty-field!
-      list-linked._push  @empty-field!
+      list-linked._push  '<span>No aplica</span>'
+      list-linked._push  '<span>No aplica</span>'
 
       @load-table _code-array,
                   _display-array,
@@ -337,7 +370,10 @@ class OperationEdit extends Module
         _tr._append ..
       App.dom._new \td
         .._class = gz.Css \col-md-5
-        ..html = m
+        if typeof m is 'string'
+          ..html = m
+        else
+          .._append m
         _tr._append ..
       _tbody._append _tr
     _table._append _tbody
@@ -453,7 +489,8 @@ class OperationEdit extends Module
 
     super!
 
-  _type: null
+  /** @private */ _type: null
+  /** @private */ _tip-module: null
 
 
 /**
@@ -533,8 +570,16 @@ class Operations extends Module
                       _templates: _template-pending
                       _column-cell-style: _column-cell-style
                       on-dblclick-row: (evt) ~>
-                        @_desktop.load-next-page OperationEdit, do
-                          model: evt._target._model
+                        _model = evt._target._model
+                        dam = _model._attributes.'dam'
+                        if dam? and (dam isnt '')
+                          @_desktop.load-next-page OperationEdit, do
+                            model: _model
+                        else
+                          modal-dam = Modal._new do
+                              _title: 'Advertencia'
+                              _body: 'No puede ingresar, porque falta Numerar.'
+                          modal-dam._show!
 
         _table-pending.set-rows _pending
 
@@ -543,6 +588,10 @@ class Operations extends Module
                       _labels: _labels
                       _templates: _template-accepting
                       _column-cell-style: _column-cell-style
+                      on-dblclick-row: (evt) ~>
+                        _model = evt._target._model
+                        @_desktop.load-next-page OperationEdit, do
+                            model: _model
 
         _table-accepting.set-rows _accepting
 

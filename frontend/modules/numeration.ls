@@ -97,9 +97,10 @@ class NumerationEdit extends Module
     if dt?
       array-date = dt
       if typeof dt is 'string'
-        re-date = /^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/
-        array-date = re-date.'exec' dt
-        array-date._shift!
+        if dt isnt ''
+          re-date = /^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/
+          array-date = re-date.'exec' dt
+          array-date._shift!
 
       @_five-years-display.html = "#{array-date[0]}/
                                    #{array-date[1]}/
