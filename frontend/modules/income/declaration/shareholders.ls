@@ -142,7 +142,6 @@ class Shareholders extends App.View
     @xContainer._append shareholder.render!.el
 
   load-from: (_shareholders) ->
-    @shareholders._length = 0
     for dto in _shareholders
       @addShareholder dto
 
