@@ -116,13 +116,19 @@ def convert_keys(dct, hist):
                   isinstance(dct[k][0], ndb.Key))):
         dct[k[:-4]] = dct[k]
         del dct[k]
-        value = dct[k[:-4]]
+        k = k[:-4]
+        value = dct[k]
         i = 0
         for nkey in value:
             obj = nkey.get().to_dict()
             convert_keys(obj, hist+(nkey,))
-            dct[k[:-4]][i] = obj
+            dct[k][i] = obj
             i += 1
+
+    for k in dct:
+        if k.endswith('_key'):
+            dct[k[:-4]] = dct[k]
+            del dct[k]
 
 
 class KeyAccessor(ndb.MetaModel):
