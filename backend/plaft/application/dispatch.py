@@ -191,6 +191,8 @@ def numerate(dispatch, **args):
         None
 
     """
+#    Implementar nuevo caso de uso para el registro
+#    de las operaciones individuales.
     dispatch << args
     dispatch.store()
     amount = dispatch.amount
@@ -198,7 +200,20 @@ def numerate(dispatch, **args):
     if (not dispatch.is_accepted and
        dispatch.amount and
        float(amount) >= 10000):
-            plaft.application.operation.accept(dispatch)
+        operation = Operation(dispatches_key=[dispatch.key],
+                          customs_agency_key=dispatch.customs_agency_key,
+                          customer_key=dispatch.customer_key)
+        operation.store()
+
+        dispatch.operation_key = operation.key
+        dispatch.store()
+    else:
+        if dispatch.operation_key:
+            operation = Operation.find(int(dispatch.operation.id))
+            operation.delete()
+
+            dispatch.operation_key = None
+            dispatch.store()
 
     return dispatch.is_accepted
 
