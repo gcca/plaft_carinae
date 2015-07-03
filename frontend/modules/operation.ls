@@ -39,6 +39,15 @@ class OperationEdit extends Module
     else
       @empty-field _value, _field
 
+  no-important: (_value) ->
+    if _value?
+      if _value is ''
+        return '<span>No aplica</span>'
+      else
+        return  _value
+    else
+      return '<span>No aplica</span>'
+
   empty-field: (value, _field) ->
     if _field?
       _title = 'Campo no ingresado por favor verifique en el módulo de
@@ -230,7 +239,7 @@ class OperationEdit extends Module
     list-declarant._push @empty-field _declarant.'activity'
     list-declarant._push '<span>No aplica</span>'
     list-declarant._push @empty-field _ciiu
-    list-declarant._push @empty-field _declarant.'position'
+    list-declarant._push @no-important _declarant.'position'
     list-declarant._push @empty-field _declarant.'address'
     list-declarant._push @empty-field _ubigeo
     list-declarant._push @empty-field _declarant.'phone'
@@ -295,7 +304,7 @@ class OperationEdit extends Module
     list-customer._push  '<span>No aplica</span>' # Ya no existe descripcion de otros
     list-customer._push  @empty-field _activity
     list-customer._push  @empty-field _ciiu
-    list-customer._push  @empty-field _customer.'employment'
+    list-customer._push  @no-important _customer.'employment'
     list-customer._push  @empty-field _customer.'fiscal_address'
     list-customer._push  @empty-field _ubigeo
     list-customer._push  @empty-field _customer.'phone'
@@ -325,12 +334,12 @@ class OperationEdit extends Module
       if _isTrue
         _code-array = App.lists.anexo2.linked1._code
         _display-array = App.lists.anexo2.linked1._display
-        list-linked._push  @empty-field _stkholder.'legal_type'
+        list-linked._push  @no-important _stkholder.'legal_type'
       else
         _code-array = App.lists.anexo2.linked2._code
         _display-array = App.lists.anexo2.linked2._display
 
-      list-linked._push  @empty-field _stkholder.'condition'
+      list-linked._push  @no-important _stkholder.'condition'
       list-linked._push  _stkholder-type  # Verificar tipo de persona
       list-linked._push  '<span>No aplica</span>'
       list-linked._push  '<span>No aplica</span>'

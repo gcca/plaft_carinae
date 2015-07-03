@@ -49,10 +49,8 @@ class Declarant extends panelgroup.FormBody
     switch _document-type._selected-index
         | 0 =>
           (@el.query '[name=issuance_country]')._value = 'Perú'
-          (@el.query '[name=issuance_country]')._disabled = on
         | otherwise =>
           (@el.query '[name=issuance_country]')._value = ''
-          (@el.query '[name=issuance_country]')._disabled = off
 
   /** @override */
   render: ->
@@ -149,7 +147,8 @@ class Declarant extends panelgroup.FormBody
     * _name: 'position'
       _label : '21. Cargo'
       _tip: 'Cargo de la persona que solicita de la persona que solicita o
-           \ físicamente realiza la operación.([ctrl+M] para ver la tabla completa)'
+           \ físicamente realiza la operación (si aplica).
+           \ ([ctrl+M] para ver la tabla No 3 completa)'
       _type: FieldType.kView
       _options : new InputName do
                    _name : App.lists.office._display
