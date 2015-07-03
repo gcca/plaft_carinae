@@ -26,7 +26,6 @@ class Business extends Customer
     shareholders = @shareholders-view._toJSON!
     if shareholders._length
       r.'shareholders' = shareholders
-    @shareholders-view.shareholders._length = 0
     if not @ratio?
       @ratio = new FormRatio do
         fields: _FIELD_BUSINESS

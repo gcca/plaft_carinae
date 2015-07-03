@@ -102,7 +102,7 @@ class DeclarationPDF(Handler):
         else:
             return 'No se encontro informacion'
 
-    def checkLen(self, obj, value, message='-'):
+    def checkLength(self, obj, value, message='-'):
         msg = self.checkEmpty(obj, value, message)
         if len(msg) <= 41:
             msg = " <br/> " + msg + " <br/><br/>"
@@ -243,8 +243,8 @@ class DeclarationPDF(Handler):
     def makeBusinessPDF(self, story, dispatch, customer):
         content = []
 
-        content.append(['a)', 'Denominación o razón social',
-                        (self.checkEmpty(customer, 'name')).upper()])
+        content.append(['a)', 'Denominación o razón social',' <br/> %s'
+                        ' <br/><br/>' % (self.checkEmpty(customer, 'name')).upper()])
 
         content.append(['b)', 'Registro Unico de Contribuyentes RUC',
                         self.checkEmpty(customer, 'document_number')])
@@ -273,7 +273,7 @@ class DeclarationPDF(Handler):
                         self.checkEmpty(customer, 'address')])
 
         content.append(['g)', 'Domicilio fiscal',
-                        self.checkLen(customer, 'fiscal_address')])
+                        self.checkLength(customer, 'fiscal_address')])
 
         content.append(['h)', 'Telefonos fijos de la oficina y/o de la'
                               ' persona de contacto incluyendo el codigo'
