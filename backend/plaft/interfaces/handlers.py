@@ -128,7 +128,8 @@ def reporte_operaciones(handler):
     import StringIO
     import xlsxwriter
 
-    operations = model.Operation.all()
+    customs_agency = handler.user.customs_agency
+    operations =  plaft.application.dispatch.list_operations(customs_agency)
     filas = 2
 
     output = StringIO.StringIO()
@@ -170,8 +171,8 @@ def reporte_operaciones(handler):
         worksheet.write(filas+1, 3, len(operation.dispatches), center_format)
         worksheet.write(filas+2, 1, '--', bold_format)
         worksheet.write(filas+2, 2, 'Lista de despachos', bold_format)
-        worksheet.write(filas+3, 2, 'N. Order', bold_format)
-        worksheet.write(filas+3, 3, 'N. Dam', bold_format)
+        worksheet.write(filas+3, 2, 'No Orden', bold_format)
+        worksheet.write(filas+3, 3, 'No Dam', bold_format)
         filas = filas + 4
         for despacho in operation.dispatches:
             worksheet.write(filas, 2, despacho.order, center_format)
