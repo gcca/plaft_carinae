@@ -112,15 +112,19 @@ def create_dispatches(agency, datastore, customers, n=30):
     from string import digits
 
     years = ['2014', '2015', '2016']
+    channels = ['V', 'N', 'R']
     list_dispatches = []
     from datetime import datetime
 
     while n:
 
         year = 2015
-        month = 6  # random.randint(5, 6)
-        day = random.randint(1, 17)
+        month = random.randint(1, 12)
+        day = random.randint(1, 28)
         rdate = datetime(year, month, day)
+        num_date = datetime(int(random.choice(years)),
+                            random.randint(1,12),
+                            random.randint(1, 28))
         amounts = [str(x) for x in range(3999, 9999)]
         order = '%s-%s' % (random.choice(years),
                            ''.join(random.sample(digits, 5)))
@@ -128,6 +132,9 @@ def create_dispatches(agency, datastore, customers, n=30):
         declaration = Dispatch.Declaration(customer=customer)
         jurisdiction = random.choice(jurisdictions)
         regime = random.choice(regimes)
+        dam = '%s-%s-%s-%s' %(jurisdiction.code,
+                              year, regime.code,
+                              ''.join(random.sample(digits, 5)))
         dispatch = Dispatch(order=order,
                             customer_key=customer.key,
                             customs_agency_key=agency.key,
@@ -135,7 +142,9 @@ def create_dispatches(agency, datastore, customers, n=30):
                             regime=regime,
                             stakeholders=[random.choice(stakeholders)],
                             amount=random.choice(amounts),
-                            income_date=rdate)
+                            income_date=rdate,
+                            dam=dam, numeration_date=num_date,
+                            channel=random.choice(channels))
         dispatch.declaration = declaration
         dispatch.store()
         datastore.pending_key.append(dispatch.key)
