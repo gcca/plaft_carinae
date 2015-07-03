@@ -78,11 +78,14 @@ class Person extends Customer
 
       # Update issuance_country by document_type
       issuance-country-el = .._elements.'issuance_country'._element
-        .._disabled = on
+        .._value = 'Perú'
 
       .._elements.'document_type'._element.on-change (evt) ->
         doc-type-el = evt._target
-        issuance-country-el._disabled = doc-type-el._value is 'dni'
+        if doc-type-el._value is 'dni'
+          issuance-country-el._value = 'Perú'
+        else
+          issuance-country-el._value = ''
 
       ..render!
 

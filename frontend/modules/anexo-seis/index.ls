@@ -40,7 +40,6 @@ class OperationEdit extends Module
 
   /** @override */
   on-save: ~>
-    console.log @_toJSON!
     App.ajax._post "/api/dispatch/#{@model._id}/anexo_seis", @_toJSON!, do
       _success: ~>
         @_desktop.notifier.notify do

@@ -465,7 +465,6 @@ class OperationEdit extends Module
 
       @load-list-customer _dto-anexo2, 'Importador', off
 
-      console.log 'Entrada de mercaderia'
 
     else
 
@@ -482,8 +481,6 @@ class OperationEdit extends Module
                           \ (SALIDA DE MERCANCÍA)</h4>'
 
       @load-list-stakeholder _dto-anexo2.'stakeholders', off
-
-      console.log 'Salida de mercaderia'
 
 
     $ @el._last ._append '<h4>DATOS DE IDENTIFICACIÓN DEL TERCERO POR

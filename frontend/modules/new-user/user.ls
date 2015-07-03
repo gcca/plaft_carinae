@@ -51,7 +51,6 @@ class OfficerItem extends panelgroup.FormBody
     _control-close.el._first.on-click ~>
       see-button = (_value) ->
         if _value
-          console.log 'Si'
           App.ajax._delete "/api/officer/#{@model.id}", do
             _success: ->
               console.log 'Eliminado'

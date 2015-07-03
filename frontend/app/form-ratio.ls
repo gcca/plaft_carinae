@@ -56,10 +56,12 @@ class FormRatio
     else if _field._type is FieldType.kRadioGroup
       _parent = (@el.query "[name=#{_field._name}]")._parent._parent
     else
+      @is_disabled = (@el.query "[name=#{_field._name}]")._disabled
       _parent = (@el.query "[name=#{_field._name}]")._parent
 
     if _type?
-      _parent._class._add gz.Css \has-error
+      if @is_disabled? and not @is_disabled
+        _parent._class._add gz.Css \has-error
     else
       _parent._class._remove gz.Css \has-error
 
@@ -73,14 +75,13 @@ class FormRatio
       else
         @_validate-field _field, 'NULO'
 
-#      _pon += @_templates[_name] __get-values _dto, _name
     App.math.trunc _pon/@_names.length* 100
 
   /** @private */ fields: null
   /** @private */ _templates: null
   /** @private */ _names: null
   /** @private */ el: null
-
+  /** @private */ is_disabled: null
 
 /** @export */
 module.exports = FormRatio
