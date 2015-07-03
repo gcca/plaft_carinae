@@ -40,13 +40,14 @@ class ControlHeadTable extends panelgroup.ControlTitle
   _className: gz.Css \table
 
   load-head: (_dto) ->
+    _index = _dto.'index'
     @el.css\width = \1000
     @el.html = "<tbody>
                   <tr>
                     <td style='border-top-style:none;
                                margin:auto;
                                width:162px'>
-                    #{_dto.id}
+                    N&ordm; #{if _index <= 9 then '0'+_index else _index}
                     </td>
                     <td style='border-top-style:none;
                                margin:auto;
@@ -60,6 +61,7 @@ class ControlHeadTable extends panelgroup.ControlTitle
                     </td>
                   </tr>
                 </tbody>"
+
 
 class PanelHeadingTable extends panelgroup.PanelHeading
 
@@ -134,7 +136,7 @@ class OperationList extends Module
                   <thead>
                     <tr>
                       <th style='border-top-style:none;margin:auto;'>
-                      ORDER
+                      ORDEN
                       </th>
                       <th style='border-top-style:none;margin:auto;'>
                       Nombre/Razon Social
@@ -150,18 +152,28 @@ class OperationList extends Module
     pnl-group = new panelgroup.PanelGroup
     op._fetch do
       _success: (dispatches) ~>
+        i = 0
         for _model in dispatches._models
+          i += 1
+          _model._attributes.'index' = i
           @render-panel _model._attributes, pnl-group
           @_desktop._spinner-stop!
 
       _error: ->
         alert 'Error!!! Numeration list'
-
+    _year-oper = (new Date()).get-full-year!
     @el._append pnl-group.render!el
     @$el._append "<a class='#{gz.Css \btn} #{gz.Css \btn-success}'
                      href='api/reporte_operaciones'>
                     Generar reporte
                   </a>
+
+                  <select class='#{gz.Css \form-control}
+                               \ #{gz.Css \pull-right}'
+                          style='width:125px;margin-left:8px'>
+                    <option>#{_year-oper}</option>
+                    <option>#{_year-oper - 1}</option>
+                  </select>
 
                   <select class='#{gz.Css \form-control}
                                \ #{gz.Css \pull-right}'

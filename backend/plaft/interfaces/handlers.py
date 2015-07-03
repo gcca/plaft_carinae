@@ -154,12 +154,18 @@ def reporte_operaciones(handler):
     # Write the data.
     worksheet.merge_range('B2:D2', title, merge_format)
     bold = workbook.add_format({'bold': True})
+    idx_operation = 0
 
     for operation in operations:
+        idx_operation += 1
+        if idx_operation <= 9:
+            str_opert = '0%d' % idx_operation
+        else:
+            str_opert = str(idx_operation)
         worksheet.write(filas, 1, 'Operacion', bold_format)
         worksheet.write(filas, 2, 'Nombre/ Razon social', bold_format)
         worksheet.write(filas, 3, 'Cantidad de despachos', bold_format)
-        worksheet.write(filas+1, 1, str(operation.id), center_format)
+        worksheet.write(filas+1, 1, 'No %s' % str_opert, center_format)
         worksheet.write(filas+1, 2, operation.customer.name, center_format)
         worksheet.write(filas+1, 3, len(operation.dispatches), center_format)
         worksheet.write(filas+2, 1, '--', bold_format)
