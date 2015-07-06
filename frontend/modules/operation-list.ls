@@ -29,7 +29,7 @@ class Operation extends App.Model
  * @extends Collection
  */
 class Operations extends App.Collection
-  urlRoot: 'operation/list'
+  urlRoot: 'operation/operations'
   model: Operation
 
 
@@ -162,14 +162,17 @@ class OperationList extends Module
       _error: ->
         alert 'Error!!! Numeration list'
     _year-oper = (new Date()).get-full-year!
+    @_month-id = App.utils.uid 'm'
+    @_year-id = App.utils.uid 'y'
     @el._append pnl-group.render!el
     @$el._append "<a class='#{gz.Css \btn} #{gz.Css \btn-success}'
-                     href='api/reporte_operaciones'>
+                     href='api/operation/daily_report'>
                     Generar reporte
                   </a>
 
                   <select class='#{gz.Css \form-control}
                                \ #{gz.Css \pull-right}'
+                          id = '#{@_year-id}'
                           style='width:125px;margin-left:8px'>
                     <option>#{_year-oper}</option>
                     <option>#{_year-oper - 1}</option>
@@ -177,6 +180,7 @@ class OperationList extends Module
 
                   <select class='#{gz.Css \form-control}
                                \ #{gz.Css \pull-right}'
+                          id = '#{@_month-id}'
                           style='width:125px;margin-left:8px'>
                     <option>Enero</option>
                     <option>Febrero</option>
@@ -193,13 +197,16 @@ class OperationList extends Module
 
                   <a class='#{gz.Css \btn}
                           \ #{gz.Css \btn-default}
-                          \ #{gz.Css \pull-right}'
-                     href='#'>
+                          \ #{gz.Css \pull-right}'>
                     Procesar operaciones múltiples de
                   </a>"
-
+    (@el.query '.btn-default').on-click ~>
+      console.log (@el.query "##{@_month-id}")._value
+      console.log (@el.query "##{@_year-id}")._value
     super!
 
+  /** @private */ _month-id: null
+  /** @private */ _year-id: null
   /** @protected */ @@_caption = 'LISTA OPERACION'
   /** @protected */ @@_icon    = gz.Css \th-list
   /** @protected */ @@_hash    = 'OPLIST-HASH'

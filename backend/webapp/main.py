@@ -24,8 +24,6 @@ urls = [
     # Handlers: see RESTful classes
 
     # Handler methods
-    ('/api/operation/list', handlers.list_operation),
-    ('/api/reporte_operaciones', handlers.reporte_operaciones),
     ('/generate_user/(\\d+)', handlers.generate_user),
     ('/update_data', handlers.update_data),
     ('/autocompleters', handlers.autocompleters),

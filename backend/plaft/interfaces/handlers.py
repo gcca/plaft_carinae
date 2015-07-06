@@ -119,75 +119,6 @@ class User(RESTful):
 
 
 @handler_method
-def reporte_operaciones(handler):
-    """ (Handler) -> None
-
-    => StringIO
-
-    """
-    import StringIO
-    import xlsxwriter
-
-    customs_agency = handler.user.customs_agency
-    operations =  plaft.application.dispatch.list_operations(customs_agency)
-    filas = 2
-
-    output = StringIO.StringIO()
-    workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-    worksheet = workbook.add_worksheet()
-    # CENTER & BOLD FORMAT
-    bold_format = workbook.add_format({'bold': 1, 'align': 'center'})
-    # CENTER FORMAT
-    center_format = workbook.add_format({'align': 'center'})
-    # MERGE FORMAT
-    merge_format = workbook.add_format({
-    'bold': 1,
-    'border': 1,
-    'align': 'center',
-    'valign': 'vcenter',
-    'fg_color': '#B4B4B4'})
-    # COLUMNS
-    worksheet.set_column('B:B', 20)
-    worksheet.set_column('C:C', 30)
-    worksheet.set_column('D:D', 30)
-    title = ('LISTADO DE OPERACIONES')
-
-    # Write the data.
-    worksheet.merge_range('B2:D2', title, merge_format)
-    bold = workbook.add_format({'bold': True})
-    idx_operation = 0
-
-    for operation in operations:
-        idx_operation += 1
-        if idx_operation <= 9:
-            str_opert = '0%d' % idx_operation
-        else:
-            str_opert = str(idx_operation)
-        worksheet.write(filas, 1, 'Operacion', bold_format)
-        worksheet.write(filas, 2, 'Nombre/ Razon social', bold_format)
-        worksheet.write(filas, 3, 'Cantidad de despachos', bold_format)
-        worksheet.write(filas+1, 1, 'No %s' % str_opert, center_format)
-        worksheet.write(filas+1, 2, operation.customer.name, center_format)
-        worksheet.write(filas+1, 3, len(operation.dispatches), center_format)
-        worksheet.write(filas+2, 1, '--', bold_format)
-        worksheet.write(filas+2, 2, 'Lista de despachos', bold_format)
-        worksheet.write(filas+3, 2, 'No Orden', bold_format)
-        worksheet.write(filas+3, 3, 'No Dam', bold_format)
-        filas = filas + 4
-        for despacho in operation.dispatches:
-            worksheet.write(filas, 2, despacho.order, center_format)
-            worksheet.write(filas, 3, despacho.dam, center_format)
-            filas = filas+1
-
-    workbook.close()
-    output.seek(0)
-    handler.response.headers['Content-Type'] = 'application/octotet-stream'
-    handler.response.headers['Content-Disposition'] = 'attachment;\
-                                        filename="reporte_operaciones.xlsx"'
-    handler.write(output.read())
-
-
-@handler_method
 def generate_user(handler, count):
     """ (Handler, str) -> None
 
@@ -241,19 +172,6 @@ def update_data(handler):
 
 
 @handler_method
-def list_operation(handler):
-    """ (Handler) -> None
-
-    => [Operation]
-
-    """
-    customs_agency = handler.user.customs_agency
-    handler.render_json(
-        plaft.application.dispatch.list_operations(customs_agency)
-    )
-
-
-@handler_method
 def autocompleters(handler):
     autocompleter = {
         'stakeholder': {stk.slug: stk.id for stk in model.Stakeholder.all()},
@@ -262,6 +180,113 @@ def autocompleters(handler):
 
     handler.render_json(autocompleter)
 
+
+class Operation(RESTful):
+    """Operation RESTful handler."""
+
+    @RESTful.method
+    def operations(self):
+        """ (Handler) -> None
+
+        => [Operation]
+
+        """
+        customs_agency = self.user.customs_agency
+        self.render_json(
+            plaft.application.dispatch.list_operations(customs_agency)
+        )
+
+    @RESTful.method
+    def monthly_report(self):
+        """ (Handler) -> None
+
+        => StringIO
+
+        """
+        import StringIO
+        import xlsxwriter
+        import datetime
+
+        customs_agency = self.user.customs_agency
+        dispatches = model.Dispatch.all(customs_agency_key=customs_agency.key)
+        filas = 2
+
+        output = StringIO.StringIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet()
+
+
+
+    @RESTful.method
+    def daily_report(self):
+        """ (Handler) -> None
+
+        => StringIO
+
+        """
+        import StringIO
+        import xlsxwriter
+        import datetime
+
+        customs_agency = self.user.customs_agency
+        operations =  plaft.application.dispatch.list_operations(customs_agency)
+        filas = 2
+
+        output = StringIO.StringIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet()
+        # CENTER & BOLD FORMAT
+        bold_format = workbook.add_format({'bold': 1, 'align': 'center'})
+        # CENTER FORMAT
+        center_format = workbook.add_format({'align': 'center'})
+        # MERGE FORMAT
+        merge_format = workbook.add_format({
+        'bold': 1,
+        'border': 1,
+        'align': 'center',
+        'valign': 'vcenter',
+        'fg_color': '#B4B4B4'})
+        # COLUMNS
+        worksheet.set_column('B:B', 20)
+        worksheet.set_column('C:C', 30)
+        worksheet.set_column('D:D', 30)
+        title = ('LISTADO DE OPERACIONES')
+
+        # Write the data.
+        worksheet.merge_range('B2:D2', title, merge_format)
+        bold = workbook.add_format({'bold': True})
+        idx_operation = 0
+
+        for operation in operations:
+            idx_operation += 1
+            if idx_operation <= 9:
+                str_opert = '0%d' % idx_operation
+            else:
+                str_opert = str(idx_operation)
+            worksheet.write(filas, 1, 'Operacion', bold_format)
+            worksheet.write(filas, 2, 'Nombre/ Razon social', bold_format)
+            worksheet.write(filas, 3, 'Cantidad de despachos', bold_format)
+            worksheet.write(filas+1, 1, 'No %s' % str_opert, center_format)
+            worksheet.write(filas+1, 2, operation.customer.name, center_format)
+            worksheet.write(filas+1, 3, len(operation.dispatches), center_format)
+            worksheet.write(filas+2, 1, '--', bold_format)
+            worksheet.write(filas+2, 2, 'Lista de despachos', bold_format)
+            worksheet.write(filas+3, 2, 'No Orden', bold_format)
+            worksheet.write(filas+3, 3, 'No Dam', bold_format)
+            filas = filas + 4
+            for despacho in operation.dispatches:
+                worksheet.write(filas, 2, despacho.order, center_format)
+                worksheet.write(filas, 3, despacho.dam, center_format)
+                filas = filas+1
+
+        workbook.close()
+        output.seek(0)
+        ztime = datetime.datetime.utcnow()
+        name_file = "Reporte Diario(%s).xlsx" %(ztime.strftime('%d / %m / %Y'))
+        self.response.headers['Content-Type'] = 'application/octotet-stream'
+        self.response.headers['Content-Disposition'] = 'attachment;\
+                                            filename="%s"' %(name_file)
+        self.write(output.read())
 
 class Customs_Agency(RESTful):
     """Custom Agency RESTful handler."""
