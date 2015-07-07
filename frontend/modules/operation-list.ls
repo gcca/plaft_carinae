@@ -200,9 +200,24 @@ class OperationList extends Module
                           \ #{gz.Css \pull-right}'>
                     Procesar operaciones múltiples de
                   </a>"
+
+    _month = (@el.query "##{@_month-id}")
+    _year = (@el.query "##{@_year-id}")
+    btn-default = (@el.query '.btn-default')
+      ..href = "/api/operation/monthly_report?month=#{_month._value}
+                &year=#{_year._value}"
+    __load-href = ~>
+      btn-default.href = "/api/operation/monthly_report?month=#{_month._value}
+                          &year=#{_year._value}"
+    _month.on-change __load-href
+    _year.on-change __load-href
     (@el.query '.btn-default').on-click ~>
-      console.log (@el.query "##{@_month-id}")._value
-      console.log (@el.query "##{@_year-id}")._value
+      _month = (@el.query "##{@_month-id}")._value
+      _year  = (@el.query "##{@_year-id}")._value
+      _dto =
+        'month': _month
+        'year': _year
+      App.ajax._get '/api/operation/monthly_report', true, (_dto), {}
     super!
 
   /** @private */ _month-id: null
