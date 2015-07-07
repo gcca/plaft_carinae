@@ -165,12 +165,7 @@ class OperationList extends Module
     @_month-id = App.utils.uid 'm'
     @_year-id = App.utils.uid 'y'
     @el._append pnl-group.render!el
-    @$el._append "<a class='#{gz.Css \btn} #{gz.Css \btn-success}'
-                     href='api/operation/daily_report'>
-                    Generar reporte
-                  </a>
-
-                  <select class='#{gz.Css \form-control}
+    @$el._append "<select class='#{gz.Css \form-control}
                                \ #{gz.Css \pull-right}'
                           id = '#{@_year-id}'
                           style='width:125px;margin-left:8px'>
@@ -200,29 +195,9 @@ class OperationList extends Module
                           \ #{gz.Css \pull-right}'>
                     Procesar operaciones múltiples de
                   </a>"
-
-    _month = (@el.query "##{@_month-id}")
-    _year = (@el.query "##{@_year-id}")
-    btn-default = (@el.query '.btn-default')
-      ..href = "/api/operation/monthly_report?month=#{_month._value}
-                &year=#{_year._value}"
-    __load-href = ~>
-      btn-default.href = "/api/operation/monthly_report?month=#{_month._value}
-                          &year=#{_year._value}"
-    _month.on-change __load-href
-    _year.on-change __load-href
-    (@el.query '.btn-default').on-click ~>
-      _month = (@el.query "##{@_month-id}")._value
-      _year  = (@el.query "##{@_year-id}")._value
-      _dto =
-        'month': _month
-        'year': _year
-      App.ajax._get '/api/operation/monthly_report', true, (_dto), {}
     super!
 
-  /** @private */ _month-id: null
-  /** @private */ _year-id: null
-  /** @protected */ @@_caption = 'LISTA OPERACION'
+  /** @protected */ @@_caption = 'REGISTRO OPERACION'
   /** @protected */ @@_icon    = gz.Css \th-list
   /** @protected */ @@_hash    = 'OPLIST-HASH'
 
