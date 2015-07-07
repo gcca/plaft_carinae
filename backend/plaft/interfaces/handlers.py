@@ -229,7 +229,7 @@ class Operation(RESTful):
         import datetime
 
         customs_agency = self.user.customs_agency
-        operations =  plaft.application.dispatch.list_operations(customs_agency)
+        operations = plaft.application.dispatch.list_operations(customs_agency)
         filas = 2
 
         output = StringIO.StringIO()
@@ -240,12 +240,11 @@ class Operation(RESTful):
         # CENTER FORMAT
         center_format = workbook.add_format({'align': 'center'})
         # MERGE FORMAT
-        merge_format = workbook.add_format({
-        'bold': 1,
-        'border': 1,
-        'align': 'center',
-        'valign': 'vcenter',
-        'fg_color': '#B4B4B4'})
+        merge_format = workbook.add_format({'bold': 1,
+                                            'border': 1,
+                                            'align': 'center',
+                                            'valign': 'vcenter',
+                                            'fg_color': '#B4B4B4'})
         # COLUMNS
         worksheet.set_column('B:B', 20)
         worksheet.set_column('C:C', 30)
@@ -268,7 +267,8 @@ class Operation(RESTful):
             worksheet.write(filas, 3, 'Cantidad de despachos', bold_format)
             worksheet.write(filas+1, 1, 'No %s' % str_opert, center_format)
             worksheet.write(filas+1, 2, operation.customer.name, center_format)
-            worksheet.write(filas+1, 3, len(operation.dispatches), center_format)
+            worksheet.write(filas+1, 3, len(operation.dispatches),
+                            center_format)
             worksheet.write(filas+2, 1, '--', bold_format)
             worksheet.write(filas+2, 2, 'Lista de despachos', bold_format)
             worksheet.write(filas+3, 2, 'No Orden', bold_format)
@@ -282,7 +282,7 @@ class Operation(RESTful):
         workbook.close()
         output.seek(0)
         ztime = datetime.datetime.utcnow()
-        name_file = "Reporte Diario(%s).xlsx" %(ztime.strftime('%d / %m / %Y'))
+        name_file = "Reporte Diario(%s).xlsx" % (ztime.strftime('%d / %m / %Y'))
         self.response.headers['Content-Type'] = 'application/octotet-stream'
         self.response.headers['Content-Disposition'] = 'attachment;\
                                             filename="%s"' %(name_file)
@@ -386,12 +386,9 @@ class Dispatch(RESTful):
 
         dispatch = model.Dispatch.find(int(dispatch_id))
         if dispatch:
-            is_accepted = plaft.application.dispatch.numerate(dispatch,
-                                                              **playload)
+            plaft.application.dispatch.numerate(dispatch, **playload)
 
-            self.render_json({
-                'accepted': is_accepted
-            })
+            self.render_json('{}')
         else:
             self.status.NOT_FOUND('No existe el despacho con el id: ' +
                                   dispatch_id)
@@ -406,10 +403,35 @@ class Dispatch(RESTful):
         """
         dispatch = model.Dispatch.find(int(dispatch_id))
         if dispatch:
-            operation = plaft.application.operation.accept(dispatch)
-            self.write_json('{"id":%s}' % operation.id)
+            plaft.application.operation.accept(dispatch)
+            self.write_json('{}')
         else:
             self.status.NOT_FOUND('No se halló el despacho ' + dispatch_id)
+
+    @RESTful.method('post')
+    def reject(self, dispatch_id):
+        """ (Handler) -> None
+
+        => {'id': int}
+
+        ~> NOT_FOUND: No existe despacho.
+        """
+        dispatch = model.Dispatch.find(int(dispatch_id))
+        if dispatch:
+            plaft.application.operation.reject(dispatch)
+            self.write_json('{}')
+        else:
+            self.status.NOT_FOUND('No se halló el despacho ' + dispatch_id)
+
+    @RESTful.method('post')
+    def accept_anexo(self, dispatch_id):
+        dispatch = model.Dispatch.find(int(dispatch_id))
+        datastore = dispatch.customs_agency.datastore
+        datastore.pending_key.remove(dispatch.key)
+        datastore.accepting_key.append(dispatch.key)
+        datastore.store()
+        self.write_json('{}')
+
 
     @RESTful.method('post')  # ?
     def anexo_seis(self, dispatch_id):

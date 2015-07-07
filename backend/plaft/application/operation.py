@@ -17,12 +17,13 @@ def accept(dispatch):
     dispatch.operation_key = operation.key
     dispatch.store()
 
-    datastore = dispatch.customs_agency.datastore
-    datastore.pending_key.remove(dispatch.key)
-    datastore.accepting_key.append(dispatch.key)
-    datastore.store()
 
-    return operation
+def reject(dispatch):
+    operation = Operation.find(int(dispatch.operation.id))
+    operation.delete()
+
+    dispatch.operation_key = None
+    dispatch.store()
 
 
 def accept_multiple(customs_agency):

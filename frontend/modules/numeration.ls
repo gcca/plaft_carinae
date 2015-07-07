@@ -49,22 +49,39 @@ class NumerationEdit extends Module
 
     _dto = @el._toJSON!
     App.ajax._post "/api/dispatch/#{@model._id}/numerate", _dto, do
-      _success: (_response) ~>
+      _success: ~>
         @model._set _dto  # update data for change on (event)
 
         @_desktop.notifier.notify do
           _message : 'Se actualizó correctamente los datos'
           _type    : @_desktop.notifier.kSuccess
 
-        if _response.'accepted'
-          @_tr._class._add gz.Css \success
-        else
-          @_tr._class._remove gz.Css \success
-
         @_desktop._spinner-stop!
 
       _bad-request: ~>
         alert 'ERROR: e746ae94-5a3a-11e4-9a1d-88252caeb7e8'
+
+  /**
+   * (Event) Accept dispatch (to operation).
+   * @private
+   */
+  on-accept: ~>
+    App.ajax._post "/api/dispatch/#{@model._id}/accept", null, do
+      _success: ~>
+        alert 'ACEPTADO'
+      _bad-request: ~>
+        alert 'DENEGADO (Error)'
+
+  /**
+   * (Event) Accept dispatch (to operation).
+   * @private
+   */
+  on-reject: ~>
+    App.ajax._post "/api/dispatch/#{@model._id}/reject", null, do
+      _success: ~>
+        alert 'RECHAZADO'
+      _bad-request: ~>
+        alert '(Error)'
 
   _calculate-working-days: (dt) ->
     if dt?
@@ -183,6 +200,29 @@ class NumerationEdit extends Module
 
     @el._fromJSON @model._attributes
 
+    _special-buttons = "
+      <div class='#{gz.Css \col-md-6}'>
+        <label class='#{gz.Css \col-md-12}'>
+          UMBRAL ESPECIAL
+        </label>
+        <div class='#{gz.Css \col-md-2}'>&nbsp;</div>
+        <button type='button' class='#{gz.Css \btn}
+                                   \ #{gz.Css \btn-success}
+                                   \ #{gz.Css \col-md-3}'>
+           &nbsp;SI&nbsp;
+        </button>
+        <div class='#{gz.Css \col-md-2}'>&nbsp;</div>
+        <button type='button' class='#{gz.Css \btn}
+                                   \ #{gz.Css \btn-danger}
+                                   \ #{gz.Css \col-md-3}'>
+          &nbsp;NO&nbsp;
+        </button>
+      </div>"
+
+    @$el._append _special-buttons
+    (@el.query '.btn-success').on-click @on-accept
+    (@el.query '.btn-danger').on-click @on-reject
+
     _amount-id = App.utils.uid 'l'
     _last-day-id = App.utils.uid 'l'
     _five-years-id = App.utils.uid 'l'
@@ -194,10 +234,6 @@ class NumerationEdit extends Module
            target='_blank'>
          Ver Tipo de Cambio
         </a>
-        <!--<button type='button' class='#{gz.Css \btn}
-                                   \ #{gz.Css \btn-primary}'>
-          Ver Tipo de Cambio
-        </button>-->
       </div>
       <div class='#{gz.Css \form-group} #{gz.Css \col-md-12}'
            style='margin-top:1em'>
@@ -240,19 +276,6 @@ class NumerationEdit extends Module
       </div>"
 
     @$el._append _template
-
-#    button = @el.query ".#{gz.Css \btn-primary}"
-
-#    button.on-click ~>
-#        _iframe = App.dom._new \iframe
-#          ..src = 'http://ww1.sunat.gob.pe/cl-at-ittipcam/tcS01Alias'
-#          ..width = '850px'
-#          ..height = '350px'
-#          ..css = 'border:none'
-#        mdl = Modal._new do
-#            _title: 'Ver tipo de cambio.'
-#            _body: _iframe
-#        mdl._show Modal.CLASS.large
 
     @_amount-display = @el.query "##{_amount-id}"
     @_last-day-display = @el.query "##{_last-day-id}"

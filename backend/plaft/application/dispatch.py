@@ -197,25 +197,12 @@ def numerate(dispatch, **args):
     dispatch.store()
     amount = dispatch.amount
     amount = amount.replace(' ', '').replace(',', '')
-    if (not dispatch.is_accepted and
+    if (not dispatch.operation_key and
        dispatch.amount and
        float(amount) >= 10000):
-        operation = Operation(dispatches_key=[dispatch.key],
-                          customs_agency_key=dispatch.customs_agency_key,
-                          customer_key=dispatch.customer_key)
-        operation.store()
-
-        dispatch.operation_key = operation.key
-        dispatch.store()
+        plaft.application.operation.accept(dispatch)
     else:
-        if dispatch.operation_key:
-            operation = Operation.find(int(dispatch.operation.id))
-            operation.delete()
-
-            dispatch.operation_key = None
-            dispatch.store()
-
-    return dispatch.is_accepted
+        plaft.application.operation.reject(dispatch)
 
 
 def register(dispatch, country_source, country_target):

@@ -23,7 +23,7 @@ class OperationEdit extends Module
    * @private
    */
   on-accept: ~>
-    App.ajax._post "/api/dispatch/#{@model._id}/accept", null, do
+    App.ajax._post "/api/dispatch/#{@model._id}/accept_anexo", null, do
       _success: ~>
         alert 'ACEPTADO'
       _bad-request: ~>
@@ -412,20 +412,6 @@ class OperationEdit extends Module
                 class='#{gz.Css \btn}
                      \ #{gz.Css \btn-success'}'>
           Aceptar
-        </button>
-      </div>
-      <div class='#{gz.Css \col-md-12}
-                \ #{gz.Css \hidden-sm}'
-           style='padding:0'>
-        &nbsp;
-      </div>
-      <div class='#{gz.Css \col-md-12}
-                \ #{gz.Css \col-sm-6}'
-           style='padding:0;margin-bottom: 20px'>
-        <button type='button'
-                class='#{gz.Css \btn}
-                     \ #{gz.Css \btn-info'}'>
-          Generar
         </button>
       </div>
     </div>
