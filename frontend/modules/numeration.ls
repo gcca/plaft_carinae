@@ -68,7 +68,12 @@ class NumerationEdit extends Module
   on-accept: ~>
     App.ajax._post "/api/dispatch/#{@model._id}/accept", null, do
       _success: ~>
-        alert 'ACEPTADO'
+        @_desktop.notifier.notify do
+          _message : 'Se ha registrado como operación'
+          _type    : @_desktop.notifier.kSuccess
+
+        $ (@el.query '.btn-success') ._hide!
+        $ (@el.query '.btn-danger') ._show!
       _bad-request: ~>
         alert 'DENEGADO (Error)'
 
@@ -79,7 +84,13 @@ class NumerationEdit extends Module
   on-reject: ~>
     App.ajax._post "/api/dispatch/#{@model._id}/reject", null, do
       _success: ~>
-        alert 'RECHAZADO'
+        delete @model._attributes.'operation'
+        @_desktop.notifier.notify do
+          _message : 'Se ha registrado como operación'
+          _type    : @_desktop.notifier.kSuccess
+
+        $ (@el.query '.btn-success') ._show!
+        $ (@el.query '.btn-danger') ._hide!
       _bad-request: ~>
         alert '(Error)'
 
@@ -173,6 +184,13 @@ class NumerationEdit extends Module
           _body: message-dam._join  ''
       mdl-dam._show!
 
+  _has-operation: (dispatch) ->
+    if not dispatch.'operation'?
+      $ (@el.query '.btn-success') ._show!
+      $ (@el.query '.btn-danger') ._hide!
+    else
+      $ (@el.query '.btn-success') ._hide!
+      $ (@el.query '.btn-danger') ._show!
   # TODO: Quitar `_tr`. Se debería crear una clase Child de Table para
   #       manipular la tabla o al menos la fila representada por la
   #       vista cargada desde algún evento de la tabla.
@@ -202,20 +220,16 @@ class NumerationEdit extends Module
 
     _special-buttons = "
       <div class='#{gz.Css \col-md-6}'>
-        <label class='#{gz.Css \col-md-12}'>
-          UMBRAL ESPECIAL
-        </label>
-        <div class='#{gz.Css \col-md-2}'>&nbsp;</div>
+        <div class='#{gz.Css \col-md-12}'>&nbsp;</div>
         <button type='button' class='#{gz.Css \btn}
                                    \ #{gz.Css \btn-success}
                                    \ #{gz.Css \col-md-3}'>
-           &nbsp;SI&nbsp;
+           ENVIAR A R.O.
         </button>
-        <div class='#{gz.Css \col-md-2}'>&nbsp;</div>
         <button type='button' class='#{gz.Css \btn}
                                    \ #{gz.Css \btn-danger}
                                    \ #{gz.Css \col-md-3}'>
-          &nbsp;NO&nbsp;
+          SACAR DE R.O.
         </button>
       </div>"
 
@@ -286,6 +300,11 @@ class NumerationEdit extends Module
       @_calculate-storage-years ..'numeration_date'
 
       @_calculate-amount-soles ..'amount', ..'exchange_rate'
+      if parseInt(..'amount') > 10000
+        $ (@el.query '.btn-success')._parent ._hide!
+      else
+        @_has-operation ..
+
 
     super!
 

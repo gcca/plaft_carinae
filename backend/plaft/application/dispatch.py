@@ -193,6 +193,10 @@ def numerate(dispatch, **args):
     """
 #    Implementar nuevo caso de uso para el registro
 #    de las operaciones individuales.
+
+    if 'operation' in args:
+        del args['operation']  # HARDCODE
+
     dispatch << args
     dispatch.store()
     amount = dispatch.amount
@@ -201,8 +205,6 @@ def numerate(dispatch, **args):
        dispatch.amount and
        float(amount) >= 10000):
         plaft.application.operation.accept(dispatch)
-    else:
-        plaft.application.operation.reject(dispatch)
 
 
 def register(dispatch, country_source, country_target):
