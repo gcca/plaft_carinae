@@ -204,6 +204,10 @@ class Customer(dom.Model, dom.PolyModel):
     issuance_country = dom.String()  # país de emisión
     ruc = dom.String()
     employment = dom.String()  # cargo público
+    # PERSON-ANEXO 6
+    average_income = dom.String()
+    is_pep = dom.Boolean()
+    employer = dom.String()
 
     # BUSINESS
     money_source = dom.String()

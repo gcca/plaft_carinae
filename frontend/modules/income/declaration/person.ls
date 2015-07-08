@@ -27,6 +27,15 @@ class Person extends Customer
     r
 
   _json-setter: (_dto) ->
+    _is-pep = @form-builder._elements'is_pep'._radios
+    employment = @form-builder._elements.'employment'._view._input
+    if _dto.'is_pep'?
+      if _dto.'is_pep'
+        _is-pep._yes._checked = true
+        employment._disabled = off
+      else
+        _is-pep._no._checked = true
+        employment._disabled = on
     super _dto
     # Progress Bar
     @ratio = new FormRatio do
@@ -63,6 +72,17 @@ class Person extends Customer
       _officer-yes._disabled = off
       _officer-no._checked = off
 
+  on-is_pep-change: ~>
+    employment = @form-builder._elements.'employment'._view._input
+    is_pep = @form-builder._elements.'is_pep'._radios._no
+    if is_pep._checked
+      employment._value = ''
+      employment._disabled = on
+    else
+      employment._value = ''
+      employment._disabled = off
+
+
   /** @protected */
   set-default-type: -> @set-type 'n'
 
@@ -75,6 +95,9 @@ class Person extends Customer
 
       .._elements.'is_obligated'._element
         ..on-change @on-is_obligated-change
+
+      .._elements.'is_pep'._element
+        ..on-change @on-is_pep-change
 
       # Update issuance_country by document_type
       issuance-country-el = .._elements.'issuance_country'._element
@@ -178,21 +201,18 @@ class Person extends Customer
       _label: 'Nombre Conviviente o Conyuge'
       _field-attrs: _FIELD_ATTR._disabled
 
-    * _name: 'employment'
-      _label: 'l) Cargo o función pública'
-
     * _name: 'money_source_type'
-      _label: 'm) Tipo de Fondos'
+      _label: 'l) Tipo de Fondos'
       _type: FieldType.kComboBox
       _options:
         'No efectivo'
         'Efectivo'
 
     * _name: 'money_source'
-      _label: 'Origen de los fondos'
+      _label: 'm) Origen de los fondos'
 
     * _name: 'is_obligated'
-      _label: 'j) Si es Sujeto obligado'
+      _label: 'n) Si es Sujeto obligado'
       _type: FieldType.kYesNo
 
     * _name: 'has_officer'
@@ -203,6 +223,27 @@ class Person extends Customer
       _label: 'Ref. Cliente'
       _tip: 'Referencia del cliente.'
       _grid: _GRID._inline
+
+    * _name: 'is_pep'
+      _label: 'Es persona PEP?'
+      _type: FieldType.kYesNo
+
+    * _name: 'employment'
+      _label: 'Cargo o función pública'
+      _tip: 'Si es PEP, debe indicar el cargo público
+           \ ([ctrl+M] para ver la tabla No 3 completa)'
+      _type: FieldType.kView
+      _field-attrs: _FIELD_ATTR._disabled
+      _options : new InputName do
+                   _name : App.lists.office._display
+                   _field : 'employment'
+
+    * _name: 'employer'
+      _label: 'Empleador'
+      _tip: 'En caso de ser dependiente'
+
+    * _name: 'average_income'
+      _label: 'Ingresos promedios mensuales'
 
 
 /** @export */
