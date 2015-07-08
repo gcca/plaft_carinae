@@ -51,13 +51,16 @@ class FormRatio
     int-value
 
   _validate-field: (_field, _type) ->
+    _field-name = (@el.query "[name='#{_field._name}']")
     if _field._type is FieldType.kView
+      if _field-name?
+        @is_disabled = _field-name._disabled
       _parent = _field._options.el._parent
     else if _field._type is FieldType.kRadioGroup
-      _parent = (@el.query "[name=#{_field._name}]")._parent._parent
+      _parent = _field-name._parent._parent
     else
-      @is_disabled = (@el.query "[name=#{_field._name}]")._disabled
-      _parent = (@el.query "[name=#{_field._name}]")._parent
+      @is_disabled = _field-name._disabled
+      _parent = _field-name._parent
 
     if _type?
       if @is_disabled? and not @is_disabled
