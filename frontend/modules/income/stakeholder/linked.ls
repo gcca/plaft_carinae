@@ -136,6 +136,9 @@ class FormLinked extends panelgroup.FormBody
     * _name: 'link_type'
       _label: 'Tipo de vinculación'
       _type: FieldType.kComboBox
+      _tip: 'La persona en cuyo nombre se realiza la operación es: (1) Proveedor
+           \ del extranjero (ingreso de mercancía), (2)Destinatario de Embarque
+           \ (salida de mercancía).'
       _options:
         'Proveedor'
         'Destinatario de embarque'
@@ -143,6 +146,8 @@ class FormLinked extends panelgroup.FormBody
     * _name: 'customer_type'
       _label: 'Tipo Persona'
       _type: FieldType.kComboBox
+      _tip: 'La persona en cuyo nombre se realiza la operación ha sido
+           \ representado.'
       _options:
         'Natural'
         'Jurídica'
@@ -151,24 +156,35 @@ class FormLinked extends panelgroup.FormBody
   _FIELD_PERSON :
     * _name: 'father_name'
       _label: 'Apellido paterno'
+      _tip: 'Apellido paterno de la persona en cuyo nombre se realiza la
+           \ operación.'
 
     * _name: 'mother_name'
       _label: 'Apellido materno'
+      _tip: 'Apellido materno de la persona en cuyo nombre se realiza la
+           \ operación.'
 
     * _name: 'name'
       _label: 'Nombre completo'
+      _tip: 'Nombres de la persona en cuyo nombre se realiza la operación.'
 
     * _name: 'issuance_country'
       _label: 'País de emisión del documento'
+      _tip: 'País de emisión del documento de la persona en cuyo nombre se
+           \ realiza la operación.'
 
     * _name: 'address'
       _label: 'Nombre y N° de la vía dirección'
+      _tip: 'Nombre y número de la vía de la dirección de la persona en cuyo
+           \ nombre se realiza la operación.'
 
     * _name: 'phone'
       _label: 'Teléfono de la persona'
+      _tip: 'Teléfono de la persona en cuyo nombre se realiza la operación.'
 
     * _name: 'nationality'
       _label: 'Nacionalidad'
+      _tip: 'Nacionalidad de la persona en cuyo nombre se realiza la operación.'
 
     * _name: 'document_type'
       _type: FieldType.kHidden
@@ -178,22 +194,31 @@ class FormLinked extends panelgroup.FormBody
   _FIELD_BUSINESS :
     * _name: 'name'
       _label: 'Razon social'
+      _tip: 'Razón social de la persona en cuyo nombre se realiza la operación.'
 
     * _name: 'social_object'
       _label: 'Objeto social'
 
     * _name: 'activity'
       _label: 'Actividad económica principal'
+      _tip: 'Actividad económica de la persona en cuyo nombre se realiza la
+           \ operación(persona jurídica u otras formas de organización o
+           \ asociación que la Ley establece): Consignar la actividad
+           \ principal.'
 
     * _name: 'address'
       _label: 'Nombre y N° via direccion'
+      _tip: 'Nombre y número de la vía de la dirección de la persona en cuyo
+           \ nombre se realiza la operación.'
 
     * _name: 'phone'
       _label: 'Teléfono de la persona en cuyo nombre'
+      _tip: 'Teléfono de la persona en cuyo nombre se realiza la operación.'
 
     * _name: 'country'
       _label: ''  # origen o destino (importación o exportación)
                   # según el tipo de operación. Ver en el builder.
+      _tip: 'Pais de origen/Pais de destino'
       _type: FieldType.kView
       _options : new InputName do
                    _name : App.lists.country-sbs._display
