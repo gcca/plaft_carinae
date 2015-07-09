@@ -339,9 +339,15 @@ class Dispatch(dom.Model):
         self.third = d.third
         self.money_source = d.customer.money_source_type
 
+    @property
+    def is_out(self):
+        outs = ['40', '51', '52', '21', '41', '89', '48']
+        return self.regime.code in outs
+
     def to_dict(self):
         dct = super(Dispatch, self).to_dict()
         dct['declaration'] = self.declaration.to_dict()
+        dct['outs'] = self.is_out
         return dct
 
     @property
@@ -357,12 +363,18 @@ class Operation(dom.Model):
     (tal vez incluyendo su notificación a la UIF).
 
     """
+    from datetime import datetime
+    current_year = datetime.now().year
+    counter = dom.Integer(default=0)
     dispatches_key = dom.Key(Dispatch, repeated=True)
     customs_agency_key = dom.Key(CustomsAgency)
     customer_key = dom.Key(Customer)
     country_source = dom.String()
     country_target = dom.String()
-
+    row_number = dom.Computed(lambda self: '%04d' % self.counter)
+    register_number = dom.Computed(lambda self:
+                                    '%s-%s' % (self.current_year,
+                                               self.row_number))
 
 # Datos globales por agencia
 
@@ -371,6 +383,29 @@ class Datastore(dom.Model):
     customs_agency_key = dom.Key(CustomsAgency)
     pending_key = dom.Key(Dispatch, repeated=True)
     accepting_key = dom.Key(Dispatch, repeated=True)
+    operation_counter = dom.Integer(default=0)
+    operation_last_year = dom.Integer()
+
+    def new_operation_counter(self):
+        from datetime import datetime
+        current_year = datetime.now().year
+        if self.operation_last_year+1 == current_year:
+            self.operation_counter = 0
+        self.operation_counter += 1
+        self.operation_last_year = current_year
+        self.store()
+        return self.operation_counter
+
+
+class Plaft(dom.Model):
+    base_datetime = dom.DateTime()
+
+    def is_new_year(self):
+        from datetime import datetime
+        base_year = self.base_datetime.year
+        current_year = datetime.now().year
+        return base_year == current_year
+
 
 
 # vim: et:ts=4:sw=4

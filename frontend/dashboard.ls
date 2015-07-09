@@ -26,6 +26,7 @@ BETAS =
   NewUser = require './modules/new-user'
   Anexo6  = require './modules/anexo-seis'
   Alerts  = require './modules/alerts'
+  Report  = require './modules/monthy_report'
 
 username = window.plaft.'user'.'username'
 
