@@ -159,7 +159,9 @@ def create_dispatches(agency, datastore, customers, n=30):
 
 
 def create_operation(agency, dstp_operation, datastore):
-    operation = Operation(customs_agency_key=agency.key)
+    counter = datastore.last_counter_operation + 1
+    operation = Operation(customs_agency_key=agency.key,
+                          counter=counter)
     operation.store()
 
     for dispatch_key in list(dstp_operation):
@@ -215,7 +217,7 @@ def _data_debug():
                   'dni'),
         DCustomer('Cristhian Gonzales',
                   'dni'),
-        DCustomer('María Cayetana Belén Montserrat Castañeda',
+        DCustomer('María Cayetana',
                   'dni'),
         DCustomer('Antonio Adama',
                   'dni'),
