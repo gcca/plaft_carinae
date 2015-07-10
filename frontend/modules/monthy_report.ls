@@ -17,7 +17,7 @@ class MonthyReport extends Module
     _tr = App.dom._new \tr
     for k in &
       _td = App.dom._new \td
-        ..css = 'text-align: center'
+        ..css = 'text-align: center;width:50px;padding-left:0;padding-right:0'
         ..html = k
       _tr._append _td
     _thead = App.dom._new \thead
@@ -28,7 +28,7 @@ class MonthyReport extends Module
     _tr = App.dom._new \tr
     for k in &
       _td = App.dom._new \td
-        ..css = 'text-align: center'
+        ..css = 'text-align: center;width:50px;padding-left:0;padding-right:0'
         ..html = k
       _tr._append _td
     @_tbody._append _tr
@@ -38,23 +38,19 @@ class MonthyReport extends Module
         .._class = "#{gz.Css \table} #{gz.Css \table-hover}"
       @_tbody = App.dom._new \tbody
 
-      @add-head 'Merc.(I/S)', 'Regimen', 'No Fila' ,'No Registro',
+      @add-head 'No Orden', 'Regimen', 'No Fila' ,'No Registro',
                 'Modalidad O.', 'No Modalidad', 'FOB', 'Monto S/.'
       for operation in operations
-        if operation.'dispatches'._length is 1
-          modalidad = 'U'
-        else
-          modalidad = 'M'
-        for dispatch in operation.dispatches
+        for [dispatch, i] in _.zip operation.'dispatches', operation.'num_modalidad'
           amount = parseFloat dispatch.'amount'
           change = parseFloat dispatch.'exchange_rate'
-          @add-row "#{if dispatch.outs then 'S' else 'I'}",
+          @add-row dispatch.'order',
                    dispatch.'regime'.'code',
                    operation.'row_number',
                    operation.'register_number',
-                   modalidad,
-                   '1',
-                   "#{if amount >10000 then '<span style="color:red">amount</span>' else amount }",
+                   operation.'modalidad',
+                   i,
+                   "#{if amount >10000 then "<span style='color:red'>#{amount}</span>" else amount }",
                    (amount*change).to-fixed 2
 
       @_table._append @_tbody

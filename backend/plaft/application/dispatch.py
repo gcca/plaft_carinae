@@ -265,7 +265,11 @@ def anexo_seis(dispatch, **args):
 
 def list_operations(customs_agency):
     """."""
-    return Operation.all(customs_agency_key=customs_agency.key)
+    operations = Operation.all(customs_agency_key=customs_agency.key)
+    for o in operations:
+        o.dispatches_key = [d.key for d in sorted([d for d in o.dispatches],
+                                                  key=lambda d: d.regime.code)]
+    return sorted([o for o in operations], key=lambda o: o.counter)
 
 
 def list_dispatches(customs_agency):

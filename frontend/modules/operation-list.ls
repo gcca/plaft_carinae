@@ -40,14 +40,13 @@ class ControlHeadTable extends panelgroup.ControlTitle
   _className: gz.Css \table
 
   load-head: (_dto) ->
-    _index = _dto.'index'
     @el.css\width = \1000
     @el.html = "<tbody>
                   <tr>
                     <td style='border-top-style:none;
                                margin:auto;
                                width:162px'>
-                    N&ordm; #{if _index <= 9 then '0'+_index else _index}
+                    N&ordm; #{_dto.row_number}
                     </td>
                     <td style='border-top-style:none;
                                margin:auto;
@@ -152,12 +151,8 @@ class OperationList extends Module
     pnl-group = new panelgroup.PanelGroup
     op._fetch do
       _success: (dispatches) ~>
-        i = 0
         for _model in dispatches._models
-          i += 1
-          _model._attributes.'index' = i
           @render-panel _model._attributes, pnl-group
-          @_desktop._spinner-stop!
 
       _error: ->
         alert 'Error!!! Numeration list'
@@ -195,6 +190,7 @@ class OperationList extends Module
                           \ #{gz.Css \pull-right}'>
                     Procesar operaciones múltiples de
                   </a>"
+    @_desktop._spinner-stop!
     super!
 
   /** @protected */ @@_caption = 'REGISTRO OPERACION'
