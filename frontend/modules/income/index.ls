@@ -305,9 +305,9 @@ class Income extends Module
     kByDocumentNumber: 0
     kByOrder: 1
 
-  /** @protected*/ @@_caption = 'OPERACION'
+  /** @protected*/ @@_caption = 'INGRESO DE OPERACIONES'
   /** @protected*/ @@_icon    = gz.Css \cloud
-  /** @protected */ @@_hash   = 'INCOME-HASH'
+  /** @protected*/ @@_hash   = 'INCOME-HASH'
   /** @protected*/
   @@_search-menu =
     * _caption: 'C'

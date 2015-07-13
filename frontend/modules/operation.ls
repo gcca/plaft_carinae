@@ -608,7 +608,7 @@ class Operations extends Module
     super!
 
 
-  /** @protected */ @@_caption = 'ANEXO 2'
+  /** @protected */ @@_caption = 'RO - PROCESO DIARIO'
   /** @protected */ @@_icon    = gz.Css \flash
   /** @protected */ @@_hash  = 'ANEXO2-HASH'
 

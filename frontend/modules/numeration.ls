@@ -427,7 +427,7 @@ class Numeration extends Module
 
   /** @private */ _table: null
 
-  /** @protected */ @@_caption = 'NUMERACIÓN'
+  /** @protected */ @@_caption = 'NUMERACIÓN DE LAS OPERACIONES'
   /** @protected */ @@_icon    = gz.Css \print
   /** @protected */ @@_hash    = 'NUM-HASH'
 
