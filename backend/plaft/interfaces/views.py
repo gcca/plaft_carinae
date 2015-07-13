@@ -243,8 +243,9 @@ class DeclarationPDF(Handler):
     def makeBusinessPDF(self, story, dispatch, customer):
         content = []
 
-        content.append(['a)', 'Denominación o razón social',' <br/> %s'
-                        ' <br/><br/>' % (self.checkEmpty(customer, 'name')).upper()])
+        content.append(['a)', 'Denominación o razón social',
+                        ' <br/> %s <br/><br/>'
+                        % (self.checkEmpty(customer, 'name')).upper()])
 
         content.append(['b)', 'Registro Unico de Contribuyentes RUC',
                         self.checkEmpty(customer, 'document_number')])

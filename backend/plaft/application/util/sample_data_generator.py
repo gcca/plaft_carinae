@@ -124,7 +124,7 @@ def create_dispatches(agency, datastore, customers, n=30):
         day = random.randint(1, 28)
         rdate = datetime(year, month, day)
         num_date = datetime(int(random.choice(years)),
-                            random.randint(1,12),
+                            random.randint(1, 12),
                             random.randint(1, 28))
         amounts = [str(x) for x in range(3999, 9999)]
         order = '%s-%s' % (random.choice(years),
@@ -133,9 +133,9 @@ def create_dispatches(agency, datastore, customers, n=30):
         declaration = Dispatch.Declaration(customer=customer)
         jurisdiction = random.choice(jurisdictions)
         regime = random.choice(regimes)
-        dam = '%s-%s-%s-%s' %(jurisdiction.code,
-                              year, regime.code,
-                              ''.join(random.sample(digits, 5)))
+        dam = '%s-%s-%s-%s' % (jurisdiction.code,
+                               year, regime.code,
+                               ''.join(random.sample(digits, 5)))
         dispatch = Dispatch(order=order,
                             customer_key=customer.key,
                             customs_agency_key=agency.key,
@@ -470,7 +470,7 @@ declarants = tuple(Declarant(name=j[0],
                              address=j[1])
                    for j in raw_declarants)
 
-raw_alerts_1=(
+raw_alerts_1 = (
     ('1.  El cliente, para efectos de su identificación,'
      ' presenta información inconsistente o de dificil'
      ' verificación por parte del sujeto obligado.'),
@@ -526,7 +526,7 @@ raw_alerts_1=(
      ' declara no realizar o no haber realizado actividad económica alguna.')
 )
 
-raw_alerts_2=(
+raw_alerts_2 = (
     ('1 Existencia de indicios de exportaciones o importación ficticia'
      ' de bienes y/o uso de documentos presuntamente falsos o inconsistentes'
      ' con los cuales se pretenda acreditar estas operaciones de comercio'

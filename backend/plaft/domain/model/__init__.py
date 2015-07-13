@@ -373,8 +373,9 @@ class Operation(dom.Model):
     country_target = dom.String()
     row_number = dom.Computed(lambda self: '%04d' % self.counter)
     register_number = dom.Computed(lambda self:
-                                    '%s-%s' % (self.current_year,
-                                               self.row_number))
+                                   '%s-%s' % (self.current_year,
+                                              self.row_number))
+
     @property
     def modalidad(self):
         if len(self.dispatches_key) > 1:
@@ -396,8 +397,8 @@ class Operation(dom.Model):
         dct['num_modalidad'] = self.num_modalidad
         return dct
 
-# Datos globales por agencia
 
+# Datos globales por agencia
 class Datastore(dom.Model):
     """Pseudo-ValueObject for dispatch-operation transitions."""
     customs_agency_key = dom.Key(CustomsAgency)
@@ -409,7 +410,8 @@ class Datastore(dom.Model):
     @property
     def last_counter_operation(self):
         operations = sorted([op for op
-                                in Operation.all(customs_agency_key=self.customs_agency_key)],
+                            in Operation.all(
+                               customs_agency_key=self.customs_agency_key)],
                             key=lambda op: op.counter)
         return len([o.counter for o in operations])
 
@@ -432,7 +434,6 @@ class Plaft(dom.Model):
         base_year = self.base_datetime.year
         current_year = datetime.now().year
         return base_year == current_year
-
 
 
 # vim: et:ts=4:sw=4
