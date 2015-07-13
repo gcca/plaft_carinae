@@ -12,7 +12,8 @@ PRE-MODULES =
   Income        = require './modules/income'
   Numeration    = require './modules/numeration'
   Operation     = require './modules/operation'
-  OperationList = require './modules/operation-list'
+  #OperationList = r equire './modules/operation-list'
+  Report  = require './modules/monthy_report'
 
 MODULES = new Array
 
@@ -26,7 +27,6 @@ BETAS =
   NewUser = require './modules/new-user'
   Anexo6  = require './modules/anexo-seis'
   Alerts  = require './modules/alerts'
-  Report  = require './modules/monthy_report'
 
 username = window.plaft.'user'.'username'
 

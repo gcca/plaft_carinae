@@ -38,20 +38,21 @@ class MonthyReport extends Module
         .._class = "#{gz.Css \table} #{gz.Css \table-hover}"
       @_tbody = App.dom._new \tbody
 
-      @add-head 'No Orden', 'Regimen', 'No Fila' ,'No Registro',
-                'Modalidad O.', 'No Modalidad', 'FOB', 'Monto S/.'
+      @add-head 'No Orden', 'Rg.', 'No Fila' ,'No Registro', 'DAM',
+                'Modalidad O.', 'No Modalidad', 'FOB', 'Fecha Numeración'
       for operation in operations
         for [dispatch, i] in _.zip operation.'dispatches', operation.'num_modalidad'
-          amount = parseFloat dispatch.'amount'
+          amount = (parseFloat dispatch.'amount').to-fixed 2
           change = parseFloat dispatch.'exchange_rate'
           @add-row dispatch.'order',
                    dispatch.'regime'.'code',
                    operation.'row_number',
                    operation.'register_number',
+                   dispatch.'dam',
                    operation.'modalidad',
                    i,
                    "#{if amount >10000 then "<span style='color:red'>#{amount}</span>" else amount }",
-                   (amount*change).to-fixed 2
+                   dispatch.'numeration_date'
 
       @_table._append @_tbody
       @el._append @_table
@@ -61,6 +62,12 @@ class MonthyReport extends Module
     @clean!
     @_desktop._lock!
     @_desktop._spinner-start!
+    @$el._append "<a class='#{gz.Css \btn}
+                              \ #{gz.Css \btn-primary}
+                              \ #{gz.Css \pull-right}'
+                    href='/api/operation/monthly_report'>
+                 Generar Reporte
+                 </a>"
     App.ajax._get '/api/operation/operations', true, do
       _success: (_dto) ~>
         @add-table _dto
@@ -70,9 +77,9 @@ class MonthyReport extends Module
 
   _table: null
   _tbody: null
-  /** @protected */ @@_caption = 'REPORTE MENSUAL'
+  /** @protected */ @@_caption = 'RO - PROCESO MENSUAL'
   /** @protected */ @@_icon    = gz.Css \certificate
-  /** @protected */ @@_hash  = 'REPORTE-M-HASH'
+  /** @protected */ @@_hash    = 'OPLIST-HASH'
 
 
 /** @export */

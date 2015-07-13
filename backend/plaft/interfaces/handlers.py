@@ -205,95 +205,77 @@ class Operation(RESTful):
         """
         import StringIO
         import xlsxwriter
-        import datetime
+        from datetime import datetime
 
-        query = self.query
-
-        month_report = query['month']
-        year_report = query['year']
         customs_agency = self.user.customs_agency
-        dispatches = model.Dispatch.all(customs_agency_key=customs_agency.key)
+        operations = plaft.application.dispatch.list_operations(customs_agency)
         filas = 3
 
         output = StringIO.StringIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         worksheet = workbook.add_worksheet()
+        worksheet.set_column('B:B', 15)
+        worksheet.set_column('C:C', 5)
+        worksheet.set_column('D:D', 5)
+        worksheet.set_column('E:E', 10)
+        worksheet.set_column('F:F', 22)
+        worksheet.set_column('G:H', 5)
+        worksheet.set_column('I:I', 10)
+        worksheet.set_column('J:J', 15)
         # NORMAL DISPATCH
-        dispatch_format = workbook.add_format({'align': 'center'})
+        dispatch_format = workbook.add_format({'align': 'center',
+                                               'border': 1})
         # DISPATCH IN OPERATION
         operation_format = workbook.add_format({'align': 'center',
-                                                'font_color': '#9C0006'})
+                                                'font_color': '#9C0006',
+                                                'border': 1})
         # DISPATCH IN OPERATION
         title_format = workbook.add_format({'align': 'center',
                                             'bold': 1,
-                                            'font_color': '#9C0006'})
-        worksheet.write(2, 1, 'No Fila', title_format)
-        worksheet.write(2, 2, 'No Operacion', title_format)
-        worksheet.write(2, 3, 'No DAM', title_format)
-        worksheet.write(2, 4, 'Modalidad Operacion', title_format)
-        worksheet.write(2, 5, 'No Oper. Modalidad', title_format)
-        worksheet.write(2, 6, 'Fecha Numeracion', title_format)
-        worksheet.write(2, 7, 'DAM FOB US$', title_format)
-        idx_operation = 0
+                                            'font_color': '#9C0006',
+                                            'border': 1})
+        worksheet.write(2, 1, 'No Orden', title_format)
+        worksheet.write(2, 2, 'Rg.', title_format)
+        worksheet.write(2, 3, 'No F.', title_format)
+        worksheet.write(2, 4, 'No Reg.', title_format)
+        worksheet.write(2, 5, 'DAM', title_format)
+        worksheet.write(2, 6, 'M.O.', title_format)
+        worksheet.write(2, 7, 'N.M.', title_format)
+        worksheet.write(2, 8, 'FOB US$', title_format)
+        worksheet.write(2, 9, 'F. Numeracion', title_format)
 
-        while dispatches:
-            dispatch = dispatches[0]
-            if dispatch.operation_key:
-                excel_format = operation_format
-                idx_operation += 1
-                if idx_operation <= 9:
-                    str_opert = '00%d' % idx_operation
-                elif idx_operation <= 99:
-                    str_opert = '0%d' % idx_operation
-                else:
-                    str_opert = str(idx_operation)
-                i = 0
-                operations = [x for x in dispatches
-                          if x.operation_key==dispatch.operation_key]
-                if len(operations) is 1:
-                    worksheet.write(filas, 1, str_opert, excel_format)
-                    worksheet.write(filas, 2, dispatch.order, excel_format)
-                    worksheet.write(filas, 3, dispatch.dam, excel_format)
-                    worksheet.write(filas, 4, 'U', excel_format)
-                    worksheet.write(filas, 5, '', excel_format)
-                    worksheet.write(filas, 6, dispatch.numeration_date, excel_format)
-                    worksheet.write(filas, 7, dispatch.amount, excel_format)
-                    str_opert = ''
-                    filas = filas + 1
-                    dispatches.remove(dispatch)
-                else:
-                    for d in operations:
-                        i += 1
-                        worksheet.write(filas, 1, str_opert, excel_format)
-                        worksheet.write(filas, 2, d.order, excel_format)
-                        worksheet.write(filas, 3, d.dam, excel_format)
-                        worksheet.write(filas, 4, 'M', excel_format)
-                        worksheet.write(filas, 5, i, excel_format)
-                        worksheet.write(filas, 6, d.numeration_date, excel_format)
-                        worksheet.write(filas, 7, d.amount, excel_format)
-                        str_opert = ''
-                        filas = filas + 1
-                        dispatches.remove(d)
-            else:
+        for operation in operations:
+            for i in range(len(operation.dispatches)):
+                dispatch = operation.dispatches[i]
+                index = operation.num_modalidad[i]
                 excel_format = dispatch_format
-                str_opert = ''
-                worksheet.write(filas, 1, str_opert, excel_format)
-                worksheet.write(filas, 2, dispatch.order, excel_format)
-                worksheet.write(filas, 3, dispatch.dam, excel_format)
-                worksheet.write(filas, 4, 'U', excel_format)
-                worksheet.write(filas, 5, '', excel_format)
-                worksheet.write(filas, 6, dispatch.numeration_date, excel_format)
-                worksheet.write(filas, 7, dispatch.amount, excel_format)
-                dispatches.remove(dispatch)
+                amount = float(dispatch.amount)
+                if amount > 10000:
+                    excel_format = operation_format
+                worksheet.write(filas, 1, dispatch.order, excel_format)
+                worksheet.write(filas, 2, dispatch.regime.code, excel_format)
+                worksheet.write(filas, 3, operation.row_number, excel_format)
+                worksheet.write(filas, 4, operation.register_number,
+                                excel_format)
+                worksheet.write(filas, 5, dispatch.dam, excel_format)
+                worksheet.write(filas, 6, operation.modalidad,
+                                excel_format)
+                worksheet.write(filas, 7, '%s' % index, excel_format)
+                worksheet.write(filas, 8, "{0:.2f}".format(amount),
+                                excel_format)
+                worksheet.write(filas, 9,
+                                dispatch.numeration_date.strftime('%d/%m/%Y'),
+                                excel_format)
                 filas = filas + 1
         workbook.close()
         output.seek(0)
-        ztime = datetime.datetime.utcnow()
-        name_file = "Reporte MENSUAL(%s).xlsx" % (ztime.strftime('%d / %m / %Y'))
+        ztime = datetime.now().strftime("%B")
+        name_file = "Reporte MENSUAL-(%s).xlsx" % ztime
         self.response.headers['Content-Type'] = 'application/octotet-stream'
         self.response.headers['Content-Disposition'] = 'attachment;\
-                                            filename="%s"' %(name_file)
+                                            filename="%s"' % name_file
         self.write(output.read())
+
 
 class Customs_Agency(RESTful):
     """Custom Agency RESTful handler."""
@@ -438,7 +420,6 @@ class Dispatch(RESTful):
         datastore.accepting_key.append(dispatch.key)
         datastore.store()
         self.write_json('{}')
-
 
     @RESTful.method('post')  # ?
     def anexo_seis(self, dispatch_id):
