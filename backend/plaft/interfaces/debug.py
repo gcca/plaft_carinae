@@ -74,8 +74,7 @@ class NewUsers(Handler):
             'agency_id': agency.id
         }
 
-    def template(self, agency='', username='', password='',
-                 msg='', mode='create'):
+    def template(self, agency='', username='', password='', mode='create'):
 
         agencies = ''.join(self.to_li(a) for a in model.CustomsAgency.all())
 
@@ -120,7 +119,7 @@ class NewUsers(Handler):
                         <a href=''>Nuevo</a>
                         <input type='hidden'
                                name='mode'
-                               value='s'>
+                               value='%(mode)s'>
                     </form>
                 </body>
                 <hr>
@@ -132,8 +131,8 @@ class NewUsers(Handler):
             'agency': agency,
             'username': username,
             'password': password,
-            'msg': msg,
-            'agencies': agencies
+            'agencies': agencies,
+            'mode': mode
         }
 
     def get(self):
@@ -249,6 +248,211 @@ class UsersFromFile(Handler):
             agency.store()
 
         self.write('OK')
+
+
+class DataToRestore(Handler):
+
+    @staticmethod
+    def format_dispatches(dispatches):
+        dispatches = [dispatch.dict for dispatch in dispatches]
+
+        def clean(dct):
+            if 'id' in dct:
+                del dct['id']
+
+            if 'class_' in dct and isinstance(dct['class_'], list):
+                dct['class_'] = dct['class_'][-1]
+
+            for _, value in dct.items():
+                if isinstance(value, dict):
+                    clean(value)
+
+                if isinstance(value, list):
+                    for item in value:
+                        if isinstance(item, dict):
+                            clean(item)
+
+            return dct
+
+        def clear(dct):
+            if dct['operation']:
+                dct['operation'] = dct['operation']['id']
+            del dct['declaration']
+            return dct
+
+        dispatches = [clean(clear(dispatch)) for dispatch in dispatches]
+        return dispatches
+
+    @staticmethod
+    def format_users(users):
+        formated_users = []
+        for user in users:
+            customs_agency_name = user.customs_agency.name
+            user.customs_agency_key = None
+            formated_user = user.dict
+            formated_user['customs_agency'] = customs_agency_name
+            formated_user['class_'] = formated_user['class_'][-1]
+            formated_user['password'] = user.password
+            del formated_user['id']
+            del formated_user['permissions']['id']
+            formated_users.append(formated_user)
+        return formated_users
+
+    def get(self):
+        # from base64 import b64encode
+        def b64encode(x):
+            return x
+        data = b64encode(self.JSON.dumps({
+            'dispatches': self.format_dispatches(model.Dispatch.all()),
+            'users': self.format_users(model.User.all())
+        }))
+
+        self.write_json(data)  # , 'data-plaft')
+
+
+class RestoreData(Handler):
+
+    def get(self):
+        self.write('<html>'
+                   '<body>'
+                   '<form method="post" '
+                   'enctype="multipart/form-data" '
+                   'accept-charset="utf-8">'
+                   '<input type="file" name="data">'
+                   '<br>'
+                   '<input type="submit">'
+                   '</form>'
+                   '</body>'
+                   '</html>')
+
+    def post(self):
+        # from base64 import b64decode
+        def b64decode(x):
+            return x
+        data = self.JSON.loads(b64decode(self.request.get('data')
+                                         .decode('cp1252', 'replace')
+                                         .encode('utf-8')))
+
+        self.create_users(data['users'])
+        self.create_dispatches(data['dispatches'])
+
+        self.write('OK')
+
+    def create_users(self, dcts):
+        for dct in dcts:
+            cls = (model.Officer
+                   if dct['class_'] == 'Officer'
+                   else (model.Employee
+                         if dct['class_'] == 'Employee'
+                         else None))
+
+            if cls is None:
+                raise AttributeError('Bad User class name.')
+
+            ca_name = dct['customs_agency']
+            per_dct = dct['permissions']
+
+            del dct['class_']
+            del dct['customs_agency']
+            del dct['permissions']
+
+            user = cls(**dct)
+            user.password = dct['password']
+            user.store()
+
+            customs_agency = self.get_customs_agency(ca_name)
+            user.customs_agency_key = customs_agency.key
+            user.store()
+            # TODO: USer previous conditional to eval Officer-Employee user.
+            if cls is model.Officer:
+                customs_agency.officer_key = user.key
+            elif cls is model.Employee:
+                customs_agency.employees_key.append(user.key)
+            else:
+                raise TypeError('Bad class type.')
+            customs_agency.store()
+
+            permissions = model.Permissions.new(per_dct)
+            user.permissions_key = permissions.store()
+            user.store()
+
+    def create_dispatches(self, dcts):
+        # TODO: Remove this function.
+        #       Implement right filter for computed properties.
+        def clean(dct):
+            if 'slug' in dct:
+                del dct['slug']
+            for key in dct:
+                if isinstance(dct[key], dict):
+                    clean(dct[key])
+
+                if isinstance(dct[key], list):
+                    for item in dct[key]:
+                        if isinstance(item, dict):
+                            clean(item)
+
+        self.cache = {}
+        for dct in dcts:
+            customs_agency_dct = dct['customs_agency']
+            customs_agency_name = customs_agency_dct['name']
+            customs_agency = self.get_customs_agency(customs_agency_name,
+                                                     customs_agency_dct)
+            del dct['customs_agency']
+
+            customer_dct = dct['customer']
+            customer_document_number = customer_dct['document_number']
+            customer = self.get_(model.Customer,
+                                 document_number=customer_document_number)
+            del dct['customer']
+
+            # TODO: Remove this.
+            if 'declaration' in dct:
+                del dct['declaration']
+
+            operation_key = self.get_operation_key(dct['operation'])
+            del dct['operation']
+
+
+            clean(dct)
+            dispatch = model.Dispatch.new(dct)
+            dispatch.customs_agency_key = customs_agency.key
+            dispatch.customer_key = customer.key
+            dispatch.store()
+
+            if operation_key:
+                dispatch.operation_key = operation_key
+                dispatch.store()
+
+
+    @staticmethod
+    def get_operation_key(hsh):
+        if hsh:
+            model.Operation()
+
+    @staticmethod
+    def get_(model, dct=None, **kwargs):
+        instance = model.find(**kwargs)
+        if not instance:
+            instance = model(**kwargs)
+            if dct:
+                instance << dct
+            # Callbacks in a dict. E.g, datastore when customs agency.
+            instance.store()
+        return instance
+
+    @staticmethod
+    def get_customs_agency(name, dct=None):
+        customs_agency = model.CustomsAgency.find(name=name)
+        if not customs_agency:
+            customs_agency = model.CustomsAgency(name=name)
+            if dct:
+                customs_agency << dct
+            key = customs_agency.store()
+
+            datastore = model.Datastore(customs_agency_key=key)
+            datastore.store()
+
+        return customs_agency
 
 
 # REST Handlers

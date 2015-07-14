@@ -30,7 +30,7 @@ urls = [
 ]
 
 
-if plaft.config.DEBUG or True:
+if plaft.config.DEBUG or True:  # TODO: Remove 'or True' on production.
     from plaft.interfaces import debug
 
     def uri(prefix, handler):
@@ -51,7 +51,10 @@ if plaft.config.DEBUG or True:
         ('/debug', debug.Debug),
         ('/new-user', debug.NewUsers),
         ('/new-user/(\\d+)', debug.NewUsers),
-        ('/users-from-file', debug.UsersFromFile)
+        ('/users-from-file', debug.UsersFromFile),
+        ('/data-to-restore', debug.DataToRestore),
+        # Methods
+        ('/restore-data', debug.RestoreData)
     ]
 
 

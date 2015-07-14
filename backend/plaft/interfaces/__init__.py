@@ -175,6 +175,13 @@ class Handler(RequestHandler):
             self.status[rc](ValueError('RC JSON'))
         self.write(serial)
 
+    def write_file(self, file, name=None):
+        if name:
+            self.response.headers['Content-Disposition'] = \
+                str('attachment; filename=' + name)
+        self.content_type.DOWN()
+        self.write(file)
+
     def write_value(self, name, value):
         """Set cookie parameter.
 
