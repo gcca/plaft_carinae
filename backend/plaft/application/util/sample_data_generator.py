@@ -486,7 +486,8 @@ raw_alerts_1 = (
      ' aduanero de mercancias o los costos que implica la operación.'),
     ('5.  El cliente realiza operaciones de forma sucesiva y/o reiterada.'),
     ('6.  El cliente realiza constantemente operaciones y de modo inusual'
-     ' usa o pretende utilizar dinero en efectivo como único medio de pago.'),
+     ' usa o pretende utilizar dinero en efectivo como único medio'
+     ' de pago.'),
     ('7.  El cliente se rehusa a llenar los formularios o proporcionar la'
      ' información requerida por el sujeto obligado, o se niega a realizar'
      ' la operación tan pronto se le solicita.'),
@@ -570,9 +571,9 @@ raw_alerts_2 = (
      ' actividad del cliente.'),
     ('17  Existen indicios de que el valor de los bienes dejados'
      ' en depsito no corresponde al valor razonable del mercado.'),
-    ('18  Clientes cuyas mercancías presentan constantes abandonos legales'
-     ' o diferencias en el valor y/o cantidad de la mercancía, en las'
-     ' extracciones de muestras o en otros controles exigidos por'
+    ('18  Clientes cuyas mercancías presentan constantes abandonos'
+     ' legales o diferencias en el valor y/o cantidad de la mercancía,'
+     ' en las extracciones de muestras o en otros controles exigidos por'
      ' la regulación vigente.'),
     ('19  Importaciones y/o exportaciones realizadas de/a principales'
      ' países consumidores de cocaína.'),
