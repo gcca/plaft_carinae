@@ -17,19 +17,28 @@ class MonthyReport extends Module
     _tr = App.dom._new \tr
     for k in &
       _td = App.dom._new \td
-        ..css = 'text-align: center;width:50px;padding-left:0;padding-right:0'
-        ..html = k
+      @create-td _td, k
+      _td.css\font-weight = \bold
       _tr._append _td
     _thead = App.dom._new \thead
     _thead._append _tr
     @_table._append _thead
 
+  create-td: (_td, value) ->
+    if value.__proto__.constructor is Array
+      if value[2]?
+        $(_td).attr value[2]
+      if value[1]?
+        _td.css = value[1]
+      _td.html = value[0]
+    else
+      _td.html = value
+
   add-row: ->
     _tr = App.dom._new \tr
     for k in &
       _td = App.dom._new \td
-        ..css = 'text-align: center;width:50px;padding-left:0;padding-right:0'
-        ..html = k
+      @create-td _td, k
       _tr._append _td
     @_tbody._append _tr
 
@@ -38,8 +47,9 @@ class MonthyReport extends Module
         .._class = "#{gz.Css \table} #{gz.Css \table-hover}"
       @_tbody = App.dom._new \tbody
 
-      @add-head 'No Orden', 'Rg.', 'No Fila' ,'No Registro', 'DAM',
-                'Modalidad O.', 'No Modalidad', 'FOB', 'Fecha Numeración'
+      @add-head 'No Orden', 'Rg.', 'No Fila' ,'No Registro',
+                ['DAM', 'text-align:center;', {colspan:'2'}],
+                'Md. Op.', 'N. Md.', 'FOB', 'Fecha Num.'
       for operation in operations
         for [dispatch, i] in _.zip operation.'dispatches', operation.'num_modalidad'
           amount = (parseFloat dispatch.'amount').to-fixed 2
@@ -48,7 +58,7 @@ class MonthyReport extends Module
                    dispatch.'regime'.'code',
                    operation.'row_number',
                    operation.'register_number',
-                   dispatch.'dam',
+                   [dispatch.'dam', 'text-align:center;', {colspan:'2'}],
                    operation.'modalidad',
                    i,
                    "#{if amount >10000 then "<span style='color:red'>#{amount}</span>" else amount }",
