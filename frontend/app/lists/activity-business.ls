@@ -1,7 +1,7 @@
 /** @module app.lists */
 
 
-exports_display =
+exports._display =
   "Agrícola"
   "Pecuario"
   "Silvicultura (extracción de madera)"
@@ -52,5 +52,67 @@ exports_display =
   "Organizaciones y Organos Extraterritoriales"
   "No identificado"
 
+exports._code =
+  '0101'
+  '0102'
+  '0103'
+  '0201'
+  '0301'
+  '0302'
+  '0401'
+  '0402'
+  '0403'
+  '0404'
+  '0405'
+  '0406'
+  '0501'
+  '0502'
+  '0503'
+  '0504'
+  '0505'
+  '0506'
+  '0507'
+  '0508'
+  '0509'
+  '0510'
+  '0601'
+  '0602'
+  '0603'
+  '0604'
+  '0605'
+  '0606'
+  '0607'
+  '0608'
+  '0609'
+  '0610'
+  '0611'
+  '0612'
+  '0613'
+  '0614'
+  '0615'
+  '0701'
+  '0702'
+  '0703'
+  '0801'
+  '0802'
+  '0803'
+  '0804'
+  '0805'
+  '0901'
+  '0902'
+  '0903'
+  '9999'
+
+exports._sector =
+  'Agropecuario'
+  'Pesca'
+  'Minería e Hidrocarburos'
+  'Manufactura - Procesadores de Recursos Primarios'
+  'Manufactura - Industria No Primaria'
+  'Servicios'
+  'Construcción'
+  'Comercio'
+  'Asociaciones y Organizaciones Extraterritoriales'
+  'No identificado'
 
 # vim: ts=2:sw=2:sts=2:et
