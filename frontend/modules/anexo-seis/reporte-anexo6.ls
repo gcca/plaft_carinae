@@ -32,7 +32,7 @@ class Dispatches extends App.Collection
 * @Class OperationEdit
 * @extends Module
 */
-class Anexo6 extends Module
+class Reporte extends Module
 
   /** @override */
   _tagName: \form
@@ -55,13 +55,12 @@ class Anexo6 extends Module
       .._free!
 
     _alerts = App.lists.alerts._display
-    for i from 1 to 4
-      console.log _alerts[i*2]
+    _dto = [_alerts[i*3] for i from 1 to 4]
 
     @el._fromJSON @model._attributes
     @$el._append "<div class='#{gz.Css \col-md-12}'><hr></hr></div>"
     @$el._append "<div class='#{gz.Css \col-md-12}'>
-                    <ul>#{for i from 1 to 4 then '<li>'+_alerts[i*2]+'</li>'}</ul></div>"
+                    <ul>#{for d in _dto then "<li>#{d}</li>"}</ul></div>"
     @$el._append "<div class='#{gz.Css \col-md-12} ' style='padding:0'>
                     <button type='button'
                             class='#{gz.Css \btn}
@@ -101,25 +100,25 @@ class Anexo6 extends Module
 * @Class Operations
 * @extends Module
 */
-class ListAnexo6 extends Module
+class ReporteAnexo6 extends Module
 
   /** @override */
   render: ->
     (new Utils do
       _desktop: @_desktop
       _parent: @
-      _child: Anexo6)._load-module!
+      _child: Reporte)._load-module!
 
     super!
 
 
-  /** @protected */ @@_caption = 'ANEXO 6'
+  /** @protected */ @@_caption = 'OPERACIONES INUSUALES-ANEXO 6'
   /** @protected */ @@_icon    = gz.Css \flash
   /** @protected */ @@_hash    = 'ANX6-HASH'
 
 
 /** @export */
-module.exports = ListAnexo6
+module.exports = ReporteAnexo6
 
 
 /* vim: ts=2 sw=2 sts=2 et: */

@@ -26,7 +26,9 @@ for module in PRE-MODULES
 BETAS =
   NewUser = require './modules/new-user'
   Anexo6  = require './modules/anexo-seis'
+  ListAlerts  = require './modules/anexo-seis/signal-alert'
   Alerts  = require './modules/alerts'
+  ReporteAnexo6 = require './modules/anexo-seis/reporte-anexo6'
 
 username = window.plaft.'user'.'username'
 

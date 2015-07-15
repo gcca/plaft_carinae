@@ -1,182 +1,83 @@
-/** @module modules */
 
 
-FieldType = App.builtins.Types.Field
-DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
+Module = require '../../workspace/module'
+Utils = require './utils-anexo6'
+Alerts = require './alerts'
 
 /**
- * SignalAlert
- * --------
- *
- * @example
- * @class SignalAlert
- * @extends View
- */
-class SignalAlert extends App.View
+* @class Dispatch
+* @extends Model
+*/
+class Dispatch extends App.Model
+  urlRoot: 'dispatch'
+
+
+/**
+* @Class Dispatches
+* @extends Collection
+*/
+class Dispatches extends App.Collection
+  urlRoot: 'customs_agency/pending'
+#  urlRoot: 'dispatch'
+  model: Dispatch
+
+/**
+* @Class OperationEdit
+* @extends Module
+*/
+class Alert extends Module
 
   /** @override */
   _tagName: \form
 
   /** @override */
-  _className: gz.Css \parent-toggle
+  on-save: ~>
+    App.ajax._post "/api/dispatch/#{@model._id}/anexo_seis", @_toJSON!, do
+      _success: ~>
+        @_desktop.notifier.notify do
+          _message : 'Se actualizó correctamente los datos'
+          _type    : @_desktop.notifier.kSuccess
+      _bad-request: ~>
+        alert 'ERROR: e746ae94-5a3a-11e4-9a1d-88252caeb7e8'
 
-  /**
-   * Form to JSON.
-   * @return {Object}
-   * @override
-   */
-  _toJSON: -> @el._toJSON!
-
-  /**
-   * (Event) On remove signalAlert from list.
-   * @private
-   */
-  buttonOnRemove: ~>
-    @trigger (gz.Css \drop-signal), @
-    @$el.remove!
-
-  /** @override */
-  initialize: ->
-    @el._id= App.utils.uid!
-    super!
 
   /** @override */
   render: ->
-    @el.html = "
-    <div class='#{gz.Css \col-md-11}' style='padding:0'>
-    </div>
-    <div class='#{gz.Css \col-md-1}' style='padding:0'>
-      <div class='#{gz.Css \form-group} #{gz.Css \col-md-5}'>
-          <span class='#{gz.Css \glyphicon}
-                     \ #{gz.Css \glyphicon-remove}
-                     \ #{gz.Css \toggle}'
-              style='margin-top:8px;cursor:pointer;font-size:18px'>
-          </span>
-      </div>
-    </div>"
+    _alerts = App.lists.alerts._display
+    _dto = [_alerts[i*4] for i from 1 to 7]
 
-    App.builder.Form._new @el._first, _FIELD_SIGNAL
-      ..render!
-      .._free!
-
-    @el._last.on-click @buttonOnRemove
-
-    $ @el._first ._append "<div class='#{gz.Css \col-md-12}'><hr></div>"
-
-    @el._fromJSON @model
+    _panel-group = new Alerts
+    _panel-group._fromJSON _dto
+    @el._append _panel-group.render!.el
     super!
 
-  /** @private */ _array-share : null
-  /** @private */ _signals: null
 
-  _FIELD_SIGNAL =
-    * _name: 'code'
-      _label: 'Código'
-
-    * _name: 'signal'
-      _label: 'Descripción de la señal de alerta'
-      _type: FieldType.kComboBox
-      _options: App.lists.alerts._display
-
-    * _name: 'source'
-      _label: 'Fuenta de la señal de la alerta'
-      _type: FieldType.kComboBox
-      _options:
-        'Sistema de Monitoreo'
-        'Área Comercial'
-        'Análisis del SO'
-        'Medio Periodistico'
-        'Otras Fuentes'
-
-    * _name: 'description_source'
-      _label: 'Descripción de otros.'
 
 /**
- * SignalAlerts
- * ------------
- *
- * @example
- * @class SignalAlerts
- * @extends View
- */
-class SignalAlerts extends App.View
-
-  /** @override */
-  _tagName: \div
-
-  /**
-   * SignalAlert list to JSON.
-   * @return [Array.<signalAlert-JSON>] || []
-   * @override
-   */
-  _toJSON: -> [.._toJSON! for @signalAlerts]
-
-  /**
-   * @see addShareholder
-   */
-  on-drop: (signal) ~>
-    @signalAlerts._remove signal
-
-  /**
-   * (Event) On add signalAlert to list.
-   * @private
-   */
-  buttonOnClick: ~> @addSignal!
-
-  /**
-   * Add signalAlert to list.
-   * @param {Object} model SignalAlert DTO.
-   * @private
-   */
-  addSignal: (model) !->
-    signalAlert = SignalAlert._new model: model
-    signalAlert.on (gz.Css \drop-signal), @on-drop
-    @signalAlerts._push signalAlert
-    @xContainer._append signalAlert.render!.el
-
-  load-from: (_signals) ->
-    for model in _signals
-      @addSignal model
-
-  /**
-   * @param {Object} options {@code options.signalAlerts} collection.
-   * @override
-   */
-  initialize: (options) !->
-    /**
-     * SignalAlert views.
-     * @type {SignalAlert}
-     * @private
-     */
-    @signalAlerts = new Array
-
-    # Style
-    App.dom._write ~> @el.css._marginBottom = '1em'
+* @Class Operations
+* @extends Module
+*/
+class ListAlerts extends Module
 
   /** @override */
   render: ->
-    @el.html = "
-      <div class='#{gz.Css \col-md-12}'
-          style='padding-left:0;padding-right:0'></div>
-      <button type='button' class='#{gz.Css \btn} #{gz.Css \btn-default}'
-          style='margin-left:15px'>
-        Agregar
-      </button>"
-
-    @xContainer = @el._first
-    xButton = @el._last
-
-    xButton.onClick @buttonOnClick
-
+    (new Utils do
+      _desktop: @_desktop
+      _parent: @
+      _child: Alert)._load-module!
 
     super!
 
 
-  /** @private */ xContainer: null
+  /** @protected */ @@_caption = 'SEÑALES DE ALERTA'
+  /** @protected */ @@_icon    = gz.Css \flash
+  /** @protected */ @@_hash    = 'SAA-HASH'
 
 
 /** @export */
-module.exports = SignalAlerts
+module.exports = ListAlerts
+
+
 
 
 # vim: ts=2:sw=2:sts=2:et
