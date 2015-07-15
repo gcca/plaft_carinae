@@ -4,6 +4,8 @@ widget = App.widget.codename
   InputName = ..InputName
   CodeNameField = ..CodeNameField
 
+modal = App.widget.message-box
+
 panelgroup = App.widget.panelgroup
 
 FieldType = App.builtins.Types.Field
@@ -50,6 +52,28 @@ class FormLinked extends panelgroup.FormBody
     @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
     _dto
 
+  template-table: ->
+    _code = App.lists.activity-business._code
+    _sector = App.lists.activity-business._sector
+    _activity = App.lists.activity-business._display
+    _tbody = ["<tr><td>#{_code[i]}</td>
+               <td>#{_sector[i]}</td>
+               <td>#{_activity[i]}</td></tr>" for i from 0 to _code._length-1].join ''
+    tb = App.dom._new \table
+    tb._class = "#{gz.Css \table}
+               \ #{gz.Css \table-hover}"
+    tb.html = "<thead>
+                <tr>
+                  <th><strong>Cod.</strong></th>
+                  <th><strong>Sector</strong></th>
+                  <th><strong>Actividad Económica</strong></th>
+                </tr>
+              </thead>
+              <tbody>
+                  #{_tbody}
+              </tbody>"
+    tb
+
   /**
    * @param {Array.<FieldOptions>} _fields
    * @param {Integer} _next-type
@@ -59,6 +83,13 @@ class FormLinked extends panelgroup.FormBody
     @el._last.html = ''
     App.builder.Form._new @el._last, _fields
       @_person-type-html = .._elements.'customer_type'._element
+      .._elements.'activity'._element
+        ..on-key-up (evt) ~>
+            if evt.key-code is 77 and evt.ctrl-key   # [ctrl+M]
+              mdl = modal.Modal._new do
+                  _title: 'Tabla de actividad económica.'
+                  _body: @template-table!
+              mdl._show!
       ..render!
       .._free!
     @_person-type-html._selected-index = _next-type
@@ -204,7 +235,7 @@ class FormLinked extends panelgroup.FormBody
       _tip: 'Actividad económica de la persona en cuyo nombre se realiza la
            \ operación(persona jurídica u otras formas de organización o
            \ asociación que la Ley establece): Consignar la actividad
-           \ principal.'
+           \ principal.([ctrl+M] para ver la tabla de actividad económica)'
 
     * _name: 'address'
       _label: 'Nombre y N° via direccion'

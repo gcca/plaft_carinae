@@ -3,6 +3,8 @@
 
 Customer = require './customer'
 
+modal = App.widget.message-box
+
 App.widget.codename
   InputName = ..InputName
   CodeNameField = ..CodeNameField
@@ -73,14 +75,46 @@ class Business extends Customer
   /** @protected */
   set-default-type: -> @set-type 'j'
 
+  template-table: ->
+    _code = App.lists.activity-business._code
+    _sector = App.lists.activity-business._sector
+    _activity = App.lists.activity-business._display
+    _tbody = ["<tr><td>#{_code[i]}</td>
+               <td>#{_sector[i]}</td>
+               <td>#{_activity[i]}</td></tr>" for i from 0 to _code._length-1].join ''
+    tb = App.dom._new \table
+    tb._class = "#{gz.Css \table}
+               \ #{gz.Css \table-hover}"
+    tb.html = "<thead>
+                <tr>
+                  <th><strong>Cod.</strong></th>
+                  <th><strong>Sector</strong></th>
+                  <th><strong>Actividad Económica</strong></th>
+                </tr>
+              </thead>
+              <tbody>
+                  #{_tbody}
+              </tbody>"
+    tb
+
   /** @override */
   render: ->
     @form-builder = new App.builder.Form @el, _FIELD_BUSINESS
       @shareholders-view = .._elements.'shareholders'._view
-      ..render!
 
       .._elements.'is_obligated'._element
         ..on-change @on-is_obligated-change
+
+      .._elements.'activity'._element
+        ..on-key-up (evt) ~>
+            if evt.key-code is 77 and evt.ctrl-key   # [ctrl+M]
+              mdl = modal.Modal._new do
+                  _title: 'Tabla de actividad económica.'
+                  _body: @template-table!
+              mdl._show!
+
+      ..render!
+
     super!
 
   /** @private */ shareholders-view: null
@@ -107,7 +141,7 @@ class Business extends Customer
     * _name: 'activity'
       _label: 'Actividad económica principal'
       _tip: 'Actividad económica de la persona en cuyo nombre se realiza la
-           \ operación.'
+           \ operación. ([ctrl+M] para ver la tabla de actividad económica)'
 
     * _name: 'shareholders'
       _label: 'd) Identificacion accionistas'
