@@ -112,6 +112,8 @@ exports <<<
 
   anexo2: require './anexo2'
 
+  anexo6: require './anexo6'
+
 
 # Generate {@code _pair} attribute
 for , _obj of exports
