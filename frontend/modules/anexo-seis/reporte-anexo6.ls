@@ -55,12 +55,12 @@ class Reporte extends Module
       .._free!
 
     _alerts = App.lists.alerts._display
-    _dto = [_alerts[i*3] for i from 1 to 4]
+    _dto = ["<li>#{_alerts[i*3]}</li>" for i from 1 to 4].join ''
 
     @el._fromJSON @model._attributes
     @$el._append "<div class='#{gz.Css \col-md-12}'><hr></hr></div>"
     @$el._append "<div class='#{gz.Css \col-md-12}'>
-                    <ul>#{for d in _dto then "<li>#{d}</li>"}</ul></div>"
+                    <ul>#{_dto}</ul></div>"
     @$el._append "<div class='#{gz.Css \col-md-12} ' style='padding:0'>
                     <button type='button'
                             class='#{gz.Css \btn}

@@ -55,13 +55,12 @@ class Anexo6 extends Module
       .._free!
 
     _alerts = App.lists.alerts._display
-    for i from 1 to 4
-      console.log _alerts[i*2]
+    _dto = ["<li>#{_alerts[i*3]}</li>" for i from 1 to 4].join ''
 
     @el._fromJSON @model._attributes
     @$el._append "<div class='#{gz.Css \col-md-12}'><hr></hr></div>"
     @$el._append "<div class='#{gz.Css \col-md-12}'>
-                    <ul>#{for i from 1 to 4 then '<li>'+_alerts[i*2]+'</li>'}</ul></div>"
+                    <ul>#{_dto}</ul></div>"
     @$el._append "<div class='#{gz.Css \col-md-12} ' style='padding:0'>
                     <button type='button'
                             class='#{gz.Css \btn}
