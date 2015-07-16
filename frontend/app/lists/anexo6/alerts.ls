@@ -1,11 +1,12 @@
 /** @module app.lists */
 
-exports._display =
-  'Código de la señal de alerta'
-  'Descripción de la señal de alerta'
-  'Fuente de la señal de alerta: Sistema de Monitoreo (1), Área Comercial (2), Análisis del SO (3), Medio Periodístico (4) y Otras fuentes (5).'
-  'En caso en el item 46 se haya consignado la opción 5 describir la fuente'
-
+exports._display =[
+  'SEÑALES DE ALERTA IDENTIFICADAS (Se debe consignar estos datos por cada señal de alerta)'
+  [['44', 'Código de la señal de alerta', (s) -> 'FALTA']
+  ['45', 'Descripción de la señal de alerta', (s) -> 'FALTA']
+  ['46', 'Fuente de la señal de alerta: Sistema de Monitoreo (1), Área Comercial (2), Análisis del SO (3), Medio Periodístico (4) y Otras fuentes (5).', (s) -> 'FALTA']
+  ['47', 'En caso en el item 46 se haya consignado la opción 5 describir la fuente', (s) -> 'FALTA']]
+]
 exports._code =
   '44'
   '45'
