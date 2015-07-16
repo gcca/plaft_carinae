@@ -37,63 +37,77 @@ class Reporte extends Module
   /** @override */
   _tagName: \form
 
-  /** @override */
-  on-save: ~>
-    App.ajax._post "/api/dispatch/#{@model._id}/anexo_seis", @_toJSON!, do
-      _success: ~>
-        @_desktop.notifier.notify do
-          _message : 'Se actualizó correctamente los datos'
-          _type    : @_desktop.notifier.kSuccess
-      _bad-request: ~>
-        alert 'ERROR: e746ae94-5a3a-11e4-9a1d-88252caeb7e8'
+  empty-field: (value) ->
+    _span = App.dom._new \span
+      ..css = 'color:red;font-size:22px'
+      ..title = 'TITLE'
+      ..html = '*'
+      $ .. ._tooltip do
+        'template': "<div class='#{gz.Css \tooltip}' role='tooltip'
+                          style='min-width:175px'>
+                       <div class='#{gz.Css \tooltip-arrow}'></div>
+                       <div class='#{gz.Css \tooltip-inner}'></div>
+                     </div>"
+    if value?
+      if value is ""
+        return _span
+      else
+        return value
+    else
+      return _span
 
+  add-table: (list, _dto) ->
+    _table = App.dom._new \table
+      .._class = "#{gz.Css \table}
+                \ #{gz.Css \table-bordered}"
+    _tbody = App.dom._new \tbody
+    for r in list
+      _tr = App.dom._new \tr
+
+      App.dom._new \td
+        ..css = 'width: 0.5%'
+        ..html = r[0]
+        _tr._append ..
+
+      App.dom._new \td
+        .._class = gz.Css \col-md-7
+        $ .. ._append r[1]
+        _tr._append ..
+
+      App.dom._new \td
+        .._class = gz.Css \col-md-5
+        $ .. ._append @empty-field r[2] _dto
+        _tr._append ..
+
+      _tbody._append _tr
+
+    _table._append _tbody
+    _table
 
   /** @override */
   render: ->
-    App.builder.Form._new @el, _FIELDS
-      ..render!
-      .._free!
+    dispatch = @model._attributes
+    operation = App.lists.anexo6.operation._display
+    alerts = App.lists.anexo6.alerts._display
+    person = App.lists.anexo6.person._display
 
-    _alerts = App.lists.alerts._display
-    _dto = ["<li>#{_alerts[i*3]}</li>" for i from 1 to 4].join ''
+    # PERSON
+    @$el._append "<h4>#{person[0]}</h4>"
+    @el._append @add-table person[1], dispatch.'declaration'.'customer'
 
-    @el._fromJSON @model._attributes
-    @$el._append "<div class='#{gz.Css \col-md-12}'><hr></hr></div>"
-    @$el._append "<div class='#{gz.Css \col-md-12}'>
-                    <ul>#{_dto}</ul></div>"
-    @$el._append "<div class='#{gz.Css \col-md-12} ' style='padding:0'>
-                    <button type='button'
-                            class='#{gz.Css \btn}
-                                 \ #{gz.Css \btn-default}
-                                 \ #{gz.Css \pull-right}'>
-                      Generar Reporte
-                    </button>
-                  </div>"
+    # STAKEHOLDER
+    for stk in dispatch.'stakeholders'
+      @el._append @add-table person[1], stk
+
+    # OPERATION
+    @$el._append "<h4>#{operation[0]}</h4>"
+    @el._append @add-table operation[1], dispatch
+
+    # ALERTS
+    @$el._append "<h4>#{alerts[0]}</h4>"
+    @el._append @add-table alerts[1], dispatch.'alerts'
 
     super!
-
-  _GRID = App.builder.Form._GRID
-
-  /** Field list for numeration form. (Array.<FieldOptions>) */
-  _FIELDS =
-    * _name: 'description'
-      _label: 'Descripcion de la operación'
-      _tip: 'Señale los argumentos que lo llevaron a calificar como inusual.'
-      _grid: _GRID._full
-      _type: FieldType.kTextEdit
-
-    * _name: 'is_suspects'
-      _label: '¿Ha sido calificado como sospechosa?'
-      _type: FieldType.kRadioGroup
-      _options: <[Si No]>
-
-    * _name: 'ros'
-      _label: 'Numero de ROS'
-      _tip: 'Indicar el numero de ROS con el que se remitio en la UIF.'
-
-    * _name: 'suspects_by'
-      _label: 'Descripcion:'
-      _tip: 'Describir los argumentos porque no fue calificada.'
 
 
 /**
