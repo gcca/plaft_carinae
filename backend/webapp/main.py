@@ -97,7 +97,20 @@ def restful_init():
         urls.append(PathPrefixRoute('/api', routes))
 
 
+def routes_init():
+    from plaft.interfaces import RouteHandler, sys
+
+    for route in (route
+                  for _, route in sys.__dict__.items()
+                  if (
+                          isinstance(route, type) and
+                          issubclass(route, RouteHandler)
+                    )):
+        urls.append(('/' + route.__name__, route))
+
+
 restful_init()
+routes_init()
 app = WSGIApplication(urls, debug=plaft.config.DEBUG)
 
 
