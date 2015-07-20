@@ -481,4 +481,20 @@ class RESTful(BaseRESTful):
         return cls_restful
 
 
+# Routes for HTTP methods
+
+class RouteHandler(Handler):  # Improve with ABC
+    """Dummy for routes."""
+
+
+def route(method='get'):
+    """Method to handler class."""
+    if isinstance(method, str):
+        def wrapper(fn):
+            """Create class with handler specific method."""
+            return type(fn.func_name, (RouteHandler,), {method: fn})
+        return wrapper
+    return type(method.func_name, (RouteHandler,), {'get': method})
+
+
 # vim: et:ts=4:sw=4
