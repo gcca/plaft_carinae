@@ -79,7 +79,7 @@ class CustomsAgency(dom.Model):
 class Permissions(dom.Model):
     """."""
     modules = dom.Text(repeated=True)
-    signals = dom.Text(repeated=True)
+    alerts_key = dom.Key(kind='Alert', repeated=True)
 
 
 class User(dom.User, dom.PolyModel):
@@ -399,13 +399,21 @@ class Operation(dom.Model):
 
 
 # Datos globales por agencia
+class Alert(dom.Model):
+    section = dom.String()
+    code = dom.String()
+    description = dom.Text()
+
+
 class Datastore(dom.Model):
     """Pseudo-ValueObject for dispatch-operation transitions."""
+
     customs_agency_key = dom.Key(CustomsAgency)
     pending_key = dom.Key(Dispatch, repeated=True)
     accepting_key = dom.Key(Dispatch, repeated=True)
     operation_counter = dom.Integer(default=0)
     operation_last_year = dom.Integer()
+    alerts_key = dom.Key(Alert, repeated=True)
 
     @property
     def last_counter_operation(self):
@@ -427,13 +435,9 @@ class Datastore(dom.Model):
 
 
 class Plaft(dom.Model):
-    base_datetime = dom.DateTime()
+    """Global status."""
 
-    def is_new_year(self):
-        from datetime import datetime
-        base_year = self.base_datetime.year
-        current_year = datetime.now().year
-        return base_year == current_year
+    has_datastore = dom.Boolean()
 
 
 # vim: et:ts=4:sw=4
