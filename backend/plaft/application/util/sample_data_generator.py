@@ -13,7 +13,8 @@ import random
 import plaft.config
 from plaft.domain.model import (Dispatch, CodeName, Declarant, Stakeholder,
                                 Business, Person, Datastore, CustomsAgency,
-                                Operation, Officer, Employee, Permissions)
+                                Operation, Officer, Employee, Permissions,
+                                Alert)
 
 
 # Utils
@@ -48,6 +49,11 @@ def create_declarants():
         declarant.document_number = pick_document_number_by('dni')
 
         declarant.store()
+
+
+def create_alerts():
+    for alert in alert_signals:
+        alert_signals_key.append(alert.store())
 
 
 def create_autocomplete():
@@ -90,12 +96,12 @@ def create_employees(agency, j=7):
 
     j = random.randint(2, j)
     modules = ['WEL-HASH', 'NUM-HASH', 'ANEXO2-HASH', 'INCOME-HASH']
-    signals = ['WEL-HASH', 'NUM-HASH', 'ANEXO2-HASH', 'INCOME-HASH']
     while j:
         username = ''.join(random.sample(ascii_lowercase, 3))
         name = ''.join(random.sample(ascii_lowercase, 6))
         permission = Permissions(modules=modules,
-                                 signals=signals)
+                                 alerts_key=random.sample(alert_signals_key,
+                                                          6))
         permission.store()
         employee = Employee(name=name,
                             username=username,
@@ -201,6 +207,7 @@ def operations(agency, list_dispatches, datastore):
 def _data_debug():
     create_stakeholders()
     create_declarants()
+    create_alerts()
 
     from collections import namedtuple
 
@@ -241,27 +248,20 @@ def _data_debug():
         customers.append(customer)
 
     Data = namedtuple('Data', ('customs_agency officer'
-                               ' username password signals modules'))
+                               ' username password modules'))
 
     init_data = [
         Data('Massive Dynamic',
              'Nina Sharp',
-             'gcca@mail.io',
+             'nina@mass.dyn',
              '789',
-             ['WEL-HASH', 'NUM-HASH', 'ANEXO2-HASH', 'INCOME-HASH'],
              ['WEL-HASH',
               'NUM-HASH',
               'ANEXO2-HASH',
               'INCOME-HASH',
               'ANEXO 6',
               'OPLIST-HASH',
-              'NEWUSER-HASH']),
-        Data('Cyberdine',
-             'Mice Dyson',
-             'mice@cd.io',
-             '123',
-             ['WEL-HASH', 'NUM-HASH', 'ANEXO2-HASH', 'OPLIST-HASH'],
-             ['WEL-HASH', 'NUM-HASH', 'ANEXO2-HASH', 'OPLIST-HASH'])
+              'NEWUSER-HASH'])
     ]
 
     for data in init_data:
@@ -270,11 +270,12 @@ def _data_debug():
 
         create_employees(agency)
 
-        datastore = Datastore(customs_agency_key=agency.key)
+        datastore = Datastore(customs_agency_key=agency.key,
+                              alerts_key=alert_signals_key)
         datastore.store()
 
         permission = Permissions(modules=data.modules,
-                                 signals=data.signals)
+                                 alerts_key=alert_signals_key)
         permission.store()
 
         officer = Officer(name=data.officer,
@@ -303,7 +304,8 @@ def _data_deploy():
     ca = CustomsAgency(name='CavaSoft SAC')
     ca.store()
 
-    ds = Datastore(customs_agency_key=ca.key)
+    ds = Datastore(customs_agency_key=ca.key,
+                   alerts_key=alert_signals_key)
     ds.store()
 
     perms = Permissions(modules=['WEL-HASH',
@@ -312,7 +314,7 @@ def _data_deploy():
                                  'INCOME-HASH',
                                  'OPLIST-HASH',
                                  'NEWUSER-HASH'],
-                        signals=[])
+                        alerts_key=alert_signals_key)
     perms.store()
 
     of = Officer(customs_agency_key=ca.key,
@@ -626,6 +628,11 @@ raw_alerts_2 = (
      ' su nueva actividad comercial, o no tengan la infraestructura'
      ' suficiente para ello.')
 )
+
+alert_signals = tuple(Alert(description=alert_description)
+                      for alert_description in raw_alerts_1 + raw_alerts_2)
+
+alert_signals_key = []
 
 
 # vim: et:ts=4:sw=4

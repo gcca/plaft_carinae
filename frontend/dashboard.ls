@@ -32,7 +32,7 @@ BETAS =
 
 username = window.plaft.'user'.'username'
 
-if username in <[cesarvargas@cavasoftsac.com gcca@mail.io]>
+if username in <[cesarvargas@cavasoftsac.com nina@mass.dyn]>
   MODULES ++= BETAS
 # END 1 HARDCODE
 
