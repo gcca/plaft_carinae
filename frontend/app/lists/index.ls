@@ -108,6 +108,8 @@ exports <<<
 
   alerts: require './alerts'
 
+  alerts-test: require './alerts-test' #TODO
+
   country-sbs: require './country-sbs'
 
   anexo2: require './anexo2'
