@@ -6,9 +6,6 @@ table = App.widget.table
 class UtilAnexo
 
   ({@_desktop, @_parent, @_child}) ->
-    console.log @_desktop
-    console.log @_parent
-    console.log @_child
 
   _load-module: ->
     @_desktop._lock!
@@ -29,14 +26,21 @@ class UtilAnexo
       'declaration.customer.name'
       'dam'
       'numeration_date'
-      'diro'
+      'it'
 
     _templates =
-      'diro': ->
-        "<span class='#{gz.Css \label} #{gz.Css \label-success}'>
-           <span class='glyphicon glyphicon-ok'>
-           </span>
-         </span>"
+      'it': ->
+        if it.'has_alerts'
+          if it.'alerts'._length
+            "<span class='#{gz.Css \label} #{gz.Css \label-danger}'>
+               C/OI
+             </span>"
+          else
+            "<span class='#{gz.Css \label} #{gz.Css \label-success}'>
+               S/OI
+             </span>"
+        else
+          ''
 
     App.ajax._get '/api/dispatch/list', true, do
       _success: (dispatches) ~>

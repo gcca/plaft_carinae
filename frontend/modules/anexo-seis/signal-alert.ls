@@ -43,12 +43,12 @@ class Alert extends Module
 
   /** @override */
   render: ->
-    _alerts = App.lists.alerts._display
-    _dto = [_alerts[i*4] for i from 1 to 7]
+    _dto = ["#{..'section'+..'code'}). #{..'description'}" for @model._attributes.'alerts']
 
-    _panel-group = new Alerts
-    _panel-group._fromJSON _dto
-    @el._append _panel-group.render!.el
+    if _dto._length
+      _panel-group = new Alerts
+      _panel-group._fromJSON _dto
+      @el._append _panel-group.render!.el
     super!
 
 
