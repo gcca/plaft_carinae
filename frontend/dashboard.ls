@@ -25,6 +25,7 @@ for module in PRE-MODULES
 # HARDCODE
 BETAS =
   NewUser = require './modules/new-user'
+  ModuleTest = require './modules/anexo-seis/module-test'
   Anexo6  = require './modules/anexo-seis'
   ListAlerts  = require './modules/anexo-seis/signal-alert'
   Alerts  = require './modules/alerts'

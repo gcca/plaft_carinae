@@ -440,6 +440,25 @@ class Dispatch(RESTful):
             self.status.NOT_FOUND('No existe el despacho con el id: ' +
                                   dispatch_id)
 
+    @RESTful.method('post')
+    def alerts(self, dispatch_id):
+        """ (Handler) -> None
+
+        => {}
+
+        ~> NOT_FOUND: No existe despacho.
+        """
+        payload = self.query
+
+        dispatch = model.Dispatch.find(int(dispatch_id))
+        if dispatch:
+            dispatch << payload
+            dispatch.store()
+            self.write_json('{}')
+        else:
+            self.status.NOT_FOUND('No existe el despacho con el id: ' +
+                                  dispatch_id)
+
     @RESTful.method  # get
     def list(self):
         """ (Handler) -> None
