@@ -234,6 +234,9 @@ class Customer(dom.Model, dom.PolyModel):
     # DISPATCH
     money_source_type = dom.String()
 
+    # TODO
+    condition_intervene = dom.String()
+    link_type = dom.String()
 
 class Person(Customer):
     """."""
@@ -263,6 +266,16 @@ class Stakeholder(dom.Model):
     phone = dom.String()
     nationality = dom.String()
     social_object = dom.String()
+
+    # TODO
+    # PERSON-ANEXO 6
+    condition_intervene = dom.String()
+    average_income = dom.String()
+    is_pep = dom.Boolean()
+    employer = dom.String()
+    issuance_country = dom.String()  # país de emisión
+    employment = dom.String()
+    birthday = dom.Date()
 
     slug = dom.Computed(lambda s: s.name
                         if 'ruc' == s.document_type
@@ -294,6 +307,8 @@ class Dispatch(dom.Model):
     # diferencia entre el income_date y el numeration_date
     numeration_date = dom.Date()  # (-o-) date
     amount = dom.String()
+    amount_soles = dom.Computed(lambda self:
+                                float(self.amount)*float(self.exchange_rate))
     currency = dom.String()
     channel = dom.String()
     # Campos para la Numeracion.
@@ -305,20 +320,26 @@ class Dispatch(dom.Model):
     suspects_by = dom.String()
     ros = dom.String()
 
-    class Signal(dom.Model):
+    # Verificar campos
+    class Alert(dom.Model):
         """."""
         code = dom.String()
-        signal = dom.String()
-        source = dom.String()
-        description_source = dom.String()
+        section = dom.String()
+        description = dom.String()
+        comment = dom.String()
 
-    signal_alerts = dom.Structured(Signal, repeated=True)
+    alerts = dom.Structured(Alert, repeated=True)
+    has_alerts = dom.Boolean(default=False)
 
     customs_agency_key = dom.Key(CustomsAgency)
     country_source = dom.String()
     country_target = dom.String()
 
     operation_key = dom.Key(kind='Operation')
+    is_out = dom.Computed(lambda s:
+                            s.regime.code in ['40', '51',
+                                              '52', '21',
+                                              '41', '89', '48'])
 
     class Declaration(dom.Model):
         """."""
@@ -340,15 +361,9 @@ class Dispatch(dom.Model):
         self.third = d.third
         self.money_source = d.customer.money_source_type
 
-    @property
-    def is_out(self):
-        outs = ['40', '51', '52', '21', '41', '89', '48']
-        return self.regime.code in outs
-
     def to_dict(self):
         dct = super(Dispatch, self).to_dict()
         dct['declaration'] = self.declaration.to_dict()
-        dct['outs'] = self.is_out
         return dct
 
     @property
@@ -376,27 +391,13 @@ class Operation(dom.Model):
     register_number = dom.Computed(lambda self:
                                    '%s-%s' % (self.current_year,
                                               self.row_number))
-
-    @property
-    def modalidad(self):
-        if len(self.dispatches_key) > 1:
-            return 'M'
-        else:
-            return 'U'
-
-    @property
-    def num_modalidad(self):
-        len_dispatches = len(self.dispatches_key)
-        if len_dispatches > 1:
-            return [i+1 for i in range(len_dispatches)]
-        else:
-            return ['']
-
-    def to_dict(self):
-        dct = super(Operation, self).to_dict()
-        dct['modalidad'] = self.modalidad
-        dct['num_modalidad'] = self.num_modalidad
-        return dct
+    modalidad = dom.Computed(lambda self: 'M'
+                                if len(self.dispatches_key) > 1
+                                else 'U')
+    num_modalidad = dom.Computed(lambda self:
+                                 [i+1 for i in range(len(self.dispatches_key))]
+                                 if len(self.dispatches_key) > 1
+                                 else [''])
 
 
 # Datos globales por agencia
