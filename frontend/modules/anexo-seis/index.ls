@@ -50,18 +50,64 @@ class Anexo6 extends Module
 
   /** @override */
   render: ->
+    _dispatch = @model._attributes
+    @el.html = "<div class='#{gz.Css \form-group}
+                          \ #{gz.Css \col-md-5}'
+                     style='padding:0px'>
+                  <label class='#{gz.Css \col-md-4}'
+                         style='text-align:center'>
+                    Aduana
+                  </label>
+                  <label class='#{gz.Css \col-md-5}'
+                         style='text-align:center;
+                                padding:0px;
+                                border-style:solid'>
+                    #{_dispatch.'jurisdiction'.'code'}
+                  </label>
+                  <label class='#{gz.Css \col-md-4}'
+                         style='text-align:center'>
+                    Régimen
+                  </label>
+                  <label class='#{gz.Css \col-md-5}'
+                         style='text-align:center;
+                                padding:0px;
+                                border-style:solid'>
+                    #{_dispatch.'regime'.'code'}
+                  </label>
+                </div>
+                <div class='#{gz.Css \form-group}
+                          \ #{gz.Css \col-md-5}'>
+                  <label class='#{gz.Css \col-md-6}'>
+                    No Orden de Despacho
+                  </label>
+                  <label class='#{gz.Css \col-md-6}'
+                         style='text-align:center;
+                                border-style:solid'>
+                    #{_dispatch.'order'}
+                  </label>
+                  <label class='#{gz.Css \col-md-6}'>
+                    Razón Social/Nombre
+                  </label>
+                  <label class='#{gz.Css \col-md-6}'
+                         style='text-align:center;
+                                border-style:solid'>
+                    #{_dispatch.'declaration'.'customer'.'name'}
+                  </label>
+                </div>"
+
     App.builder.Form._new @el, _FIELDS
       ..render!
       .._free!
 
-    _alerts = App.lists.alerts._display
-    _dto = ["<li>#{_alerts[i*3]}</li>" for i from 1 to 4].join ''
 
-    @el._fromJSON @model._attributes
-    @$el._append "<div class='#{gz.Css \col-md-12}'><hr></hr></div>"
+    _dto = ["<p>#{..'section'+..'code'}). #{..'description'}</p></br>" for _dispatch.'alerts'].join ''
+
+    @el._fromJSON _dispatch
     @$el._append "<div class='#{gz.Css \col-md-12}'>
-                    <ul>#{_dto}</ul></div>"
-    @$el._append "<div class='#{gz.Css \col-md-12} ' style='padding:0'>
+                    <hr>
+                    #{_dto}
+                  </div>
+                  <div class='#{gz.Css \col-md-12} ' style='padding:0'>
                     <button type='button'
                             class='#{gz.Css \btn}
                                  \ #{gz.Css \btn-default}
@@ -94,6 +140,14 @@ class Anexo6 extends Module
     * _name: 'suspects_by'
       _label: 'Descripcion:'
       _tip: 'Describir los argumentos porque no fue calificada.'
+      _grid: _GRID._full
+      _type: FieldType.kTextEdit
+
+    * _name: 'suspects_by'
+      _label: 'Descripcion:'
+      _tip: 'Describir los argumentos porque fue aceptada'
+      _grid: _GRID._full
+      _type: FieldType.kTextEdit
 
 
 /**
