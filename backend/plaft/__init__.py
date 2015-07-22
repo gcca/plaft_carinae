@@ -2,7 +2,7 @@
 .. module:: plaft
    :synopsis: PLAFT Software.
 
-.. moduleauthor:: Gonzales Castillo, Cristhian A. <cristhian.gz@aol.com>
+.. moduleauthor:: Gonzales Castillo, Cristhian A. <gcca@gcca.tk>
 
 
 """

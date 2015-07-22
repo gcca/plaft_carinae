@@ -2,7 +2,7 @@
 .. module:: plaft.infrastructure.support
    :synopsis: Utils: encryption, hash, identifiers, json, encoders, etc.
 
-.. moduleauthor:: Gonzales Castillo, Cristhian A. <cristhian.gz@aol.com>
+.. moduleauthor:: Gonzales Castillo, Cristhian A. <gcca@gcca.tk>
 
 Attributes:
   CHOICES (str): Characters to generate random strings.

@@ -219,4 +219,7 @@ alerts_2 = (
 )
 
 
+alerts = alerts_1 + alerts_2
+
+
 # vim: et:ts=4:sw=4

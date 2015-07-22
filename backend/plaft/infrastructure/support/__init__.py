@@ -2,7 +2,7 @@
 .. module:: plaft.infrastructure.support
    :synopsis: Non-functional applications.
 
-.. moduleauthor:: Gonzales Castillo, Cristhian A. <cristhian.gz@aol.com>
+.. moduleauthor:: Gonzales Castillo, Cristhian A. <gcca@gcca.tk>
 
 
 """

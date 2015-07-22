@@ -21,6 +21,9 @@ from plaft.domain.shared import Entity
 from plaft.infrastructure.support import util
 
 
+__version__ = '0.1'
+
+
 class JSONEncoder(json.JSONEncoder):
     """JSON encoder base.
 
@@ -350,19 +353,25 @@ class Document(Model):
 
 class DocumentProperty(ndb.StructuredProperty):
 
-    def __init__(self, *args, **kwargs):
-        super(DocumentProperty, self).__init__(Document, *args, **kwargs)
+
+    _modelclass = Document
+
+    # def __init__(self, *args, **kwargs):
+    #     super(DocumentProperty, self).__init__(Document, *args, **kwargs)
 
     def _validate(self, value):
-        return True
-        # if not isinstance(value, (int, long)):
-        #     raise TypeError('expected an integer, got %s' % repr(value))
+        if not isinstance(value, (Document, tuple, list)):
+            raise TypeError('expected an (Document, tuple, list), got %s'
+                            % repr(value))
+        return value
 
-    # def _to_base_type(self, value):
-    #     return value
+    def _to_base_type(self, value):
+        if isinstance(value, (tuple, list)):
+            value = self._modelclass(type=value[0], number=value[1])
+        return value
 
-    # def _from_base_type(self, value):
-    #     return value
+    def _from_base_type(self, value):
+        return value
 
 
 class Date(ndb.DateProperty):

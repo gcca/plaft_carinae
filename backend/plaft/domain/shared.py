@@ -2,7 +2,7 @@
 .. module:: domain.shared
    :synopsis: Pattern interfaces and support code for the domain layer.
 
-.. moduleauthor:: Gonzales Castillo, Cristhian A. <cristhian.gz@aol.com>
+.. moduleauthor:: Gonzales Castillo, Cristhian A. <gcca@gcca.tk>
 
 
 """

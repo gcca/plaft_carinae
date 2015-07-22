@@ -2,7 +2,7 @@
 .. module:: plaft.infrastructure
    :synopsis: Infrastructure layer.
 
-.. moduleauthor:: Gonzales Castillo, Cristhian A. <cristhian.gz@aol.com>
+.. moduleauthor:: Gonzales Castillo, Cristhian A. <gcca@gcca.tk>
 
 
 """
