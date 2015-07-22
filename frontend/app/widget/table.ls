@@ -152,6 +152,8 @@ class exports.Table extends App.View
    * @private
    */
   __get-by-attr = (_obj, _attr) ->
+    if _attr is 'it'
+      return _obj
     _levels = _attr._split \.
     for _key in _levels
       _obj = _obj[_key]

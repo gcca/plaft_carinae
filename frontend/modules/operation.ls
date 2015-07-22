@@ -165,7 +165,7 @@ class OperationEdit extends Module
     _list-operation._push @empty-field _customer.'money_source'
     _list-operation._push 'USD'
     _list-operation._push '<span>No aplica</span>'
-    _list-operation._push @calculate-field _dto.'amount', _dto.'exchange_rate'
+    _list-operation._push (parseFloat _dto.'amount_soles').to-fixed 2
     _list-operation._push @empty-field _dto.'exchange_rate', 'exchange_rate'
     @_tip-module = 'Ver en Vinculados.'
     _list-operation._push @in-country _stk.'country'  # Verificar de donde sacar el dato.

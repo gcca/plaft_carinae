@@ -69,7 +69,6 @@ class Modal extends App.View
     small : gz.Css \modal-sm
     none  : null
 
-  _callback: null
   _footer: null
   _head: null
   _body: null
@@ -112,6 +111,8 @@ class MessageBox extends Modal
     kYesNo        : __pair-buttons 'Si'      'No'
     kAcceptCancel : __pair-buttons 'Aceptar' 'Cancelar'
 
+
+  _callback: null
 
 /** @export */
 exports <<<
