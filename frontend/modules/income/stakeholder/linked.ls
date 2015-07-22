@@ -221,6 +221,10 @@ class FormLinked extends panelgroup.FormBody
       _type: FieldType.kHidden
       _options: <[dni]>
 
+    * _name: 'condition_intervene'
+      _type: FieldType.kHidden
+      _options: <[Vinculado]>
+
   /** FIELD */
   _FIELD_BUSINESS :
     * _name: 'name'
@@ -258,6 +262,10 @@ class FormLinked extends panelgroup.FormBody
     * _name: 'document_type'
       _type: FieldType.kHidden
       _options: <[ruc]>
+
+    * _name: 'condition_intervene'
+      _type: FieldType.kHidden
+      _options: <[Vinculado]>
 
 /** @export */
 module.exports = FormLinked

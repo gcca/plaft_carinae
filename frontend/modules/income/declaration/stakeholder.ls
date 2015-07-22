@@ -17,8 +17,10 @@ class Stakeholder extends App.View
   display-legal: ->
     if it  # ingreso
       $ @_legal-field ._hide!
+      @_link-type._value = 'Importador'
     else  # salida
       $ @_legal-field ._show!
+      @_link-type._value = 'Exportador'
 
   /** @override */
   initialize: ->
@@ -28,9 +30,12 @@ class Stakeholder extends App.View
 
       @_legal-field = .._elements.'legal_type'._field
 
+      @_link-type = .._elements.'link_type'._element
+
       .._free!
 
   /** @private */ _legal-field: null
+  /** @private */ _link-type: null
 
   /** Local variable for settings. */
   _GRID = App.builder.Form._GRID
@@ -80,6 +85,12 @@ class Stakeholder extends App.View
                    _max-length: 15
                    _field: 'ubigeo'
 
+    * _name: 'condition_intervene'
+      _type: FieldType.kHidden
+      _options: <[Involucrado]>
+
+    * _name: 'link_type'
+      _type: FieldType.kHidden
 
 /** @export */
 module.exports = Stakeholder
