@@ -170,7 +170,7 @@ class Customer(dom.Model, dom.PolyModel):
 
         Value argument `document_type` is necessary.
 
-        (Customer, dict) -> Customer<Business, Person>
+        (type, dict) -> Customer<Business, Person>
 
         """
         if cls is Customer and kwargs:
@@ -381,6 +381,7 @@ class Operation(dom.Model):
     """
     from datetime import datetime
     current_year = datetime.now().year
+
     counter = dom.Integer(default=0)
     dispatches_key = dom.Key(Dispatch, repeated=True)
     customs_agency_key = dom.Key(CustomsAgency)
@@ -392,10 +393,11 @@ class Operation(dom.Model):
                                    '%s-%s' % (self.current_year,
                                               self.row_number))
     modalidad = dom.Computed(lambda self: 'M'
-                                if len(self.dispatches_key) > 1
-                                else 'U')
+                             if len(self.dispatches_key) > 1
+                             else 'U')
     num_modalidad = dom.Computed(lambda self:
-                                 [i+1 for i in range(len(self.dispatches_key))]
+                                 [i+1
+                                  for i in range(len(self.dispatches_key))]
                                  if len(self.dispatches_key) > 1
                                  else [''])
 
@@ -439,7 +441,7 @@ class Datastore(dom.Model):
 class Plaft(dom.Model):
     """Global status."""
 
-    has_datastore = dom.Boolean()
+    has_datastore = dom.Boolean(default=False)
 
 
 # vim: et:ts=4:sw=4

@@ -147,7 +147,7 @@ class Handler(RequestHandler):
             if isinstance(o, datetime):
                 day = o.day if o.day > 9 else '0' + str(o.day)
                 month = o.month if o.month > 9 else '0' + str(o.month)
-                return '%i-%i-%i %s:%s:%s' % (o.year, month, day,
+                return '%i/%i/%i %s:%s:%s' % (o.year, month, day,
                                               o.hour, o.minute, o.second)
             return super(Handler.JSON, self)._default(o)
 
