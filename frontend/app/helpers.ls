@@ -283,6 +283,7 @@ with {
     _name: get: (-> @\name), set: (x) !-> @\name = x }
   Object._properties HTMLInputElement::, ..
   Object._properties HTMLSelectElement::, ..
+  Object._properties HTMLTextAreaElement::, ..
 
 HTMLInputElement::=
   _checked:~
