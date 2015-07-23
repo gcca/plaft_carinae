@@ -39,7 +39,7 @@ class Anexo6 extends Module
 
   /** @override */
   on-save: ~>
-    App.ajax._post "/api/dispatch/#{@model._id}/anexo_seis", @_toJSON!, do
+    App.ajax._post "/api/dispatch/#{@model._id}/anexo_seis", @el._toJSON!, do
       _success: ~>
         @_desktop.notifier.notify do
           _message : 'Se actualizó correctamente los datos'
@@ -95,12 +95,66 @@ class Anexo6 extends Module
                   </label>
                 </div>"
 
+    _link-rosel = "<a class='#{gz.Css \btn}
+                           \ #{gz.Css \btn-primary}
+                           \ #{gz.Css \btn-xs}
+                           \ #{gz.Css \pull-right}'
+                      target='_blank'
+                      href='//rosel.sbs.gob.pe'>LINK ROSEL</a>"
+
     App.builder.Form._new @el, _FIELDS
+
+      _input-ros = .._elements.'ros'._element
+
+      _ros = .._elements.'ros'._field
+        .._first._class._remove gz.Css \col-md-12
+        .._first._class._add gz.Css \col-md-6
+        .._remove .._last
+        $ .. ._append _link-rosel
+        .._append _input-ros
+        $ .. ._hide!
+
+      _suspects-by = .._elements.'suspects_by'._field
+        $ .. ._hide!
+
+      _numeration-date = .._elements.'numeration_date'._field
+        $ .. ._hide!
+
+      _last-date-ros = .._elements.'last_date_ros'._field
+        $ .. ._hide!
+
+      _is-suspects = .._elements.'is_suspects'
+        .._element.on-change ~>
+          if .._radios._no._checked
+            $ _ros ._hide!
+            $ _numeration-date ._hide!
+            $ _last-date-ros ._hide!
+            $ _suspects-by ._show!
+          else
+            $ _ros ._show!
+            $ _numeration-date ._show!
+            $ _last-date-ros ._show!
+            $ _suspects-by ._hide!
       ..render!
       .._free!
 
 
     _dto = ["<p>#{..'section'+..'code'}). #{..'description'}</p></br>" for _dispatch.'alerts'].join ''
+
+    if _dispatch.'is_suspects'?
+      if _dispatch.'is_suspects'
+        _is-suspects._radios._yes._checked = true
+        $ _ros ._show!
+        $ _numeration-date ._show!
+        $ _last-date-ros ._show!
+        $ _suspects-by ._hide!
+      else
+        _is-suspects._radios._no._checked = true
+        $ _ros ._hide!
+        $ _numeration-date ._hide!
+        $ _last-date-ros ._hide!
+        $ _suspects-by ._show!
+
 
     @el._fromJSON _dispatch
     @$el._append "<div class='#{gz.Css \col-md-12}'>
@@ -124,28 +178,29 @@ class Anexo6 extends Module
   _FIELDS =
     * _name: 'description'
       _label: 'Descripcion de la operación'
-      _tip: 'Señale los argumentos que lo llevaron a calificar como inusual.'
+      _tip: 'Señale los argumentos que lo llevaron a calificar como inusual
+           \ la operación.'
       _grid: _GRID._full
       _type: FieldType.kTextEdit
 
     * _name: 'is_suspects'
       _label: '¿Ha sido calificado como sospechosa?'
-      _type: FieldType.kRadioGroup
-      _options: <[Si No]>
+      _type: FieldType.kYesNo
 
     * _name: 'ros'
-      _label: 'Numero de ROS'
+      _label: 'Número de ROS'
       _tip: 'Indicar el numero de ROS con el que se remitio en la UIF.'
 
-    * _name: 'suspects_by'
-      _label: 'Descripcion:'
-      _tip: 'Describir los argumentos porque no fue calificada.'
-      _grid: _GRID._full
-      _type: FieldType.kTextEdit
+    * _name: 'numeration_date'
+      _label: 'Fecha de Numeración'
+
+    * _name: 'last_date_ros'
+      _label: 'Último dia de RO'
 
     * _name: 'suspects_by'
-      _label: 'Descripcion:'
-      _tip: 'Describir los argumentos porque fue aceptada'
+      _label: 'Describir los argumentos porque no calificada como sospechosa'
+      _tip: 'Describir los argumentos por los cuales esta operación no
+           \ fue calificada como sospechosa.'
       _grid: _GRID._full
       _type: FieldType.kTextEdit
 
