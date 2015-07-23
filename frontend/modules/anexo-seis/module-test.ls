@@ -213,6 +213,7 @@ class Test extends Module
 
     App.ajax._post "/api/dispatch/#{@model._id}/alerts", _dto, do
       _success: ~>
+        @model._set _dto  # update data for change on (event)
         @_desktop.notifier.notify do
           _message : 'Se actualizó correctamente los datos'
           _type    : @_desktop.notifier.kSuccess
@@ -302,9 +303,9 @@ class Test extends Module
         @_current-alert = @_alerts[_key]
 
         if @_current-alert.'comment'?
-          @_txt-area.value = @_current-alert.'comment'
+          @_txt-area._value = @_current-alert.'comment'
         else
-          @_txt-area.value = ''
+          @_txt-area._value = ''
         $ @_txt-area._parent ._show!
 
     _table._append _tbody
@@ -378,7 +379,7 @@ class Test extends Module
                       <label>Ultimo dia de ROS</label>
                       <input type='text'
                              class='#{gz.Css \form-control}'
-                             value='#{_dispatch.'last_day_ros'}' disabled/>
+                             value='#{_dispatch.'last_date_ros'}' disabled/>
                     </div>
                     <div class='#{gz.Css \col-md-12}'
                          id='#{_table-content}'></div>
@@ -409,7 +410,7 @@ class Test extends Module
 
     @_txt-area = @el.query "##{_area-id}"
     @_txt-area.on-blur ~>
-        @_current-alert.'comment' = @_txt-area.value
+        @_current-alert.'comment' = @_txt-area._value
 
     @load-table @_alerts
 
