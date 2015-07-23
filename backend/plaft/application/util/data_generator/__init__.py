@@ -10,6 +10,7 @@
 """
 
 from plaft.domain import model
+from plaft.application.util.data_generator import permissions
 
 
 __all__ = ['init']

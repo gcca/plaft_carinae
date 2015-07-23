@@ -15,6 +15,7 @@ from plaft.domain.model import (Dispatch, CodeName, Declarant, Stakeholder,
                                 Business, Person, Datastore, CustomsAgency,
                                 Operation, Officer, Employee, Permissions,
                                 Alert)
+from plaft.application.util import data_generator
 
 
 # Utils
@@ -95,7 +96,7 @@ def create_employees(agency, j=7):
     from string import ascii_lowercase
 
     j = random.randint(2, j)
-    modules = ['WEL-HASH', 'NUM-HASH', 'ANEXO2-HASH', 'INCOME-HASH']
+    modules = data_generator.permissions.employee
     while j:
         username = ''.join(random.sample(ascii_lowercase, 3))
         name = ''.join(random.sample(ascii_lowercase, 6))
@@ -255,13 +256,7 @@ def _data_debug():
              'Nina Sharp',
              'nina@mass.dyn',
              '789',
-             ['WEL-HASH',
-              'NUM-HASH',
-              'ANEXO2-HASH',
-              'INCOME-HASH',
-              'ANEXO 6',
-              'OPLIST-HASH',
-              'NEWUSER-HASH'])
+             data_generator.permissions.officer)
     ]
 
     for data in init_data:
@@ -308,12 +303,7 @@ def _data_deploy():
                    alerts_key=alert_signals_key)
     ds.store()
 
-    perms = Permissions(modules=['WEL-HASH',
-                                 'NUM-HASH',
-                                 'ANEXO2-HASH',
-                                 'INCOME-HASH',
-                                 'OPLIST-HASH',
-                                 'NEWUSER-HASH'],
+    perms = Permissions(modules=data_generator.permissions.officer,
                         alerts_key=alert_signals_key)
     perms.store()
 
