@@ -395,11 +395,16 @@ class Operation(dom.Model):
     modalidad = dom.Computed(lambda self: 'M'
                              if len(self.dispatches_key) > 1
                              else 'U')
-    num_modalidad = dom.Computed(lambda self:
-                                 [i+1
-                                  for i in range(len(self.dispatches_key))]
-                                 if len(self.dispatches_key) > 1
-                                 else [''])
+
+    def num_modalidad(self):
+        return ([i+1 for i in range(len(self.dispatches_key))]
+                if len(self.dispatches_key) > 1
+                else [''])
+
+    def to_dict(self):
+        dct = super(Operation, self).to_dict()
+        dct['num_modalidad'] = self.num_modalidad()
+        return dct
 
 
 # Datos globales por agencia
@@ -419,21 +424,14 @@ class Datastore(dom.Model):
     operation_last_year = dom.Integer()
     alerts_key = dom.Key(Alert, repeated=True)
 
-    @property
-    def last_counter_operation(self):
-        operations = sorted([op for op
-                            in Operation.all(
-                               customs_agency_key=self.customs_agency_key)],
-                            key=lambda op: op.counter)
-        return len([o.counter for o in operations])
-
-    def new_operation_counter(self):
+    def next_operation_counter(self):
         from datetime import datetime
         current_year = datetime.now().year
-        if self.operation_last_year+1 == current_year:
+        if (not self.operation_last_year or
+            self.operation_last_year + 1 == current_year):
+            self.operation_last_year = current_year
             self.operation_counter = 0
         self.operation_counter += 1
-        self.operation_last_year = current_year
         self.store()
         return self.operation_counter
 
