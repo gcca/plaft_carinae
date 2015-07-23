@@ -10,7 +10,7 @@ def accept(dispatch):
 
     """
     datastore = dispatch.customs_agency.datastore
-    counter = datastore.last_counter_operation + 1
+    counter = datastore.next_operation_counter()
     operation = Operation(dispatches_key=[dispatch.key],
                           customs_agency_key=dispatch.customs_agency_key,
                           customer_key=dispatch.customer_key,
@@ -46,7 +46,7 @@ def accept_multiple(customs_agency):
         if pendings_customer:
             amount = sum(float(d.amount) for d in pendings_customer)
             if amount >= 50000:
-                counter = datastore.last_counter_operation + 1
+                counter = datastore.next_operation_counter()
                 operation = Operation(dispatches_key=[d.key
                                                       for d
                                                       in pendings_customer],
