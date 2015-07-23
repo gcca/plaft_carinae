@@ -165,6 +165,12 @@ def update(dispatch, payload):
     if 'third' in payload:
         del payload['third']
 
+    if 'amount_soles' in payload:
+        del payload['amount_soles']
+
+    if 'is_out' in payload:
+        del payload['is_out']
+
     dispatch << payload
     dispatch.declaration = declaration
     dispatch.store()
