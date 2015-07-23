@@ -48,6 +48,7 @@ from __future__ import unicode_literals
 
 from plaft.infrastructure.persistence.datastore import ndb as dom
 from plaft.domain.model.structs import CodeName, Third, Document
+from datetime import date, timedelta
 
 JSONEncoder = dom.JSONEncoderNDB
 
@@ -316,7 +317,7 @@ class Dispatch(dom.Model):
 
     # Campos para el anexo 6
     description = dom.String()
-    is_suspects = dom.String()
+    is_suspects = dom.Boolean()
     suspects_by = dom.String()
     ros = dom.String()
 
@@ -341,6 +342,23 @@ class Dispatch(dom.Model):
                                               '52', '21',
                                               '41', '89', '48'])
 
+    def is_not_laborate(self, d):
+        return date.isoweekday(d) in [6, 7]
+
+    def calculate_date_works(self, start_date, final_date):
+        date_i = start_date
+        count = 0
+        while date_i != final_date:
+            if self.is_not_laborate(date_i):
+                count += 1
+            date_i = date_i + timedelta(days=1)
+
+        dd = final_date + timedelta(days=count)
+        if dd == final_date:
+            return dd
+        else:
+            return self.calculate_date_works(final_date, dd)
+
     class Declaration(dom.Model):
         """."""
         customer = dom.Structured(Customer)
@@ -364,6 +382,10 @@ class Dispatch(dom.Model):
     def to_dict(self):
         dct = super(Dispatch, self).to_dict()
         dct['declaration'] = self.declaration.to_dict()
+        dct['last_date_ros'] = self.calculate_date_works(
+                                    self.numeration_date,
+                                    self.numeration_date+timedelta(days=15)
+                                    )
         return dct
 
     @property
