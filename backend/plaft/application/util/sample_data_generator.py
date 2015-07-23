@@ -25,6 +25,7 @@ TYPE2NUMBER = {
     'dni': 8
 }
 
+
 DOCNUMS = ('0', '1', '2', '3', '4',
            '5', '6', '7', '8', '9',
            '0', '1', '2', '3', '4',
@@ -34,8 +35,8 @@ DOCNUMS = ('0', '1', '2', '3', '4',
 def pick_document_number_by(document_type):
     return ''.join(random.sample(DOCNUMS, TYPE2NUMBER[document_type]))
 
-# Creations
 
+# Creations
 
 def create_stakeholders():
     for stakeholder in stakeholders:
@@ -60,8 +61,7 @@ def create_alerts():
 def create_autocomplete():
     from collections import namedtuple
 
-    DStakeholder = namedtuple('DStakeholder',
-                              'name document_type')
+    DStakeholder = namedtuple('DStakeholder', 'name document_type')
 
     init_customers = [
         DStakeholder('Sony',
@@ -92,7 +92,7 @@ def create_autocomplete():
         stakeholder.store()
 
 
-def create_employees(agency, j=7):
+def create_employees(agency, j=5):
     from string import ascii_lowercase
 
     j = random.randint(2, j)
@@ -117,44 +117,42 @@ def create_employees(agency, j=7):
 
 def create_dispatches(agency, datastore, customers, n=30):
     from string import digits
-
-    years = ['2014', '2015', '2016']
-    channels = ['V', 'N', 'R']
-    list_dispatches = []
     from datetime import datetime
 
+    years = ['2014', '2015', '2016']
+    list_dispatches = []
+    year = 2015
+
     while n:
-        exchange_rate = random.choice(['3.51', '3.52',
-                                       '3.53', '3.54'])
-        year = 2015
-        month = random.randint(1, 12)
-        day = random.randint(1, 28)
-        rdate = datetime(year, month, day)
-        num_date = datetime(int(random.choice(years)),
-                            random.randint(1, 12),
-                            random.randint(1, 28))
-        amounts = [str(x) for x in range(3999, 9999)]
-        order = '%s-%s' % (random.choice(years),
-                           ''.join(random.sample(digits, 5)))
         customer = random.choice(customers)
-        declaration = Dispatch.Declaration(customer=customer)
         jurisdiction = random.choice(jurisdictions)
         regime = random.choice(regimes)
         dam = '%s-%s-%s-%s' % (jurisdiction.code,
                                year, regime.code,
                                ''.join(random.sample(digits, 5)))
-        dispatch = Dispatch(order=order,
+        dispatch = Dispatch(order='%s-%s' % (random.choice(years),
+                                             ''.join(random.sample(digits,
+                                                                   5))),
                             customer_key=customer.key,
                             customs_agency_key=agency.key,
                             jurisdiction=jurisdiction,
                             regime=regime,
                             stakeholders=[random.choice(stakeholders)],
-                            amount=random.choice(amounts),
-                            income_date=rdate,
-                            dam=dam, numeration_date=num_date,
-                            channel=random.choice(channels),
-                            exchange_rate=exchange_rate)
-        dispatch.declaration = declaration
+                            amount=str(random.randint(3999, 10000)),
+                            income_date=datetime(year,
+                                                 random.randint(1, 12),
+                                                 random.randint(1, 28)),
+                            dam=dam,
+                            numeration_date=datetime(
+                                int(random.choice(years)),
+                                random.randint(1, 12),
+                                random.randint(1, 28)),
+                            channel=random.choice(('V', 'N', 'R')),
+                            exchange_rate=random.choice(('3.51',
+                                                         '3.52',
+                                                         '3.53',
+                                                         '3.54')))
+        dispatch.declaration = Dispatch.Declaration(customer=customer)
         dispatch.store()
         datastore.pending_key.append(dispatch.key)
         datastore.store()
@@ -212,8 +210,8 @@ def _data_debug():
 
     from collections import namedtuple
 
-    DCustomer = namedtuple('DCustomer',
-                           'name document_type')
+    DCustomer = namedtuple('DCustomer', 'name document_type')
+
     init_customers = [
         DCustomer('Sony',
                   'ruc'),
@@ -248,8 +246,8 @@ def _data_debug():
         customer.store()
         customers.append(customer)
 
-    Data = namedtuple('Data', ('customs_agency officer'
-                               ' username password modules'))
+    Data = namedtuple('Data',
+                      'customs_agency officer username password modules')
 
     init_data = [
         Data('Massive Dynamic',
@@ -286,7 +284,7 @@ def _data_debug():
         list_dispatches = create_dispatches(agency, datastore, customers)
         operations(agency, list_dispatches, datastore)
 
-    create_autocomplete()  # TODO: Remove when update domain model
+    create_autocomplete()  # Remove when update domain model
 
     # HARDCODED data
     _data_deploy()
@@ -464,8 +462,7 @@ raw_declarants = (
     ('Kingpin', 'Marvel Comics')
 )
 
-declarants = tuple(Declarant(name=j[0],
-                             address=j[1])
+declarants = tuple(Declarant(name=j[0], address=j[1])
                    for j in raw_declarants)
 
 
