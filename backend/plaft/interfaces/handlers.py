@@ -452,6 +452,7 @@ class Dispatch(RESTful):
 
         dispatch = model.Dispatch.find(int(dispatch_id))
         if dispatch:
+            del payload['stakeholders']
             dispatch << payload
             dispatch.store()
             self.write_json('{}')
