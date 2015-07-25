@@ -103,9 +103,9 @@ class Reporte extends Module
     @$el._append "<h4>#{operation[0]}</h4>"
     @el._append @add-table operation[1], dispatch
 
-    # ALERTS
-    @$el._append "<h4>#{alerts[0]}</h4>"
     for alert in dispatch.'alerts'
+      # ALERTS
+      @$el._append "<h4>#{alerts[0]}</h4>"
       @el._append @add-table alerts[1], alert
 
     super!
