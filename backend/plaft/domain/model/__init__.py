@@ -337,8 +337,8 @@ class Dispatch(dom.Model):
         """."""
         code = dom.String()
         section = dom.String()
-        description = dom.String()
-        comment = dom.String()
+        description = dom.Text()
+        comment = dom.Text()
         source = dom.String()
         description_source = dom.String()
 
