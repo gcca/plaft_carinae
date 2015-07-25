@@ -4,8 +4,9 @@
  */
 
 Module = require '../../workspace/module'
-SignalAlerts = require './alerts'
-Utils = require './utils-anexo6'
+Alerts = require './alerts'
+table = App.widget.table
+  Table = ..Table
 
 FieldType = App.builtins.Types.Field
 
@@ -39,7 +40,7 @@ class Anexo6 extends Module
 
   /** @override */
   on-save: ~>
-    App.ajax._post "/api/dispatch/#{@model._id}/anexo_seis", @el._toJSON!, do
+    App.ajax._post "/api/dispatch/#{@model._id}/anexo_seis", @_toJSON!, do
       _success: ~>
         @_desktop.notifier.notify do
           _message : 'Se actualizó correctamente los datos'
@@ -47,6 +48,9 @@ class Anexo6 extends Module
       _bad-request: ~>
         alert 'ERROR: e746ae94-5a3a-11e4-9a1d-88252caeb7e8'
 
+  _toJSON: ->
+    @el._toJSON!
+      ..'alerts' = @_png-alerts._toJSON!
 
   /** @override */
   render: ->
@@ -138,9 +142,6 @@ class Anexo6 extends Module
       ..render!
       .._free!
 
-
-    _dto = ["<p>#{..'section'+..'code'}). #{..'description'}</p></br>" for _dispatch.'alerts'].join ''
-
     if _dispatch.'is_suspects'?
       if _dispatch.'is_suspects'
         _is-suspects._radios._yes._checked = true
@@ -157,11 +158,14 @@ class Anexo6 extends Module
 
 
     @el._fromJSON _dispatch
-    @$el._append "<div class='#{gz.Css \col-md-12}'>
-                    <hr>
-                    #{_dto}
-                  </div>
-                  <div class='#{gz.Css \col-md-12} ' style='padding:0'>
+
+    @$el._append "<h4>SEÑALES DE ALERTA IDENTIFICADAS</h4>"
+    @_png-alerts = new Alerts
+    @_png-alerts._fromJSON _dispatch.'alerts'
+    @_png-alerts.el._class._add gz.Css \col-md-12
+    @el._append @_png-alerts.render!.el
+
+    @$el._append "<div class='#{gz.Css \col-md-12} ' style='padding:0'>
                     <button type='button'
                             class='#{gz.Css \btn}
                                  \ #{gz.Css \btn-default}
@@ -172,11 +176,13 @@ class Anexo6 extends Module
 
     super!
 
+  _png-alerts: null
+
   _GRID = App.builder.Form._GRID
 
   /** Field list for numeration form. (Array.<FieldOptions>) */
   _FIELDS =
-    * _name: 'description'
+    * _name: 'description_unusual'
       _label: 'Descripcion de la operación'
       _tip: 'Señale los argumentos que lo llevaron a calificar como inusual
            \ la operación.'
@@ -213,15 +219,70 @@ class ListAnexo6 extends Module
 
   /** @override */
   render: ->
-    (new Utils do
-      _desktop: @_desktop
-      _parent: @
-      _child: Anexo6)._load-module!
+    @_desktop._lock!
+    @_desktop._spinner-start!
+    _labels =
+      'Aduana'
+      'N Orden'
+      'Reg.'
+      'Razon social/Nombre'
+      'OI'
+      'Fecha Numeración'
+      'Ult Dia ROS'
+      'OS'
+      'No ROS'
+
+    _attributes =
+      'jurisdiction.code'
+      'order'
+      'regime.code'
+      'declaration.customer.name'
+      'alerts'
+      'numeration_date'
+      'last_date_ros'
+      'is_suspects'
+      'ros'
+
+    _templates =
+      'alerts': ->
+        if it._length
+          "<span class='#{gz.Css \label} #{gz.Css \label-success}'>
+             SI
+           </span>"
+
+      'is_suspects': ->
+        if it
+          "<span class='#{gz.Css \label} #{gz.Css \label-success}'>
+             SI
+           </span>"
+        else
+          "<span class='#{gz.Css \label} #{gz.Css \label-danger}'>
+             NO
+           </span>"
+
+    App.ajax._get '/api/dispatch/list', true, do
+      _success: (dispatches) ~>
+        _pending = new Dispatches dispatches
+        _tabla = new Table do
+                      _attributes: _attributes
+                      _labels: _labels
+                      _templates: _templates
+                      on-dblclick-row: (evt) ~>
+                        @_desktop.load-next-page Anexo6, model: evt._target._model
+
+        _tabla.set-rows _pending
+
+        @el._append _tabla.render!.el
+        @_desktop._unlock!
+        @_desktop._spinner-stop!
+
+      _error: ->
+        alert '1b2164fe-3242-11e5-8c38-904ce5010430'
 
     super!
 
 
-  /** @protected */ @@_caption = 'ANEXO 6'
+  /** @protected */ @@_caption = 'CONTROL OI - OFICIAL CUMPLIMIENTO'
   /** @protected */ @@_icon    = gz.Css \flash
   /** @protected */ @@_hash    = 'ANX6-HASH'
 
