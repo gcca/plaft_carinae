@@ -58,6 +58,10 @@ class NumerationEdit extends Module
 
         @_desktop._spinner-stop!
 
+        if (parseFloat @model._attributes.'amount') > 10000
+          $ (@el.query '.btn-success') ._hide!
+          $ (@el.query '.btn-danger') ._hide!
+
       _bad-request: ~>
         alert 'ERROR: e746ae94-5a3a-11e4-9a1d-88252caeb7e8'
 
@@ -66,19 +70,28 @@ class NumerationEdit extends Module
    * @private
    */
   on-accept: ~>
-    App.ajax._post "/api/dispatch/#{@model._id}/accept", null, do
-      _success: ~>
-        @_desktop.notifier.notify do
-          _message : 'Se ha registrado como operación'
-          _type    : @_desktop.notifier.kSuccess
+    response-button = (_value) ~>
+      if _value
+        App.ajax._post "/api/dispatch/#{@model._id}/accept", null, do
+          _success: ~>
+            @_desktop.notifier.notify do
+              _message : 'Se ha registrado como operación'
+              _type    : @_desktop.notifier.kSuccess
 
-        $ (@el.query '.btn-success') ._hide!
-        $ (@el.query '.btn-danger') ._show!
-      _bad-request: ~>
-        alert 'DENEGADO (Error)'
+            $ (@el.query '.btn-success') ._hide!
+            $ (@el.query '.btn-danger') ._show!
+          _bad-request: ~>
+            alert 'DENEGADO (Error)'
+
+    message = modal.MessageBox._new do
+      _title: 'Registro de operación'
+      _body: '<h5>¿Desea enviar a registro de operación?</h5>'
+      _callback: response-button
+    message._show!
+
 
   /**
-   * (Event) Accept dispatch (to operation).
+   * (Event) Reject dispatch (to operation).
    * @private
    */
   on-reject: ~>
@@ -86,8 +99,8 @@ class NumerationEdit extends Module
       _success: ~>
         delete @model._attributes.'operation'
         @_desktop.notifier.notify do
-          _message : 'Se ha registrado como operación'
-          _type    : @_desktop.notifier.kSuccess
+          _message : 'Se ha restauro.'
+          _type    : @_desktop.notifier.kWarning
 
         $ (@el.query '.btn-success') ._show!
         $ (@el.query '.btn-danger') ._hide!
@@ -144,6 +157,13 @@ class NumerationEdit extends Module
 
   load-amount-soles: ~>
     _amount = @_amount-el._value
+    if (parseFloat _amount) > 10000
+      $ (@el.query '.btn-success') ._hide!
+      $ (@el.query '.btn-danger') ._hide!
+    else
+      $ (@el.query '.btn-success') ._show!
+      $ (@el.query '.btn-danger') ._hide!
+
     _exchange-rate = @_exchange-rate-el._value
     @_calculate-amount-soles _amount, _exchange-rate
 
@@ -191,11 +211,6 @@ class NumerationEdit extends Module
     else
       $ (@el.query '.btn-success') ._hide!
       $ (@el.query '.btn-danger') ._show!
-  # TODO: Quitar `_tr`. Se debería crear una clase Child de Table para
-  #       manipular la tabla o al menos la fila representada por la
-  #       vista cargada desde algún evento de la tabla.
-  initialize: ({@model, @_tr}) -> super!
-
 
   /** @override */
   render: ->
@@ -218,24 +233,42 @@ class NumerationEdit extends Module
 
     @el._fromJSON @model._attributes
 
-    _special-buttons = "
-      <div class='#{gz.Css \col-md-6}'>
-        <div class='#{gz.Css \col-md-12}'>&nbsp;</div>
-        <button type='button' class='#{gz.Css \btn}
-                                   \ #{gz.Css \btn-success}
-                                   \ #{gz.Css \col-md-3}'>
-           ENVIAR A R.O.
-        </button>
-        <button type='button' class='#{gz.Css \btn}
-                                   \ #{gz.Css \btn-danger}
-                                   \ #{gz.Css \col-md-3}'>
-          SACAR DE R.O.
-        </button>
-      </div>"
+    _special-buttons = App.dom._new \div
+      .._class = gz.Css \col-md-6
+      ..html = "<div class='#{gz.Css \col-md-12}'>&nbsp;</div>"
 
-    @$el._append _special-buttons
-    (@el.query '.btn-success').on-click @on-accept
-    (@el.query '.btn-danger').on-click @on-reject
+    @el._append _special-buttons
+
+    _btn-accept = App.dom._new \button
+      .._class = "#{gz.Css \btn}
+                \ #{gz.Css \btn-success}
+                \ #{gz.Css \col-md-3}"
+      .._type = 'button'
+      ..css = 'width:290px'
+      ..html = 'Opcional: Monto menor al Umbral para RO, <br> análisis Riesgo
+              \ o perfil del cliente.'
+      ..title = 'El sujeto obligado podrá establecer internamente umbrales
+                \ menores para el RO, los que se podrán fijar en función al
+                \ análisis de riesgo de las operaciones que realiza del sector
+                \ económico, del perfil del cliente o algún otro criterio que
+                \ determine'
+      $ .. ._tooltip do
+        'template': "<div class='#{gz.Css \tooltip}' role='tooltip'
+                          style='min-width:175px'>
+                       <div class='#{gz.Css \tooltip-arrow}'></div>
+                       <div class='#{gz.Css \tooltip-inner}'></div>
+                     </div>"
+      ..on-click @on-accept
+      _special-buttons._append ..
+
+    _btn-reject = App.dom._new \button
+      .._class = "#{gz.Css \btn}
+                \ #{gz.Css \btn-danger}
+                \ #{gz.Css \col-md-3}"
+      .._type = 'button'
+      ..html = 'Restaurar'
+      ..on-click @on-reject
+      _special-buttons._append ..
 
     _amount-id = App.utils.uid 'l'
     _last-day-id = App.utils.uid 'l'
@@ -313,8 +346,6 @@ class NumerationEdit extends Module
   /** @private */ _amount-display: null
   /** @private */ _last-day-display: null
   /** @private */ _five-years-display: null
-  model: null
-  _tr: null
 
   /** Field list for numeration form. (Array.<FieldOptions>) */
   _FIELDS =
@@ -344,14 +375,17 @@ class NumerationEdit extends Module
  */
 class Numeration extends Module
 
-  update-dispatches: ->
-    App.ajax._get '/api/customs_agency/list_dispatches', true, do
-      _success: (dispatches) ~>
-        _pending = new Dispatches dispatches.'pending'
-        @_table.set-rows _pending
-
-      _error: ->
-        alert 'Error: 3f83b7ae-1c24-11e5-820f-001d7d7379f5'
+  on-search: (query) ->
+    for model in @_pending.models
+      if query is model._attributes.'order'
+        @_desktop.load-next-page(NumerationEdit, do
+                                     model: model)
+        break
+      else
+        @_desktop.notifier.notify do
+          _message: 'Número de orden inválido: ' + query
+          _type: @_desktop.notifier.kWarning
+        break
 
   /** @override */
   render: ->
@@ -402,7 +436,7 @@ class Numeration extends Module
 
     App.ajax._get '/api/customs_agency/list_dispatches', true, do
       _success: (dispatches) ~>
-        _pending = new Dispatches dispatches.'pending'
+        @_pending = new Dispatches dispatches.'pending'
         _table = new Table  do
           _attributes: _attributes
           _labels: _labels
@@ -410,10 +444,9 @@ class Numeration extends Module
           _column-cell-style: _column-cell-style
           on-dblclick-row: (evt) ~>
             @_desktop.load-next-page(NumerationEdit, do
-                                     model: evt._target._model,
-                                     _tr: evt._target)
+                                     model: evt._target._model)
 
-        _table.set-rows _pending
+        _table.set-rows @_pending
         @_table = _table
 
         @el._append _table.render!.el
@@ -423,9 +456,11 @@ class Numeration extends Module
       _error: ->
         alert 'Error!!! Numeration list'
 
+    @_desktop._search._focus 'Buscar por orden de despacho.'
     super!
 
   /** @private */ _table: null
+  /** @private */ _pending: null
 
   /** @protected */ @@_caption = 'NUMERACIÓN DE LAS OPERACIONES'
   /** @protected */ @@_icon    = gz.Css \print
