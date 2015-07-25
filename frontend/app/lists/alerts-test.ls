@@ -1,26 +1,24 @@
 /** @module app.lists */
 
-exports._alert-others = [
-  ['I', '4', 'El cliente presenta una inusual despreocupación por los riesgos que asume o los importes involucrados en el despacho aduanero de mercancias o los costos que implica la operación.']
-  ['I', '6', 'El cliente realiza constantemente operaciones y de modo inusual usa o pretende utilizar dinero en efectivo como único medio de pago.']
-  ['I', '12', 'Solicitud  del cliente de realizar despachos aduaneros de mercancias en condiciones o valores que no guardan relación con las actividades del dueño o consignatario, o en las condiciones habituales del mercado.']
-  ['I', '13', 'Solicitud del cliente de dividir los pagos por la prestación del servicio, generalmente, en efectivo.']
-  ['I', '15', 'El cliente presenta una inusual despreocupación por la presentación o estado de su mercancía o carga y/o de las comisiones y costos que implica la operación.']
-  ['I', '16', 'El cliente solicita ser excluido del registro de operaciones.']
-  ['I', '17', 'El cliente asume el pago de comisiones, impuestos y cualquier otro costo o tributo generado no sólo por la realización de sus operaciones, sino la de terceros o a las de otras operaciones aparentemente no relacionadas.']
-  ['I', '18', 'El cliente realiza frecuentes o significativas operaciones y declara no realizar o no haber realizado actividad económica alguna.']
-  ]
-exports._alert-anexo5 =[
+exports._alert-one =[
   ['I', '1', 'El cliente, para efectos de su identificación, presenta información inconsistente o de dificil verificación por parte del sujeto obligado.']
   ['I', '2', 'El cliente declara o registra la misma dirección que la de otras personas con las que no tiene relación o vínculo aparente.']
   ['I', '3', 'Existencia de indicios de que el ordenante (propietario/titular del bien o derecho) ó el beneficiario (adquirente o receptor del bien o derecho) no actúa por su cuenta y que intenta ocultar la identidad del ordenante o beneficiario real.']
+  ['I', '4', 'El cliente presenta una inusual despreocupación por los riesgos que asume o los importes involucrados en el despacho aduanero de mercancias o los costos que implica la operación.']
   ['I', '5', 'El cliente realiza operaciones de forma sucesiva y/o reiterada.']
+  ['I', '6', 'El cliente realiza constantemente operaciones y de modo inusual usa o pretende utilizar dinero en efectivo como único medio de pago.']
   ['I', '7', 'El cliente se rehusa a llenar los formularios o proporcionar la información requerida por el sujeto obligado, o se niega a realizar la operación tan pronto se le solicita.']
   ['I', '8', 'Las operaciones realizadas por el cliente no corresponden a su actividad económica.']
   ['I', '9', 'El cliente está siendo investigado o procesado por el delito de lavado de activos, delitos precedentes, el delito de financiamiento del terrorismo y sus delitos conexos, y se toma conocimiento de ello por los medios de difusión pública u otros medios.']
   ['I', '10', 'Clientes entre los cuales no hay ninguna relación de parentesco, financiera o comercial, sean personas naturales o jurídicas, sin embargo son representados por una misma persona. Se debe prestar especial atención cuando dichos clientes tengan fijado sus domicilios en el extranjero o en paraísos fiscales.']
   ['I', '11', 'El cliente realiza frecuentemente operaciones por sumas de dinero que no guardan relación con la ocupación que declara tener.']
+  ['I', '12', 'Solicitud  del cliente de realizar despachos aduaneros de mercancias en condiciones o valores que no guardan relación con las actividades del dueño o consignatario, o en las condiciones habituales del mercado.']
+  ['I', '13', 'Solicitud del cliente de dividir los pagos por la prestación del servicio, generalmente, en efectivo.']
   ['I', '14', 'Personas naturales o jurídicas, incluyendo sus accionistas, socios, asociados, socios fundadores, gerentes y directores, que figuren en alguna lista internacional de las Naciones Unidas, OFAC o similar.']
+  ['I', '15', 'El cliente presenta una inusual despreocupación por la presentación o estado de su mercancía o carga y/o de las comisiones y costos que implica la operación.']
+  ['I', '16', 'El cliente solicita ser excluido del registro de operaciones.']
+  ['I', '17', 'El cliente asume el pago de comisiones, impuestos y cualquier otro costo o tributo generado no sólo por la realización de sus operaciones, sino la de terceros o a las de otras operaciones aparentemente no relacionadas.']
+  ['I', '18', 'El cliente realiza frecuentes o significativas operaciones y declara no realizar o no haber realizado actividad económica alguna.']
   ]
 exports._alert-three = [
   ['III', '1', 'Existencia de indicios de exportaciones o importación ficticia de bienes y/o uso de documentos presuntamente falsos o inconsistentes con los cuales se pretenda acreditar estas operaciones de comercio exterior.']

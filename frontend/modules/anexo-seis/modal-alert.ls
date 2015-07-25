@@ -3,10 +3,13 @@ modal = App.widget.message-box
 
 class ModalAlert extends modal.Modal
 
+  _is-alert-user: (code) ->
+    alerts = window.plaft.'user'.'permissions'.'alerts'
+    code in ["#{a.'section'+a.'code'}" for a in alerts]
+
   template-table: ->
     _table = App.dom._new \table
-      .._class = "#{gz.Css \table}
-                \ #{gz.Css \table-bordered}"
+      .._class = "#{gz.Css \table}"
     App.dom._new \thead
       ..html = '<tr>
                   <th>Sección</th>
@@ -15,7 +18,7 @@ class ModalAlert extends modal.Modal
                   <th>Aplica</th>
                 </tr>'
       _table._append ..
-    alerts = App.lists.alerts-test._alert-anexo5
+    alerts = App.lists.alerts_user!
     _tbody = App.dom._new \tbody
 
     for alert in alerts
@@ -31,6 +34,8 @@ class ModalAlert extends modal.Modal
         _tr._append ..
       App.dom._new \td
         _name = "#{alert[0]+alert[1]}"
+        if @_is-alert-user _name
+          _tr._class._add gz.Css \success
         if @_alerts[_name]
           ..html = "<input type='checkbox' name='#{_name}' checked/>"
         else

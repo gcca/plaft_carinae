@@ -35,7 +35,7 @@ class EmployeeItem extends panelgroup.FormBody
         _cmodules.options[i].selected = true
 
     for m, i in _csignals
-      if _csignals.options[i].value in _dto.'permissions'.'signals'
+      if _csignals.options[i].value in _dto.'permissions'.'alerts'
         _csignals.options[i].selected = true
 
   _json-getter: ->
