@@ -326,6 +326,8 @@ class JSONEncoderNDB(JSONEncoder):
             if o.key:
                 d['id'] = o.id
             return d
+        if isinstance(o, set):
+            return tuple(o)
         if isinstance(o, Q.Query):
             return o.fetch(666)
         if isinstance(o, GeneratorType):
