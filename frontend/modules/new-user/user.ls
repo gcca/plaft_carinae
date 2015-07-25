@@ -56,13 +56,14 @@ class OfficerItem extends panelgroup.FormBody
               console.log 'Eliminado'
           _control-close.on-close!
 
-      message = MessageBox._new do
-        _title: 'Eliminación de la Agencia de Aduana.'
-        _body: '<h5>¿Desea eliminar la Agencia de Aduana?</h5>'
-        _callback: see-button
-      message._show MessageBox.CLASS.small
-
-
+      if not @model?
+          _control-close.on-close!
+      else
+        message = MessageBox._new do
+          _title: 'Eliminación de la Agencia de Aduana.'
+          _body: '<h5>¿Desea eliminar la Agencia de Aduana?</h5>'
+          _callback: see-button
+        message._show MessageBox.CLASS.small
     _r
 
   /** @private */ model: null
@@ -108,13 +109,13 @@ class OfficerList extends panelgroup.PanelGroup
 
     /** @override */
   render: ->
-    @el.html = "<div></div>
-                <button type='button'
+    @el.html = "<button type='button'
                         class= '#{gz.Css \btn}
                               \ #{gz.Css \btn-default}'>
                   Agregar </button>
-                <div> <hr/> </div>"
-    @_container = @el._first
+                <div> <hr/> </div>
+                <div></div>"
+    @_container = @el._last
     (@el.query 'button').on-click ~>
       @new-panel!
 
