@@ -188,6 +188,7 @@ class StakeholderAlert extends App.View
 
   render: ->
     for stk in @_collection-stakeholder
+      stk.'condition_intervene' = 'Vinculado'
       CustomerAlert._new stk
         @_stakeholders._push ..
         @el._append ..render!.el
@@ -254,12 +255,15 @@ class Test extends Module
       ..html = ''
 
     _keys = Object.keys alerts
-
     if not _keys._length
       $ @_div-table._parent ._hide!
       $ @el._last ._hide!
+      @_div-message
+        ..html = '<h4>Esta operación no contiene señales de Alerta.</h4>'
+        $ .. ._show!
       return
 
+    $ @_div-message ._hide!
     $ @_div-table._parent ._show!
     $ @el._last ._show!
     _table = App.dom._new \table
@@ -394,6 +398,9 @@ class Test extends Module
                               style='width:70%'></textarea>
                   </div>
                 </div>
+                <div class='#{gz.Css \col-md-12}
+                          \ #{gz.Css \div-message}'
+                     style='display:none;'></div>
                 <div class='#{gz.Css \col-md-12}' style='display:none;'></div>"
 
     @transform-to-alerts @model._attributes.'alerts'
@@ -410,15 +417,23 @@ class Test extends Module
 
     @_txt-area = @el.query "##{_area-id}"
     @_txt-area.on-blur ~>
+        @_current-tr._class._remove gz.Css \active
         @_current-alert.'comment' = @_txt-area._value
+        $ @_txt-area._parent ._hide!
+
+    _customer-dto = _dispatch.'declaration'.'customer'
+      ..'condition_intervene' = 'Involucrado'
+      ..'link_type' = if _dispatch.'is_out' then 'Exportador' else 'Importador'
+
+    @_income = CustomerAlert._new _customer-dto
+      @el._last._append ..render!.el
+
+    @_stakeholders = StakeholderAlert._new _dispatch.'stakeholders'
+      @el._last._append ..render!.el
+
+    @_div-message = @el.query ".#{gz.Css \div-message}"
 
     @load-table @_alerts
-
-    @_income = CustomerAlert._new @model._attributes.'declaration'.'customer'
-      @el._last._append ..render!.el
-
-    @_stakeholders = StakeholderAlert._new @model._attributes.'stakeholders'
-      @el._last._append ..render!.el
 
     super!
 
@@ -428,6 +443,7 @@ class Test extends Module
   /** @private */ _txt-area: null
   /** @private */ _income: null
   /** @private */ _stakeholders: null
+  /** @private */ _div-message: null
   /** @private */
   _current-tr:
     _class:
