@@ -8,7 +8,11 @@ exports._display =[
   ['9', 'Número de documento de identidad.', (c) -> if c.'document_type' is 'ruc' then 'No aplica' else c.'document_number']
   ['10', 'Condición de residencia: (1) Residente ó (2) No Residente.', (c) -> if c.'document_type' is 'ruc' then 'No aplica' else c.'condition']
   ['11', 'País de emisión del documento (en caso corresponda).', (c) -> if c.'document_type' is 'ruc' then 'No aplica' else c.'issuance_country']
-  ['12', 'Persona es PEP: (1)Si ó (2)No.', (c) -> if c.'document_type' is 'ruc' then 'No aplica' else c.'is_pep']
+  ['12', 'Persona es PEP: (1)Si ó (2)No.', (c) ->
+                                            if c.'document_type' is 'ruc'
+                                              'No aplica'
+                                            else
+                                              if c.'is_pep' then 'Si' else 'No']
   ['13', 'En caso en el item 12 haya consignado la opción (1), indicar el cargo público que desempeña.', (c) -> if c.'document_type' is 'ruc' then 'No aplica' else c.'employment']
   ['14', 'Apellido paterno o razón social (persona jurídica).', (c) -> if c.'document_type' is 'ruc' then c.'name' else c.'father_name']
   ['15', 'Apellido materno.', (c) -> if c.'document_type' is 'ruc' then 'No aplica' else c.'mother_name']
