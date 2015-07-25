@@ -83,6 +83,17 @@ class Permissions(dom.Model):
     modules = dom.Text(repeated=True)
     alerts_key = dom.Key(kind='Alert', repeated=True)
 
+    def get_sections(self):
+        ss = set(['I', 'III'])
+#        for a in self.alerts_key:
+#            print a.get('section')
+        return ss
+
+    def to_dict(self):
+        dct = super(Permissions, self).to_dict()
+        dct['sections'] = self.get_sections()
+        return dct
+
 
 class User(dom.User, dom.PolyModel):
     """Usuario de PLAFT.
@@ -307,16 +318,16 @@ class Dispatch(dom.Model):
     dam = dom.String()
     # diferencia entre el income_date y el numeration_date
     numeration_date = dom.Date()  # (-o-) date
-    amount = dom.String()
+    amount = dom.String(default='0')
+    # Campos para la Numeracion.
+    exchange_rate = dom.String(default='0')
     amount_soles = dom.Computed(lambda self:
-                                float(self.amount)*float(self.exchange_rate))
+                                float(self.amount if self.amount else '0')*float(self.exchange_rate if self.exchange_rate else '0'))
     currency = dom.String()
     channel = dom.String()
-    # Campos para la Numeracion.
-    exchange_rate = dom.String()
 
     # Campos para el anexo 6
-    description = dom.String()
+    description_unusual = dom.String()
     is_suspects = dom.Boolean()
     suspects_by = dom.String()
     ros = dom.String()
@@ -328,6 +339,8 @@ class Dispatch(dom.Model):
         section = dom.String()
         description = dom.String()
         comment = dom.String()
+        source = dom.String()
+        description_source = dom.String()
 
     alerts = dom.Structured(Alert, repeated=True)
     has_alerts = dom.Boolean(default=False)
@@ -385,7 +398,7 @@ class Dispatch(dom.Model):
         dct['last_date_ros'] = self.calculate_date_works(
                                     self.numeration_date,
                                     self.numeration_date+timedelta(days=15)
-                                    )
+                                    ) if self.numeration_date else None
         return dct
 
     @property
