@@ -43,12 +43,9 @@ class Alert extends Module
 
   /** @override */
   render: ->
-    _dto = ["#{..'section'+..'code'}). #{..'description'}" for @model._attributes.'alerts']
-
-    if _dto._length
-      _panel-group = new Alerts
-      _panel-group._fromJSON _dto
-      @el._append _panel-group.render!.el
+    _panel-group = new Alerts
+    _panel-group._fromJSON @model._attributes.'alerts'
+    @el._append _panel-group.render!.el
     super!
 
 
