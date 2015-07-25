@@ -85,10 +85,6 @@ class Stakeholder extends App.View
                    _max-length: 15
                    _field: 'ubigeo'
 
-    * _name: 'condition_intervene'
-      _type: FieldType.kHidden
-      _options: <[Involucrado]>
-
     * _name: 'link_type'
       _type: FieldType.kHidden
 
