@@ -72,7 +72,7 @@
  * @extends View
  * @export
  */
-class exports.Table extends App.View
+class Table extends App.View
 
   /** @override */
   _tagName: \table
@@ -214,5 +214,59 @@ class exports.Table extends App.View
    */
   on-dblclick-row: null
 
+/*
+ * @class SimpleTable
+ * @extends View
+ * @export
+ */
+class SimpleTable extends Table
+  /**
+   * Add row by model.
+   * @param {Model} _model
+   * @return HTMLTableRowElement
+   * @see __get-value, @on-dblclick-row
+   */
+  add-row: (_model) ->
+    _tr = App.dom._new \tr
+
+    for _attr in @_attributes
+      App.dom._new \td
+        ..html = @__get-value _model, _attr
+        ..css = @_column-cell-style[_attr]
+        _tr._append ..
+
+    _tr.on-dbl-click @__dummy-on-dblclick-row
+
+    @t-body._append _tr
+    _tr
+
+  /**
+   * Maps value from DTO parsing attribute name.
+   * Useful for DTO's from models.
+   * @param {Object} _dto
+   * @param {string} _attr Attribute name.
+   * @return Anything
+   * @see @add-row, __get-by-attr
+   * @private
+   */
+  __get-value: (_dto, _attr) -> @_templates[_attr] _dto[_attr]
+
+  /**
+   * Build rows from {@code Collection}.
+   * @param {Collection} _collection
+   */
+  set-rows: (_collection) ->
+    @t-body.html = ''
+    # Filling list
+    for _ele in _collection
+      e = {}
+      for i from 0 to _ele._length-1
+        e."#{@_attributes[i]}" = _ele[i]
+      @add-row e
+
+/** @export */
+exports <<<
+  Table: Table
+  SimpleTable: SimpleTable
 
 # vim: ts=2:sw=2:sts=2:et
