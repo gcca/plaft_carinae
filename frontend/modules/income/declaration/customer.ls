@@ -45,6 +45,25 @@ class Customer extends App.View
   set-default-type: ->
     throw 'BRUTAL-ERROR'
 
+  table-money-source: ->
+    _labels =
+      'Tipo'
+      'Descripción'
+
+    _attributes =
+      'source'
+      'display'
+
+    _collection = _.zip do
+      App.lists.money-source._source
+      App.lists.money-source._display
+
+    _table = new SimpleTable  do
+          _attributes: _attributes
+          _labels: _labels
+    _table.set-rows _collection
+    _table.render!.el
+
   on-customer-type-change: ~>
     @trigger (gz.Css \change), it._target._value
 

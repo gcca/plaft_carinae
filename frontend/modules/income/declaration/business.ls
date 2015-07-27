@@ -8,6 +8,8 @@ modal = App.widget.message-box
 App.widget.codename
   InputName = ..InputName
   CodeNameField = ..CodeNameField
+table = App.widget.table
+  SimpleTable = ..SimpleTable
 
 Shareholders = require './shareholders'
 
@@ -75,27 +77,27 @@ class Business extends Customer
   /** @protected */
   set-default-type: -> @set-type 'j'
 
-  template-table: ->
-    _code = App.lists.activity-business._code
-    _sector = App.lists.activity-business._sector
-    _activity = App.lists.activity-business._display
-    _tbody = ["<tr><td>#{_code[i]}</td>
-               <td>#{_sector[i]}</td>
-               <td>#{_activity[i]}</td></tr>" for i from 0 to _code._length-1].join ''
-    tb = App.dom._new \table
-    tb._class = "#{gz.Css \table}
-               \ #{gz.Css \table-hover}"
-    tb.html = "<thead>
-                <tr>
-                  <th><strong>Cod.</strong></th>
-                  <th><strong>Sector</strong></th>
-                  <th><strong>Actividad Económica</strong></th>
-                </tr>
-              </thead>
-              <tbody>
-                  #{_tbody}
-              </tbody>"
-    tb
+  table-activity: ->
+    _labels =
+      'Cod.'
+      'Sector'
+      'Actividad Economica'
+
+    _attributes =
+      'code'
+      'sector'
+      'display'
+
+    _collection = _.zip do
+      App.lists.activity-business._code
+      App.lists.activity-business._sector
+      App.lists.activity-business._display
+
+    _table = new SimpleTable  do
+          _attributes: _attributes
+          _labels: _labels
+    _table.set-rows _collection
+    _table.render!.el
 
   /** @override */
   render: ->
@@ -110,7 +112,15 @@ class Business extends Customer
             if evt.key-code is 77 and evt.ctrl-key   # [ctrl+M]
               mdl = modal.Modal._new do
                   _title: 'Tabla de actividad económica.'
-                  _body: @template-table!
+                  _body: @table-activity!
+              mdl._show!
+
+      .._elements.'money_source'._element
+        ..on-key-up (evt) ~>
+            if evt.key-code is 77 and evt.ctrl-key   # [ctrl+M]
+              mdl = modal.Modal._new do
+                  _title: 'Tabla de Fondos.'
+                  _body: @table-money-source!
               mdl._show!
 
       ..render!

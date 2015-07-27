@@ -3,6 +3,8 @@
 
 Customer = require './customer'
 
+modal = App.widget.message-box
+
 App.widget.codename
   InputName = ..InputName
   CodeNameField = ..CodeNameField
@@ -98,6 +100,14 @@ class Person extends Customer
 
       .._elements.'is_pep'._element
         ..on-change @on-is_pep-change
+
+      .._elements.'money_source'._element
+        ..on-key-up (evt) ~>
+            if evt.key-code is 77 and evt.ctrl-key   # [ctrl+M]
+              mdl = modal.Modal._new do
+                  _title: 'Tabla de Fondos.'
+                  _body: @table-money-source!
+              mdl._show!
 
       # Update issuance_country by document_type
       issuance-country-el = .._elements.'issuance_country'._element
