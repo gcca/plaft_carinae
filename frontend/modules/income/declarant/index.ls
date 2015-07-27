@@ -22,6 +22,10 @@ class DeclarantGroup extends panelgroup.PanelGroup
   _update-autocompleter: (declarants) ->
     for @_panels then .._header._get panelgroup.ControlSearch ._update-autocompleter declarants
 
+  _on-blur-address: (_address) ->
+    for @_panels then (.._body.el.query '[name=address]')._value = _address
+
+  /** @override */
   new-panel: ->
     _declarant = super do
       _panel-heading: DeclarantHeading
@@ -29,6 +33,7 @@ class DeclarantGroup extends panelgroup.PanelGroup
     _declarant._header._get panelgroup.ControlTitle ._text = 'Declarante'
     _declarant._header._get panelgroup.ControlSearch ._create-autocompleter 'declarant',
                                                                   App.GLOBALS._declarants
+    (_declarant._body.el.query '[name=address]')._value = @_address-declarant
     _declarant
 
   /** @override */
@@ -44,21 +49,30 @@ class DeclarantGroup extends panelgroup.PanelGroup
 
     super!
 
+  _address-declarant: null
+
 
 class BodyDeclarant extends panelgroup.JSONBody
 
+  /** @override */
   _json-getter: ->
     @_group-declarant._toJSON!
 
+  /** @override */
   _json-setter: (_dtos) ->
     if _dtos?
       for _dto in _dtos
         @_group-declarant.new-panel!
           .._body._json = _dto
 
+  _dcl-address-el: (address) ->
+    @_group-declarant._on-blur-address address
+    @_group-declarant._address-declarant = address
+
   _update-autocompleter: (declarants) ->
     @_group-declarant._update-autocompleter declarants
 
+  /** @override */
   render: ->
     @_group-declarant = new DeclarantGroup
     @el._append @_group-declarant.render!.el

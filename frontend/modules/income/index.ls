@@ -187,12 +187,15 @@ class Income extends Module
 
     # HARDCODE
     _dispatch-ref-el = @_panels._dispatch._body.el.query '[name=reference]'
-    _declaration-ref-el = @_panels._declaration._body.el.query '[name=reference]'
+    @_panels._declaration._body.el
+      _declaration-ref-el = ..query '[name=reference]'
+      _declaration-address-el = ..query '[name=address]'
     _dispatch-ref-el.on-key-up ->
       _declaration-ref-el._value = _dispatch-ref-el._value
     _declaration-ref-el.on-key-up ->
       _dispatch-ref-el._value = _declaration-ref-el._value
-
+    _declaration-address-el.on-blur ~>
+      @_panels._declarants._body._dcl-address-el _declaration-address-el._value
 
 
     _panel-group.open-all!
