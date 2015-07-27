@@ -258,7 +258,7 @@ def pending_and_accepting(customs_agency):
     """
     return {
         'pending': sorted([d for d in customs_agency.datastore.pending],
-                          key=lambda d: d.jurisdiction.code + d.order),
+                          key=lambda d: d.order, reverse=True),
         'accepting': [d for d in customs_agency.datastore.accepting]
     }
 
