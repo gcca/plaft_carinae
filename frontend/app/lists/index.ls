@@ -117,6 +117,8 @@ exports <<<
 
   anexo6: require './anexo6'
 
+  money-source: require './money-source'
+
   alerts_user: ->
     sections = []
     sections_user = window.plaft.'user'.'permissions'.'sections'
