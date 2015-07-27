@@ -505,9 +505,9 @@ class MonthyReport extends Module
         .._class = "#{gz.Css \table} #{gz.Css \table-hover}"
       @_tbody = App.dom._new \tbody
 
-      @add-head 'No Orden', 'Rg.', 'No Fila' ,'No Registro',
+      @add-head 'N&ordm; Orden', 'Rég.', 'N&ordm; Fila' ,'N&ordm; Registro',
                 ['DAM', 'text-align:center;', {colspan:'2'}],
-                'Md. Op.', 'N. Md.', 'FOB', 'Fecha Num.'
+                'Md. Op.', 'N&ordm; Md.', 'FOB US$', 'Fecha Num.'
       for operation in operations
         for [dispatch, i] in _.zip operation.'dispatches', operation.'num_modalidad'
           amount = (parseFloat dispatch.'amount').to-fixed 2

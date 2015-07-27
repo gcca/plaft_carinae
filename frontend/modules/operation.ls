@@ -517,8 +517,8 @@ class Operations extends Module
 
     _labels =
       'Aduana'
-      'Orden N&ordm;'
-      'Régimen'
+      'N&ordm; Orden'
+      'Rég.'
       'Razón social / Nombre'
       'N&ordm; DAM'
       'F. Declaración'

@@ -11,9 +11,9 @@ class UtilAnexo
     @_desktop._lock!
     @_desktop._spinner-start!
     _labels =
-      'Juridicción'
-      'N Orden'
-      'Reg.'
+      'Aduana'
+      'N&ordm; Orden'
+      'Rég.'
       'Nombre/Razon social'
       'N DAM'
       'Fecha Declaración'

@@ -230,19 +230,19 @@ class Income extends Module
 
     _labels =
       'Aduana'
-      'Orden N&ordm;'
-      'Fecha'
-      'Régimen'
+      'N&ordm; Orden'
+      'Rég.'
       'Razón social / Nombre'
+      'Fecha'
       'RUC/DNI'
       ''
 
     _attributes =
       'jurisdiction.code'
       'order'
-      'income_date'
       'regime.code'
       'declaration.customer'
+      'income_date'
       'declaration.customer.document_number'
       'dumpy'
 

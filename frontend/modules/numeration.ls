@@ -394,12 +394,12 @@ class Numeration extends Module
 
     _labels =
       'Aduana'
-      'Orden N&ordm;'
-      'Régimen'
+      'N&ordm; Orden'
+      'Rég.'
       'Razón social / Nombre'
       'N&ordm; DAM'
       'F. Numerac'
-      'FOB $'
+      'FOB US$'
       'Canal'
 
     _attributes =

@@ -211,8 +211,8 @@ class ListAnexo6 extends Module
     @_desktop._spinner-start!
     _labels =
       'Aduana'
-      'N Orden'
-      'Reg.'
+      'N&ordm; Orden'
+      'Rég.'
       'Razon social/Nombre'
       'OI'
       'Fecha Numeración'
