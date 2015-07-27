@@ -121,23 +121,13 @@ class Anexo6 extends Module
       _suspects-by = .._elements.'suspects_by'._field
         $ .. ._hide!
 
-      _numeration-date = .._elements.'numeration_date'._field
-        $ .. ._hide!
-
-      _last-date-ros = .._elements.'last_date_ros'._field
-        $ .. ._hide!
-
       _is-suspects = .._elements.'is_suspects'
         .._element.on-change ~>
           if .._radios._no._checked
             $ _ros ._hide!
-            $ _numeration-date ._hide!
-            $ _last-date-ros ._hide!
             $ _suspects-by ._show!
           else
             $ _ros ._show!
-            $ _numeration-date ._show!
-            $ _last-date-ros ._show!
             $ _suspects-by ._hide!
       ..render!
       .._free!
@@ -146,20 +136,18 @@ class Anexo6 extends Module
       if _dispatch.'is_suspects'
         _is-suspects._radios._yes._checked = true
         $ _ros ._show!
-        $ _numeration-date ._show!
-        $ _last-date-ros ._show!
         $ _suspects-by ._hide!
       else
         _is-suspects._radios._no._checked = true
         $ _ros ._hide!
-        $ _numeration-date ._hide!
-        $ _last-date-ros ._hide!
         $ _suspects-by ._show!
 
 
     @el._fromJSON _dispatch
 
-    @$el._append "<h4>SEÑALES DE ALERTA IDENTIFICADAS</h4>"
+    @$el._append "<h4 class='#{gz.Css \col-md-12}'>
+                    SEÑALES DE ALERTA IDENTIFICADAS
+                  </h4>"
     @_png-alerts = new Alerts
     @_png-alerts._fromJSON _dispatch.'alerts'
     @_png-alerts.el._class._add gz.Css \col-md-12
@@ -189,6 +177,12 @@ class Anexo6 extends Module
       _grid: _GRID._full
       _type: FieldType.kTextEdit
 
+    * _name: 'numeration_date'
+      _label: 'Fecha de Numeración'
+
+    * _name: 'last_date_ros'
+      _label: 'Último dia de RO'
+
     * _name: 'is_suspects'
       _label: '¿Ha sido calificado como sospechosa?'
       _type: FieldType.kYesNo
@@ -196,12 +190,6 @@ class Anexo6 extends Module
     * _name: 'ros'
       _label: 'Número de ROS'
       _tip: 'Indicar el numero de ROS con el que se remitio en la UIF.'
-
-    * _name: 'numeration_date'
-      _label: 'Fecha de Numeración'
-
-    * _name: 'last_date_ros'
-      _label: 'Último dia de RO'
 
     * _name: 'suspects_by'
       _label: 'Describir los argumentos porque no calificada como sospechosa'
