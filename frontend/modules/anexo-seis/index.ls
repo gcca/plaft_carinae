@@ -248,7 +248,7 @@ class ListAnexo6 extends Module
              NO
            </span>"
 
-    App.ajax._get '/api/dispatch/list', true, do
+    App.ajax._get 'api/customs_agency/dispatches_without_IO', true, do
       _success: (dispatches) ~>
         _pending = new Dispatches dispatches
         _tabla = new Table do
@@ -259,8 +259,12 @@ class ListAnexo6 extends Module
                         @_desktop.load-next-page Anexo6, model: evt._target._model
 
         _tabla.set-rows _pending
-
-        @el._append _tabla.render!.el
+        if dispatches._length
+          @el._append _tabla.render!.el
+        else
+          @$el._append '<h3 style="text-align:center">No existe Operaciones
+                       \ Inusuales reportadas por las diversas areas de
+                       \ la Agencia</h3>'
         @_desktop._unlock!
         @_desktop._spinner-stop!
 

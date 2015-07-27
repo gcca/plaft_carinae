@@ -299,6 +299,13 @@ class Customs_Agency(RESTful):
         users = [customs.officers for customs in model.CustomsAgency.all()]
         self.render_json(users)
 
+    @RESTful.method
+    def dispatches_without_IO(self):
+        customs_agency = self.user.customs_agency
+        dispatches = plaft.application.dispatch.list_dispatches(customs_agency)
+        self.render_json(
+            [d for d in dispatches if d['alerts']]
+        )
 
 class Dispatch(RESTful):
     """Dispatch RESTful handler."""
