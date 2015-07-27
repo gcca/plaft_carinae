@@ -376,16 +376,18 @@ class NumerationEdit extends Module
 class Numeration extends Module
 
   on-search: (query) ->
+    _flag = off
     for model in @_pending.models
       if query is model._attributes.'order'
+        _flag = on
+        break
+    if _flag
         @_desktop.load-next-page(NumerationEdit, do
                                      model: model)
-        break
-      else
-        @_desktop.notifier.notify do
-          _message: 'Número de orden inválido: ' + query
-          _type: @_desktop.notifier.kWarning
-        break
+    else
+      @_desktop.notifier.notify do
+        _message: 'Número de orden inválido: ' + query
+        _type: @_desktop.notifier.kWarning
 
   /** @override */
   render: ->
