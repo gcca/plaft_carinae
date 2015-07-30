@@ -53,6 +53,7 @@ class Dashboard(DirectToController):
                      {dcl.slug: dcl.id for dcl in model.Declarant.all()})
         self.add_arg('user', self.user)
         self.add_arg('us', self.user.customs_agency.employees)
+        self.add_arg('ig', plaft.config.DEBUG)  # is debug
 
 
 class DeclarationPDF(Handler):

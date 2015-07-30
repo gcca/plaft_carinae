@@ -108,8 +108,9 @@ class Dashboard extends App.View
     # HARDCODE
     _m-ref = BETAS.0
     _el = workspace.el.query ".#{gz.Css \glyphicon}-#{_m-ref._icon}"
-    _el = _el._parent._parent
-    _el.css = 'border-top:2px solid #bbb'
+    if _el?
+      _el = _el._parent._parent
+      _el.css = 'border-top:2px solid #bbb'
     # END 2 HARDCODE
 
     super!
@@ -175,6 +176,40 @@ class Dashboard extends App.View
 
 
 (new Dashboard).render!
+
+
+# Developer shortcuts and options
+# Remove in production release
+
+# Switch user
+
+user = window.'plaft'.'user'
+employees = user.'customs_agency'.'employees'
+officer = user.'customs_agency'.'officer'
+if officer._constructor is Number
+  officer = user
+
+employee_items = ["<li> \
+                     <a href='/switch/#{..'id'}'>#{..'username'}</a> \
+                   </li>" \
+                  for employees]
+
+_swbar = App.dom._new \div
+  .._class = "#{gz.Css \nav} #{gz.Css \navbar-nav}"
+  ..html = "
+    <li class='#{gz.Css \dropdown}'>
+      <a href='#' class='#{gz.Css \dropdown-toggle}' data-toggle='dropdown'>
+        Usuario: #{user.'username'} <span class='#{gz.Css \caret}'></span>
+      </a>
+      <ul class='#{gz.Css \dropdown-menu}' role='menu'>
+        <li><a href='/switch/#{officer.'id'}'>#{officer.'username'}</a></li>
+        <li class='#{gz.Css \divider}'></li>
+        #{employee_items.join ''}
+      </ul>
+    </li>"
+
+if window.'plaft'.'ig'
+  App.dom.query '#id-navbar-collapse' ._append _swbar
 
 
 # vim: ts=2:sw=2:sts=2:et

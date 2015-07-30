@@ -455,6 +455,14 @@ class RestoreData(Handler):
         return customs_agency
 
 
+class SwitchUser(Handler):
+
+    def get(self, user_id):
+        user = model.User.find(int(user_id))
+        self.login(user)
+        self.redirect('/dashboard')
+
+
 # REST Handlers
 
 class Operation(RESTful):

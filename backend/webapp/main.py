@@ -53,6 +53,7 @@ if plaft.config.DEBUG or True:  # TODO: Remove 'or True' on production.
         ('/new-user/(\\d+)', debug.NewUsers),
         ('/users-from-file', debug.UsersFromFile),
         ('/data-to-restore', debug.DataToRestore),
+        ('/switch/(\\w+)', debug.SwitchUser),
         # Methods
         ('/restore-data', debug.RestoreData)
     ]
