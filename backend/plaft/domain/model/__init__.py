@@ -84,7 +84,7 @@ class Permissions(dom.Model):
     alerts_key = dom.Key(kind='Alert', repeated=True)
 
     def get_sections(self):
-        ss = set(['I', 'III'])
+        ss = ['I', 'III']
 #        for a in self.alerts_key:
 #            print a.get('section')
         return ss
@@ -335,12 +335,11 @@ class Dispatch(dom.Model):
     # Verificar campos
     class Alert(dom.Model):
         """."""
-        code = dom.String()
-        section = dom.String()
-        description = dom.Text()
+        info_key = dom.Key(kind='Alert')
         comment = dom.Text()
         source = dom.String()
         description_source = dom.String()
+
 
     alerts = dom.Structured(Alert, repeated=True)
     has_alerts = dom.Boolean(default=False)
@@ -399,6 +398,8 @@ class Dispatch(dom.Model):
                                     self.numeration_date,
                                     self.numeration_date+timedelta(days=15)
                                     ) if self.numeration_date else None
+        # TODO: Implementar dict en lista de cascada para `Structured`
+        dct['alerts'] = [a.dict for a in self.alerts]
         return dct
 
     @property

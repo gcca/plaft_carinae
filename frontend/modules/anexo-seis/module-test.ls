@@ -227,20 +227,20 @@ class Test extends Module
 
     for k in _keys
       al = @_alerts[k]
-      dct-alert =
-        'code': al.'code'
-        'section': al.'section'
-        'description': al.'description'
+      _dto-alert._push do
+        'info':
+          'code': al.'code'
+          'section': al.'section'
+          'description': al.'description'
         'comment': al.'comment'
-      _dto-alert._push dct-alert
     _dto-alert
 
   transform-to-alerts: (_dto-alerts) ->
     @_alerts = {}
     for alert in _dto-alerts
-      _code = alert.'code'
-      _section = alert.'section'
-      _description = alert.'description'
+      _code = alert.'info'.'code'
+      _section = alert.'info'.'section'
+      _description = alert.'info'.'description'
       _comment = alert.'comment'
       _name = "#{_section+_code}"
       @_alerts[_name] =
@@ -468,7 +468,7 @@ class ModuleTest extends Module
 
   /** @protected */ @@_caption = 'MODULO DE ALERTAS'
   /** @protected */ @@_icon    = gz.Css \envelope
-  /** @protected */ @@_hash    = 'ANX6-HASH'
+  /** @protected */ @@_hash  = 'WEL-HASH'
 
 
 /** @export */
