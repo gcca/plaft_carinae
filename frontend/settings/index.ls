@@ -23,32 +23,31 @@ class EmployeeItem extends panelgroup.FormBody
     @employee = new Employee _dto
     @_save.html = "Modificar"
     _cmodules = @el._elements.'permissions[modules]'
-#    _csignals = @el._elements.'permissions[signals]'
 
     if not _dto.'permissions'
       _dto.'permissions' =
         'modules': []
-        'signals': []
+        'alerts': []
 
     for m, i in _cmodules
       if _cmodules.options[i].value in _dto.'permissions'.'modules'
         _cmodules.options[i].selected = true
 
-#    for m, i in _csignals
-#      if _csignals.options[i].value in _dto.'permissions'.'alerts'
-#        _csignals.options[i].selected = true
+    for alert in _dto.'permissions'.'alerts'
+      _name = "#{alert.'section'}-#{alert.'code'}"
+      ($ @table-alert ).find "##_name"
+        ..[0]._checked = on
 
   _json-getter: ->
     _dto = super!
     @el._elements.'permissions[modules]'
       _permission = $ .. .find 'option:selected'
 
-    @el._elements.'permissions[signals]'
-      _anexo = $ .. .find 'option:selected'
+    alerts = $ @table-alert .find 'input[type="checkbox"]:checked'
 
     _dto.'permissions' =
       'modules': [per.value for per in _permission]
-      'signals': [ax.value for ax in _anexo]
+      'alerts': [a._id for a in alerts]
     _dto
 
   on-save: ->
@@ -116,7 +115,7 @@ class EmployeeItem extends panelgroup.FormBody
                 </div>"
     @_save = @el.query 'button'
     # TABLE
-    table = App.dom._new \table
+    @table-alert = App.dom._new \table
       .._class = gz.Css \table
     t-head = App.dom._new \thead
     t-body = App.dom._new \tbody
@@ -138,6 +137,7 @@ class EmployeeItem extends panelgroup.FormBody
       for one in alert-one
         _td = App.dom._new \td
         _input = App.dom._new \input
+          .._id = "#{one[0]}-#{one[1]}"
           .._type = 'checkbox'
           ..title = one[2]
           $ .. ._tooltip do
@@ -156,6 +156,7 @@ class EmployeeItem extends panelgroup.FormBody
       for three in alert-three
         _td = App.dom._new \td
         _input = App.dom._new \input
+          .._id = "#{three[0]}-#{three[1]}"
           .._type = 'checkbox'
           ..title = three[2]
           $ .. ._tooltip do
@@ -169,17 +170,18 @@ class EmployeeItem extends panelgroup.FormBody
       t-body._append ..
 
     t-head._append tr-header
-    table._append t-head
-    table._append t-body
+    @table-alert._append t-head
+    @table-alert._append t-body
 
     _container-table = @el.query "##{table-id}"
       $ .. ._append '<label>Alertas :</label>'
-      .._append table
+      .._append @table-alert
     @_save.on-click ~> @on-save!
     ret
 
   /** @private */ employee: null
   /** @private */ _save: null
+  /** @private */ table-alert: null
 
 class EmployeeHeading extends panelgroup.PanelHeading
 

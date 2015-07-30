@@ -109,9 +109,26 @@ class User(RESTful):
         self.write_json('{"id":%d}' % employee.id)
 
     def put(self, id):
+        payload = self.query
+        payload_permission = payload['permissions']
         employee = model.Employee.find(int(id))
-        employee << self.query
+        permission = model.Permissions.find(int(payload_permission['id']))
+        alerts_key = []
+
+        for a in payload_permission['alerts']:
+            alert = model.Alert.find(section=a.split('-')[0],
+                                     code=a.split('-')[1])
+            alerts_key.append(alert.key)
+
+        permission.modules = payload_permission['modules']
+        permission.alerts_key = alerts_key
+        permission.store()
+
+        del payload['permissions']
+
+        employee << payload
         employee.store()
+
         self.write_json('{}')
 
     def delete(self, id):
