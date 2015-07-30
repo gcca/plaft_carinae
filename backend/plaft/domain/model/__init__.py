@@ -83,17 +83,6 @@ class Permissions(dom.Model):
     modules = dom.Text(repeated=True)
     alerts_key = dom.Key(kind='Alert', repeated=True)
 
-    def get_sections(self):
-        ss = ['I', 'III']
-#        for a in self.alerts_key:
-#            print a.get('section')
-        return ss
-
-    def to_dict(self):
-        dct = super(Permissions, self).to_dict()
-        dct['sections'] = self.get_sections()
-        return dct
-
 
 class User(dom.User, dom.PolyModel):
     """Usuario de PLAFT.
@@ -112,6 +101,15 @@ class User(dom.User, dom.PolyModel):
     is_officer = dom.Boolean(default=False)  # (-o-) Retirar.
     customs_agency_key = dom.Key(CustomsAgency)
     permissions_key = dom.Key(Permissions)
+    role = dom.String()
+
+    @property  # HARDCODE: permissions sections
+    def dict(self):
+        dct = super(User, self).dict
+        sections = list({a['section'] for a in dct['permissions']['alerts']})
+        sections.sort()  # (-o-) Sort by roman instead length
+        dct['permissions']['sections'] = sections
+        return dct
 
 
 class Officer(User):

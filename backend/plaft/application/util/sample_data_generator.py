@@ -95,14 +95,21 @@ def create_autocomplete():
 def create_employees(agency, j=5):
     from string import ascii_lowercase
 
-    j = random.randint(2, j)
     modules = data_generator.permissions.employee
+
+    keys1 = Alert.query(Alert.section == 'I').fetch(keys_only=True)
+    keys2 = Alert.query().fetch(keys_only=True)
+    keys3 = Alert.query(Alert.section == 'III').fetch(keys_only=True)
+    alerts_keys = [keys1, keys2, keys3]
+
     while j:
         username = ''.join(random.sample(ascii_lowercase, 3))
         name = ''.join(random.sample(ascii_lowercase, 6))
+
+        keys = alerts_keys[j % 3]
+        alerts_key_sample = random.sample(keys, 8)
         permission = Permissions(modules=modules,
-                                 alerts_key=random.sample(alert_signals_key,
-                                                          6))
+                                 alerts_key=alerts_key_sample)
         permission.store()
         employee = Employee(name=name,
                             username=username,
