@@ -23,7 +23,7 @@ class EmployeeItem extends panelgroup.FormBody
     @employee = new Employee _dto
     @_save.html = "Modificar"
     _cmodules = @el._elements.'permissions[modules]'
-    _csignals = @el._elements.'permissions[signals]'
+#    _csignals = @el._elements.'permissions[signals]'
 
     if not _dto.'permissions'
       _dto.'permissions' =
@@ -34,9 +34,9 @@ class EmployeeItem extends panelgroup.FormBody
       if _cmodules.options[i].value in _dto.'permissions'.'modules'
         _cmodules.options[i].selected = true
 
-    for m, i in _csignals
-      if _csignals.options[i].value in _dto.'permissions'.'alerts'
-        _csignals.options[i].selected = true
+#    for m, i in _csignals
+#      if _csignals.options[i].value in _dto.'permissions'.'alerts'
+#        _csignals.options[i].selected = true
 
   _json-getter: ->
     _dto = super!
@@ -74,6 +74,7 @@ class EmployeeItem extends panelgroup.FormBody
   /** @override */
   render: ->
     ret = super!
+    table-id = App.utils.uid 'l'
     @el.html = "<div class='#{gz.Css \form-group}
                           \ #{gz.Css \col-md-4}'>
                   <label>Nombre de Empleado</label>
@@ -96,7 +97,7 @@ class EmployeeItem extends panelgroup.FormBody
                          class='#{gz.Css \form-control}' />
                 </div>
                 <div class='#{gz.Css \form-group}
-                          \ #{gz.Css \col-md-6}'>
+                          \ #{gz.Css \col-md-12}'>
                   <label>Permisos módulos:</label>
                   <select multiple class='#{gz.Css \form-control}'
                                    name='permissions[modules]'>
@@ -106,14 +107,7 @@ class EmployeeItem extends panelgroup.FormBody
                   </select>
                 </div>
                 <div class='#{gz.Css \form-group}
-                          \ #{gz.Css \col-md-6}'>
-                  <label>Permisos señales:</label>
-                  <select multiple class='#{gz.Css \form-control}'
-                                   name='permissions[signals]'>
-                    #{for m in MODULES then '<option value='+m._hash+'>'+
-                            m._caption +
-                            '</option>'}
-                  </select>
+                          \ #{gz.Css \col-md-12}' id='#{table-id}'>
                 </div>
                 <div class='#{gz.Css \form-group}
                           \ #{gz.Css \col-md-6}'>
@@ -121,6 +115,66 @@ class EmployeeItem extends panelgroup.FormBody
                 \ #{gz.Css \btn-default}'> Registrar</button>
                 </div>"
     @_save = @el.query 'button'
+    # TABLE
+    table = App.dom._new \table
+      .._class = gz.Css \table
+    t-head = App.dom._new \thead
+    t-body = App.dom._new \tbody
+
+    tr-header = App.dom._new \tr
+      .._append App.dom._new \th
+
+    alert-one = App.lists.alerts-test._alert-one
+    alert-three = App.lists.alerts-test._alert-three
+
+    for i from 1 to alert-three._length
+      App.dom._new \th
+        ..html = i
+        tr-header._append ..
+
+    # ALERT SECTION I
+    App.dom._new \tr
+      ..html = "<td>I</td>"
+      for one in alert-one
+        _td = App.dom._new \td
+        _input = App.dom._new \input
+          .._type = 'checkbox'
+          ..title = one[2]
+          $ .. ._tooltip do
+            'template': "<div class='#{gz.Css \tooltip}' role='tooltip'
+                              style='min-width:175px'>
+                           <div class='#{gz.Css \tooltip-arrow}'></div>
+                           <div class='#{gz.Css \tooltip-inner}'></div>
+                         </div>"
+        _td._append _input
+        .._append _td
+      t-body._append ..
+
+    # ALERT SECTION III
+    App.dom._new \tr
+      ..html = "<td>III</td>"
+      for three in alert-three
+        _td = App.dom._new \td
+        _input = App.dom._new \input
+          .._type = 'checkbox'
+          ..title = three[2]
+          $ .. ._tooltip do
+            'template': "<div class='#{gz.Css \tooltip}' role='tooltip'
+                              style='min-width:175px'>
+                           <div class='#{gz.Css \tooltip-arrow}'></div>
+                           <div class='#{gz.Css \tooltip-inner}'></div>
+                         </div>"
+        _td._append _input
+        .._append _td
+      t-body._append ..
+
+    t-head._append tr-header
+    table._append t-head
+    table._append t-body
+
+    _container-table = @el.query "##{table-id}"
+      $ .. ._append '<label>Alertas :</label>'
+      .._append table
     @_save.on-click ~> @on-save!
     ret
 
