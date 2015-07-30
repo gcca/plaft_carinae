@@ -111,5 +111,32 @@ exports <<<
       @metrics.totalalloc = allocated || 0
       @metrics.totalfree = 0
 
+  /** @class Set */
+  Set: class extends Array
+    (_list) ->
+      if _list? and _list._constructor is Array
+        for e in _list
+          @push e
+
+    cardinality: -> @_length
+
+    # in, not in
+
+    is-disjoint: (other) ->
+
+    is-subset: (other) ->  # <=, < : set <= other and set != other.
+
+    is-superset: (other) ->  # >=, > : set >= other and set != other.
+
+    union: (other) ->  # set | other | ...
+
+    intersection: (other) ->  # set & other & ...
+
+    difference: (other) ->  # set - other - ...
+
+    symmetric_difference: (other) ->  # set ^ other
+
+    copy: ->
+
 
 # vim: ts=2:sw=2:sts=2:et
