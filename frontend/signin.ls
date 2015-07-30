@@ -46,7 +46,7 @@ document.body.innerHTML = "
                     then " #{gz.Css \has-error} #{gz.Css \has-feedback}"
                     else ''}'>
 
-          <input type='text' placeholder='Email' name='username'
+          <input type='text' placeholder='Usuario' name='username'
               style='width:17em'
               class='#{gz.Css \form-control}'>
 
@@ -65,7 +65,7 @@ document.body.innerHTML = "
                     then " #{gz.Css \has-error} #{gz.Css \has-feedback}"
                     else ''}'>
 
-          <input type='password' placeholder='Password' name='password'
+          <input type='password' placeholder='Contraseña' name='password'
               style='width:11em'
               class='#{gz.Css \form-control}'>
 
@@ -99,20 +99,22 @@ document.body.innerHTML = "
             </span>'
       else ''
     }
-    <h1>
-      PLAFT<small>sw</small>
-    </h1>
+    <span class='#{gz.Css \col-md-2}' style='padding:0px'>
+      <img src='/static/img/prevencion.png' style='float: left;margin: 0 40 0 10;'>
+    </span>
+    <span class='#{gz.Css \col-md-8}' style='padding:0px'>
+    <h4 style='margin: 0px; text-align:center'>
+      SOFTWARE DE PREVENCION DEL LAVADO DE ACTIVOS Y DEL FINANCIAMIENTO DEL <br/>
+      TERRORISMO APLICABLE A LOS DESPACHADORES DE ADUANA  -  PLAFT <br/>
+    </h4>
+    <h2 style='text-align:center;'>PLAFT - UIF</h2>
+    </span>
+    <span class='#{gz.Css \col-md-2}' style='padding:0px'>
+      <img src='/static/img/torre.png' style='float: left;margin: 0 40 0 10;'>
+    </span>
 
     <p class='#{gz.Css \jumbotron-options}
             \ #{gz.Css \pull-right}'>
-
-      <a class='#{gz.Css \btn}
-              \ #{gz.Css \btn-primary}
-              \ #{gz.Css \btn-lg}' role='button' href='#'>
-        Información adicional
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        &raquo;
-      </a>
 
       <a class='#{gz.Css \visible-xs}'>
         <form class='#{gz.Css \navbar-form}
@@ -159,66 +161,67 @@ document.body.innerHTML = "
         </form>
       </a>
     </p>
-    <p>Prevención del Lavado de Activos y Financiamiento del Terrorismo.</p>
 
   </div>
 
 </div>
 
+  #{if error
+      then "<div class='#{gz.Css \col-md-12}' style='text-align:center'>
+              <div class='#{gz.Css \col-md-4}'>&nbsp;</div>
+              <div class='#{gz.Css \alert} #{gz.Css \alert-danger} #{gz.Css \col-md-5}'>
+              Usted no es una persona autorizada para ingresar al sistema <strong>PLAFT - UIF</strong> <br/>
+              Comunicarse con <strong>CAVASOFT S.A.C.</strong> - <strong>Teléfono:</strong> 449-6929  <br/>
+              <a>ventas@cavasoftsac.com</a>, <a>cesarvargas@cavasoftsac.com</a></div></div>"
+    else ''}
   <div class='#{gz.Css \container}'>
 
     <div class='#{gz.Css \row} #{gz.Css \publicity}'>
       <div class='#{gz.Css \col-md-4}'>
         <h4>¿Qué es el lavado de activos?</h4>
-        <p style='text-align:justify'>
-          Es el conjunto de operaciones realizadas por una o más personas
-          \ naturales o jurídicas, tendientes a ocultar o disfrazar el origen
-          \ ilícito de bienes o recursos...</p>
-        <p>
-          <a class='#{gz.Css \btn} #{gz.Css \btn-default}'
-              href='#' role='button'>
-            Ver más &raquo;
-          </a>
+        <p style='text-align:justify;border: 1px solid;padding: 10px;'>
+          Conjunto de información de las operaciones del sujeto obligado, cuya
+        \ finalidad es prevenir y evitar que los servicios de comercio exterior
+        \ que se ofrecen sean utilizados con fines ilícitos. Con la
+        \ identificacion oportuna de operaciones inusuales y/o sospechosas,
+        \ utilizando las señales de alerta aplicable a los
+        \ Despachadores de Aduana.</p>
         </p>
       </div>
 
 
       <div class='#{gz.Css \col-md-4}'>
-        <h4>Sistema de prevención nacional</h4>
-        <p style='text-align:justify'>
-          De acuerdo al Decreto supremo N° 0018-2006 \"REGLAMENTO DE LA LEY
-          \ QUE CREA LA UNIDAD DE INTELIGENCIA FINANCIERA DEL PERÚ\"...
-        </p>
-        <p>
-          <a class='#{gz.Css \btn} #{gz.Css \btn-default}'
-              href='#' role='button'>
-            Ver más &raquo;
-          </a>
-        </p>
+        <div class='#{gz.Css \col-md-12}' style='text-align:center'>
+          <img src='/static/img/sbs.png' style='margin: 5 15 5 15;'>
+          <img src='/static/img/uif.png' style='margin: 5 15 5 15;'>
+        </div>
+        <div class='#{gz.Css \col-md-12}'>
+          <h4 style='text-align:center'>RESOLUCION SBS N° 2249-2013</h4>
+        </div>
+        <div class='#{gz.Css \col-md-12}' style='text-align:center'>
+          <img src='/static/img/sunat.png' style='margin-right: 7px;'>
+          <img src='/static/img/aduana.png' style='margin-left: 7px;'>
+        </div>
+        <div class='#{gz.Css \col-md-12}'>
+          <h4 style='text-align:center'>ORGANISMO SUPERVISOR</h4>
+        </div>
       </div>
 
 
       <div class='#{gz.Css \col-md-4}'>
-        <h4>Transparencia operativa</h4>
-        <p style='text-align:justify'>
-          En esta sección podrá encontrar Estadística Operativa de la Unidad
-          \ de Inteligencia Financiera del Perú (UIF-Perú).
+        <h4>¿Que Prevención de lavado de activos?</h4>
+        <p style='text-align:justify;border: 1px solid;padding: 10px;'>
+          Es el conjunto de información de sus operaciones, cuya finalidad es prevenir y evitar que los servicios
+          \ de comercio exterior que se ofrecen sean utilizados con fines ilícitos, con el objetivo oportuno
+          \ de detectar operaciones inusuales y/o sospechosas, cumpliendo a cabalidad con la Resolución aplicable
+          \ a los Despachadores de Aduana.
           <br> &nbsp;
-        </p>
-        <p>
-          <a class='#{gz.Css \btn} #{gz.Css \btn-default}'
-              href='#' role='button'>
-            Ver más &raquo;
-          </a>
         </p>
      </div>
 
     </div>
-
-    <hr>
-
-    <footer>
-      <p class='#{gz.Css \pull-left}'>Navegadores recomendados: &nbsp;&nbsp;
+    <div class='#{gz.Css \col-md-12}' style='text-align:center;margin: 25 0 25 0;'>
+      <p>Navegadores recomendados: &nbsp;&nbsp;
       <a title='Mozilla Firefox' href='https://www.mozilla.org/en-US/firefox/new/'
          target='_blank'>
         <img src='/static/img/mozilla.png' style='width:32px' />
@@ -241,7 +244,21 @@ document.body.innerHTML = "
       </a>
 
       </p>
-      <p class='#{gz.Css \pull-right}'>&copy; CavaSoft 2014</p>
+    </div>
+    <div class='#{gz.Css \col-md-12}'><hr></div>
+
+    <footer>
+      <p class='#{gz.Css \pull-left}'>
+        <img src='/static/img/CAA.png'/>
+        #{'&nbsp;'*3}<strong>CAVASOFT S.A.C. </strong><br/>
+        #{'&nbsp;'*27}<strong>Telefono:</strong> 449-6929 / 94977-8478 <br/>
+        #{'&nbsp;'*27}<a href='ventas@cavasoftsac.com'>ventas@cavasoftsac.com</a><br/>
+        #{'&nbsp;'*27}<a href='cesarvargas@cavasoftsac.com'>cesarvargas@cavasoftsac.com</a>
+      </p>
+      <p class='#{gz.Css \pull-right}'>
+        Marca registrada &copy; <br/>
+        Registro Indecopi <strong>123456</strong>
+      </p>
       <!-- cristHian Gz. (gcca) - http://gcca.tk -->
       <!-- Cristhian Alberto Gonzales Castillo -->
     </footer>
