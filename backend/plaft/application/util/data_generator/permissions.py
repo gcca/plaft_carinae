@@ -6,22 +6,30 @@ User default permissions.
 """
 
 
-officer = [
-    'WEL-HASH',
-    'NUM-HASH',
-    'ANEXO2-HASH',
-    'INCOME-HASH',
-    'ANEXO 6',
-    'OPLIST-HASH',
-    'NEWUSER-HASH'
-]
+module = {  # TODO: `None`s are temporal. See next `TODO`
+    'welcome'       : None,  # pantalla inicial
+    'income'        : None,  # ingreso de operación
+    'numeration'    : None,  # numeración
+    'operation'     : None,  # anexo 2
+    'module-test'   : None,  # identificación de señales de alerta
+    'monthy_report' : None   # reporte mensual
+}
+
+for name in module:  # TODO: Remove when create module auth system
+    module[name] = 'auth-hash-' + name
 
 
+# Officer permissions
+officer = [m_hash for _, m_hash in module.items()]
+
+
+# Employee permissions
 employee = [
-    'WEL-HASH',
-    'NUM-HASH',
-    'ANEXO2-HASH',
-    'INCOME-HASH'
+    module['welcome'],
+    module['income'],
+    module['numeration'],
+    module['module-test'],
+    module['operation']
 ]
 
 

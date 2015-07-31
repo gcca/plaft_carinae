@@ -468,7 +468,7 @@ class Numeration extends Module
 
   /** @protected */ @@_caption = 'NUMERACIÓN DE LAS OPERACIONES'
   /** @protected */ @@_icon    = gz.Css \print
-  /** @protected */ @@_hash    = 'NUM-HASH'
+  /** @protected */ @@_hash    = 'auth-hash-numeration'
 
 
 /** @export */

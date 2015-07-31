@@ -13,7 +13,8 @@ PRE-MODULES =
   Numeration    = require './modules/numeration'
   Operation     = require './modules/operation'
   #OperationList = r equire './modules/operation-list'
-  Report  = require './modules/monthy_report'
+  ModuleTest    = require './modules/anexo-seis/module-test'
+  Report        = require './modules/monthy_report'
 
 MODULES = new Array
 
@@ -25,7 +26,6 @@ for module in PRE-MODULES
 # HARDCODE
 BETAS =
   NewUser = require './modules/new-user'
-  ModuleTest = require './modules/anexo-seis/module-test'
   Anexo6  = require './modules/anexo-seis'
   ReporteAnexo6 = require './modules/anexo-seis/reporte-anexo6'
   ListAlerts  = require './modules/anexo-seis/signal-alert'

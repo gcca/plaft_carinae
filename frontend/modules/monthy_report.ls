@@ -548,7 +548,7 @@ class MonthyReport extends Module
   _tbody: null
   /** @protected */ @@_caption = 'RO - PROCESO MENSUAL'
   /** @protected */ @@_icon    = gz.Css \certificate
-  /** @protected */ @@_hash    = 'OPLIST-HASH'
+  /** @protected */ @@_hash    = 'auth-hash-monthy_report'
 
 
 /** @export */

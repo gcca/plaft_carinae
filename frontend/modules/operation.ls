@@ -610,7 +610,7 @@ class Operations extends Module
 
   /** @protected */ @@_caption = 'RO - PROCESO DIARIO'
   /** @protected */ @@_icon    = gz.Css \flash
-  /** @protected */ @@_hash  = 'ANEXO2-HASH'
+  /** @protected */ @@_hash  = 'auth-hash-operation'
 
 
 /** @export */

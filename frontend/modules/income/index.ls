@@ -310,7 +310,7 @@ class Income extends Module
 
   /** @protected*/ @@_caption = 'INGRESO DE OPERACIONES'
   /** @protected*/ @@_icon    = gz.Css \cloud
-  /** @protected*/ @@_hash   = 'INCOME-HASH'
+  /** @protected*/ @@_hash   = 'auth-hash-income'
   /** @protected*/
   @@_search-menu =
     * _caption: 'C'

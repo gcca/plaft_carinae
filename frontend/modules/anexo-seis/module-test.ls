@@ -468,7 +468,7 @@ class ModuleTest extends Module
 
   /** @protected */ @@_caption = 'MODULO DE ALERTAS'
   /** @protected */ @@_icon    = gz.Css \envelope
-  /** @protected */ @@_hash  = 'WEL-HASH'
+  /** @protected */ @@_hash  = 'auth-hash-module-test'
 
 
 /** @export */
