@@ -4,6 +4,7 @@
  */
 
 Module = require '../../workspace/module'
+Utils = require './utils-anexo6'
 Alerts = require './alerts'
 table = App.widget.table
   Table = ..Table
@@ -207,69 +208,11 @@ class ListAnexo6 extends Module
 
   /** @override */
   render: ->
-    @_desktop._lock!
-    @_desktop._spinner-start!
-    _labels =
-      'Aduana'
-      'N&ordm; Orden'
-      'Rég.'
-      'Razon social/Nombre'
-      'OI'
-      'Fecha Numeración'
-      'Ult Dia ROS'
-      'OS'
-      'No ROS'
-
-    _attributes =
-      'jurisdiction.code'
-      'order'
-      'regime.code'
-      'declaration.customer.name'
-      'alerts'
-      'numeration_date'
-      'last_date_ros'
-      'is_suspects'
-      'ros'
-
-    _templates =
-      'alerts': ->
-        if it._length
-          "<span class='#{gz.Css \label} #{gz.Css \label-success}'>
-             SI
-           </span>"
-
-      'is_suspects': ->
-        if it
-          "<span class='#{gz.Css \label} #{gz.Css \label-success}'>
-             SI
-           </span>"
-        else
-          "<span class='#{gz.Css \label} #{gz.Css \label-danger}'>
-             NO
-           </span>"
-
-    App.ajax._get 'api/customs_agency/dispatches_without_IO', true, do
-      _success: (dispatches) ~>
-        _pending = new Dispatches dispatches
-        _tabla = new Table do
-                      _attributes: _attributes
-                      _labels: _labels
-                      _templates: _templates
-                      on-dblclick-row: (evt) ~>
-                        @_desktop.load-next-page Anexo6, model: evt._target._model
-
-        _tabla.set-rows _pending
-        if dispatches._length
-          @el._append _tabla.render!.el
-        else
-          @$el._append '<h3 style="text-align:center">No existe Operaciones
-                       \ Inusuales reportadas por las diversas areas de
-                       \ la Agencia</h3>'
-        @_desktop._unlock!
-        @_desktop._spinner-stop!
-
-      _error: ->
-        alert '1b2164fe-3242-11e5-8c38-904ce5010430'
+    (new Utils do
+      _desktop: @_desktop
+      _parent: @
+      _child: Anexo6
+      _url: 'api/customs_agency/dispatches_without_IO')._load-module!
 
     super!
 

@@ -5,19 +5,32 @@ table = App.widget.table
 
 class UtilAnexo
 
-  ({@_desktop, @_parent, @_child}) ->
+  ({@_desktop, @_parent, @_child, @_url='/api/dispatch/list'}) ->
+
+  is_officer: -> window.plaft.'user'.'class_'.'1' is 'Officer'
+
+  get-section-code: (alert) ->
+    alert.'info'.'section' + alert.'info'.'code'
 
   _load-module: ->
+    comercial_alertas = ['I1', 'I2', 'I9', 'I10', 'I11', 'I14', 'I16']
+
+    operacion_alertas = ['I3', 'I5', 'I7', 'I8', 'I10', 'I11', 'I12',
+                         'I13', 'I14', 'I15', 'I16', 'I17', 'I18']
+
+    finanza_alertas = ['I4', 'I6', 'I9', 'I11', 'I13', 'I15', 'I17', 'I18']
+
+
     @_desktop._lock!
     @_desktop._spinner-start!
+
     _labels =
       'Aduana'
       'N&ordm; Orden'
       'Rég.'
       'Nombre/Razon social'
-      'N DAM'
+      'N&ordm; DAM'
       'Fecha Declaración'
-      'DI RO'
 
     _attributes =
       'jurisdiction.code'
@@ -26,25 +39,76 @@ class UtilAnexo
       'declaration.customer.name'
       'dam'
       'numeration_date'
-      'it'
 
-    _templates =
-      'it': ->
-        if it.'has_alerts'
-          if it.'alerts'._length
-            "<span class='#{gz.Css \label} #{gz.Css \label-danger}'>
-               C/OI
-             </span>"
-          else
-            "<span class='#{gz.Css \label} #{gz.Css \label-success}'>
-               S/OI
-             </span>"
-        else
-          ''
+    _templates = {}
 
-    App.ajax._get '/api/dispatch/list', true, do
+    __template-column = ->
+      if it
+        console.log 'ENTRO AQUI !!!!'
+        "<span class='#{gz.Css \label}
+                    \ #{gz.Css \label-success}'>
+          <i class='#{gz.Css \glyphicon}
+                  \ #{gz.Css \glyphicon-ok}'/>
+         </span>"
+      else
+        ''
+
+    __add-column = (label, attribute) ->
+      _labels._push label
+      _attributes._push attribute
+      _templates[attribute] = __template-column
+
+    dct-role =
+      'Comercial':
+        'label': 'Comercial'
+        'attribute': 'is_comercial'
+        'title': 'ÁREA COMERCIAL'
+      'Operativo':
+        'label': 'Operación'
+        'attribute': 'is_operativo'
+        'title': 'ÁREA OPERACIONES'
+      'Financiero':
+        'label': 'Finanza'
+        'attribute': 'is_finanza'
+        'title': 'ÁREA FINANZA'
+
+
+    role = window.plaft.'user'.'role'
+
+    App.ajax._get @_url, true, do
       _success: (dispatches) ~>
+
+        for dispatch in dispatches
+          is_comercial = off
+          is_operativo = off
+          is_finanza = off
+
+          for sc in [@get-section-code a for a in dispatch.'alerts']
+            if sc in comercial_alertas
+              is_comercial = on
+            else if sc in operacion_alertas
+              is_operativo = on
+            else if sc in finanza_alertas
+              is_finanza = on
+
+          dispatch
+            ..'is_comercial' = is_comercial
+            ..'is_operativo' = is_operativo
+            ..'is_finanza' = is_finanza
+
         _pending = new Dispatches dispatches
+
+        if @is_officer!
+          title-module = 'OFICIAL CUMPLIMIENTO'
+
+          for rol in ['Comercial', 'Operativo', 'Financiero']
+            __add-column dct-role[rol].'label', dct-role[rol].'attribute'
+        else
+          __add-column dct-role[role].'label', dct-role[role].'attribute'
+          title-module = dct-role[role].'title'
+
+        console.log _templates
+        # CREATE TABLE
         _tabla = new Table do
                       _attributes: _attributes
                       _labels: _labels
@@ -54,6 +118,12 @@ class UtilAnexo
 
         _tabla.set-rows _pending
 
+        @_parent.el.html = "<h3 style='text-align:center'>
+                            \ IDENTIFICACIÓN DE OI - #{title-module}
+                            </h3>
+                            <h4 style='text-align:center'>
+                            \ SECCION I - OPERACIONES O CONDUCTAS
+                          \ INUSUALES RELATIVAS AL CLIENTE</h4>"
         @_parent.el._append _tabla.render!.el
         @_desktop._unlock!
         @_desktop._spinner-stop!
@@ -64,6 +134,7 @@ class UtilAnexo
   /** @private */ _desktop: null
   /** @private */ _parent: null
   /** @private */ _child: null
+  /** @private */ _url: null
 
 /** @export */
 module.exports = UtilAnexo

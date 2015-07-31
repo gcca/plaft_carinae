@@ -99,7 +99,7 @@ class Table extends App.View
     for _label in _labels
       App.dom._new \th
         ..html = _label
-        ..css  = 'border-top:none; margin: auto;'
+        ..css  = 'border-top:none; margin: auto;text-align:center;'
         _tr._append ..
     @t-head._append _tr
 
@@ -111,6 +111,7 @@ class Table extends App.View
    */
   add-row: (_model) ->
     _tr = App.dom._new \tr
+    _tr.css = 'text-align:center'
     _tr._model = _model
 
     for _attr in @_attributes
@@ -152,8 +153,6 @@ class Table extends App.View
    * @private
    */
   __get-by-attr = (_obj, _attr) ->
-    if _attr is 'it'
-      return _obj
     _levels = _attr._split \.
     for _key in _levels
       _obj = _obj[_key]
