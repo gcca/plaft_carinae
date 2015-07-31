@@ -520,7 +520,9 @@ class MonthyReport extends Module
                    [dispatch.'dam', 'text-align:center;', {colspan:'2'}],
                    operation.'modalidad',
                    i,
-                   "#{if amount >10000 then "<span style='color:red'>#{amount}</span>" else amount }",
+                   "#{if amount >10000 then "<span style='color:red'>#{
+        ((parseFloat amount).toFixed 2).replace /(\d)(?=(\d{3})+\.)/g, "$1, "}</span>" else
+        ((parseFloat amount).toFixed 2).replace /(\d)(?=(\d{3})+\.)/g, "$1, " }",
                    dispatch.'numeration_date'
 
       @_table._append @_tbody
