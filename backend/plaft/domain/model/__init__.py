@@ -248,6 +248,7 @@ class Customer(dom.Model, dom.PolyModel):
     condition_intervene = dom.String()
     link_type = dom.String()
 
+
 class Person(Customer):
     """."""
 
@@ -338,7 +339,6 @@ class Dispatch(dom.Model):
         source = dom.String()
         description_source = dom.String()
 
-
     alerts = dom.Structured(Alert, repeated=True)
     has_alerts = dom.Boolean(default=False)
 
@@ -348,9 +348,9 @@ class Dispatch(dom.Model):
 
     operation_key = dom.Key(kind='Operation')
     is_out = dom.Computed(lambda s:
-                            s.regime.code in ['40', '51',
-                                              '52', '21',
-                                              '41', '89', '48'])
+                          s.regime.code in ['40', '51',
+                                            '52', '21',
+                                            '41', '89', '48'])
 
     def is_not_laborate(self, d):
         return date.isoweekday(d) in [6, 7]
@@ -462,7 +462,7 @@ class Datastore(dom.Model):
         from datetime import datetime
         current_year = datetime.now().year
         if (not self.operation_last_year or
-            self.operation_last_year + 1 == current_year):
+           self.operation_last_year + 1 == current_year):
             self.operation_last_year = current_year
             self.operation_counter = 0
         self.operation_counter += 1

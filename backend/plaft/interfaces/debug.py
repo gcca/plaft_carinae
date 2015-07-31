@@ -412,7 +412,6 @@ class RestoreData(Handler):
             operation_key = self.get_operation_key(dct['operation'])
             del dct['operation']
 
-
             clean(dct)
             dispatch = model.Dispatch.new(dct)
             dispatch.customs_agency_key = customs_agency.key
@@ -422,7 +421,6 @@ class RestoreData(Handler):
             if operation_key:
                 dispatch.operation_key = operation_key
                 dispatch.store()
-
 
     @staticmethod
     def get_operation_key(hsh):

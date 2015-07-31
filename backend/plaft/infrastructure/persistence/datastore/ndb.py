@@ -355,7 +355,6 @@ class Document(Model):
 
 class DocumentProperty(ndb.StructuredProperty):
 
-
     _modelclass = Document
 
     # def __init__(self, *args, **kwargs):
