@@ -117,7 +117,7 @@ def create_employees(agency, j=5):
                             password='123',
                             customs_agency_key=agency.key,
                             permissions_key=permission.key,
-                            role=random.choice(roles))
+                            role=roles[j % 3])
         employee.store()
         agency.employees_key.append(employee.key)
         j -= 1
@@ -222,11 +222,33 @@ def _data_debug():
     DCustomer = namedtuple('DCustomer', 'name document_type')
 
     init_customers = [
-        DCustomer('Sony',
+        DCustomer('ARTESCO S.A',
                   'ruc'),
-        DCustomer('Coca Cola',
+        DCustomer('BLUE DIAMOND GROUP S.A.C.',
                   'ruc'),
-        DCustomer('Microsoft',
+        DCustomer('CANA DYNE EQUIPMENT AND SERVICES S.A.',
+                  'ruc'),
+        DCustomer('COTTON PROYECT S.A.C.',
+                  'ruc'),
+        DCustomer('Corpos Antonio',
+                  'ruc'),
+        DCustomer('DETROIT DIESEL - MTU PERU S.A.C',
+                  'ruc'),
+        DCustomer('HIELOSNORTE S.A.C.',
+                  'ruc'),
+        DCustomer('INDUSTRIAS DEL SHANUSI S.A.',
+                  'ruc'),
+        DCustomer('Lima Caucho S.A.',
+                  'ruc'),
+        DCustomer('NESTLE MARCAS PERU S.A.C.',
+                  'ruc'),
+        DCustomer('PERUANA S.A.C.',
+                  'ruc'),
+        DCustomer('ROMOVI S.A.C.',
+                  'ruc'),
+        DCustomer('SAMSUNG ELECTRONICS PERU S.A.C.',
+                  'ruc'),
+        DCustomer('SOUTHERN PERU COPPER CORPORATION SUCURSAL DEL PERU',
                   'ruc'),
         DCustomer('Javier Huaman',
                   'dni'),
@@ -292,8 +314,6 @@ def _data_debug():
 
         list_dispatches = create_dispatches(agency, datastore, customers)
         operations(agency, list_dispatches, datastore)
-
-    create_autocomplete()  # Remove when update domain model
 
     # HARDCODED data
     # _data_deploy()
@@ -407,47 +427,21 @@ jurisdictions = tuple(CodeName(name=j[0], code=j[1])
 
 raw_stakeholders = (
     # (document_type, name, address)
-    ('ruc', 'LexCorp', 'DC Comics'),
-    ('ruc', 'Primatech', 'Heroes'),
-    ('ruc', 'Blue Sun', 'Firefly and Serenity'),
-    ('ruc', 'Merrick Biotech', 'The Island'),
-    ('ruc', 'Fatboy Industries', 'The Middleman'),
-    ('ruc', 'Buy n Large Corporation', 'WALL•E'),
-    ('ruc', 'Tyrell Corporation', 'Blade Runner'),
-    ('ruc', 'Veidt Industries', 'Watchmen'),
-    ('ruc', 'Weyland-Yutani', 'Alien franchise'),
-    ('ruc', 'Cyberdyne Systems Corporation', 'Terminator'),
-    ('ruc', 'Yoyodyne', 'The Crying of Lot 49 and V. by Thomas Pynchon'),
-    ('ruc', 'Earth Protectors', 'Up, Up, and Away, 2000'),
-    ('ruc', 'Omni Consumer Products', 'Robocop'),
-    ('ruc', 'Soylent Corporation', 'Soylent Green'),
-    ('ruc', 'GeneCo', 'Repo! The Genetic Opera'),
-    # block 2
-    ('ruc', 'CHOAM', 'Dune'),
-    ('ruc', 'Acme Corp.', 'Looney Tunes'),
-    ('ruc', 'Sirius Cybernetics Corp.', 'Hitchhiker’s Guide'),
-    ('ruc', 'MomCorp', 'Futurama'),
-    ('ruc', 'Rich Industries', 'Richie Rich'),
-    ('ruc', 'Soylent Corp.', 'Soylent Green'),
-    ('ruc', 'Very Big Corp. of America', 'Monty Python'),
-    ('ruc', 'Frobozz Magic Co.', 'Zork'),
-    ('ruc', 'Warbucks Industries', 'Lil’ Orphan Annie'),
-    ('ruc', 'Tyrell Corp.', 'Bladerunner'),
-    ('ruc', 'Wayne Enterprises', 'Batman'),
-    ('ruc', 'Virtucon', 'Austin Powers'),
-    ('ruc', 'Globex', 'The Simpsons'),
-    ('ruc', 'Umbrella Corp.', 'Resident Evil'),
-    ('ruc', 'Wonka Industries', 'Charlie... Choc. Factory'),
-    ('ruc', 'Stark Industries', 'Iron Man'),
-    ('ruc', 'Clampett Oil', 'Beverly Hillbillies'),
-    ('ruc', 'Oceanic Airlines', 'Lost'),
-    ('ruc', 'Yoyodyne Propulsion Sys.', 'Crying of Lot 49'),
-    ('ruc', 'Cyberdyne Systems Corp.', 'Terminator'),
-    ('ruc', 'd’Anconia Copper', 'Atlas Shrugged'),
-    ('ruc', 'Gringotts', 'Harry Potter'),
-    ('ruc', 'Oscorp', 'Spider-Man'),
-    ('ruc', 'Nakatomi Trading Corp.', 'Die-Hard'),
-    ('ruc', 'Spacely Space Sprockets', 'The Jetsons')
+    ('ruc', 'Breaker Tecnology, Ltd.', 'direccion'),
+    ('ruc', 'Empresa Pinto S.A.', 'direccion'),
+    ('ruc', 'Ford Motor Corporation Inc', 'direccion'),
+    ('ruc', 'Guangdong Textiles Imp.and Exp.Co.LTD', 'direccion'),
+    ('ruc', 'INTAI SPA', 'direccion'),
+    ('ruc', 'Idustria AVM S.A.', 'direccion'),
+    ('ruc', 'MIQ Global LLC DBA MIQ Logistics', 'direccion'),
+    ('ruc', 'Nestle Chile S.A.', 'direccion'),
+    ('ruc', 'Prov Blue Diamont', 'direccion'),
+    ('ruc', 'Prov Diesel', 'direccion'),
+    ('ruc', 'Prov Hielos', 'direccion'),
+    ('ruc', 'Prov Romovic', 'direccion'),
+    ('ruc', 'Rubbermix S.A.S.', 'direccion'),
+    ('ruc', 'Samsung Electronics CO., LTD', 'direccion'),
+    ('ruc', 'Shu Far Enterprise Co. Ltd.', 'direccion')
 )
 
 stakeholders = tuple(Stakeholder(document_type=j[0],
