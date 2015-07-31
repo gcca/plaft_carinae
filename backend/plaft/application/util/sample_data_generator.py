@@ -101,6 +101,7 @@ def create_employees(agency, j=5):
     keys2 = Alert.query().fetch(keys_only=True)
     keys3 = Alert.query(Alert.section == 'III').fetch(keys_only=True)
     alerts_keys = [keys1, keys2, keys3]
+    roles = ['Comercial', 'Operativo', 'Financiero']
 
     while j:
         username = ''.join(random.sample(ascii_lowercase, 3))
@@ -115,7 +116,8 @@ def create_employees(agency, j=5):
                             username=username,
                             password='123',
                             customs_agency_key=agency.key,
-                            permissions_key=permission.key)
+                            permissions_key=permission.key,
+                            role=random.choice(roles))
         employee.store()
         agency.employees_key.append(employee.key)
         j -= 1
@@ -294,7 +296,7 @@ def _data_debug():
     create_autocomplete()  # Remove when update domain model
 
     # HARDCODED data
-    _data_deploy()
+    # _data_deploy()
 
 
 def _data_deploy():
@@ -308,8 +310,7 @@ def _data_deploy():
                    alerts_key=alert_signals_key)
     ds.store()
 
-    perms = Permissions(modules=data_generator.permissions.officer,
-                        alerts_key=alert_signals_key)
+    perms = Permissions(modules=data_generator.permissions.officer)
     perms.store()
 
     of = Officer(customs_agency_key=ca.key,
