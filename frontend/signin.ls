@@ -180,12 +180,12 @@ document.body.innerHTML = "
       <div class='#{gz.Css \col-md-4}'>
         <h4>¿Qué es el lavado de activos?</h4>
         <p style='text-align:justify;border: 1px solid;padding: 10px;'>
-          Conjunto de información de las operaciones del sujeto obligado, cuya
-        \ finalidad es prevenir y evitar que los servicios de comercio exterior
-        \ que se ofrecen sean utilizados con fines ilícitos. Con la
-        \ identificacion oportuna de operaciones inusuales y/o sospechosas,
-        \ utilizando las señales de alerta aplicable a los
-        \ Despachadores de Aduana.</p>
+          El lavado de activos es el conjunto de operaciones realizadas
+         \ por una o más personas, destinadas a ocultar o disfrazar el
+         \ origen ilícito de bienes o recursos que provienen de actividades
+         \ delictivas tales como el narcotráfico, el tráfico de armas, el
+         \ tráfico de personas, el secuestro, la corrupción, etc. A estos
+         \ delitos se les conoce como delitos precedentes.</p>
         </p>
       </div>
 
@@ -211,10 +211,12 @@ document.body.innerHTML = "
       <div class='#{gz.Css \col-md-4}'>
         <h4>¿Que Prevención de lavado de activos?</h4>
         <p style='text-align:justify;border: 1px solid;padding: 10px;'>
-          Es el conjunto de información de sus operaciones, cuya finalidad es prevenir y evitar que los servicios
-          \ de comercio exterior que se ofrecen sean utilizados con fines ilícitos, con el objetivo oportuno
-          \ de detectar operaciones inusuales y/o sospechosas, cumpliendo a cabalidad con la Resolución aplicable
-          \ a los Despachadores de Aduana.
+          Conjunto de información de las operaciones del sujeto obligado,
+          \ cuya finalidad es prevenir y evitar que los servicios de comercio
+          \ exterior que se ofrecen sean utilizados con fines ilícitos.
+          \ Con la identificacion oportuna de operaciones inusuales y/o
+          \ sospechosas, utilizando las señales de alerta aplicable a
+          \ los Despachadores de Aduana.
           <br> &nbsp;
         </p>
      </div>
