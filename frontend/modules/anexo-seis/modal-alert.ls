@@ -7,6 +7,14 @@ class ModalAlert extends modal.Modal
     alerts = window.plaft.'user'.'permissions'.'alerts'
     code in ["#{a.'section'+a.'code'}" for a in alerts]
 
+  delete-alert: (_checkbox) ->
+    if not _checkbox._checked
+      _dto =
+        'code_section': _checkbox._name
+      App.ajax._post "/api/dispatch/#{@_model._id}/delete_alert", _dto, do
+        _success: ~>
+          console.log 'ELIMINADO'
+
   template-table: ->
     _table = App.dom._new \table
       .._class = "#{gz.Css \table}"
@@ -36,10 +44,14 @@ class ModalAlert extends modal.Modal
         _name = "#{alert[0]+alert[1]}"
         if @_is-alert-user _name
           _tr._class._add gz.Css \success
-        if @_alerts[_name]
-          ..html = "<input type='checkbox' name='#{_name}' checked/>"
-        else
-          ..html = "<input type='checkbox' name='#{_name}'/>"
+        _checkbox = App.dom._new \input
+          .._type = 'checkbox'
+          .._name = "#{alert[0]}|#{+alert[1]}"
+          if @_alerts[_name]
+            ..attr 'checked', on
+          ..on-change (evt) ~> @delete-alert evt._target
+
+        .._append _checkbox
         _tr._append ..
       _tbody._append _tr
 
@@ -53,7 +65,7 @@ class ModalAlert extends modal.Modal
       _description = tr.cells[2].html
       _code = tr.cells[1].html
       _section = tr.cells[0].html
-      _name = "#{_checkbox._name}"
+      _name = "#{_section+_code}"
       if _checkbox._checked
         if @_alerts[_name]?
           @_alerts[_name].'section' = _section
@@ -73,6 +85,7 @@ class ModalAlert extends modal.Modal
   /** @override */
   initialize: ({_title= '', \
                 @_alerts={}, \
+                @_model, \
                 @_callback}) ->
 
     _r = super do
@@ -91,6 +104,7 @@ class ModalAlert extends modal.Modal
 
   /** @private */ _alerts: null
   /** @private */ _callback: null
+  /** @private */ _model: null
 
 /** @export */
 module.exports = ModalAlert

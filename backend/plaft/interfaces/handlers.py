@@ -324,6 +324,7 @@ class Customs_Agency(RESTful):
             [d for d in dispatches if d['alerts']]
         )
 
+
 class Dispatch(RESTful):
     """Dispatch RESTful handler."""
 
@@ -477,18 +478,45 @@ class Dispatch(RESTful):
         dispatch = model.Dispatch.find(int(dispatch_id))
         if dispatch:
             del payload['stakeholders']
+            cs_alerts = ['%s%s' % (a.info.section, a.info.code)
+                         for a in dispatch.alerts]
             for a in payload['alerts']:
-                alert = model.Alert.find(section=a['info']['section'],
-                                         code=a['info']['code'])
-                a['info_key'] = alert.key
-                del a['info']
-            dispatch << payload
-            dispatch.store()
+                code_section = '%s%s' % (a['info']['section'],
+                                         a['info']['code'])
+                comment = a['comment'] if 'comment' in a else ''
+                if code_section in cs_alerts:
+                    for k in dispatch.alerts:
+                        k_code_section = '%s%s' % (k.info.section,
+                                                   k.info.code)
+                        if code_section == k_code_section:
+                            k.comment = comment
+                    dispatch.store()
+                else:
+                    alert = model.Alert.find(section=a['info']['section'],
+                                             code=a['info']['code'])
+                    dispatch_alert = model.Dispatch.Alert()
+                    dispatch_alert.info_key = alert.key
+                    dispatch_alert.comment = comment
+                    dispatch.alerts.append(dispatch_alert)
+                    dispatch.store()
 
             self.write_json('{}')
         else:
             self.status.NOT_FOUND('No existe el despacho con el id: ' +
                                   dispatch_id)
+
+    @RESTful.method('post')
+    def delete_alert(self, dispatch_id):
+        print self.query
+        payload = self.query
+
+        dispatch = model.Dispatch.find(int(dispatch_id))
+
+        for a in dispatch.alerts:
+            code_section = '%s|%s' % (a.info.section, a.info.code)
+            if code_section == payload['code_section']:
+                dispatch.alerts.remove(a)
+                dispatch.store()
 
     @RESTful.method  # get
     def list(self):

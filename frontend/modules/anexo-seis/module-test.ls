@@ -221,6 +221,10 @@ class Test extends Module
       _bad-request: ~>
         alert 'ERROR: e746ae94-5a3a-11e4-9a1d-88252caeb7e8'
 
+  _is-alert-user: (code) ->
+    alerts = window.plaft.'user'.'permissions'.'alerts'
+    code in ["#{a.'section'+a.'code'}" for a in alerts]
+
   transform-to-dto: ->
     _dto-alert = []
     _keys = Object.keys @_alerts
@@ -243,11 +247,12 @@ class Test extends Module
       _description = alert.'info'.'description'
       _comment = alert.'comment'
       _name = "#{_section+_code}"
-      @_alerts[_name] =
-        'code': _code
-        'section': _section
-        'description': _description
-        'comment': _comment
+      if @_is-alert-user _name
+        @_alerts[_name] =
+          'code': _code
+          'section': _section
+          'description': _description
+          'comment': _comment
 
   load-table: (alerts) ~>
     @_div-table
@@ -255,6 +260,7 @@ class Test extends Module
       ..html = ''
 
     _keys = Object.keys alerts
+
     if not _keys._length
       $ @_div-table._parent ._hide!
       $ @el._last ._hide!
@@ -412,6 +418,7 @@ class Test extends Module
         modal-test = ModalAlert._new do
             _title: 'SEÑALES DE ALERTA'
             _alerts: @_alerts
+            _model: @model
             _callback: @load-table
         modal-test._show ModalAlert.CLASS.large
 
