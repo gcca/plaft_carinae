@@ -28,8 +28,9 @@ BETAS =
   NewUser = require './modules/new-user'
   Anexo6  = require './modules/anexo-seis'
   ReporteAnexo6 = require './modules/anexo-seis/reporte-anexo6'
-  ListAlerts  = require './modules/anexo-seis/signal-alert'
-  Alerts  = require './modules/alerts'
+  # TODO: Remove modules when aren't neccesary
+  ## ListAlerts  = r equire './modules/anexo-seis/signal-alert'
+  ## Alerts  = r equire './modules/alerts'
 
 username = window.plaft.'user'.'username'
 
@@ -190,7 +191,11 @@ if officer._constructor is Number
   officer = user
 
 employee_items = ["<li> \
-                     <a href='/switch/#{..'id'}'>#{..'username'}</a> \
+                     <a href='/switch/#{..'id'}'> \
+                       #{..'username'} \
+                       &nbsp;&nbsp;&nbsp;&nbsp; \
+                       <em style='font-size:9pt'>(#{..'role'})</em> \
+                     </a> \
                    </li>" \
                   for employees]
 
@@ -202,7 +207,13 @@ _swbar = App.dom._new \div
         Usuario: #{user.'username'} <span class='#{gz.Css \caret}'></span>
       </a>
       <ul class='#{gz.Css \dropdown-menu}' role='menu'>
-        <li><a href='/switch/#{officer.'id'}'>#{officer.'username'}</a></li>
+        <li>
+          <a href='/switch/#{officer.'id'}'>
+            #{officer.'username'}
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <em style='font-size:9pt'>(Oficial de cumplimiento)</em>
+          </a>
+        </li>
         <li class='#{gz.Css \divider}'></li>
         #{employee_items.join ''}
       </ul>
