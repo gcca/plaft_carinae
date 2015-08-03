@@ -54,8 +54,39 @@ def create_declarants():
 
 
 def create_alerts():
-    for alert_key in Alert.query().fetch(keys_only=True):
-        alert_signals_key.append(alert_key)
+    operation_secod = (('I', '3'),
+                       ('I', '5'),
+                       ('I', '7'),
+                       ('I', '8'),
+                       ('I', '10'),
+                       ('I', '11'),
+                       ('I', '12'),
+                       ('I', '13'),
+                       ('I', '14'),
+                       ('I', '15'),
+                       ('I', '16'),
+                       ('I', '17'),
+                       ('I', '18'))
+
+    finance_secod = (('I', '4'),
+                     ('I', '6'),
+                     ('I', '9'),
+                     ('I', '11'),
+                     ('I', '13'),
+                     ('I', '15'),
+                     ('I', '17'),
+                     ('I', '18'))
+
+    comercial_secod = (('I', '1'),
+                       ('I', '2'),
+                       ('I', '9'),
+                       ('I', '10'),
+                       ('I', '11'),
+                       ('I', '14'),
+                       ('I', '16'))
+
+    for alert in Alert.query().fetch():
+        alert_signals_key.append(alert.key)
 
 
 def create_autocomplete():
@@ -108,7 +139,7 @@ def create_employees(agency, j=5):
         name = ''.join(random.sample(ascii_lowercase, 6))
 
         keys = alerts_keys[j % 3]
-        alerts_key_sample = random.sample(keys, 8)
+        alerts_key_sample = random.sample(keys, 14)
         permission = Permissions(modules=modules,
                                  alerts_key=alerts_key_sample)
         permission.store()
@@ -469,6 +500,9 @@ declarants = tuple(Declarant(name=j[0], address=j[1])
 
 
 alert_signals_key = []
+alert_comercial_keys = []
+alert_operation_keys = []
+alert_finance_keys = []
 
 
 # vim: et:ts=4:sw=4
