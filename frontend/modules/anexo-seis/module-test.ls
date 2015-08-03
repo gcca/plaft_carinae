@@ -261,15 +261,28 @@ class Test extends Module
 
     _keys = Object.keys alerts
 
-    if not _keys._length
-      $ @_div-table._parent ._hide!
-      $ @el._last ._hide!
-      @_div-message
-        ..html = '<h4>Esta operación no contiene señales de Alerta.</h4>'
-        $ .. ._show!
-      return
+    # Mensajes:
+    # - si ha sido visitado,
+    # - si NO contiene señales de alerta, y
+    # - si contiene señales de alerta.
+    $ @_div-table._parent ._hide!
+    $ @el._last ._hide!
+    $ @_div-message ._show!  # TODO: Mostrar por defecto. (No ocultarlo.)
 
-    $ @_div-message ._hide!
+    if _keys._length  # ¿Tiene alertas?
+      @_div-message.html = '<h4>Operación contiene señales de alerta</h4>'
+    else
+      if not @model._attributes.'alerts_visited'  # ¿No fue visitado?
+        @_div-message.html = '<h4>Ingrese al proceso de identificación
+                              \ Operaciones Inusuales</h4>'
+      else  # No tiene alertas
+        @_div-message.html = '<h4>Operación NO contiene
+                              \ señales de alerta</h4>'
+
+      return  # Si no contiene, no continuar (para imprimir alertas).
+
+    ## $ @_div-message ._hide!
+    # Si hay alertas:
     $ @_div-table._parent ._show!
     $ @el._last ._show!
     _table = App.dom._new \table
@@ -326,24 +339,26 @@ class Test extends Module
     _dispatch = @model._attributes
     _table-content = App.utils.uid 'd'
     _area-id = App.utils.uid 'a'
-    @el.html = "<div class='#{gz.Css \form-group}
-                          \ #{gz.Css \col-md-5}'
+    @el.html = "<h4>Identicación de Operaciones Inusuales</h4>
+                <div class='#{gz.Css \form-group}
+                          \ #{gz.Css \col-md-3}'
                      style='padding:0px'>
-                  <label class='#{gz.Css \col-md-4}'
+                  <label class='#{gz.Css \col-md-5}'
                          style='text-align:center'>
                     Aduana
                   </label>
-                  <label class='#{gz.Css \col-md-5}'
+                  <label class='#{gz.Css \col-md-2}'
                          style='text-align:center;
                                 padding:0px;
                                 border-style:solid'>
                     #{_dispatch.'jurisdiction'.'code'}
                   </label>
-                  <label class='#{gz.Css \col-md-4}'
+                  <label class='#{gz.Css \col-md-12}'></label>
+                  <label class='#{gz.Css \col-md-5}'
                          style='text-align:center'>
                     Régimen
                   </label>
-                  <label class='#{gz.Css \col-md-5}'
+                  <label class='#{gz.Css \col-md-2}'
                          style='text-align:center;
                                 padding:0px;
                                 border-style:solid'>
@@ -351,32 +366,39 @@ class Test extends Module
                   </label>
                 </div>
                 <div class='#{gz.Css \form-group}
-                          \ #{gz.Css \col-md-5}'>
-                  <label class='#{gz.Css \col-md-6}'>
+                          \ #{gz.Css \col-md-8}'>
+                  <label class='#{gz.Css \col-md-4}'>
                     No Orden de Despacho
                   </label>
-                  <label class='#{gz.Css \col-md-6}'
+                  <label class='#{gz.Css \col-md-3}'
                          style='text-align:center;
                                 border-style:solid'>
                     #{_dispatch.'order'}
                   </label>
-                  <label class='#{gz.Css \col-md-6}'>
+                  <label class='#{gz.Css \col-md-12}'></label>
+                  <label class='#{gz.Css \col-md-4}'>
                     Razón Social/Nombre
                   </label>
-                  <label class='#{gz.Css \col-md-6}'
+                  <label class='#{gz.Css \col-md-8}'
                          style='text-align:center;
                                 border-style:solid'>
                     #{_dispatch.'declaration'.'customer'.'name'}
                   </label>
                 </div>
                 <div class='#{gz.Css \col-md-12}'>
-                  <button class='#{gz.Css \btn}
-                               \ #{gz.Css \btn-default}'
-                          type='button'
-                          style='margin-bottom: 15px'>
-                    Señales
-                  </button>
-                  <div style='display:none'>
+                  <div class='#{gz.Css \col-md-2}'>
+                    <button class='#{gz.Css \btn}
+                                 \ #{gz.Css \btn-default}'
+                            type='button'
+                            style='margin-bottom: 15px'>
+                      Señales de Alerta
+                    </button>
+                  </div>
+                  <div class='#{gz.Css \col-md-10}
+                            \ #{gz.Css \div-message}'
+                       style='display:none;'>
+                  </div>
+                  <div style='display:none' class='#{gz.Css \col-md-12}'>
                     <div class='#{gz.Css \col-md-6}
                               \ #{gz.Css \form-group}'>
                       <label>Fecha Numeración</label>
@@ -404,9 +426,6 @@ class Test extends Module
                               style='width:70%'></textarea>
                   </div>
                 </div>
-                <div class='#{gz.Css \col-md-12}
-                          \ #{gz.Css \div-message}'
-                     style='display:none;'></div>
                 <div class='#{gz.Css \col-md-12}' style='display:none;'></div>"
 
     @transform-to-alerts @model._attributes.'alerts'
@@ -416,7 +435,7 @@ class Test extends Module
     @el.query ".#{gz.Css \btn-default}"
       ..on-click ~>
         modal-test = ModalAlert._new do
-            _title: 'SEÑALES DE ALERTA'
+            _title: 'SEÑALES DE ALERTA - ' + window.'plaft'.'user'.'role'
             _alerts: @_alerts
             _model: @model
             _callback: @load-table
