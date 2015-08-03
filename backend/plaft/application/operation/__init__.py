@@ -19,6 +19,8 @@ def accept(dispatch):
 
     dispatch.operation_key = operation.key
     dispatch.store()
+    datastore.operations_key.append(operation.key)
+    datastore.store()
 
 
 def reject(dispatch):
