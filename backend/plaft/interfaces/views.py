@@ -66,7 +66,7 @@ class DeclarationPDF(Handler):
             html.append('%s - %s<br/>%s<br/>' % (s.document_number,
                                                  (s.document_type).upper(),
                                                  s.name))
-            html.append('%s<br/>' % (s.ratio))
+            html.append('%s %%<br/>' % (s.ratio))
         html.append('<br/>')
         return ''.join(html)
 
