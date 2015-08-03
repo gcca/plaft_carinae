@@ -32,16 +32,21 @@ def reject(dispatch):
 def accept_multiple(customs_agency):
     """."""
     import datetime
-    now = datetime.datetime.now()
     datastore = customs_agency.datastore
     pending = datastore.pending
+    accepting = datastore.accepting
+    current_month = datastore.current_month
 
-    customers = {dispatch.customer_key for dispatch in pending}
+    dispatches = [d for d in (pending+accepting) if not d.operation_key]
+
+    customers = {dispatch.customer_key for dispatch in dispatches}
 
     for customer_key in customers:
-        pendings_customer = [dispatch for dispatch in pending
+        pendings_customer = [dispatch for dispatch in dispatches
                              if dispatch.customer_key == customer_key and
-                             dispatch.income_date.month == now.month]
+                             dispatch.numeration_date.month in [current_month,
+                                                                current_month-1]
+                            ]
 
         if pendings_customer:
             amount = sum(float(d.amount) for d in pendings_customer)
@@ -54,6 +59,7 @@ def accept_multiple(customs_agency):
                                       customer_key=customer_key,
                                       counter=counter)
                 operation.store()
+                datastore.operations_key.append(operation.key)
 
                 for dispatch in pendings_customer:
                     dispatch.operation_key = operation.key
