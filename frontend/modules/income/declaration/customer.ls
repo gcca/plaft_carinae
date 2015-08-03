@@ -47,15 +47,15 @@ class Customer extends App.View
 
   table-money-source: ->
     _labels =
-      'Tipo'
-      'Descripción'
+      'Número'
+      'Tipo de Origen de Fondos'
 
     _attributes =
-      'source'
+      'code'
       'display'
 
     _collection = _.zip do
-      App.lists.money-source._source
+      App.lists.money-source._code
       App.lists.money-source._display
 
     _table = new SimpleTable  do
