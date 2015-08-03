@@ -88,6 +88,14 @@ def create_alerts():
     for alert in Alert.query().fetch():
         alert_signals_key.append(alert.key)
 
+        tuple_alert = (alert.section, alert.code)
+        if tuple_alert in operation_secod:
+            alert_operation_keys.append(alert.key)
+        if tuple_alert in finance_secod:
+            alert_finance_keys.append(alert.key)
+        if tuple_alert in comercial_secod:
+            alert_comercial_keys.append(alert.key)
+
 
 def create_autocomplete():
     from collections import namedtuple
@@ -128,20 +136,16 @@ def create_employees(agency, j=5):
 
     modules = data_generator.permissions.employee
 
-    keys1 = Alert.query(Alert.section == 'I').fetch(keys_only=True)
-    keys2 = Alert.query().fetch(keys_only=True)
-    keys3 = Alert.query(Alert.section == 'III').fetch(keys_only=True)
-    alerts_keys = [keys1, keys2, keys3]
+    alerts_keys = [alert_comercial_keys,
+                   alert_finance_keys,
+                   alert_operation_keys]
     roles = User.role_choices
 
     while j:
         username = ''.join(random.sample(ascii_lowercase, 3))
         name = ''.join(random.sample(ascii_lowercase, 6))
-
-        keys = alerts_keys[j % 3]
-        alerts_key_sample = random.sample(keys, 14)
         permission = Permissions(modules=modules,
-                                 alerts_key=alerts_key_sample)
+                                 alerts_key=alerts_keys[j % 3])
         permission.store()
         employee = Employee(name=name,
                             username=username,
@@ -337,8 +341,7 @@ def _data_debug():
                           username=data.username,
                           password=data.password,
                           customs_agency_key=agency.key,
-                          permissions_key=permission.key,
-                          role='Oficial Cumplimiento')
+                          permissions_key=permission.key)
         officer.store()
 
         agency.officer_key = officer.key
