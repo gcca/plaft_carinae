@@ -184,9 +184,8 @@ def create_dispatches(agency, datastore, customers, n=30):
                                                  random.randint(1, 28)),
                             dam=dam,
                             numeration_date=datetime(
-                                int(random.choice(years)),
-                                random.randint(1, 12),
-                                random.randint(1, 28)),
+                                int(year), 7,
+                                random.randint(1, 31)),
                             channel=random.choice(('V', 'N', 'R')),
                             exchange_rate=random.choice(('3.51',
                                                          '3.52',
@@ -219,6 +218,7 @@ def create_operation(agency, dstp_operation, datastore):
         dispatch.operation_key = operation.key
         dispatch.store()
     operation.store()
+    datastore.operations_key.append(operation.key)
     datastore.pending_key = list(
         set(datastore.pending_key).difference(dstp_operation))
     datastore.store()
@@ -337,7 +337,8 @@ def _data_debug():
                           username=data.username,
                           password=data.password,
                           customs_agency_key=agency.key,
-                          permissions_key=permission.key)
+                          permissions_key=permission.key,
+                          role='Oficial Cumplimiento')
         officer.store()
 
         agency.officer_key = officer.key
