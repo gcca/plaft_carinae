@@ -143,6 +143,10 @@ class CustomerAlert extends App.View
 
     * _name: 'condition_intervene'
       _label: '27. Condicion en la que interviene'
+      _type: FieldType.kComboBox
+      _options:
+        'Involucrado'
+        'Vinculado'
 
     * _name: ''
       _label: '28. Describir la condición en la que interviene en
@@ -168,6 +172,10 @@ class CustomerAlert extends App.View
 
     * _name: 'condition_intervene'
       _label: '27. Condicion en la que interviene'
+      _type: FieldType.kComboBox
+      _options:
+        'Involucrado'
+        'Vinculado'
 
     * _name: ''
       _label: '28. Describir la condición en la que interviene en
@@ -188,7 +196,6 @@ class StakeholderAlert extends App.View
 
   render: ->
     for stk in @_collection-stakeholder
-      stk.'condition_intervene' = 'Vinculado'
       CustomerAlert._new stk
         @_stakeholders._push ..
         @el._append ..render!.el
@@ -448,7 +455,6 @@ class Test extends Module
         $ @_txt-area._parent ._hide!
 
     _customer-dto = _dispatch.'declaration'.'customer'
-      ..'condition_intervene' = 'Involucrado'
       ..'link_type' = if _dispatch.'is_out' then 'Exportador' else 'Importador'
 
     @_income = CustomerAlert._new _customer-dto
@@ -492,7 +498,7 @@ class ModuleTest extends Module
     super!
 
 
-  /** @protected */ @@_caption = 'MODULO DE ALERTAS'
+  /** @protected */ @@_caption = 'IDENTIFICACIÓN DE OI'
   /** @protected */ @@_icon    = gz.Css \envelope
   /** @protected */ @@_hash  = 'auth-hash-module-test'
 

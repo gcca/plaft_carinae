@@ -60,15 +60,12 @@ class UtilAnexo
 
     dct-role =
       'Comercial':
-        'label': 'Comercial'
         'attribute': 'is_comercial'
         'title': 'ÁREA COMERCIAL'
-      'Operativo':
-        'label': 'Operación'
+      'Operación':
         'attribute': 'is_operativo'
         'title': 'ÁREA OPERACIONES'
-      'Financiero':
-        'label': 'Finanza'
+      'Finanza':
         'attribute': 'is_finanza'
         'title': 'ÁREA FINANZA'
 
@@ -101,10 +98,10 @@ class UtilAnexo
         if @is_officer!
           title-module = 'OFICIAL CUMPLIMIENTO'
 
-          for rol in ['Comercial', 'Operativo', 'Financiero']
-            __add-column dct-role[rol].'label', dct-role[rol].'attribute'
+          for rol in ['Comercial', 'Operación', 'Finanza']
+            __add-column rol, dct-role[rol].'attribute'
         else
-          __add-column dct-role[role].'label', dct-role[role].'attribute'
+          __add-column role, dct-role[role].'attribute'
           title-module = dct-role[role].'title'
 
         console.log _templates
