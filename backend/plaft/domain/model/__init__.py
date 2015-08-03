@@ -48,7 +48,7 @@ from __future__ import unicode_literals
 
 from plaft.infrastructure.persistence.datastore import ndb as dom
 from plaft.domain.model.structs import CodeName, Third, Document
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 JSONEncoder = dom.JSONEncoderNDB
 
@@ -419,8 +419,6 @@ class Operation(dom.Model):
     (tal vez incluyendo su notificación a la UIF).
 
     """
-    from datetime import datetime
-    current_year = datetime.now().year
 
     counter = dom.Integer(default=0)
     dispatches_key = dom.Key(Dispatch, repeated=True)
@@ -430,11 +428,16 @@ class Operation(dom.Model):
     country_target = dom.String()
     row_number = dom.Computed(lambda self: '%04d' % self.counter)
     register_number = dom.Computed(lambda self:
-                                   '%s-%s' % (self.current_year,
+                                   '%s-%s' % (datetime.now().year,
                                               self.row_number))
     modalidad = dom.Computed(lambda self: 'M'
                              if len(self.dispatches_key) > 1
                              else 'U')
+#    operation_date = dom.Computed(lambda self: self.get_operation_date())
+
+    def get_operation_date(self):
+        dts = [d.numeration_date for d in self.dispatches]
+        return (max(dts)).strftime("%d/%m/%Y") if dts else ''
 
     def num_modalidad(self):
         return ([i+1 for i in range(len(self.dispatches_key))]
@@ -463,9 +466,14 @@ class Datastore(dom.Model):
     operation_counter = dom.Integer(default=0)
     operation_last_year = dom.Integer()
     alerts_key = dom.Key(Alert, repeated=True)
+    # Se guarda todas las operaciones del mes actual.
+    operations_key = dom.Key(Operation, repeated=True)
+    # Se guarda las operaciones despues del cierre del mes actual.
+    operations_last_month_key = dom.Key(Operation, repeated=True)
+
+    current_month = dom.Computed(lambda self: datetime.now().month)
 
     def next_operation_counter(self):
-        from datetime import datetime
         current_year = datetime.now().year
         if (not self.operation_last_year or
            self.operation_last_year + 1 == current_year):
