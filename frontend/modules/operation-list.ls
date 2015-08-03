@@ -4,6 +4,7 @@
 
 Module = require '../workspace/module'
 Table = App.widget.table.Table
+modal = App.widget.message-box
 
 panelgroup = App.widget.panelgroup
 
@@ -103,6 +104,23 @@ class PanelBodyTable extends panelgroup.PanelBody
  */
 class OperationList extends Module
 
+
+  on-monthly-closure: ->
+    _callback = (_value) ->
+      if _value
+        App.ajax._post '/api/customs_agency/monthly_closure', null, do
+          _success: (response) ~>
+            console.log response
+            alert 'SE COMPLETO LA OPERACIÓN'
+          _bad-request: ~>
+            alert 'ERROR !!!!'
+
+    message = modal.MessageBox._new do
+      _title: 'Cerrando el mes.'
+      _body: '<h5>¿Desea cerrar el mes?</h5>'
+      _callback: _callback
+    message._show!
+
   /**
    * Carga el panel de acuerdo a las operaciones.
    * @param {Object} _dto
@@ -153,43 +171,18 @@ class OperationList extends Module
       _success: (dispatches) ~>
         for _model in dispatches._models
           @render-panel _model._attributes, pnl-group
-
       _error: ->
         alert 'Error!!! Numeration list'
-    _year-oper = (new Date()).get-full-year!
-    @_month-id = App.utils.uid 'm'
-    @_year-id = App.utils.uid 'y'
     @el._append pnl-group.render!el
-    @$el._append "<select class='#{gz.Css \form-control}
-                               \ #{gz.Css \pull-right}'
-                          id = '#{@_year-id}'
-                          style='width:125px;margin-left:8px'>
-                    <option>#{_year-oper}</option>
-                    <option>#{_year-oper - 1}</option>
-                  </select>
 
-                  <select class='#{gz.Css \form-control}
-                               \ #{gz.Css \pull-right}'
-                          id = '#{@_month-id}'
-                          style='width:125px;margin-left:8px'>
-                    <option>Enero</option>
-                    <option>Febrero</option>
-                    <option>Marzo</option>
-                    <option>Abril</option>
-                    <option>Mayo</option>
-                    <option>Junio</option>
-                    <option>Agosto</option>
-                    <option>Setiembre</option>
-                    <option>Octubre</option>
-                    <option>Noviembre</option>
-                    <option>Diciembre</option>
-                  </select>
+    App.dom._new \button
+      .._class = "#{gz.Css \btn}
+                \ #{gz.Css \btn-default}
+                \ #{gz.Css \pull-right}"
+      ..html = 'Cierre mensual e identificación de operaciones'
+      ..on-click ~> @on-monthly-closure!
+      @el._append ..
 
-                  <a class='#{gz.Css \btn}
-                          \ #{gz.Css \btn-default}
-                          \ #{gz.Css \pull-right}'>
-                    Procesar operaciones múltiples de
-                  </a>"
     @_desktop._spinner-stop!
     super!
 

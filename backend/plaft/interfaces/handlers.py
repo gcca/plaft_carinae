@@ -324,6 +324,28 @@ class Customs_Agency(RESTful):
             [d for d in dispatches if d['alerts']]
         )
 
+    @RESTful.method('post')
+    def monthly_closure(self):
+        from datetime import datetime
+        customs_agency = self.user.customs_agency
+        datastore = customs_agency.datastore
+        current_month = datastore.current_month
+
+        if datetime.now().month > current_month:
+            # Proceso mensual para la captura de todos las operaciones.
+            plaft.application.operation.accept_multiple(customs_agency)
+
+            datastore.operations_last_month_key = datastore.operations_key
+            del datastore.operations_key[:]
+            del datastore.pending_key[:]
+            del datastore.accepting_key[:]
+            datastore.store()
+            message = 'Se cerró el mes .'
+        else:
+            message = 'No puede cerrar el mes, porque' \
+                      ' todavia no termina el mes.'
+
+        self.render_json({'message': message})
 
 class Dispatch(RESTful):
     """Dispatch RESTful handler."""

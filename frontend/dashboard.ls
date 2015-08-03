@@ -12,7 +12,6 @@ PRE-MODULES =
   Income        = require './modules/income'
   Numeration    = require './modules/numeration'
   Operation     = require './modules/operation'
-  #OperationList = r equire './modules/operation-list'
   ModuleTest    = require './modules/anexo-seis/module-test'
   Report        = require './modules/monthy_report'
 
@@ -28,6 +27,7 @@ BETAS =
   NewUser = require './modules/new-user'
   Anexo6  = require './modules/anexo-seis'
   ReporteAnexo6 = require './modules/anexo-seis/reporte-anexo6'
+  OperationList = require './modules/operation-list'
   # TODO: Remove modules when aren't neccesary
   ## ListAlerts  = r equire './modules/anexo-seis/signal-alert'
   ## Alerts  = r equire './modules/alerts'
