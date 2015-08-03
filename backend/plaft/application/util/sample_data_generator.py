@@ -14,7 +14,7 @@ import plaft.config
 from plaft.domain.model import (Dispatch, CodeName, Declarant, Stakeholder,
                                 Business, Person, Datastore, CustomsAgency,
                                 Operation, Officer, Employee, Permissions,
-                                Alert)
+                                Alert, User)
 from plaft.application.util import data_generator
 
 
@@ -132,7 +132,7 @@ def create_employees(agency, j=5):
     keys2 = Alert.query().fetch(keys_only=True)
     keys3 = Alert.query(Alert.section == 'III').fetch(keys_only=True)
     alerts_keys = [keys1, keys2, keys3]
-    roles = ['Comercial', 'Operativo', 'Financiero']
+    roles = User.role_choices
 
     while j:
         username = ''.join(random.sample(ascii_lowercase, 3))

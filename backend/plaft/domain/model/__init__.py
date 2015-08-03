@@ -97,11 +97,14 @@ class User(dom.User, dom.PolyModel):
     ... None  # si no existe o no puede ser autenticado.
 
     """
+
+    role_choices = ('Comercial', 'Finanza', 'Operación')
+
     name = dom.String()
     is_officer = dom.Boolean(default=False)  # (-o-) Retirar.
     customs_agency_key = dom.Key(CustomsAgency)
     permissions_key = dom.Key(Permissions)
-    role = dom.String()
+    role = dom.Category(role_choices)
 
     @property  # HARDCODE: permissions sections
     def dict(self):
