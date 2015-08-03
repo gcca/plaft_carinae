@@ -400,4 +400,25 @@ class Date(ndb.DateProperty):
         return value
 
 
+class Category(ndb.IntegerProperty):
+
+    choices = tuple()
+
+    def __init__(self, choices, *args, **kwds):
+        self.choices = choices
+        super(Category, self).__init__(*args, **kwds)
+
+
+    def _to_base_type(self, value):
+        try:
+            index = self.choices.index(value)
+        except ValueError:
+            raise AttributeError('(CategoryProperty) Bad choice "%s"'
+                                 % str(value))
+        return index
+
+    def _from_base_type(self, value):
+        return self.choices[value]
+
+
 # vim: et:ts=4:sw=4
