@@ -3,11 +3,9 @@
  * @author gcca@gcca.tk (cristHian Gz. <gcca>)
  */
 
-Module = require '../../workspace/module'
-Utils = require './utils-anexo6'
-Alerts = require './alerts'
-table = App.widget.table
-  Table = ..Table
+Module = require '../../../workspace/module'
+Utils = require '../table'
+Alerts = require './panel'
 
 FieldType = App.builtins.Types.Field
 
@@ -34,7 +32,7 @@ class Dispatches extends App.Collection
 * @Class OperationEdit
 * @extends Module
 */
-class Anexo6 extends Module
+class Register extends Module
 
   /** @override */
   _tagName: \form
@@ -204,14 +202,14 @@ class Anexo6 extends Module
 * @Class Operations
 * @extends Module
 */
-class ListAnexo6 extends Module
+class ListRegister extends Module
 
   /** @override */
   render: ->
     (new Utils do
       _desktop: @_desktop
       _parent: @
-      _child: Anexo6
+      _child: Register
       _url: 'api/customs_agency/dispatches_without_IO')._load-module!
 
     super!
@@ -219,11 +217,11 @@ class ListAnexo6 extends Module
 
   /** @protected */ @@_caption = 'CONTROL OI - OFICIAL CUMPLIMIENTO'
   /** @protected */ @@_icon    = gz.Css \flash
-  /** @protected */ @@_hash    = 'ANX6-HASH'
+  /** @protected */ @@_hash    = 'auth-hash-register'
 
 
 /** @export */
-module.exports = ListAnexo6
+module.exports = ListRegister
 
 
 /* vim: ts=2 sw=2 sts=2 et: */

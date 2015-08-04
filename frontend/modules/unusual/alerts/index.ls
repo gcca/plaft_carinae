@@ -3,10 +3,9 @@
  * @author gcca@gcca.tk (cristHian Gz. <gcca>)
  */
 
-Module = require '../../workspace/module'
-SignalAlerts = require './alerts'
-Utils = require './utils-anexo6'
-ModalAlert = require './modal-alert'
+Module = require '../../../workspace/module'
+Utils = require '../table'
+ModalAlert = require './modal'
 
 FieldType = App.builtins.Types.Field
 DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
@@ -208,7 +207,7 @@ class StakeholderAlert extends App.View
 * @Class OperationEdit
 * @extends Module
 */
-class Test extends Module
+class Alerts extends Module
 
   /** @override */
   on-save: ->
@@ -486,25 +485,25 @@ class Test extends Module
 * @Class ModuleTest
 * @extends Module
 */
-class ModuleTest extends Module
+class ListAlerts extends Module
 
   /** @override */
   render: ->
     (new Utils do
       _desktop: @_desktop
       _parent: @
-      _child: Test)._load-module!
+      _child: Alerts)._load-module!
 
     super!
 
 
   /** @protected */ @@_caption = 'IDENTIFICACIÓN DE OI'
   /** @protected */ @@_icon    = gz.Css \envelope
-  /** @protected */ @@_hash  = 'auth-hash-module-test'
+  /** @protected */ @@_hash  = 'auth-hash-alerts'
 
 
 /** @export */
-module.exports = ModuleTest
+module.exports = ListAlerts
 
 
 /* vim: ts=2 sw=2 sts=2 et: */

@@ -4,8 +4,7 @@
  */
 
 Module = require '../../workspace/module'
-SignalAlerts = require './alerts'
-Utils = require './utils-anexo6'
+Utils = require './table'
 
 FieldType = App.builtins.Types.Field
 
@@ -32,7 +31,7 @@ class Dispatches extends App.Collection
 * @Class OperationEdit
 * @extends Module
 */
-class Reporte extends Module
+class Report extends Module
 
   /** @override */
   _tagName: \form
@@ -115,25 +114,25 @@ class Reporte extends Module
 * @Class Operations
 * @extends Module
 */
-class ReporteAnexo6 extends Module
+class ListReport extends Module
 
   /** @override */
   render: ->
     (new Utils do
       _desktop: @_desktop
       _parent: @
-      _child: Reporte)._load-module!
+      _child: Report)._load-module!
 
     super!
 
 
   /** @protected */ @@_caption = 'OPERACIONES INUSUALES-ANEXO 6'
   /** @protected */ @@_icon    = gz.Css \flash
-  /** @protected */ @@_hash    = 'ANX6-HASH'
+  /** @protected */ @@_hash    = 'auth-hash-report'
 
 
 /** @export */
-module.exports = ReporteAnexo6
+module.exports = ListReport
 
 
 /* vim: ts=2 sw=2 sts=2 et: */

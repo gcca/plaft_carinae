@@ -12,8 +12,8 @@ PRE-MODULES =
   Income        = require './modules/income'
   Numeration    = require './modules/numeration'
   Operation     = require './modules/operation'
-  ModuleTest    = require './modules/anexo-seis/module-test'
   Report        = require './modules/monthy_report'
+  UnusalAlerts  = require './modules/unusual/alerts'
 
 MODULES = new Array
 
@@ -25,12 +25,9 @@ for module in PRE-MODULES
 # HARDCODE
 BETAS =
   NewUser = require './modules/new-user'
-  Anexo6  = require './modules/anexo-seis'
-  ReporteAnexo6 = require './modules/anexo-seis/reporte-anexo6'
+  UnusualRegister  = require './modules/unusual/register'
+  UnusualReport = require './modules/unusual/report'
   OperationList = require './modules/operation-list'
-  # TODO: Remove modules when aren't neccesary
-  ## ListAlerts  = r equire './modules/anexo-seis/signal-alert'
-  ## Alerts  = r equire './modules/alerts'
 
 username = window.plaft.'user'.'username'
 
