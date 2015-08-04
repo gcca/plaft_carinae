@@ -173,7 +173,7 @@ class Customer(dom.Model, dom.PolyModel):
     ubigeo = dom.Structured(CodeName)  # (-o-) to string
     is_obligated = dom.Boolean()
     has_officer = dom.Boolean()
-    condition = dom.String()  # residencia
+    condition = dom.Category(('Residente', 'No residente'))  # residencia
 
     declarants = dom.Structured(Declarant, repeated=True)
 
@@ -230,7 +230,8 @@ class Customer(dom.Model, dom.PolyModel):
     reference = dom.String()
     social_object = dom.String()
     legal = dom.String()  # Representante legal
-    legal_type = dom.String()
+    legal_type = dom.Category(('Representante Legal', 'Apoderado',
+                               'Mandatario', 'El mismo'))
     fiscal_address = dom.String()
     position = dom.String()
 
@@ -245,11 +246,11 @@ class Customer(dom.Model, dom.PolyModel):
     shareholders = dom.Structured(Shareholder, repeated=True)
 
     # DISPATCH
-    money_source_type = dom.String()
+    money_source_type = dom.Category(('No efectivo', 'Efectivo'))
 
     # TODO
-    condition_intervene = dom.String()
-    link_type = dom.String()
+    condition_intervene = dom.Category(('Involucrado', 'Vinculado'))
+    link_type = dom.Category(('Importador', 'Exportador'))
 
 
 class Person(Customer):
@@ -264,12 +265,13 @@ class Business(Customer):
 
 class Stakeholder(dom.Model):
     """."""
-    link_type = dom.String()  # Proveedor o destinatario
+    link_type = dom.Category(('Destinatario de embarque',
+                              'Proveedor'))  # Proveedor o destinatario
     # (-o-) A los dos.
     document_type = dom.String()
     document_number = dom.String()
     represents_to = dom.String()
-    condition = dom.String()  # residencia
+    condition = dom.Category(('Residente', 'No residente'))  # residencia
     address = dom.String()
     name = dom.String()
     father_name = dom.String(default='')
@@ -283,7 +285,7 @@ class Stakeholder(dom.Model):
 
     # TODO
     # PERSON-ANEXO 6
-    condition_intervene = dom.String()
+    condition_intervene = dom.Category(('Involucrado', 'Vinculado'))
     average_income = dom.String()
     is_pep = dom.Boolean()
     employer = dom.String()
