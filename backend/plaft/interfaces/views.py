@@ -54,6 +54,7 @@ class Dashboard(DirectToController):
         self.add_arg('user', self.user)
         self.add_arg('us', self.user.customs_agency.employees)
         self.add_arg('ig', plaft.config.DEBUG)  # is debug
+        self.add_list('employees_roles', model.User.role_choices)
 
 
 class DeclarationPDF(Handler):

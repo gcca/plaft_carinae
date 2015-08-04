@@ -276,6 +276,8 @@ class DirectToController(Handler):
     ...             },
     ...             [1, 2, '3']
     ...         ])
+    ...     # if you nedd attributes lists
+    ...         self.add_list('roles', ['a', 'b', 'c', 'd'])
 
     """
 
@@ -306,6 +308,10 @@ class DirectToController(Handler):
         self._args()
         self.write_template()
 
+    def add_list(self, name, value):
+        """Base method to add lists in ``args``."""
+        self.lists[name] = value
+
     def add_arg(self, name, value):
         """Base method to add attributes to controller ``args``."""
         self.args.append((name, value))
@@ -315,6 +321,7 @@ class DirectToController(Handler):
 
     def write_template(self, args=None):
         """Write template to reponse-out."""
+        self.args.append(('lists', self.lists))
         if not args:
             args = ','.join('"%s":%s' % (k, self.JSON.dumps(v))
                             for k, v in self.args)
@@ -324,6 +331,7 @@ class DirectToController(Handler):
 
     def __init__(self, *args, **kwargs):
         self.args = []
+        self.lists = {}
         super(DirectToController, self).__init__(*args, **kwargs)
 
 
