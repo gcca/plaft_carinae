@@ -345,11 +345,10 @@ class Dispatch(dom.Model):
         description_source = dom.String()
 
     alerts = dom.Structured(Alert, repeated=True)
-    alerts_visited = dom.Boolean(default=False)  # Particular del módulo
-                                                 # de alertas.
-                                                 # Sirve para saber
-                                                 # si el despacho
-                                                 # fue revisado.
+
+    # Particular del módulo de alertas.
+    # Sirve para saber si el despacho fue revisado.
+    alerts_visited = dom.Boolean(default=False)
 
     customs_agency_key = dom.Key(CustomsAgency)
     country_source = dom.String()

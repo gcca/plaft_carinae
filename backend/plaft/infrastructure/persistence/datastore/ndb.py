@@ -408,7 +408,6 @@ class Category(ndb.IntegerProperty):
         self.choices = choices
         super(Category, self).__init__(*args, **kwds)
 
-
     def _to_base_type(self, value):
         try:
             index = self.choices.index(value)

@@ -46,9 +46,8 @@ def accept_multiple(customs_agency):
     for customer_key in customers:
         pendings_customer = [dispatch for dispatch in dispatches
                              if dispatch.customer_key == customer_key and
-                             dispatch.numeration_date.month in [current_month,
-                                                                current_month-1]
-                            ]
+                             dispatch.numeration_date.month
+                             in [current_month, current_month-1]]
 
         if pendings_customer:
             amount = sum(float(d.amount) for d in pendings_customer)

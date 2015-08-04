@@ -347,6 +347,7 @@ class Customs_Agency(RESTful):
 
         self.render_json({'message': message})
 
+
 class Dispatch(RESTful):
     """Dispatch RESTful handler."""
 
