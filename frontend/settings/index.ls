@@ -74,6 +74,7 @@ class EmployeeItem extends panelgroup.FormBody
   render: ->
     ret = super!
     table-id = App.utils.uid 'l'
+    roles = window.plaft.'lists'.'employees_roles'
     @el.html = "<div class='#{gz.Css \form-group}
                           \ #{gz.Css \col-md-4}'>
                   <label>Nombre de Empleado</label>
@@ -96,7 +97,15 @@ class EmployeeItem extends panelgroup.FormBody
                          class='#{gz.Css \form-control}' />
                 </div>
                 <div class='#{gz.Css \form-group}
-                          \ #{gz.Css \col-md-12}'>
+                          \ #{gz.Css \col-md-6}'>
+                  <label>Rol:</label>
+                  <select class='#{gz.Css \form-control}'
+                          name='role'>
+                    #{for r in roles then '<option>'+r+'</option>' }
+                  </select>
+                </div>
+                <div class='#{gz.Css \form-group}
+                          \ #{gz.Css \col-md-6}'>
                   <label>Permisos módulos:</label>
                   <select multiple class='#{gz.Css \form-control}'
                                    name='permissions[modules]'>
