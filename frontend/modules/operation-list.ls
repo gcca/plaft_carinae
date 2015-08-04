@@ -108,7 +108,7 @@ class OperationList extends Module
   on-monthly-closure: ->
     _callback = (_value) ->
       if _value
-        App.ajax._post '/api/customs_agency/monthly_closure', null, do
+        App.ajax._post '/api/customs_agency/close_month', null, do
           _success: (response) ~>
             console.log response
             alert 'SE COMPLETO LA OPERACIÓN'

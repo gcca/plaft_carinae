@@ -8,6 +8,7 @@
 """
 import dispatch
 import operation
+import operations
 
 
 # vim: et:ts=4:sw=4
