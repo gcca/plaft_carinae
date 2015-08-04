@@ -164,6 +164,15 @@ class Table extends App.View
    */
   set-rows: (_collection) ->
     @t-body.html = ''
+    if not _collection._models._length
+      _tr = App.dom._new \tr
+      App.dom._new \td
+        ..html = '<h4>La tabla no contiene datos.</h4>'
+        ..css = 'text-align:center'
+        ..attr 'colspan', @_labels._length
+        _tr._append ..
+      @t-body._append _tr
+
     for _model in _collection._models
       @add-row _model
 
@@ -176,14 +185,14 @@ class Table extends App.View
 
   /** @override */
   initialize: ({@_attributes, \
-                _labels, \
+                @_labels, \
                 _templates = {}, \
                 _column-cell-style = {} \
                 @on-dblclick-row = App._void._Function}) ->
     super!
     # <thead>
     @t-head = App.dom._new \thead
-    @make-header _labels
+    @make-header @_labels
     @el._append @t-head
 
     # Evaluating templates and column cell style
@@ -203,6 +212,7 @@ class Table extends App.View
 
   /** @private */ _attributes: null
   /** @private */ _templates: null
+  /** @private */ _labels: null
   /** @private */ _column-cell-style: null
   /** @private */ t-head: null
   /** @private */ t-body: null
@@ -257,6 +267,15 @@ class SimpleTable extends Table
   set-rows: (_collection) ->
     @t-body.html = ''
     # Filling list
+    if not _collection._length
+      _tr = App.dom._new \tr
+      App.dom._new \td
+        ..html = 'No contiene datos'
+        ..css = 'text-align:center'
+        ..attr 'colspan', @_labels._length
+        _tr._append ..
+      @t-body._append _tr
+
     for _ele in _collection
       e = {}
       for i from 0 to _ele._length-1
