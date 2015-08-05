@@ -249,7 +249,7 @@ class Customer(dom.Model, dom.PolyModel):
     money_source_type = dom.Category(('No efectivo', 'Efectivo'))
 
     # TODO
-    condition_intervene = dom.Category(('Involucrado', 'Vinculado'))
+    unusual_condition = dom.Category(('Involucrado', 'Vinculado'))
     link_type = dom.Category(('Importador', 'Exportador'))
 
 
@@ -285,7 +285,7 @@ class Stakeholder(dom.Model):
 
     # TODO
     # PERSON-ANEXO 6
-    condition_intervene = dom.Category(('Involucrado', 'Vinculado'))
+    unusual_condition = dom.Category(('Involucrado', 'Vinculado'))
     average_income = dom.String()
     is_pep = dom.Boolean()
     employer = dom.String()

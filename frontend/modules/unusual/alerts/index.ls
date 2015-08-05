@@ -140,7 +140,7 @@ class CustomerAlert extends App.View
     * _name: 'phone'
       _label: '26. Telefono de la persona en cuyo'
 
-    * _name: 'condition_intervene'
+    * _name: 'unusual_condition'
       _label: '27. Condicion en la que interviene'
       _type: FieldType.kComboBox
       _options:
@@ -169,7 +169,7 @@ class CustomerAlert extends App.View
     * _name: 'phone'
       _label: '26. Telefono de la persona en cuyo'
 
-    * _name: 'condition_intervene'
+    * _name: 'unusual_condition'
       _label: '27. Condicion en la que interviene'
       _type: FieldType.kComboBox
       _options:

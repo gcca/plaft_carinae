@@ -27,7 +27,7 @@ exports._display =[
   ['24', 'Cargo (si aplica): Consignar los códigos de acuerdo a la Tabla No 3.', -> 'No aplica']
   ['25', 'Nombre y número de la vía de la dirección.',(c) -> c.'address']
   ['26', 'Teléfono de la persona en cuyo nombre se realiza la operación.', (c) -> c.'phone']
-  ['27', 'Condición en la que interviene en la operación inusual: (1) Involucrado ó (2) Vinculado', (c) -> c.'condition_intervene']
+  ['27', 'Condición en la que interviene en la operación inusual: (1) Involucrado ó (2) Vinculado', (c) -> c.'unusual_condition']
   ['28', 'Describir la condición en la que interviene en la operación inusual.', -> 'FALTA']]
 ]
 exports._code =
