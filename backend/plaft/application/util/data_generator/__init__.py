@@ -19,7 +19,7 @@ __all__ = ['init']
 def create_alerts():
     """Main alerts."""
     from plaft.application.util.data_generator.alerts import alerts
-    for section, code, description in alerts:
+    for section, code, description, help in alerts:
         alert = model.Alert(section=section,
                             code=code,
                             description=description)

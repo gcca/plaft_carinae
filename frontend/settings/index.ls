@@ -132,8 +132,8 @@ class EmployeeItem extends panelgroup.FormBody
     tr-header = App.dom._new \tr
       .._append App.dom._new \th
 
-    alert-one = App.lists.alerts-test._alert-one
-    alert-three = App.lists.alerts-test._alert-three
+    alert-one = window.plaft.'lists'.'alert_s1'
+    alert-three = window.plaft.'lists'.'alert_s3'
 
     for i from 1 to alert-three._length
       App.dom._new \th

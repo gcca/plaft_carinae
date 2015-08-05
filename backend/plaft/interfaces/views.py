@@ -55,6 +55,9 @@ class Dashboard(DirectToController):
         self.add_arg('us', self.user.customs_agency.employees)
         self.add_arg('ig', plaft.config.DEBUG)  # is debug
         self.add_list('employees_roles', model.User.role_choices)
+        from plaft.application.util.data_generator import alerts
+        self.add_list('alert_s1', alerts.alerts_1)
+        self.add_list('alert_s3', alerts.alerts_2)
 
 
 class DeclarationPDF(Handler):

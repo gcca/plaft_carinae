@@ -25,7 +25,6 @@
  * @return Array.<string>
  * @private
  */
-alertTest = require './alerts-test' #TODO
 gen-seq = (n, max-length = 3) ->
   # TODO(): Improve by ten^n step
   _zeros = '0' * --max-length
@@ -107,10 +106,6 @@ exports <<<
 
   ubigeo: require './ubigeo'
 
-  alerts: require './alerts'
-
-  alerts-test: alertTest
-
   country-sbs: require './country-sbs'
 
   anexo2: require './anexo2'
@@ -118,16 +113,6 @@ exports <<<
   anexo6: require './anexo6'
 
   money-source: require './money-source'
-
-  alerts_user: ->
-    sections = []
-    sections_user = window.plaft.'user'.'permissions'.'sections'
-    for section in sections_user
-      if section is 'I'
-        sections = sections.concat alertTest._alert-one
-      else if section is 'III'
-        sections = sections.concat alertTest._alert-three
-    sections
 
 # Generate {@code _pair} attribute
 for , _obj of exports
