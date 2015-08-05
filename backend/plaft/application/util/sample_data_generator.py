@@ -200,6 +200,10 @@ def create_dispatches(agency, datastore, customers, n=30):
                                                          '3.54')))
         dispatch.declaration = Dispatch.Declaration(customer=customer)
         dispatch.store()
+        dispatch.stakeholders[0].link_type =  'Destinatario de embarque' \
+                                                if dispatch.is_out \
+                                                else 'Proveedor'
+        dispatch.store()
         datastore.pending_key.append(dispatch.key)
         datastore.store()
         list_dispatches.append(dispatch.key)
