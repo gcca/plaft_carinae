@@ -344,7 +344,8 @@ def _data_debug():
                           username=data.username,
                           password=data.password,
                           customs_agency_key=agency.key,
-                          permissions_key=permission.key)
+                          permissions_key=permission.key,
+                          role='Operación')
         officer.store()
 
         agency.officer_key = officer.key
