@@ -48,6 +48,7 @@ def create_stakeholders():
 
 def create_declarants():
     for declarant in declarants:
+        declarant.document_type = 'dni'
         declarant.document_number = pick_document_number_by('dni')
 
         declarant.store()
@@ -98,40 +99,6 @@ def create_alerts():
             alert_finance_keys.append(alert.key)
         if tuple_alert in comercial_secod:
             alert_comercial_keys.append(alert.key)
-
-
-def create_autocomplete():
-    from collections import namedtuple
-
-    DStakeholder = namedtuple('DStakeholder', 'name document_type')
-
-    init_customers = [
-        DStakeholder('Sony',
-                     'ruc'),
-        DStakeholder('Coca Cola',
-                     'ruc'),
-        DStakeholder('Microsoft',
-                     'ruc'),
-        DStakeholder('Javier Huaman',
-                     'dni'),
-        DStakeholder('Cristhian Gonzales',
-                     'dni'),
-        DStakeholder('Antonio Adama',
-                     'dni'),
-    ]
-
-    # type2customer = {
-    #     'ruc': 'Jurídica',
-    #     'dni': 'Natural'
-    # }
-
-    for data in init_customers:
-        document_number = pick_document_number_by(data.document_type)
-
-        stakeholder = Stakeholder(name=data.name,
-                                  document_type=data.document_type,
-                                  document_number=document_number)
-        stakeholder.store()
 
 
 def create_employees(agency, j=5):
@@ -494,20 +461,23 @@ stakeholders = tuple(Stakeholder(document_type=j[0],
 
 
 raw_declarants = (
-    # (name, address)
-    ('Tony Stark', 'Iron Man'),
-    ('Bruce Wayne', 'Batman'),
-    ('Charles Xavier', 'X-men'),
-    ('Mister Fantastic', 'Fantastic Four'),
-    ('Michael Holt', 'Mister Terrific'),
-    ('Lex Luthor', 'Superman'),
-    ('Green Goblin', 'Spider-Man'),
-    ('Penguin', 'Batman'),
-    ('Kyle Rayner', 'Green Lantern'),
-    ('Kingpin', 'Marvel Comics')
+    # (name, father_name, mother_name, address)
+    ('Jesus', 'Peralta', 'Wiese', 'direccion'),
+    ('Mariela', 'Trujillo', 'Suarez', 'direccion'),
+    ('Jose Luis', 'Abanto', 'Somocursio', 'direccion'),
+    ('Alfredo', 'Nakamura', 'Diaz', 'direccion'),
+    ('Mariela', 'Mendoza', 'Lizandro', 'direccion'),
+    ('Juana', 'Del Solar', 'Arrospide', 'direccion'),
+    ('Nancy', 'Gamboa', 'Abelardo', 'direccion'),
+    ('Luisa', 'Matias', 'Sarda', 'direccion'),
+    ('Rosalia', 'Montenegro', 'Vinatea', 'direccion'),
+    ('Henry', 'Mejia', 'Flor', 'direccion')
 )
 
-declarants = tuple(Declarant(name=j[0], address=j[1])
+declarants = tuple(Declarant(name=j[0],
+                             father_name=j[1],
+                             mother_name=j[2],
+                             address=j[3])
                    for j in raw_declarants)
 
 
