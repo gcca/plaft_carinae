@@ -182,27 +182,6 @@ class CustomerAlert extends App.View
       _grid: _GRID._full
       _type: FieldType.kTextEdit
 
-
-class StakeholderAlert extends App.View
-
-  _tagName: \div
-
-  _toJSON: -> [.._toJSON! for @_stakeholders]
-
-  initialize: (@_collection-stakeholder) ->
-    @_stakeholders = new Array
-    super!
-
-  render: ->
-    for stk in @_collection-stakeholder
-      CustomerAlert._new stk
-        @_stakeholders._push ..
-        @el._append ..render!.el
-    super!
-
-  /** @private */ _stakeholders: null
-  /** @private */ _collection-stakeholder: null
-
 /**
 * @Class OperationEdit
 * @extends Module
@@ -459,7 +438,7 @@ class Alerts extends Module
     @_income = CustomerAlert._new _customer-dto
       @el._last._append ..render!.el
 
-    @_stakeholders = StakeholderAlert._new _dispatch.'stakeholders'
+    @_stakeholders = CustomerAlert._new _dispatch.'stakeholders'.0
       @el._last._append ..render!.el
 
     @_div-message = @el.query ".#{gz.Css \div-message}"

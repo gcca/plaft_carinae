@@ -485,7 +485,7 @@ class Dispatch(RESTful):
 
         dispatch = model.Dispatch.find(int(dispatch_id))
         if dispatch:
-            del payload['stakeholders']
+            dispatch.declaration.customer << payload['declaration']['customer']
             cs_alerts = ['%s%s' % (a.info.section, a.info.code)
                          for a in dispatch.alerts]
             for a in payload['alerts']:
@@ -508,6 +508,8 @@ class Dispatch(RESTful):
                     dispatch.alerts.append(dispatch_alert)
                     dispatch.store()
 
+            dispatch.stakeholders[0] << payload['stakeholders']
+            dispatch.store()
             self.write_json('{}')
         else:
             self.status.NOT_FOUND('No existe el despacho con el id: ' +
