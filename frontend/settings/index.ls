@@ -4,6 +4,8 @@
  */
 
 panelgroup = App.widget.panelgroup
+modal = App.widget.message-box
+MessageBox = modal.MessageBox
 
 FieldType = App.builtins.Types.Field
 
@@ -20,6 +22,8 @@ class EmployeeItem extends panelgroup.FormBody
 
   _json-setter: (_dto) ->
     super _dto
+    @_panel._header._get panelgroup.ControlTitle ._text = "#{_dto.'name'} -
+                                                         \ #{_dto.'role'}"
     @employee = new Employee _dto
     @_save.html = "Modificar"
     _cmodules = @el._elements.'permissions[modules]'
@@ -51,21 +55,26 @@ class EmployeeItem extends panelgroup.FormBody
     _dto
 
   on-save: ->
+    _dto = @_json
     if not @employee?
       @employee = new Employee
-    _dto = @_json
+      _dto.'permissions'.'id' = null
+      _method = App.ajax._post
+      _url = '/api/user'
+    else
+      _dto.'permissions'.'id' = @employee._attributes.'permissions'.'id'
+      _method = App.ajax._put
+      _url = "/api/user/#{@employee._id}"
 
     if (not _dto.'password') or (_dto.'password' is '')
       delete _dto.'password'
 
-    _id = @employee._id
-
-    # TODO: check on creation
-    _dto.'permissions'.'id' = @employee._attributes.'permissions'.'id'
-
-    App.ajax._put "/api/user/#{_id}", _dto, do
+    _method _url, _dto, do
       _success:     ~>
         @_save.html = "Modificar"
+        @_panel._header._get panelgroup.ControlTitle ._text = "#{_dto.'name'} -
+                                                             \ #{_dto.'role'}"
+        App.GLOBALS.update_employees!
         console.log 'Registrado correctamente.'
       _bad-request: ~>
         alert 'ERROR: e746ae94-5a3a-11e4-9a1d-88252caeb7e8'
@@ -186,6 +195,26 @@ class EmployeeItem extends panelgroup.FormBody
       $ .. ._append '<label>Alertas :</label>'
       .._append @table-alert
     @_save.on-click ~> @on-save!
+
+    _control-close = @_panel._header._get panelgroup.ControlClose
+
+    _control-close.el._first.on-click ~>
+      see-button = (_value) ~>
+        if _value
+          App.ajax._delete "/api/user/#{@employee._id}", do
+            _success: ->
+              console.log 'Eliminado'
+              App.GLOBALS.update_employees!
+          _control-close.on-close!
+
+      if not @employee?
+          _control-close.on-close!
+      else
+        message = MessageBox._new do
+          _title: 'Eliminación del Empleado.'
+          _body: '<h5>¿Desea eliminar al empleado?</h5>'
+          _callback: see-button
+        message._show MessageBox.CLASS.small
     ret
 
   /** @private */ employee: null
