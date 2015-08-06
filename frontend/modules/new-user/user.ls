@@ -23,10 +23,9 @@ class OfficerItem extends panelgroup.FormBody
 
     @model._save _dto, do
       _success: ->
-        @_desktop.notifier.notify do
-          _message: 'Guardado'
-          _type: @_desktop.notifier.kSuccess
-        (@el.query 'button').html = 'Modificar'
+        (modal.Modal._new do
+          _title: 'Guardado'
+          _body: '<h5>Se ha guardado</h5>')_show modal.Modal.CLASS.small
 
   _json-setter: (_dto) ->
     @model = new Officer _dto
