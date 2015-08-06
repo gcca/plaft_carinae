@@ -487,6 +487,11 @@ App.GLOBALS =
         @_declarants = _autocompleters.'declarant'
         @_stakeholders = _autocompleters.'stakeholder'
 
+  update_employees: ->
+    App.ajax._get '/api/user', false, do
+      _success: (employees) ->
+        window.plaft.'us' = employees
+
 window.plaft.'declarant' = void
 window.plaft.'stakeholder' = void
 
