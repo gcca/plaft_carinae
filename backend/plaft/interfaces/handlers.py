@@ -82,7 +82,8 @@ class User(RESTful):
     """User RESTful."""
 
     def get(self, id=None):
-        self.write_json('{"m":"Are you kidding me?"}')
+        customs_agency = self.user.customs_agency
+        self.render_json(customs_agency.employees)
 
     def post(self):
         payload = self.query
@@ -92,13 +93,21 @@ class User(RESTful):
 
         if permissions:
             permission = model.Permissions()
+            alerts_key = []
+            for a in permissions['alerts']:
+                alert = model.Alert.find(section=a.split('-')[0],
+                                         code=a.split('-')[1])
+                alerts_key.append(alert.key)
+            del permissions['alerts']
             permission << permissions
+            permission.alerts_key = alerts_key
             permission.store()
             permission_id = permission.key
 
         employee = model.Employee(name=payload['name'],
                                   username=payload['username'],
                                   password=payload['password'],
+                                  role=payload['role'],
                                   customs_agency_key=customs_agency.key,
                                   permissions_key=permission_id)
         employee.store()
@@ -110,17 +119,17 @@ class User(RESTful):
 
     def put(self, id):
         payload = self.query
-        payload_permission = payload['permissions']
+        permissions = payload['permissions']
         employee = model.Employee.find(int(id))
-        permission = model.Permissions.find(int(payload_permission['id']))
+        permission = model.Permissions.find(int(permissions['id']))
         alerts_key = []
 
-        for a in payload_permission['alerts']:
+        for a in permissions['alerts']:
             alert = model.Alert.find(section=a.split('-')[0],
                                      code=a.split('-')[1])
             alerts_key.append(alert.key)
 
-        permission.modules = payload_permission['modules']
+        permission.modules = permissions['modules']
         permission.alerts_key = alerts_key
         permission.store()
 
@@ -132,7 +141,11 @@ class User(RESTful):
         self.write_json('{}')
 
     def delete(self, id):
-        self.write_json('{"m":"Are you kidding me?"}')
+        customs_agency = self.user.customs_agency
+        employee = model.Employee.find(int(id))
+        customs_agency.employees_key.remove(employee.key)
+        customs_agency.store()
+        employee.delete()
 
 
 @handler_method
