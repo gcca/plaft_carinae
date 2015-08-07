@@ -14,6 +14,8 @@ PRE-MODULES =
   Operation     = require './modules/operation'
   Report        = require './modules/monthy_report'
   UnusalAlerts  = require './modules/unusual/alerts'
+  UnusualRegister  = require './modules/unusual/register'
+  UnusualReport = require './modules/unusual/report'
 
 MODULES = new Array
 
@@ -25,9 +27,8 @@ for module in PRE-MODULES
 # HARDCODE
 BETAS =
   NewUser = require './modules/new-user'
-  UnusualRegister  = require './modules/unusual/register'
-  UnusualReport = require './modules/unusual/report'
   OperationList = require './modules/operation-list'
+  Profile = require './modules/profile'
 
 username = window.plaft.'user'.'username'
 
@@ -146,7 +147,9 @@ class Dashboard extends App.View
             <li class='#{gz.Css \dropdown}'>
               <a href='#' class='#{gz.Css \dropdown-toggle}'
                   data-toggle='dropdown'>
-                Opciones <span class='#{gz.Css \caret}'></span>
+                <i class='#{gz.Css \glyphicon}
+                        \ #{gz.Css \glyphicon-cog}'></i>
+                <span class='#{gz.Css \caret}'></span>
               </a>
               <ul class='#{gz.Css \dropdown-menu}' role='menu'>
                 <li id='#{gz.Css \id-settings-users}'><a>Usuarios</a></li>
