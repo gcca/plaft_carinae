@@ -22,10 +22,12 @@ class OfficerItem extends panelgroup.FormBody
       delete _dto.'password'
 
     @model._save _dto, do
-      _success: ->
+      _success: ~>
         (modal.Modal._new do
           _title: 'Guardado'
           _body: '<h5>Se ha guardado</h5>')_show modal.Modal.CLASS.small
+        @_panel._header._get panelgroup.ControlTitle ._text = _dto.'agency'
+        @_btn-save.html = "Modificar"
 
   _json-setter: (_dto) ->
     @model = new Officer _dto
@@ -42,9 +44,10 @@ class OfficerItem extends panelgroup.FormBody
     @$el._append "<div class='#{gz.Css \form-group}
                           \ #{gz.Css \col-md-6}'>
                   <button type='button' class='#{gz.Css \btn}
-                \ #{gz.Css \btn-default}'> Registrar</button>
+                \ #{gz.Css \btn-primary}'> Registrar</button>
                 </div>"
-    (@el.query 'button').on-click ~> @on-save!
+    @_btn-save = @el.query 'button'
+      ..on-click ~> @on-save!
 
     _control-close = @_panel._header._get panelgroup.ControlClose
     _control-close.el._first.on-click ~>
@@ -66,6 +69,7 @@ class OfficerItem extends panelgroup.FormBody
     _r
 
   /** @private */ model: null
+  /** @private */ _btn-save: null
   _FIELD_USER =
     * _name: 'agency'
       _label: 'Nombre de Agencia'
