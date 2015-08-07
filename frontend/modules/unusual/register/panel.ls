@@ -19,8 +19,8 @@ class PanelAlert extends panelgroup.FormBody
   _json-getter: ->
     super!
       code-alert = ..'code_alert'
-      ..'section' = code-alert._substring 0, code-alert._length-1
-      ..'code' = code-alert.substr -1
+      ..'info'.'section' = code-alert._substring 0, code-alert._length-1
+      ..'info'.'code' = code-alert.substr -1
       delete ..'code_alert'
 
   _json-setter: (_dto) ->
@@ -51,7 +51,7 @@ class PanelAlert extends panelgroup.FormBody
     * _name: 'code_alert'
       _label: '44. Codigo de las señal de alerta'
 
-    * _name: 'description'
+    * _name: 'info[description]'
       _label: '45. Descripción de la señal de alerta'
 
     * _name: 'comment'
@@ -86,7 +86,7 @@ class CurrentAlerts extends panelgroup.PanelGroup
 
   _fromJSON: (_alerts) ->
     for alert in _alerts
-      alert.'code_alert' = alert.'section' + alert.'code'
+      alert.'code_alert' = alert.'info'.'section' + alert.'info'.'code'
       @new-panel!
         .._body._json = alert
         .._header._get panelgroup.ControlTitle ._text = alert.'code_alert'
