@@ -48,7 +48,7 @@ class OfficerItem extends panelgroup.FormBody
 
     _control-close = @_panel._header._get panelgroup.ControlClose
     _control-close.el._first.on-click ~>
-      see-button = (_value) ->
+      see-button = (_value) ~>
         if _value
           App.ajax._delete "/api/officer/#{@model.id}", do
             _success: ->

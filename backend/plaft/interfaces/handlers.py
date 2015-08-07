@@ -35,13 +35,10 @@ class Officer(RESTful):
         officer_name = payload['name']
         customs_agency = model.CustomsAgency(name=agency_name)
         customs_agency.store()
-
-        permission = model.Permissions(modules=['WEL-HASH',
-                                                'NUM-HASH',
-                                                'ANEXO2-HASH',
-                                                'INCOME-HASH',
-                                                'OPLIST-HASH'],
-                                       signals=[])
+        alerts_key = [a.key for a in model.Alert.query().fetch()]
+        from plaft.application.util.data_generator import permissions
+        permission = model.Permissions(modules=permissions.officer,
+                                       alerts_key=alerts_key)
         permission.store()
 
         datastore = model.Datastore(customs_agency_key=customs_agency.key)
