@@ -134,6 +134,7 @@ class Income extends Module
    * @private
    */
   render-panels: (_dispatch-dto) ->
+    @_desktop._show-save!
     @clean!
 
     @model = new Dispatch _dispatch-dto  # Model for storing data

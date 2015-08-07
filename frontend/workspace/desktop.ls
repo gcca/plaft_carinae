@@ -54,6 +54,7 @@ class Desktop extends App.View
     #-------
     @clean-current!
     @_search.clean-input!
+    @_hide-save!
     @_search._menu @Module._search-menu
     @el._append (@_new Module).render!.el
 
@@ -105,6 +106,7 @@ class Desktop extends App.View
   /**
    */
   load-next-page: (sub-module, _options) ->
+    @_show-save!
     @module.$el._hide!
     mod = sub-module._new _options
     @el._append mod.render!.el
@@ -126,6 +128,7 @@ class Desktop extends App.View
 
       @_sub-module._free!
       @_sub-module = null
+      @_hide-save!
       @module.$el._show!
       @_return-div._class._add gz.Css \hidden
 
@@ -142,6 +145,10 @@ class Desktop extends App.View
   _spinner-start: -> document.body._append @_spinner
 
   _spinner-stop: -> document.body._remove @_spinner if @_spinner._parent?
+
+  _show-save: -> @_save.$el._show!
+
+  _hide-save: -> @_save.$el._hide!
 
   #-----
   # View
