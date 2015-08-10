@@ -171,6 +171,9 @@ def update(dispatch, payload):
     if 'is_out' in payload:
         del payload['is_out']
 
+    if 'alerts' in payload:
+        del payload['alerts']
+
     dispatch << payload
     dispatch.declaration = declaration
     dispatch.store()
