@@ -192,8 +192,9 @@ if officer._constructor is Number
 
 employee_items = ["<li> \
                      <a href='/switch/#{..'id'}'> \
-                       #{..'username'} \
-                       &nbsp;&nbsp;&nbsp;&nbsp; \
+                       <label style='width:18ex;font-weight:normal'> \
+                         #{..'username'} \
+                       </label> \
                        <em style='font-size:9pt'>(#{..'role'})</em> \
                      </a> \
                    </li>" \
