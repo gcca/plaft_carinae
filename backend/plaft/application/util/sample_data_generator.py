@@ -111,14 +111,20 @@ def create_employees(agency, j=5):
                    alert_operation_keys]
     roles = User.role_choices
 
+    data = (
+        ('javier@cavasoftsac.com', 'Javier Huaman'),
+        ('cristhian@cavasoftsac.com', 'Cristhian Gonzales'),
+        ('karina@cavasoftsac.com', 'Karina Gonzales'),
+        ('antonio@cavasoftsac.com', 'Antonio Adama'),
+        ('cayetana@cavasoftsac.com', 'María Cayetana'),
+        ('tony@cavasoftsac.com', 'Tony Stark'))
+
     while j:
-        username = ''.join(random.sample(ascii_lowercase, 3))
-        name = ''.join(random.sample(ascii_lowercase, 6))
         permission = Permissions(modules=modules,
                                  alerts_key=alerts_keys[j % 3])
         permission.store()
-        employee = Employee(name=name,
-                            username=username,
+        employee = Employee(name=data[j][0],
+                            username=data[j][1],
                             password='123',
                             customs_agency_key=agency.key,
                             permissions_key=permission.key,
@@ -329,6 +335,11 @@ def _data_debug():
              'Nina Sharp',
              'nina@mass.dyn',
              '789',
+             data_generator.permissions.officer),
+        Data('CavaSoft SAC',
+             'César Vargas',
+             'cesarvargas@cavasoftsac.com',
+             '123',
              data_generator.permissions.officer)
     ]
 
@@ -387,7 +398,8 @@ def _data_deploy():
     ca.store()
 
 
-_create_sample_data = _data_debug if plaft.config.DEBUG else _data_deploy
+# _create_sample_data = _data_debug if plaft.config.DEBUG else _data_deploy
+_create_sample_data = _data_debug
 
 
 def create_sample_data():
