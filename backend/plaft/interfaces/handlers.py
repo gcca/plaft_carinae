@@ -103,10 +103,12 @@ class User(RESTful):
 
         employee = model.Employee(name=payload['name'],
                                   username=payload['username'],
-                                  password=payload['password'],
                                   role=payload['role'],
+                                  password='',
                                   customs_agency_key=customs_agency.key,
                                   permissions_key=permission_id)
+        if 'password' in payload:
+            employee.password = payload['password']
         employee.store()
 
         customs_agency.employees_key.append(employee.key)
