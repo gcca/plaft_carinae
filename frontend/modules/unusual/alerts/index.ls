@@ -12,23 +12,28 @@ DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
 
 
 /**
-* @class Dispatch
-* @extends Model
-*/
+ * @class Dispatch
+ * @extends Model
+ */
 class Dispatch extends App.Model
   urlRoot: 'dispatch'
 
 
 /**
-* @Class Dispatches
-* @extends Collection
-*/
+ * @Class Dispatches
+ * @extends Collection
+ */
 class Dispatches extends App.Collection
   urlRoot: 'customs_agency/pending'
-#  urlRoot: 'dispatch'
   model: Dispatch
 
-
+/**
+ * CustomerAlert
+ * --------
+ *
+ * @Class CustomerAlert
+ * @extends View
+ */
 class CustomerAlert extends App.View
 
   /** @override */
@@ -99,6 +104,10 @@ class CustomerAlert extends App.View
 
     * _name: 'condition'
       _label: '10. Condicion de residencia'
+      _type: FieldType.kComboBox
+      _options:
+        'Residente'
+        'No residente'
 
     * _name: 'issuance_country'
       _label: '11. Pais de emision del documento'
@@ -183,9 +192,12 @@ class CustomerAlert extends App.View
       _type: FieldType.kTextEdit
 
 /**
-* @Class OperationEdit
-* @extends Module
-*/
+ * Alerts
+ * --------
+ *
+ * @Class Alerts
+ * @extends Module
+ */
 class Alerts extends Module
 
   /** @override */
@@ -199,10 +211,10 @@ class Alerts extends Module
 
     App.ajax._post "/api/dispatch/#{@model._id}/alerts", _dto, do
       _success: ~>
-        @model._set _dto  # update data for change on (event)
         @_desktop.notifier.notify do
           _message : 'Se actualizó correctamente los datos'
           _type    : @_desktop.notifier.kSuccess
+        @_parent._unusual-alerts._reload-module!
       _bad-request: ~>
         alert 'ERROR: e746ae94-5a3a-11e4-9a1d-88252caeb7e8'
 
@@ -461,21 +473,25 @@ class Alerts extends Module
 
 
 /**
-* @Class ModuleTest
-* @extends Module
-*/
+ * ListAlerts
+ * --------
+ *
+ * @Class ListAlerts
+ * @extends Module
+ */
 class ListAlerts extends Module
 
   /** @override */
   render: ->
-    (new Utils do
-      _desktop: @_desktop
-      _parent: @
-      _child: Alerts)._load-module!
+    @_unusual-alerts = new Utils do
+          _desktop: @_desktop
+          _parent: @
+          _child: Alerts
+    @_unusual-alerts._load-module!
 
     super!
 
-
+  /** @public */ _unusual-alerts: null
   /** @protected */ @@_caption = 'IDENTIFICACIÓN DE OI'
   /** @protected */ @@_icon    = gz.Css \envelope
   /** @protected */ @@_hash  = 'auth-hash-alerts'

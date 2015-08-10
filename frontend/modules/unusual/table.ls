@@ -1,8 +1,12 @@
-
-
+/**
+ * @author Javier Huaman
+ */
 table = App.widget.table
   Table = ..Table
 
+/**
+ * @Class UtilAnexo
+ */
 class UtilAnexo
 
   ({@_desktop, @_parent, @_child, @_url='/api/dispatch/list'}) ->
@@ -44,7 +48,6 @@ class UtilAnexo
 
     __template-column = ->
       if it
-        console.log 'ENTRO AQUI !!!!'
         "<span class='#{gz.Css \label}
                     \ #{gz.Css \label-success}'>
           <i class='#{gz.Css \glyphicon}
@@ -104,7 +107,6 @@ class UtilAnexo
           __add-column role, dct-role[role].'attribute'
           title-module = dct-role[role].'title'
 
-        console.log _templates
         # CREATE TABLE
         _tabla = new Table do
                       _attributes: _attributes
@@ -127,6 +129,8 @@ class UtilAnexo
 
       _error: ->
         alert 'Error!!! NumerationP list'
+
+  _reload-module: -> @_load-module!
 
   /** @private */ _desktop: null
   /** @private */ _parent: null
