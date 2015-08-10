@@ -532,6 +532,14 @@ class MonthlyReport extends Module
         ((parseFloat amount).toFixed 2).replace /(\d)(?=(\d{3})+\.)/g, "$1, " }",
                    dispatch.'numeration_date'
 
+      if not operations._length
+        App.dom._new \tr
+          _td = App.dom._new \td
+            ..html = '<h4>La tabla no contiene datos.</h4>'
+            ..css = 'text-align:center'
+            ..attr 'colspan', 10
+          .._append _td
+          @_tbody._append ..
       @_table._append @_tbody
       @el._append @_table
 
