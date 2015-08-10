@@ -6,16 +6,15 @@ FieldType = App.builtins.Types.Field
 DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
 
 /**
- * SignalAlert
+ * PanelAlert
  * --------
  *
- * @example
- * @class SignalAlert
- * @extends View
+ * @class PanelAlert
+ * @extends FormBody
  */
-
 class PanelAlert extends panelgroup.FormBody
 
+  /** @override */
   _json-getter: ->
     super!
       code-alert = ..'code_alert'
@@ -23,6 +22,7 @@ class PanelAlert extends panelgroup.FormBody
       ..'info'.'code' = code-alert.substr -1
       delete ..'code_alert'
 
+  /** @override */
   _json-setter: (_dto) ->
     super _dto
     @on-change-source!
@@ -34,6 +34,8 @@ class PanelAlert extends panelgroup.FormBody
       | otherwise =>
         @_other-source._disabled = on
         @_other-source._value = ''
+
+  /** @override */
   render: ->
     _r = super!
     App.builder.Form._new @el, _FIELD_SIGNAL
@@ -71,7 +73,13 @@ class PanelAlert extends panelgroup.FormBody
     * _name: 'description_source'
       _label: '47. Si se ha consignado la opcion (5) describir la fuente'
 
-
+/**
+ * CurrentAlerts
+ * --------
+ *
+ * @class CurrentAlerts
+ * @extends PanelGroup
+ */
 class CurrentAlerts extends panelgroup.PanelGroup
 
   /** @override */
@@ -79,6 +87,7 @@ class CurrentAlerts extends panelgroup.PanelGroup
 
   _toJSON: -> for @_panels then .._body._json
 
+  /** @override */
   new-panel: ->
     super do
       _panel-heading: panelgroup.PanelHeading

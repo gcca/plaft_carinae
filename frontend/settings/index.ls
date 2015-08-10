@@ -129,7 +129,7 @@ class EmployeeItem extends panelgroup.FormBody
                 <div class='#{gz.Css \form-group}
                           \ #{gz.Css \col-md-6}'>
                   <button type='button' class='#{gz.Css \btn}
-                \ #{gz.Css \btn-default}'> Registrar</button>
+                \ #{gz.Css \btn-primary}'> Registrar</button>
                 </div>"
     @_save = @el.query 'button'
     # TABLE

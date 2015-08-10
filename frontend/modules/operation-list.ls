@@ -33,11 +33,18 @@ class Operations extends App.Collection
   urlRoot: 'operation/operations'
   model: Operation
 
-
+/**
+ * ControlHeadTable
+ * --------
+ *
+ * @class ControlHeadTable
+ * @extends ControlTitle
+ */
 class ControlHeadTable extends panelgroup.ControlTitle
 
+  /** @override */
   _tagName: \table
-
+  /** @override */
   _className: gz.Css \table
 
   load-head: (_dto) ->
@@ -62,11 +69,24 @@ class ControlHeadTable extends panelgroup.ControlTitle
                   </tr>
                 </tbody>"
 
-
+/**
+ * PanelHeadingTable
+ * --------
+ *
+ * @class PanelHeadingTable
+ * @extends PanelHeading
+ */
 class PanelHeadingTable extends panelgroup.PanelHeading
 
   _controls : [ControlHeadTable]
 
+/**
+ * PanelBodyTable
+ * --------
+ *
+ * @class PanelBodyTable
+ * @extends PanelBody
+ */
 class PanelBodyTable extends panelgroup.PanelBody
 
   load-table: (_dispatches) ->
@@ -99,6 +119,9 @@ class PanelBodyTable extends panelgroup.PanelBody
     @el._append _tabla.render!.el
 
 /**
+ * OperationList
+ * --------
+ *
  * @Class OperationList
  * @extends Module
  */

@@ -1,6 +1,6 @@
 /**
  * @module modules
- * @author gcca@gcca.tk (cristHian Gz. <gcca>)
+ * @author Javier Huaman
  */
 
 Module = require '../../workspace/module'
@@ -10,27 +10,29 @@ FieldType = App.builtins.Types.Field
 
 
 /**
-* @class Dispatch
-* @extends Model
-*/
+ * @class Dispatch
+ * @extends Model
+ */
 class Dispatch extends App.Model
   urlRoot: 'dispatch'
 
 
 /**
-* @Class Dispatches
-* @extends Collection
-*/
+ * @Class Dispatches
+ * @extends Collection
+ */
 class Dispatches extends App.Collection
   urlRoot: 'customs_agency/pending'
-#  urlRoot: 'dispatch'
   model: Dispatch
 
 
 /**
-* @Class OperationEdit
-* @extends Module
-*/
+ * Report
+ * --------
+ *
+ * @Class Report
+ * @extends Module
+ */
 class Report extends Module
 
   /** @override */
@@ -111,9 +113,12 @@ class Report extends Module
 
 
 /**
-* @Class Operations
-* @extends Module
-*/
+ * ListReport
+ * --------
+ *
+ * @Class ListReport
+ * @extends Module
+ */
 class ListReport extends Module
 
   /** @override */

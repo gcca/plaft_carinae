@@ -1,6 +1,6 @@
 /**
  * @module modules
- * @author gcca@gcca.tk (cristHian Gz. <gcca>)
+ * @author Javier Huaman
  */
 
 Module = require '../../../workspace/module'

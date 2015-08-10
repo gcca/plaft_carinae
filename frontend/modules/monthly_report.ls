@@ -2,6 +2,13 @@
 
 Module = require '../workspace/module'
 
+/**
+ * ReportEdit
+ * --------
+ *
+ * @class ReportEdit
+ * @extends Module
+ */
 class ReportEdit extends Module
 
   /** @override */
@@ -449,21 +456,21 @@ class ReportEdit extends Module
   /** @private */ _tip-module: null
 
 /**
-* @class Dispatch
-* @extends Model
-*/
+ * @class Dispatch
+ * @extends Model
+ */
 class Dispatch extends App.Model
   urlRoot: 'dispatch'
 
 
 /**
- * Welcome
+ * MonthlyReport
  * -------
- * Welcome page for dashboard.
- * @class Welcome
+ *
+ * @class MonthlyReport
  * @extends Module
  */
-class MonthyReport extends Module
+class MonthlyReport extends Module
 
   add-head: ->
     _tr = App.dom._new \tr
@@ -554,7 +561,7 @@ class MonthyReport extends Module
 
 
 /** @export */
-module.exports = MonthyReport
+module.exports = MonthlyReport
 
 
 # vim: ts=2:sw=2:sts=2:et

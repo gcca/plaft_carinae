@@ -1,6 +1,16 @@
+/**
+ * @author Javier Huaman
+ */
 
 modal = App.widget.message-box
 
+/**
+ * ModalAlert
+ * --------
+ *
+ * @Class ModalAlert
+ * @extends Modal
+ */
 class ModalAlert extends modal.Modal
 
   alerts_user: ->
@@ -104,7 +114,6 @@ class ModalAlert extends modal.Modal
         delete @_alerts[_name]
     @_callback @_alerts
     @_hide!
-
 
   /** @override */
   initialize: ({_title= '', \

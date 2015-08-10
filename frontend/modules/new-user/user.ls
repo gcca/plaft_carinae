@@ -11,8 +11,16 @@ class Officer extends App.Model
 
   urlRoot: \officer
 
+/**
+ * OfficerItem
+ * --------
+ *
+ * @class OfficerItem
+ * @extends FormBody
+ */
 class OfficerItem extends panelgroup.FormBody
 
+  /** @override */
   on-save: ->
     if not @model?
       @model = new Officer
@@ -29,6 +37,7 @@ class OfficerItem extends panelgroup.FormBody
         @_panel._header._get panelgroup.ControlTitle ._text = _dto.'agency'
         @_btn-save.html = "Modificar"
 
+  /** @override */
   _json-setter: (_dto) ->
     @model = new Officer _dto
     (@el.query 'button').html = 'Modificar'
@@ -86,11 +95,25 @@ class OfficerItem extends panelgroup.FormBody
     * _name: 'password'
       _label: 'Contraseña'
 
+/**
+ * OfficerHeading
+ * --------
+ *
+ * @class OfficerHeading
+ * @extends PanelHeading
+ */
 class OfficerHeading extends panelgroup.PanelHeading
 
   _controls: [panelgroup.ControlTitle,
               panelgroup.ControlClose]
 
+/**
+ * OfficerList
+ * --------
+ *
+ * @class OfficerList
+ * @extends PanelGroup
+ */
 class OfficerList extends panelgroup.PanelGroup
 
   /** @override */
@@ -103,6 +126,7 @@ class OfficerList extends panelgroup.PanelGroup
       @new-panel!
         .._body._json = _officer
 
+  /** @override */
   new-panel: ->
     _officer = super do
       _panel-heading: OfficerHeading
@@ -110,7 +134,7 @@ class OfficerList extends panelgroup.PanelGroup
     _officer._header._get panelgroup.ControlTitle ._text = 'Oficial Cumplimiento'
     _officer
 
-    /** @override */
+  /** @override */
   render: ->
     @el.html = "<button type='button'
                         class= '#{gz.Css \btn}

@@ -21,14 +21,16 @@ class Dispatch extends App.Model
 
 
 /**
-* @Class Dispatches
-* @extends Collection
-*/
+ * @Class Dispatches
+ * @extends Collection
+ */
 class Dispatches extends App.Collection
   model: Dispatch
 
 
 /**
+ * NumerationEdit
+ * --------
  * Una vista que contiene el formulario del modulo de Numeracion de registros
  * En esta vista solo se pueden modificar los datos de numeracion:
  * dam, numeration_date, canal, currency, exchange_rate, ammount_soles,
@@ -370,11 +372,14 @@ class NumerationEdit extends Module
 
 
 /**
+ * Numeration
+ * --------
  * @class Numeration
  * @extends Module
  */
 class Numeration extends Module
 
+  /** @override */
   on-search: (query) ->
     _flag = off
     for model in @_pending.models

@@ -2,9 +2,16 @@
 
 Module = require '../../workspace/module'
 Officer = require './user'
-
+/**
+ * NewOfficer
+ * --------
+ *
+ * @class NewOfficer
+ * @extends Module
+ */
 class NewOfficer extends Module
 
+  /** @override */
   render: ->
     @_desktop._spinner-start!
 
