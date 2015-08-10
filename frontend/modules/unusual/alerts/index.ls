@@ -156,7 +156,7 @@ class CustomerAlert extends App.View
         'Involucrado'
         'Vinculado'
 
-    * _name: ''
+    * _name: 'unusual_operation'
       _label: '28. Describir la condición en la que interviene en
              \ la operación inusual'
       _grid: _GRID._full
@@ -185,7 +185,7 @@ class CustomerAlert extends App.View
         'Involucrado'
         'Vinculado'
 
-    * _name: ''
+    * _name: 'unusual_operation'
       _label: '28. Describir la condición en la que interviene en
              \ la operación inusual'
       _grid: _GRID._full

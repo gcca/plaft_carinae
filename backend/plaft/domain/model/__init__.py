@@ -251,6 +251,7 @@ class Customer(dom.Model, dom.PolyModel):
     # TODO
     unusual_condition = dom.Category(('Involucrado', 'Vinculado'))
     link_type = dom.Category(('Importador', 'Exportador'))
+    unusual_operation = dom.String()
 
 
 class Person(Customer):
@@ -292,6 +293,7 @@ class Stakeholder(dom.Model):
     issuance_country = dom.String()  # país de emisión
     employment = dom.String()
     birthday = dom.Date()
+    unusual_operation = dom.String()
 
     slug = dom.Computed(lambda s: s.name
                         if 'ruc' == s.document_type
@@ -475,7 +477,7 @@ class Datastore(dom.Model):
     # Se guarda las operaciones despues del cierre del mes actual.
     operations_last_month_key = dom.Key(Operation, repeated=True)
 
-    current_month = dom.Computed(lambda self: datetime.now().month)
+    current_month = dom.Integer(default=datetime.now().month) # TODO
 
     def next_operation_counter(self):
         current_year = datetime.now().year
