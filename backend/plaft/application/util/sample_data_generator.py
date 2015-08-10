@@ -14,7 +14,7 @@ import plaft.config
 from plaft.domain.model import (Dispatch, CodeName, Declarant, Stakeholder,
                                 Business, Person, Datastore, CustomsAgency,
                                 Operation, Officer, Employee, Permissions,
-                                Alert, User)
+                                Alert, User, Customer)
 from plaft.application.util import data_generator
 
 
@@ -164,7 +164,10 @@ def create_dispatches(agency, datastore, customers, n=30):
                             exchange_rate=random.choice(('3.51',
                                                          '3.52',
                                                          '3.53',
-                                                         '3.54')))
+                                                         '3.54')),
+                            reference=''.join(
+                                random.choice(digits) for _ in range(10)),
+                            description='Descripción del mercancía del despacho')
         dispatch.declaration = Dispatch.Declaration(customer=customer)
         dispatch.store()
         dispatch.stakeholders[0].link_type =  'Destinatario de embarque' \
@@ -227,6 +230,7 @@ def _data_debug():
     create_alerts()
 
     from collections import namedtuple
+    from string import digits
 
     DCustomer = namedtuple('DCustomer', 'name document_type')
 
@@ -259,20 +263,39 @@ def _data_debug():
                   'ruc'),
         DCustomer('SOUTHERN PERU COPPER CORPORATION SUCURSAL DEL PERU',
                   'ruc'),
-        DCustomer('Javier Huaman',
-                  'dni'),
-        DCustomer('Cristhian Gonzales',
-                  'dni'),
-        DCustomer('María Cayetana',
-                  'dni'),
-        DCustomer('Antonio Adama',
-                  'dni'),
+        # DCustomer('Javier Huaman',
+        #           'dni'),
+        # DCustomer('Cristhian Gonzales',
+        #           'dni'),
+        # DCustomer('María Cayetana',
+        #           'dni'),
+        # DCustomer('Antonio Adama',
+        #           'dni'),
     ]
 
     customer_by = {
         'ruc': Business,
         'dni': Person
     }
+
+    shareholders = [
+        Customer.Shareholder(name='Avalos Polo, Cesar Erick',
+                             document_number='06109617',
+                             document_type='dni',
+                             ratio='8'),
+        Customer.Shareholder(name='Salhuana Paredes, Carlos Eduardo',
+                             document_number='08222566',
+                             document_type='dni',
+                             ratio='15'),
+        Customer.Shareholder(name='Salhuana Benza, Carlos Oswaldo',
+                             document_number='08239074',
+                             document_type='dni',
+                             ratio='15'),
+        Customer.Shareholder(name='Monzon Paredes, Luis William',
+                             document_number='08798935',
+                             document_type='dni',
+                             ratio='17'),
+    ]
 
     customers = []
     for data in init_customers:
@@ -282,6 +305,18 @@ def _data_debug():
             name=data.name,
             document_type=data.document_type,
             document_number=document_number,
+            social_object='Comercial',
+            activity='Ventas partes, piezas, accesorios',
+            shareholders=shareholders,
+            legal='Salhuana Paredes, Carlos Eduardo',
+            address='Av. Jose Chipocco 125 Barranco',
+            fiscal_address=('Av. Argentina 2020  ZI Zona'
+                            ' Industrial Lima Lima Lima'),
+            phone='511 448-3691',
+            money_source_type='No efectivo',
+            money_source='Recursos de la empresa',
+            is_obligated=False,
+            has_officer=False,
             declarants=[random.choice(declarants)])
         customer.store()
         customers.append(customer)
@@ -365,26 +400,26 @@ def create_sample_data():
 
 raw_regimes = (
     ('Importacion para el Consumo', '10'),
-    ('Reimportacion en el mismo Estado', '36'),
+    # ('Reimportacion en el mismo Estado', '36'),
     ('Exportacion Definitiva', '40'),
-    ('Exportacion Temporal para Reimportacion en el mismo Estado', '51'),
-    ('Exportacion Temporal para Perfeccionamiento Pasivo', '52'),
-    ('Admision temporal para Perfeccionamiento Activo', '21'),
-    ('Admision temporal para Reexportacion en el mismo Estado', '20'),
-    ('Drawback', '41'),
-    ('Reposicion de Mercancias con Franquicia Arancelaria', '41'),
-    ('Deposito Aduanero', '70'),
-    ('Reembarque', '89'),
-    ('Transito Aduanero', '80'),
-    ('Importacion Simplificada', '18'),
-    ('Exportacion Simplificada', '48'),
-    ('Material de Uso Aeronautico', '71'),
-    ('Destino Especial de Tienda Libre (DUTY FREE)', '72'),
-    ('Rancho de naves', '99'),
-    ('Material de Guerra', '99'),
-    ('Vehiculos para Turismo', '99'),
-    ('Material uso Aeronautico', '99'),
-    ('Ferias o Exposiciones Internacionales', '20')
+    # ('Exportacion Temporal para Reimportacion en el mismo Estado', '51'),
+    # ('Exportacion Temporal para Perfeccionamiento Pasivo', '52'),
+    # ('Admision temporal para Perfeccionamiento Activo', '21'),
+    # ('Admision temporal para Reexportacion en el mismo Estado', '20'),
+    # ('Drawback', '41'),
+    # ('Reposicion de Mercancias con Franquicia Arancelaria', '41'),
+    # ('Deposito Aduanero', '70'),
+    # ('Reembarque', '89'),
+    # ('Transito Aduanero', '80'),
+    # ('Importacion Simplificada', '18'),
+    # ('Exportacion Simplificada', '48'),
+    # ('Material de Uso Aeronautico', '71'),
+    # ('Destino Especial de Tienda Libre (DUTY FREE)', '72'),
+    # ('Rancho de naves', '99'),
+    # ('Material de Guerra', '99'),
+    # ('Vehiculos para Turismo', '99'),
+    # ('Material uso Aeronautico', '99'),
+    # ('Ferias o Exposiciones Internacionales', '20')
 )
 
 regimes = tuple(CodeName(name=j[0], code=j[1]) for j in raw_regimes)
@@ -456,7 +491,12 @@ raw_stakeholders = (
 
 stakeholders = tuple(Stakeholder(document_type=j[0],
                                  name=j[1],
-                                 address=j[2])
+                                 address=j[2],
+                                 social_object='Fabricante',
+                                 activity='Mayorista',
+                                 # address='Por averiguar',
+                                 phone='025 4566-56',
+                                 country='Brasil')
                      for j in raw_stakeholders)
 
 
@@ -477,7 +517,27 @@ raw_declarants = (
 declarants = tuple(Declarant(name=j[0],
                              father_name=j[1],
                              mother_name=j[2],
-                             address=j[3])
+                             # address=j[3],
+                             represents_to='Ordenante',
+                             residence_status='Residente',
+                             document_type='dni',
+                             document_number='09774462',
+                             issuance_country='Perú',
+                             # father_name='Suarez',
+                             # mother_name='Perez',
+                             # name='Luisa',
+                             nationality='Peruana',
+                             activity=('SECRETARIA, RECEPCIONISTA,'
+                                       ' TELEFONISTA'),
+                             ciiu=CodeName(code='18100',
+                                           name=('FAB. DE PRENDAS'
+                                                 ' DE VESTIR.')),
+                             address='Av. Las Amapolas 569 Chacarilla',
+                             ubigeo=CodeName(code='150115',
+                                             name=('LIMA - LIMA -'
+                                                   ' LA VICTORIA')),
+                             phone='511 336-5812 Anexo 80',
+                             position='Gerente de operaciones')
                    for j in raw_declarants)
 
 

@@ -158,7 +158,7 @@ class Customer(dom.Model, dom.PolyModel):
     # (-o-) A los dos.
     document_number = dom.String()
     document_type = dom.String()  # tipo de documento: ruc, dni, etc.
-    client_type = dom.String()
+    client_type = dom.String()  # TODO: ¿Sirve de algo? Remover
     validity = dom.String()
     document = dom.Structured(Document)
 
