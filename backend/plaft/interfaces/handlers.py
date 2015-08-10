@@ -527,7 +527,6 @@ class Dispatch(RESTful):
 
     @RESTful.method('post')
     def delete_alert(self, dispatch_id):
-        print self.query
         payload = self.query
 
         dispatch = model.Dispatch.find(int(dispatch_id))
@@ -548,6 +547,15 @@ class Dispatch(RESTful):
         self.render_json(
             plaft.application.dispatch.list_dispatches(customs_agency)
         )
+
+    @RESTful.method('post')
+    def alerts_visited(self, dispatch_id):
+        payload = self.query
+
+        dispatch = model.Dispatch.find(int(dispatch_id))
+        if not (str(payload['user-visited']) in dispatch.alerts_visited):
+            dispatch.alerts_visited.append(str(payload['user-visited']))
+            dispatch.store()
 
 
 # vim: et:ts=4:sw=4

@@ -16,17 +16,17 @@ class UtilAnexo
   get-section-code: (alert) ->
     alert.'info'.'section' + alert.'info'.'code'
 
-  _load-module: ->
+  _load-module: (_active-transitions=on) ->
     comercial_alertas = ['I1', 'I2', 'I9', 'I10', 'I11', 'I14', 'I16']
 
     operacion_alertas = ['I3', 'I5', 'I7', 'I8', 'I10', 'I11', 'I12',
-                         'I13', 'I14', 'I15', 'I16', 'I17', 'I18']
+                         'I13', 'I14', 'I15', 'I16', 'I17', 'I18'] ++ ["III#i" for i from 1 to 33]
 
     finanza_alertas = ['I4', 'I6', 'I9', 'I11', 'I13', 'I15', 'I17', 'I18']
 
-
-    @_desktop._lock!
-    @_desktop._spinner-start!
+    if _active-transitions
+      @_desktop._lock!
+      @_desktop._spinner-start!
 
     _labels =
       'Aduana'
@@ -46,13 +46,24 @@ class UtilAnexo
 
     _templates = {}
 
-    __template-column = ->
-      if it
-        "<span class='#{gz.Css \label}
-                    \ #{gz.Css \label-success}'>
-          <i class='#{gz.Css \glyphicon}
-                  \ #{gz.Css \glyphicon-ok}'/>
-         </span>"
+    _column-cell-style =
+      'order': 'width:92px'
+      'dam': 'width:140px'
+      'declaration.customer.name': 'width:100px'
+
+    __template-column = (_value, _dto) ->
+      _id-user = "#{window.'plaft'.'user'.'id'}"
+      if _id-user in _dto.'alerts_visited'
+        if _value
+          "<span class='#{gz.Css \label}
+                      \ #{gz.Css \label-warning}'>
+            C/OI
+           </span>"
+        else
+          "<span class='#{gz.Css \label}
+                      \ #{gz.Css \label-success}'>
+            S/OI
+           </span>"
       else
         ''
 
@@ -112,6 +123,7 @@ class UtilAnexo
                       _attributes: _attributes
                       _labels: _labels
                       _templates: _templates
+                      _column-cell-style: _column-cell-style
                       on-dblclick-row: (evt) ~>
                         @_desktop.load-next-page @_child, model: evt._target._model
 
@@ -124,13 +136,14 @@ class UtilAnexo
                             \ SECCION I - OPERACIONES O CONDUCTAS
                           \ INUSUALES RELATIVAS AL CLIENTE</h4>"
         @_parent.el._append _tabla.render!.el
-        @_desktop._unlock!
-        @_desktop._spinner-stop!
+        if _active-transitions
+          @_desktop._unlock!
+          @_desktop._spinner-stop!
 
       _error: ->
         alert 'Error!!! NumerationP list'
 
-  _reload-module: -> @_load-module!
+  _reload-module: -> @_load-module off
 
   /** @private */ _desktop: null
   /** @private */ _parent: null

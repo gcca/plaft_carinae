@@ -45,8 +45,8 @@ class ModalAlert extends modal.Modal
       .._class = "#{gz.Css \table}"
     App.dom._new \thead
       ..html = '<tr>
-                  <th>Sección</th>
-                  <th>Código</th>
+                  <th>Sec</th>
+                  <th>Cod</th>
                   <th>Descripción</th>
                   <th>Criterio de ayuda</th>
                   <th>Aplica</th>
@@ -92,6 +92,15 @@ class ModalAlert extends modal.Modal
     _table._append _tbody
     _table
 
+  _hide: ->
+    _id-user = window.'plaft'.'user'.'id'
+    _dto =
+      'user-visited': _id-user
+    App.ajax._post "/api/dispatch/#{@_model._id}/alerts_visited", _dto, do
+      _success: ~>
+        @_module._parent._unusual-alerts._reload-module!
+    super!
+
   get-data: ~>
     _tbody = (@el.query 'table').query 'tbody'
     for tr in _tbody.rows
@@ -118,6 +127,7 @@ class ModalAlert extends modal.Modal
   /** @override */
   initialize: ({_title= '', \
                 @_alerts={}, \
+                @_module, \
                 @_model, \
                 @_callback}) ->
 
@@ -148,6 +158,7 @@ class ModalAlert extends modal.Modal
   /** @private */ _alerts: null
   /** @private */ _callback: null
   /** @private */ _model: null
+  /** @private */ _module: null
 
 /** @export */
 module.exports = ModalAlert

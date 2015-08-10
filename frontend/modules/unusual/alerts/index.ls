@@ -269,7 +269,8 @@ class Alerts extends Module
     if _keys._length  # ¿Tiene alertas?
       @_div-message.html = '<h4>Operación contiene señales de alerta</h4>'
     else
-      if not @model._attributes.'alerts_visited'  # ¿No fue visitado?
+      _id-user = "#{window.'plaft'.'user'.'id'}"
+      if not (_id-user in @model._attributes.'alerts_visited')  # ¿No fue visitado?
         @_div-message.html = '<h4>Ingrese al proceso de identificación
                               \ Operaciones Inusuales</h4>'
       else  # No tiene alertas
@@ -425,7 +426,7 @@ class Alerts extends Module
                 </div>
                 <div class='#{gz.Css \col-md-12}' style='display:none;'></div>"
 
-    @transform-to-alerts @model._attributes.'alerts'
+    @transform-to-alerts _dispatch.'alerts'
 
     @_div-table = @el.query "##{_table-content}"
 
@@ -434,6 +435,7 @@ class Alerts extends Module
         modal-test = ModalAlert._new do
             _title: 'SEÑALES DE ALERTA - ' + window.'plaft'.'user'.'role'
             _alerts: @_alerts
+            _module: @
             _model: @model
             _callback: @load-table
         modal-test._show ModalAlert.CLASS.large
