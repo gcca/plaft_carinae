@@ -174,6 +174,9 @@ def update(dispatch, payload):
     if 'alerts' in payload:
         del payload['alerts']
 
+    if 'alerts_visited' in payload:
+        del payload['alerts_visited']
+
     dispatch << payload
     dispatch.declaration = declaration
     dispatch.store()

@@ -269,8 +269,9 @@ class Alerts extends Module
     if _keys._length  # ¿Tiene alertas?
       @_div-message.html = '<h4>Operación contiene señales de alerta</h4>'
     else
-      _id-user = "#{window.'plaft'.'user'.'id'}"
-      if not (_id-user in @model._attributes.'alerts_visited')  # ¿No fue visitado?
+      _id-user = window.'plaft'.'user'.'id'
+      _visited = [v.'id' for v in @model._attributes.'alerts_visited']
+      if not (_id-user in _visited)  # ¿No fue visitado?
         @_div-message.html = '<h4>Ingrese al proceso de identificación
                               \ Operaciones Inusuales</h4>'
       else  # No tiene alertas
