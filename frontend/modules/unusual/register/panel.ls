@@ -17,14 +17,13 @@ class PanelAlert extends panelgroup.FormBody
   /** @override */
   _json-getter: ->
     super!
-      code-alert = ..'code_alert'
-      ..'info'.'section' = code-alert._substring 0, code-alert._length-1
-      ..'info'.'code' = code-alert.substr -1
+      ..'info' = @_info
       delete ..'code_alert'
 
   /** @override */
   _json-setter: (_dto) ->
     super _dto
+    @_info = _dto.'info'
     @on-change-source!
 
   on-change-source: ~>
@@ -73,6 +72,8 @@ class PanelAlert extends panelgroup.FormBody
     * _name: 'description_source'
       _label: '47. Si se ha consignado la opcion (5) describir la fuente'
 
+  /** @private */ _info: null
+
 /**
  * CurrentAlerts
  * --------
@@ -98,7 +99,8 @@ class CurrentAlerts extends panelgroup.PanelGroup
       alert.'code_alert' = alert.'info'.'section' + alert.'info'.'code'
       @new-panel!
         .._body._json = alert
-        .._header._get panelgroup.ControlTitle ._text = alert.'code_alert'
+        .._header._get panelgroup.ControlTitle ._text = "SEÑAL DE ALERTA -
+                                                      \ #{alert.'code_alert'}"
 
 
 /** @export */

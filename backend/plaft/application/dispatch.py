@@ -271,6 +271,13 @@ def pending_and_accepting(customs_agency):
 
 def anexo_seis(dispatch, **args):
     """."""
+    for alert in args['alerts']:
+        for a in dispatch.alerts:
+            if a.info_key.id() == alert['info']['id']:
+                del alert['info']
+                a << alert
+                break
+    del args['alerts']
     dispatch << args
     dispatch.store()
 
