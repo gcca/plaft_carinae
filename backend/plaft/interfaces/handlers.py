@@ -553,10 +553,10 @@ class Dispatch(RESTful):
     @RESTful.method('post')
     def alerts_visited(self, dispatch_id):
         payload = self.query
+
         dispatch = model.Dispatch.find(int(dispatch_id))
-        user = model.User.find(int(payload['user-visited']))
-        if not (user.key in dispatch.alerts_visited):
-            dispatch.alerts_visited.append(user.key)
+        if not (str(payload['user-visited']) in dispatch.alerts_visited):
+            dispatch.alerts_visited.append(str(payload['user-visited']))
             dispatch.store()
 
 

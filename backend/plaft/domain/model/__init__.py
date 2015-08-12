@@ -352,7 +352,7 @@ class Dispatch(dom.Model):
 
     # Particular del módulo de alertas.
     # Sirve para saber si el despacho fue revisado.
-    alerts_visited = dom.Key(User, repeated=True)
+    alerts_visited = dom.String(repeated=True)
 
     customs_agency_key = dom.Key(CustomsAgency)
     country_source = dom.String()

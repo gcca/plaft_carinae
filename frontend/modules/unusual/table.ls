@@ -53,8 +53,8 @@ class UtilAnexo
                                     white-space:pre;overflow:hidden'
 
     __template-column = (_value, _dto) ~>
-      _id-user = window.'plaft'.'user'.'id'
-      if (_id-user in [v.'id' for v in _dto.'alerts_visited']) or @is_officer!
+      _id-user = "#{window.'plaft'.'user'.'id'}"
+      if _id-user in _dto.'alerts_visited' or @is_officer!
         if _value
           "<span class='#{gz.Css \label}
                       \ #{gz.Css \label-warning}'>
