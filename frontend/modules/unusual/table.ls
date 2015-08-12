@@ -98,9 +98,9 @@ class UtilAnexo
           for sc in [@get-section-code a for a in dispatch.'alerts']
             if sc in comercial_alertas
               is_comercial = on
-            else if sc in operacion_alertas
+            if sc in operacion_alertas
               is_operativo = on
-            else if sc in finanza_alertas
+            if sc in finanza_alertas
               is_finanza = on
 
           dispatch
