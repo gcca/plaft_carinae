@@ -14,9 +14,9 @@ exports._display =[
   ['38', 'Código de país de origen: para las operaciones relacionadas con importación de bienes, para lo cual deben tomar la codificación publicada por la SBS.', (d) -> if not d.'is_out' then d.'stakeholders'.'0'.'country' else 'No aplica']
   ['39', 'Código de país de destino: para las operaciones relacionadas con exportación de bienes, para lo cual deben tomar la codificación publicada por la SBS.', (d) -> if d.'is_out' then d.'stakeholders'.'0'.'country' else 'No aplica']
   ['40', 'Descripción de la operación(Señale los argumentos que lo llevaron a calificar como inusual la operación).', (d) -> d.'description']
-  ['41', 'La operación ha sido calificada como sospechosa (1)Si, (2)No', (d) -> d.'is_suspects' ]
-  ['42', 'En caso en el item 41 haya consignado la opción (1) indicar el número de ROS con el que se remitió a la UIF.', (d) -> d.'ros' ]
-  ['43', 'En caso en el item 41 haya consignado la opción (2) describir los argumentos por los cuales esta operación no fue calificada como sospechosa.', (d) -> d.'suspects_by']]
+  ['41', 'La operación ha sido calificada como sospechosa (1)Si, (2)No', (d) -> if d.'is_suspects' then 'Si' else 'No' ]
+  ['42', 'En caso en el item 41 haya consignado la opción (1) indicar el número de ROS con el que se remitió a la UIF.', (d) -> if d.'is_suspects' then d.'ros' else 'No aplica' ]
+  ['43', 'En caso en el item 41 haya consignado la opción (2) describir los argumentos por los cuales esta operación no fue calificada como sospechosa.', (d) -> if not d.'is_suspects' then d.'suspects_by' else 'No aplica']]
 ]
 exports._code =
   '29'
