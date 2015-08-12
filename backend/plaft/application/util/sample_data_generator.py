@@ -101,7 +101,7 @@ def create_alerts():
             alert_comercial_keys.append(alert.key)
 
 
-def create_employees(agency, j=5):
+def create_employees(agency, j=3):
     from string import ascii_lowercase
 
     modules = data_generator.permissions.employee
@@ -111,20 +111,16 @@ def create_employees(agency, j=5):
                    alert_operation_keys]
     roles = User.role_choices
 
-    data = (
-        ('javier@cavasoftsac.com', 'Javier Huaman'),
-        ('cristhian@cavasoftsac.com', 'Cristhian Gonzales'),
-        ('karina@cavasoftsac.com', 'Karina Gonzales'),
-        ('antonio@cavasoftsac.com', 'Antonio Adama'),
-        ('cayetana@cavasoftsac.com', 'María Cayetana'),
-        ('tony@cavasoftsac.com', 'Tony Stark'))
+    data = (('cristhian@cavasoftsac.com', 'Cristhian Gonzales'),
+            ('henry@cavasoftsac.com', 'Henry Vargas'),
+            ('javier@cavasoftsac.com', 'Javier Huaman'))
 
     while j:
         permission = Permissions(modules=modules,
                                  alerts_key=alerts_keys[j % 3])
         permission.store()
-        employee = Employee(name=data[j][0],
-                            username=data[j][1],
+        employee = Employee(name=data[j % 3][0],
+                            username=data[j % 3][1],
                             password='123',
                             customs_agency_key=agency.key,
                             permissions_key=permission.key,
@@ -135,7 +131,7 @@ def create_employees(agency, j=5):
     agency.store()
 
 
-def create_dispatches(agency, datastore, customers, n=30):
+def create_dispatches(agency, datastore, customers, n=15):
     from string import digits
     from datetime import datetime
 
@@ -175,6 +171,25 @@ def create_dispatches(agency, datastore, customers, n=30):
                                 random.choice(digits) for _ in range(10)),
                             description='Descripción del mercancía del despacho')
         dispatch.declaration = Dispatch.Declaration(customer=customer)
+
+        if random.choice((True, False)):
+            employee = random.choice(agency.employees)
+            role2keys = {
+                'Comercial': alert_comercial_keys,
+                'Operación': alert_operation_keys,
+                'Finanza': alert_finance_keys
+            }
+
+            info_keys = random.sample(role2keys[employee.role],
+                                      random.randint(1, 5))
+            dispatch.alerts = [
+                Dispatch.Alert(info_key=info_key,
+                               comment='Comentario de la alerta.',
+                               source='Alguna fuente.',
+                               description_source='Descripción de la fuente.')
+                               for info_key in info_keys]
+            dispatch.alerts_visited = [str(employee.key.id())]
+
         dispatch.store()
         dispatch.stakeholders[0].link_type =  'Destinatario de embarque' \
                                                 if dispatch.is_out \
@@ -331,11 +346,11 @@ def _data_debug():
                       'customs_agency officer username password modules')
 
     init_data = [
-        Data('Massive Dynamic',
-             'Nina Sharp',
-             'nina@mass.dyn',
-             '789',
-             data_generator.permissions.officer),
+        # Data('Massive Dynamic',
+        #      'Nina Sharp',
+        #      'nina@mass.dyn',
+        #      '789',
+        #      data_generator.permissions.officer),
         Data('CavaSoft SAC',
              'César Vargas',
              'cesarvargas@cavasoftsac.com',
