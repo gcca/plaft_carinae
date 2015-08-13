@@ -148,7 +148,8 @@ class Table extends App.View
    * @private
    */
   __get-value: (_dto, _attr) -> @_templates[_attr] (__get-by-attr _dto, _attr),
-                                                   _dto
+                                                   _dto,
+                                                   _attr
 
   /**
    * Get object value by parsed attribute name.

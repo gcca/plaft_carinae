@@ -55,9 +55,8 @@ class UtilAnexo
                                     max-width: 27ch;
                                     text-align: left;'
 
-    __template-column = (_value, _dto) ~>
-      _id-user = "#{window.'plaft'.'user'.'id'}"
-      if _id-user in _dto.'alerts_visited' or @is_officer!
+    __template-column = (_value, _dto, _attr) ~>
+      __cell = (_value) ->
         if _value
           "<span class='#{gz.Css \label}
                       \ #{gz.Css \label-warning}'>
@@ -68,8 +67,25 @@ class UtilAnexo
                       \ #{gz.Css \label-success}'>
             S/OI
            </span>"
-      else
+
+      # TODO: La excepción para el oficial debe venir desde el backend.
+      #       Los "vistos" deben manejarse de otra manera para hacer
+      #       el código fluído.
+      #       Este código está horrible.
+      #       Ver `widget/table.ls`: `__get-value` <- `_attr`
+      if @is_officer!  # Si es oficial, se muestran según los empleados
+        window.'plaft'.'user'.'customs_agency'.'employees'
+        for employee in employees
+          if (('is_' + employee.'role'.to-lower-case!) is _attr
+              and "#{employee.'id'}" in _dto.'alerts_visited')
+            return __cell _value
         ''
+      else  # De no ser oficial, se muestran como columna simple
+        _id-user = "#{window.'plaft'.'user'.'id'}"
+        if _id-user in _dto.'alerts_visited'
+          __cell _value
+        else
+          ''
 
     __add-column = (label, attribute) ->
       _labels._push label
