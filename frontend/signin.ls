@@ -103,7 +103,7 @@ document.body.innerHTML = "
       <img src='/static/img/prevencion.png' style='float: left;margin: 0 40 0 10;'>
     </span>
     <span class='#{gz.Css \col-md-8}' style='padding:0px'>
-    <h4 style='margin: 0px; text-align:center'>
+    <h4 style='margin: 0px; text-align:center; font-weight:bold'>
       SOFTWARE DE PREVENCION DEL LAVADO DE ACTIVOS Y DEL FINANCIAMIENTO DEL <br/>
       TERRORISMO APLICABLE A LOS DESPACHADORES DE ADUANA  -  PLAFT <br/>
     </h4>
@@ -178,7 +178,7 @@ document.body.innerHTML = "
 
     <div class='#{gz.Css \row} #{gz.Css \publicity}'>
       <div class='#{gz.Css \col-md-4}'>
-        <h4>¿Qué es el lavado de activos?</h4>
+        <h4 style='font-weight:bold'>¿Qué es el lavado de activos?</h4>
         <p style='text-align:justify;border: 1px solid;padding: 10px;'>
           El lavado de activos es el conjunto de operaciones realizadas
          \ por una o más personas, destinadas a ocultar o disfrazar el
@@ -196,20 +196,26 @@ document.body.innerHTML = "
           <img src='/static/img/uif.png' style='margin: 5 15 5 15;'>
         </div>
         <div class='#{gz.Css \col-md-12}'>
-          <h4 style='text-align:center'>RESOLUCION SBS N° 2249-2013</h4>
+          <h5 style='text-align:center; font-weight:bold'>
+            RESOLUCION SBS N° 2249-2013
+          </h5>
         </div>
         <div class='#{gz.Css \col-md-12}' style='text-align:center'>
           <img src='/static/img/sunat.png' style='margin-right: 7px;'>
           <img src='/static/img/aduana.png' style='margin-left: 7px;'>
         </div>
         <div class='#{gz.Css \col-md-12}'>
-          <h4 style='text-align:center'>ORGANISMO SUPERVISOR</h4>
+          <h5 style='text-align:center; font-weight:bold'>
+            ORGANISMO SUPERVISOR
+          </h5>
         </div>
       </div>
 
 
       <div class='#{gz.Css \col-md-4}'>
-        <h4>¿Que Prevención de lavado de activos?</h4>
+        <h4 style='font-size:17px; font-weight:bold'>
+          ¿Que es la prevención de lavado de activos?
+        </h4>
         <p style='text-align:justify;border: 1px solid;padding: 10px;'>
           Conjunto de información de las operaciones del sujeto obligado,
           \ cuya finalidad es prevenir y evitar que los servicios de comercio
@@ -259,7 +265,7 @@ document.body.innerHTML = "
       </p>
       <p class='#{gz.Css \pull-right}'>
         Marca registrada &copy; <br/>
-        Registro Indecopi <strong>123456</strong>
+        Registro Indecopi <strong>HK3LM6</strong>
       </p>
       <!-- cristHian Gz. (gcca) - http://gcca.tk -->
       <!-- Cristhian Alberto Gonzales Castillo -->
