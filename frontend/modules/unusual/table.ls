@@ -74,7 +74,7 @@ class UtilAnexo
       #       Este código está horrible.
       #       Ver `widget/table.ls`: `__get-value` <- `_attr`
       if @is_officer!  # Si es oficial, se muestran según los empleados
-        window.'plaft'.'user'.'customs_agency'.'employees'
+        employees = window.'plaft'.'user'.'customs_agency'.'employees'
         for employee in employees
           if (('is_' + employee.'role'.to-lower-case!) is _attr
               and "#{employee.'id'}" in _dto.'alerts_visited')
