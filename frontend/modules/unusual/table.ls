@@ -49,8 +49,11 @@ class UtilAnexo
     _column-cell-style =
       'order': 'width:92px'
       'dam': 'width:140px'
-      'declaration.customer.name': 'width:250px;max-width:250px;
-                                    white-space:pre;overflow:hidden'
+      'declaration.customer.name': 'text-overflow: ellipsis;
+                                    white-space: nowrap;
+                                    overflow: hidden;
+                                    max-width: 27ch;
+                                    text-align: left;'
 
     __template-column = (_value, _dto) ~>
       _id-user = "#{window.'plaft'.'user'.'id'}"

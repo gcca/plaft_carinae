@@ -537,7 +537,8 @@ class Operations extends Module
       'declaration.customer.name': 'text-overflow:ellipsis;
                                     white-space:nowrap;
                                     overflow:hidden;
-                                    max-width:27ch'
+                                    max-width:27ch;
+                                    text-align: left;'
 
     _template-pending =
       'diro': ->

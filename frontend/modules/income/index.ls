@@ -266,10 +266,11 @@ class Income extends Module
       </div><br/>"
 
     _column-cell-style =
-      'declaration.customer.name': 'text-overflow:ellipsis;
-                                    white-space:nowrap;
-                                    overflow:hidden;
-                                    max-width:27ch'
+      'declaration.customer': 'text-overflow:ellipsis;
+                               white-space:nowrap;
+                               overflow:hidden;
+                               max-width:27ch;
+                               text-align:left'
 
     App.ajax._get '/api/dispatch/list', true, do
       _success: (dispatches) ~>

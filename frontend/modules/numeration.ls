@@ -441,7 +441,8 @@ class Numeration extends Module
       'declaration.customer.name': 'text-overflow:ellipsis;
                                     white-space:nowrap;
                                     overflow:hidden;
-                                    max-width:27ch'
+                                    max-width:27ch;
+                                    text-align: left;'
 
     App.ajax._get '/api/customs_agency/list_dispatches', true, do
       _success: (dispatches) ~>
