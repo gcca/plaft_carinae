@@ -232,6 +232,10 @@ class App.Model extends BaseModel
         false
     | b.__proto__.constructor is Array =>
       if a?
+        /**
+         * @fileoverview
+         * @suppress
+         */
         for i, k in b
           return are-diff a[k], b[k]
       else

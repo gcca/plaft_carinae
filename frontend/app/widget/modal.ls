@@ -1,7 +1,7 @@
 /** @module app.widget */
 
-/*
- * @Class MessageBox
+/**
+ * @class Modal
  * @extends View
  */
 class Modal extends App.View

@@ -229,7 +229,7 @@ class Table extends App.View
    */
   on-dblclick-row: null
 
-/*
+/**
  * @class SimpleTable
  * @extends View
  * @export
