@@ -59,13 +59,15 @@ class UtilAnexo
       __cell = (_value) ->
         if _value
           "<span class='#{gz.Css \label}
-                      \ #{gz.Css \label-warning}'>
-            C/OI
+                      \ #{gz.Css \label-danger}'>
+            <i class='#{gz.Css \glyphicon}
+                    \ #{gz.Css \glyphicon-remove}'></i>
            </span>"
         else
           "<span class='#{gz.Css \label}
                       \ #{gz.Css \label-success}'>
-            S/OI
+            <i class='#{gz.Css \glyphicon}
+                    \ #{gz.Css \glyphicon-ok}'></i>
            </span>"
 
       # TODO: La excepción para el oficial debe venir desde el backend.
@@ -97,7 +99,7 @@ class UtilAnexo
         'attribute': 'is_comercial'
         'title': 'ÁREA COMERCIAL'
       'Operación':
-        'attribute': 'is_operativo'
+        'attribute': 'is_operación'
         'title': 'ÁREA OPERACIONES'
       'Finanza':
         'attribute': 'is_finanza'
@@ -124,7 +126,7 @@ class UtilAnexo
 
           dispatch
             ..'is_comercial' = is_comercial
-            ..'is_operativo' = is_operativo
+            ..'is_operación' = is_operativo
             ..'is_finanza' = is_finanza
 
         _pending = new Dispatches dispatches
