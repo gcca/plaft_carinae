@@ -5,54 +5,52 @@
 
 panelgroup = App.widget.panelgroup
 modal = App.widget.message-box
-MessageBox = modal.MessageBox
+widget = require './widget'
 
 FieldType = App.builtins.Types.Field
 
-class Employee extends App.Model
-
-  urlRoot: \user
-
-  /** @override */
-#  urlRoot: "officer/#{window.'plaft'.'cu'.\id}/employee"
-
 MODULES = App.MODULES
 
+/**
+ * @Class Employee
+ * @extends App.Model
+ */
+class Employee extends App.Model
+  /** @override */
+  urlRoot: \user
+
+/**
+ * EmployeeItem
+ * ------------
+ * @Class EmployeeItem
+ * @extends FormBody
+ */
 class EmployeeItem extends panelgroup.FormBody
 
+  /** @override */
   _json-setter: (_dto) ->
     super _dto
     @_panel._header._get panelgroup.ControlTitle ._text = "#{_dto.'name'} -
                                                          \ #{_dto.'role'}"
     @employee = new Employee _dto
     @_save.html = "Modificar"
-    _cmodules = @el._elements.'permissions[modules]'
 
     if not _dto.'permissions'
       _dto.'permissions' =
         'modules': []
         'alerts': []
 
-    for m, i in _cmodules
-      if _cmodules.options[i].value in _dto.'permissions'.'modules'
-        _cmodules.options[i].selected = true
+    @table-module._fromJSON _dto.'permissions'.'modules'
 
-    for alert in _dto.'permissions'.'alerts'
-      _name = "#{alert.'section'}-#{alert.'code'}"
-      ($ @table-alert ).find "##_name"
-        ..[0]._checked = on
+    @table-alert._fromJSON  ["#{alert.'section'}-#{alert.'code'}" \
+                            for alert in _dto.'permissions'.'alerts']
 
+  /** @override */
   _json-getter: ->
-    _dto = super!
-    @el._elements.'permissions[modules]'
-      _permission = $ .. .find 'option:selected'
-
-    alerts = $ @table-alert .find 'input[type="checkbox"]:checked'
-
-    _dto.'permissions' =
-      'modules': [per.value for per in _permission]
-      'alerts': [a._id for a in alerts]
-    _dto
+    super!
+      ..'permissions' =
+        'modules': @table-module._toJSON!
+        'alerts': @table-alert._toJSON!
 
   on-save: ->
     _dto = @_json
@@ -82,118 +80,52 @@ class EmployeeItem extends panelgroup.FormBody
   /** @override */
   render: ->
     ret = super!
-    table-id = App.utils.uid 'l'
-    roles = window.plaft.'lists'.'employees_roles'
-    @el.html = "<div class='#{gz.Css \form-group}
-                          \ #{gz.Css \col-md-4}'>
-                  <label>Nombre de Empleado</label>
-                  <input type='text'
-                         name='name'
-                         class='#{gz.Css \form-control}' />
-                </div>
-                <div class='#{gz.Css \form-group}
-                          \ #{gz.Css \col-md-4}'>
-                  <label>Username</label>
-                  <input type='text'
-                         name='username'
-                         class='#{gz.Css \form-control}' />
-                </div>
-                <div class='#{gz.Css \form-group}
-                          \ #{gz.Css \col-md-4}'>
-                  <label>Password</label>
-                  <input type='text'
-                         name='password'
-                         class='#{gz.Css \form-control}' />
-                </div>
-                <div class='#{gz.Css \form-group}
-                          \ #{gz.Css \col-md-6}'>
-                  <label>Rol:</label>
-                  <select class='#{gz.Css \form-control}'
-                          name='role'>
-                    #{for r in roles then '<option>'+r+'</option>' }
-                  </select>
-                </div>
-                <div class='#{gz.Css \form-group}
-                          \ #{gz.Css \col-md-6}'>
-                  <label>Permisos módulos:</label>
-                  <select multiple class='#{gz.Css \form-control}'
-                                   name='permissions[modules]'>
-                    #{for m in MODULES then '<option value='+m._hash+'>'+
-                            m._caption +
-                            '</option>'}
-                  </select>
-                </div>
-                <div class='#{gz.Css \form-group}
-                          \ #{gz.Css \col-md-12}' id='#{table-id}'>
-                </div>
-                <div class='#{gz.Css \form-group}
-                          \ #{gz.Css \col-md-6}'>
-                  <button type='button' class='#{gz.Css \btn}
-                \ #{gz.Css \btn-primary}'> Registrar</button>
-                </div>"
-    @_save = @el.query 'button'
-    # TABLE
-    @table-alert = App.dom._new \table
-      .._class = gz.Css \table
-    t-head = App.dom._new \thead
-    t-body = App.dom._new \tbody
 
-    tr-header = App.dom._new \tr
-      .._append App.dom._new \th
+    App.builder.Form._new @el, _FIELD
+      ..render!
+      .._free!
 
+    @$el._append "<div class='#{gz.Css \form-group}
+                          \ #{gz.Css \col-md-6}'>
+                    <label>Permisos módulos:</label>
+                  </div>"
+
+    # MODULES
+    @table-module = new widget.ListGroup do
+          _items-group: [{'value': m._hash, 'name': m._caption} for m in MODULES]
+
+    @el._last._append @table-module.render!.el
+
+
+    @$el._append "<div class='#{gz.Css \form-group}
+                            \ #{gz.Css \col-md-12}'>
+                    <label>Alertas :</label>
+                  </div>"
+
+    # ALERTS
     alert-one = window.plaft.'lists'.'alert_s1'
     alert-three = window.plaft.'lists'.'alert_s3'
+    _columns =
+      * 'first-column': 'I'
+        'checks': [{'value':"#{a[0]}-#{a[1]}",'tip': a[2]} for a in alert-one]
 
-    for i from 1 to alert-three._length
-      App.dom._new \th
-        ..html = i
-        tr-header._append ..
+      * 'first-column': 'II'
+        'checks': [{'value':"#{a[0]}-#{a[1]}",'tip': a[2]} for a in alert-three]
 
-    # ALERT SECTION I
-    App.dom._new \tr
-      ..html = "<td>I</td>"
-      for one in alert-one
-        _td = App.dom._new \td
-        _input = App.dom._new \input
-          .._id = "#{one[0]}-#{one[1]}"
-          .._type = 'checkbox'
-          ..title = one[2]
-          $ .. ._tooltip do
-            'template': "<div class='#{gz.Css \tooltip}' role='tooltip'
-                              style='min-width:175px'>
-                           <div class='#{gz.Css \tooltip-arrow}'></div>
-                           <div class='#{gz.Css \tooltip-inner}'></div>
-                         </div>"
-        _td._append _input
-        .._append _td
-      t-body._append ..
+    @table-alert = new widget.CheckBoxTable do
+        _headers: [a[1] for a in alert-three]
+        _columns: _columns
 
-    # ALERT SECTION III
-    App.dom._new \tr
-      ..html = "<td>III</td>"
-      for three in alert-three
-        _td = App.dom._new \td
-        _input = App.dom._new \input
-          .._id = "#{three[0]}-#{three[1]}"
-          .._type = 'checkbox'
-          ..title = three[2]
-          $ .. ._tooltip do
-            'template': "<div class='#{gz.Css \tooltip}' role='tooltip'
-                              style='min-width:175px'>
-                           <div class='#{gz.Css \tooltip-arrow}'></div>
-                           <div class='#{gz.Css \tooltip-inner}'></div>
-                         </div>"
-        _td._append _input
-        .._append _td
-      t-body._append ..
+    @el._last._append @table-alert.render!.el
 
-    t-head._append tr-header
-    @table-alert._append t-head
-    @table-alert._append t-body
+    @$el._append "<div class='#{gz.Css \form-group}
+                            \ #{gz.Css \col-md-6}'>
+                    <button type='button' class='#{gz.Css \btn}
+                  \ #{gz.Css \btn-primary}'> Registrar</button>
+                  </div>"
 
-    _container-table = @el.query "##{table-id}"
-      $ .. ._append '<label>Alertas :</label>'
-      .._append @table-alert
+    @_save = @el.query 'button'
+
     @_save.on-click ~> @on-save!
 
     _control-close = @_panel._header._get panelgroup.ControlClose
@@ -210,22 +142,53 @@ class EmployeeItem extends panelgroup.FormBody
       if not @employee?
           _control-close.on-close!
       else
-        message = MessageBox._new do
+        message = modal.MessageBox._new do
           _title: 'Eliminación del Empleado.'
           _body: '<h5>¿Desea eliminar al empleado?</h5>'
           _callback: see-button
-        message._show MessageBox.CLASS.small
+        message._show modal.MessageBox.CLASS.small
     ret
 
   /** @private */ employee: null
   /** @private */ _save: null
   /** @private */ table-alert: null
+  /** @private */ table-module: null
 
+  /** Local variable for settings. */
+  _GRID = App.builder.Form._GRID
+
+  _FIELD =
+    * _name: 'name'
+      _label: 'Nombre de Empleado :'
+
+    * _name: 'username'
+      _label: 'Usuario :'
+
+    * _name: 'password'
+      _label: 'Password :'
+
+    * _name: 'role'
+      _label: 'Rol :'
+      _type: FieldType.kComboBox
+      _options: window.plaft.'lists'.'employees_roles'
+
+/**
+ * EmployeeHeading
+ * ------------
+ * @Class EmployeeHeading
+ * @extends PanelHeading
+ */
 class EmployeeHeading extends panelgroup.PanelHeading
 
   _controls: [panelgroup.ControlTitle,
               panelgroup.ControlClose]
 
+/**
+ * EmployeeList
+ * ------------
+ * @Class EmployeeList
+ * @extends PanelGroup
+ */
 class EmployeeList extends panelgroup.PanelGroup
 
   /** @override */
@@ -233,6 +196,7 @@ class EmployeeList extends panelgroup.PanelGroup
 
   _toJSON: -> for @_panels then .._body._json
 
+  /** @override */
   new-panel: ->
     _declarant = super do
       _panel-heading: EmployeeHeading
@@ -240,7 +204,7 @@ class EmployeeList extends panelgroup.PanelGroup
     _declarant._header._get panelgroup.ControlTitle ._text = 'Empleado'
     _declarant
 
-    /** @override */
+  /** @override */
   render: ->
     @el.html = "<div></div>
                 <button type='button'
@@ -258,6 +222,12 @@ class EmployeeList extends panelgroup.PanelGroup
 
     super!
 
+/**
+ * Settings
+ * ------------
+ * @Class Settings
+ * @extends View
+ */
 class Settings extends App.View
 
   /** @override */
