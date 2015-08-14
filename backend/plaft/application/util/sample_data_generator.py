@@ -21,8 +21,8 @@ from plaft.application.util import data_generator
 # Utils
 
 TYPE2NUMBER = {
-    'ruc': 11,
-    'dni': 8
+    'ruc': 9,
+    'dni': 7
 }
 
 
@@ -33,7 +33,14 @@ DOCNUMS = ('0', '1', '2', '3', '4',
 
 
 def pick_document_number_by(document_type):
-    return ''.join(random.sample(DOCNUMS, TYPE2NUMBER[document_type]))
+
+    TYPE = {
+        'ruc': '20',
+        'dni': '10'
+    }
+
+    return '%s%s' %(TYPE[document_type],
+                   ''.join(random.sample(DOCNUMS, TYPE2NUMBER[document_type])))
 
 
 # Creations
@@ -136,7 +143,6 @@ def create_dispatches(agency, datastore, customers, n=30):
     from datetime import datetime, timedelta
     from calendar import monthrange
 
-    years = ['2014', '2015', '2016']
     list_dispatches = []
     year = 2015
 
@@ -156,26 +162,21 @@ def create_dispatches(agency, datastore, customers, n=30):
         regime = random.choice(regimes)
         dam = '%s-%s-%s-%s' % (jurisdiction.code,
                                year, regime.code,
-                               ''.join(random.sample(digits, 5)))
+                               ''.join(random.sample(digits, 6)))
         choice_month = random.choice(months)
-        dispatch = Dispatch(order='%s-%s' % (random.choice(years),
-                                             ''.join(random.sample(digits,
-                                                                   5))),
+        income_date = datetime(year, choice_month,
+                               random.randint(1,max_days[choice_month]))
+        numeration_date = income_date + timedelta(days=2)
+        dispatch = Dispatch(order='%s-%03d' % (year, n),
                             customer_key=customer.key,
                             customs_agency_key=agency.key,
                             jurisdiction=jurisdiction,
                             regime=regime,
                             stakeholders=[random.choice(stakeholders)],
-                            amount=str(random.randint(3999, 10000)),
-                            income_date=datetime(year,
-                                                 random.randint(1, 12),
-                                                 random.randint(1, 28)),
+                            amount=str(random.randint(3999, 11111)),
+                            income_date=income_date,
                             dam=dam,
-                            numeration_date=datetime(
-                                int(year),
-                                choice_month,
-                                random.randint(1,
-                                               max_days[choice_month])),
+                            numeration_date=numeration_date,
                             channel=random.choice(('V', 'N', 'R')),
                             exchange_rate=random.choice(('3.51',
                                                          '3.52',
@@ -230,32 +231,25 @@ def create_operation(agency, dstp_operation, datastore):
         dispatch = dispatch_key.get()
 
         operation.customer_key = dispatch.customer_key
-        datastore.accepting_key.append(dispatch_key)
         dispatch.operation_key = operation.key
         dispatch.store()
     operation.store()
     datastore.operations_key.append(operation.key)
-    datastore.pending_key = list(
-        set(datastore.pending_key).difference(dstp_operation))
     datastore.store()
 
 
 def operations(agency, list_dispatches, datastore):
-    dispatch_set = set(random.sample(list_dispatches,
-                                     int(len(list_dispatches)*0.65)))
+    dispatch_set = set(list_dispatches)
 
     while dispatch_set:
         dispatch = random.choice(list(dispatch_set))
-        is_multiple = random.choice([True, False])
 
         dstp_operation = set([dispatch])
-        if is_multiple:
-            dstp_operation = set(
-                [dstp
-                 for dstp in list(dispatch_set)
-                 if dstp.get().customer == dispatch.get().customer])
-
-        create_operation(agency, dstp_operation, datastore)
+        # NO CONSIDERO LAS MULTIPLE PARA PODER VER SU
+        # FUNCIÓN POR SEPARADO.
+        # SOLO CONSIDERO LOS SIMPLES.
+        if float(dispatch.get().amount) >= 10000:
+            create_operation(agency, dstp_operation, datastore)
         dispatch_set = dispatch_set.difference(dstp_operation)
 
 
@@ -278,8 +272,8 @@ def _data_debug():
                   'ruc'),
         DCustomer('COTTON PROYECT S.A.C.',
                   'ruc'),
-        DCustomer('Corpos Antonio',
-                  'ruc'),
+        DCustomer('Abanto Alvarado Corpos A.',
+                  'dni'),
         DCustomer('DETROIT DIESEL - MTU PERU S.A.C',
                   'ruc'),
         DCustomer('HIELOSNORTE S.A.C.',
@@ -442,12 +436,12 @@ def create_sample_data():
 raw_regimes = (
     ('Importacion para el Consumo', '10'),
     # ('Reimportacion en el mismo Estado', '36'),
-    ('Exportacion Definitiva', '40'),
+    # ('Exportacion Definitiva', '40'),
     # ('Exportacion Temporal para Reimportacion en el mismo Estado', '51'),
     # ('Exportacion Temporal para Perfeccionamiento Pasivo', '52'),
     # ('Admision temporal para Perfeccionamiento Activo', '21'),
     # ('Admision temporal para Reexportacion en el mismo Estado', '20'),
-    # ('Drawback', '41'),
+    ('Drawback', '41'),
     # ('Reposicion de Mercancias con Franquicia Arancelaria', '41'),
     # ('Deposito Aduanero', '70'),
     # ('Reembarque', '89'),
@@ -467,44 +461,44 @@ regimes = tuple(CodeName(name=j[0], code=j[1]) for j in raw_regimes)
 
 
 raw_jurisdiction = (
-    ('A NIVEL NACIONAL', '983'),
+    # ('A NIVEL NACIONAL', '983'),
     ('AÉREA DEL CALLAO', '235'),
-    ('AEROPUERTO DE TACNA', '947'),
-    ('ALMACÉN SANTA ANITA', '974'),
-    ('AREQUIPA', '154'),
-    ('CETICOS - TACNA', '956'),
-    ('CHICLAYO', '055'),
-    ('CHIMBOTE', '091'),
-    ('COMPLEJO FRONTERIZO SANTA ROSA - TACNA', '929'),
-    ('CUSCO', '190'),
-    ('DEPENDENCIA FERROVIARIA TACNA', '884'),
-    ('DEPENDENCIA POSTAL DE AREQUIPA', '910'),
-    ('DEPENDENCIA POSTAL DE SALAVERRY', '965'),
-    ('DEPENDENCIA POSTAL TACNA', '893'),
-    ('DESAGUADERO', '262'),
-    ('ILO', '163'),
-    ('INTENDENCIA DE PREVENCIÓN Y CONTROL FRONTERIZO', '316'),
-    ('INTENDENCIA NACIONAL DE FISCALIZACIÓN ADUANERA (INFA)', '307'),
-    ('IQUITOS', '226'),
-    ('LA TINA', '299'),
-    ('LIMA METROPOLITANA', '992'),
+    # ('AEROPUERTO DE TACNA', '947'),
+    # ('ALMACÉN SANTA ANITA', '974'),
+    # ('AREQUIPA', '154'),
+    # ('CETICOS - TACNA', '956'),
+    # ('CHICLAYO', '055'),
+    # ('CHIMBOTE', '091'),
+    # ('COMPLEJO FRONTERIZO SANTA ROSA - TACNA', '929'),
+    # ('CUSCO', '190'),
+    # ('DEPENDENCIA FERROVIARIA TACNA', '884'),
+    # ('DEPENDENCIA POSTAL DE AREQUIPA', '910'),
+    # ('DEPENDENCIA POSTAL DE SALAVERRY', '965'),
+    # ('DEPENDENCIA POSTAL TACNA', '893'),
+    # ('DESAGUADERO', '262'),
+    # ('ILO', '163'),
+    # ('INTENDENCIA DE PREVENCIÓN Y CONTROL FRONTERIZO', '316'),
+    # ('INTENDENCIA NACIONAL DE FISCALIZACIÓN ADUANERA (INFA)', '307'),
+    # ('IQUITOS', '226'),
+    # ('LA TINA', '299'),
+    # ('LIMA METROPOLITANA', '992'),
     ('MARÍTIMA DEL CALLAO', '118'),
-    ('MOLLENDO - MATARANI', '145'),
-    ('OFICINA POSTAL DE LINCE', '901'),
-    ('PAITA', '046'),
-    ('PISCO', '127'),
-    ('POSTAL DE LIMA', '244'),
-    ('PUCALLPA', '217'),
-    ('PUERTO MALDONADO', '280'),
-    ('PUNO', '181'),
-    ('SALAVERRY', '082'),
-    ('SEDE CENTRAL - CHUCUITO', '000'),
-    ('TACNA', '172'),
-    ('TALARA', '028'),
-    ('TARAPOTO', '271'),
-    ('TERMINAL TERRESTRE TACNA', '928'),
-    ('TUMBES', '019'),
-    ('VUCE ADUANAS', '848')
+    # ('MOLLENDO - MATARANI', '145'),
+    # ('OFICINA POSTAL DE LINCE', '901'),
+    # ('PAITA', '046'),
+    # ('PISCO', '127'),
+    # ('POSTAL DE LIMA', '244'),
+    # ('PUCALLPA', '217'),
+    # ('PUERTO MALDONADO', '280'),
+    # ('PUNO', '181'),
+    # ('SALAVERRY', '082'),
+    # ('SEDE CENTRAL - CHUCUITO', '000'),
+    # ('TACNA', '172'),
+    # ('TALARA', '028'),
+    # ('TARAPOTO', '271'),
+    # ('TERMINAL TERRESTRE TACNA', '928'),
+    # ('TUMBES', '019'),
+    # ('VUCE ADUANAS', '848')
 )
 
 jurisdictions = tuple(CodeName(name=j[0], code=j[1])
