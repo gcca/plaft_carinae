@@ -131,13 +131,24 @@ def create_employees(agency, j=3):
     agency.store()
 
 
-def create_dispatches(agency, datastore, customers, n=15):
+def create_dispatches(agency, datastore, customers, n=30):
     from string import digits
-    from datetime import datetime
+    from datetime import datetime, timedelta
+    from calendar import monthrange
 
     years = ['2014', '2015', '2016']
     list_dispatches = []
     year = 2015
+
+    dt_curr = datetime.now()
+    curr_month = dt_curr.month
+    dt_prev = datetime(dt_curr.year, curr_month, 1) - timedelta(days=1)
+    prev_month = (dt_prev).month
+    max_days = {
+        curr_month: monthrange(dt_curr.year, dt_curr.month)[1],
+        prev_month: dt_curr.day
+    }
+    months = (prev_month, curr_month)
 
     while n:
         customer = random.choice(customers)
@@ -146,6 +157,7 @@ def create_dispatches(agency, datastore, customers, n=15):
         dam = '%s-%s-%s-%s' % (jurisdiction.code,
                                year, regime.code,
                                ''.join(random.sample(digits, 5)))
+        choice_month = random.choice(months)
         dispatch = Dispatch(order='%s-%s' % (random.choice(years),
                                              ''.join(random.sample(digits,
                                                                    5))),
@@ -160,8 +172,10 @@ def create_dispatches(agency, datastore, customers, n=15):
                                                  random.randint(1, 28)),
                             dam=dam,
                             numeration_date=datetime(
-                                int(year), 7,
-                                random.randint(1, 31)),
+                                int(year),
+                                choice_month,
+                                random.randint(1,
+                                               max_days[choice_month])),
                             channel=random.choice(('V', 'N', 'R')),
                             exchange_rate=random.choice(('3.51',
                                                          '3.52',
