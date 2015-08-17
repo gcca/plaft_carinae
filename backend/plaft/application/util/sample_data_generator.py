@@ -138,7 +138,7 @@ def create_employees(agency, j=3):
     agency.store()
 
 
-def create_dispatches(agency, datastore, customers, n=30):
+def create_dispatches(agency, datastore, customers, n=40):
     from string import digits
     from datetime import datetime, timedelta
     from calendar import monthrange
@@ -151,10 +151,16 @@ def create_dispatches(agency, datastore, customers, n=30):
     dt_prev = datetime(dt_curr.year, curr_month, 1) - timedelta(days=1)
     prev_month = (dt_prev).month
     max_days = {
-        curr_month: monthrange(dt_curr.year, dt_curr.month)[1],
-        prev_month: dt_curr.day
+        curr_month: dt_curr.day,
+        prev_month: monthrange(dt_prev.year, dt_prev.month)[1]
     }
     months = (prev_month, curr_month)
+
+    def jump_holydays(date):
+        weekday = date.weekday()
+        if weekday in (5, 6):
+           date += timedelta(days=1 + 6 - weekday)
+        return date
 
     while n:
         customer = random.choice(customers)
@@ -163,10 +169,13 @@ def create_dispatches(agency, datastore, customers, n=30):
         dam = '%s-%s-%s-%s' % (jurisdiction.code,
                                year, regime.code,
                                ''.join(random.sample(digits, 6)))
-        choice_month = random.choice(months)
-        income_date = datetime(year, choice_month,
-                               random.randint(1,max_days[choice_month]))
-        numeration_date = income_date + timedelta(days=2)
+        selected_month = random.choice(months)
+        income_date = jump_holydays(datetime(year,
+                                             selected_month,
+                                             random.randint(
+                                                 1,
+                                                 max_days[selected_month])))
+
         dispatch = Dispatch(order='%s-%03d' % (year, n),
                             customer_key=customer.key,
                             customs_agency_key=agency.key,
@@ -176,7 +185,8 @@ def create_dispatches(agency, datastore, customers, n=30):
                             amount=str(random.randint(3999, 11111)),
                             income_date=income_date,
                             dam=dam,
-                            numeration_date=numeration_date,
+                            numeration_date=jump_holydays(
+                                income_date + timedelta(days=2)),
                             channel=random.choice(('V', 'N', 'R')),
                             exchange_rate=random.choice(('3.51',
                                                          '3.52',
