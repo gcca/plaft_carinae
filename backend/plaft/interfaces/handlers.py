@@ -336,6 +336,13 @@ class Customs_Agency(RESTful):
             [d for d in dispatches if d['alerts']]
         )
 
+    @RESTful.method
+    def dispatches_in_operation(self):
+        customs_agency = self.user.customs_agency
+        self.render_json(
+            plaft.application.operations.dispatches_in_operation(customs_agency)
+        )
+
     @RESTful.method('post')
     def close_month(self):
         customs_agency = self.user.customs_agency
