@@ -33,14 +33,13 @@ DOCNUMS = ('0', '1', '2', '3', '4',
 
 
 def pick_document_number_by(document_type):
-
     TYPE = {
         'ruc': '20',
         'dni': '10'
     }
-
-    return '%s%s' %(TYPE[document_type],
-                   ''.join(random.sample(DOCNUMS, TYPE2NUMBER[document_type])))
+    return '%s%s' % (TYPE[document_type],
+                     ''.join(random.sample(DOCNUMS,
+                                           TYPE2NUMBER[document_type])))
 
 
 # Creations
@@ -159,7 +158,7 @@ def create_dispatches(agency, datastore, customers, n=40):
     def jump_holydays(date):
         weekday = date.weekday()
         if weekday in (5, 6):
-           date += timedelta(days=1 + 6 - weekday)
+            date += timedelta(days=1 + 6 - weekday)
         return date
 
     while n:
@@ -195,7 +194,8 @@ def create_dispatches(agency, datastore, customers, n=40):
                                                          '3.54')),
                             reference=''.join(
                                 random.choice(digits) for _ in range(10)),
-                            description='Descripción del mercancía del despacho')
+                            description=('Descripción de la mercancía'
+                                         ' del despacho'))
         dispatch.declaration = Dispatch.Declaration(customer=customer)
 
         if random.choice((True, False)):
@@ -213,13 +213,13 @@ def create_dispatches(agency, datastore, customers, n=40):
                                comment='Comentario de la alerta.',
                                source='Alguna fuente.',
                                description_source='Descripción de la fuente.')
-                               for info_key in info_keys]
+                for info_key in info_keys]
             dispatch.alerts_visited = [str(employee.key.id())]
 
         dispatch.store()
-        dispatch.stakeholders[0].link_type =  'Destinatario de embarque' \
-                                                if dispatch.is_out \
-                                                else 'Proveedor'
+        dispatch.stakeholders[0].link_type = ('Destinatario de embarque'
+                                              if dispatch.is_out
+                                              else 'Proveedor')
         dispatch.store()
         datastore.pending_key.append(dispatch.key)
         datastore.store()
