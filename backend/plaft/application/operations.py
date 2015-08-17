@@ -3,8 +3,7 @@
 from plaft.domain.model import Operation, Customer
 from datetime import datetime
 
-
-def accept_multiple(customs_agency):
+def dispatches_in_operation(customs_agency):
     """."""
     import datetime
     datastore = customs_agency.datastore
@@ -16,32 +15,43 @@ def accept_multiple(customs_agency):
 
     customers = {dispatch.customer_key for dispatch in dispatches}
 
+    dispatches_operations = []
+
     for customer_key in customers:
         pendings_customer = [dispatch for dispatch in dispatches
                              if dispatch.customer_key == customer_key and
-                             dispatch.numeration_date.month
-                             in [current_month, current_month-1]]
+                             dispatch.numeration_date.month == current_month-1]
+        amount = sum(float(dispatch.amount) for dispatch in pendings_customer)
 
-        if pendings_customer:
-            amount = sum(float(d.amount) for d in pendings_customer)
-            if amount >= 50000:
-                counter = datastore.next_operation_counter()
-                operation = Operation(dispatches_key=[d.key
-                                                      for d
-                                                      in pendings_customer],
-                                      customs_agency_key=customs_agency.key,
-                                      customer_key=customer_key,
-                                      counter=counter)
-                operation.store()
-                datastore.operations_key.append(operation.key)
+        if amount >= 50000:
+            dispatches_operations.append(pendings_customer)
 
-                for dispatch in pendings_customer:
-                    dispatch.operation_key = operation.key
-                    dispatch.store()
-                    datastore.pending_key.remove(dispatch.key)
-                    datastore.accepting_key.append(dispatch.key)
+    return dispatches_operations
 
-                datastore.store()
+def accept_multiple(customs_agency):
+    """."""
+    datastore = customs_agency.datastore
+    dispatches_operation = dispatches_in_operation(customs_agency)
+
+    for dispatches in dispatches_operation:
+        dispatches_key = [d.key for d in dispatches]
+        customer_key = dispatches[0].customer_key
+
+        counter = datastore.next_operation_counter()
+        operation = Operation(dispatches_key=dispatches_key,
+                              customs_agency_key=customs_agency.key,
+                              customer_key=customer_key,
+                              counter=counter)
+        operation.store()
+        datastore.operations_key.append(operation.key)
+
+        for dispatch in dispatches:
+            dispatch.operation_key = operation.key
+            dispatch.store()
+            datastore.pending_key.remove(dispatch.key)
+            datastore.accepting_key.append(dispatch.key)
+
+        datastore.store()
 
 
 def close_month(customs_agency, current_month=datetime.now().month):
