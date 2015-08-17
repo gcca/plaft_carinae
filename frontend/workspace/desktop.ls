@@ -54,7 +54,7 @@ class Desktop extends App.View
     #-------
     @clean-current!
     @_search.clean-input!
-    @_hide-save!
+    @_hide-save! # Hide button save in module.
     @_search._menu @Module._search-menu
     @el._append (@_new Module).render!.el
 
@@ -71,7 +71,7 @@ class Desktop extends App.View
    * Reload current module.
    * @protected
    */
-  _reload: -> @change-current @Module
+  _reload: -> @load-module @Module
 
   /**
    * On search event to module.
@@ -106,6 +106,10 @@ class Desktop extends App.View
   /**
    */
   load-next-page: (sub-module, _options) ->
+    ################################################################
+    # TODO: Verificar uso del desktop en la función `render` de los
+    # sub-módulos para mostrar el botón 'Guardar'.
+    ################################################################
     @_show-save!
     @module.$el._hide!
     mod = sub-module._new _options
