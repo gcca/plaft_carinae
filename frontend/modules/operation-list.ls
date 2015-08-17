@@ -93,17 +93,18 @@ class PanelBodyTable extends panelgroup.PanelBody
     @el.css\padding = \0
     _labels =
       '**'
-      'N Orden'
-      'N DAM'
+      'N&ordm; Orden'
+      'N&ordm; DAM'
+      'Fec. Numeración'
 
     _attributes =
       '**'  # TODO:buscar una manera para darle un espacio en blanco.
       'order'
       'dam'
+      'numeration_date'
 
     _templates =
-      '**': ->
-        " "
+      '**': -> ''
 
     _tabla = new Table do
                   _attributes: _attributes
@@ -129,14 +130,23 @@ class OperationList extends Module
 
 
   on-monthly-closure: ->
-    _callback = (_value) ->
+    _callback = (_value) ~>
       if _value
         App.ajax._post '/api/customs_agency/close_month', null, do
           _success: (response) ~>
-            console.log response
-            alert 'SE COMPLETO LA OPERACIÓN'
+            if response
+              @_desktop.notifier.notify do
+                _message: 'Se cerró el mes.'
+                _type: @_desktop.notifier.kSuccess
+
+              @_desktop._reload!
+            else
+              @_desktop.notifier.notify do
+                _message: 'Todavia no puede cerrar el mes'
+                _type: @_desktop.notifier.kDanger
+
           _bad-request: ~>
-            alert 'ERROR !!!!'
+            alert '6e427fc2-450e-11e5-92b1-904ce5010430'
 
     message = modal.MessageBox._new do
       _title: 'Cerrando el mes.'
