@@ -182,7 +182,8 @@ def create_dispatches(agency, datastore, customers, n=40):
                             jurisdiction=jurisdiction,
                             regime=regime,
                             stakeholders=[random.choice(stakeholders)],
-                            amount=str(random.randint(3999, 11111)),
+                            amount=str(int(
+                                random.paretovariate(4.5) * 6789.73)),
                             income_date=income_date,
                             dam=dam,
                             numeration_date=jump_holydays(
