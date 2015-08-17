@@ -137,7 +137,7 @@ def create_employees(agency, j=3):
     agency.store()
 
 
-def create_dispatches(agency, datastore, customers, n=40):
+def create_dispatches(agency, datastore, customers, n=50):
     from string import digits
     from datetime import datetime, timedelta
     from calendar import monthrange
@@ -150,16 +150,27 @@ def create_dispatches(agency, datastore, customers, n=40):
     dt_prev = datetime(dt_curr.year, curr_month, 1) - timedelta(days=1)
     prev_month = (dt_prev).month
     max_days = {
-        curr_month: dt_curr.day,
+        curr_month: dt_curr.day - 3 if dt_curr.day > 3 else dt_curr.day,
         prev_month: monthrange(dt_prev.year, dt_prev.month)[1]
     }
-    months = (prev_month, curr_month)
 
     def jump_holydays(date):
         weekday = date.weekday()
         if weekday in (5, 6):
             date += timedelta(days=1 + 6 - weekday)
         return date
+
+    def generate_date(by_month):
+        return jump_holydays(
+            datetime(year,
+                     by_month,
+                     random.randint(1, max_days[by_month])))
+
+    N = n
+
+    income_dates = sorted(
+        [generate_date(prev_month) for i in range(N - N/5)]
+        +  [generate_date(curr_month) for i in range(N/5)], reverse=True)
 
     while n:
         customer = random.choice(customers)
@@ -168,14 +179,10 @@ def create_dispatches(agency, datastore, customers, n=40):
         dam = '%s-%s-%s-%s' % (jurisdiction.code,
                                year, regime.code,
                                ''.join(random.sample(digits, 6)))
-        selected_month = random.choice(months)
-        income_date = jump_holydays(datetime(year,
-                                             selected_month,
-                                             random.randint(
-                                                 1,
-                                                 max_days[selected_month])))
 
-        dispatch = Dispatch(order='%s-%03d' % (year, n),
+        income_date = income_dates[n - 1]
+
+        dispatch = Dispatch(order='%s-%03d' % (year, N - n + 1),
                             customer_key=customer.key,
                             customs_agency_key=agency.key,
                             jurisdiction=jurisdiction,
