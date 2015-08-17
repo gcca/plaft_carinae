@@ -8,14 +8,15 @@ App = require './app'
 
 
 PRE-MODULES =
-  Welcome       = require './modules/welcome'
-  Income        = require './modules/income'
-  Numeration    = require './modules/numeration'
-  Operation     = require './modules/operation'
-  Report        = require './modules/monthly_report'
-  UnusalAlerts  = require './modules/unusual/alerts'
-  UnusualRegister  = require './modules/unusual/register'
-  UnusualReport = require './modules/unusual/report'
+  Welcome         = require './modules/welcome'
+  Income          = require './modules/income'
+  Numeration      = require './modules/numeration'
+  Operation       = require './modules/operation'
+  Report          = require './modules/monthly_report'
+  UnusalAlerts    = require './modules/unusual/alerts'
+  UnusualRegister = require './modules/unusual/register'
+  UnusualReport   = require './modules/unusual/report'
+  PreviewMulti    = require './modules/preview_multi'
 
 MODULES = new Array
 

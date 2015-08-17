@@ -14,7 +14,8 @@ module = {  # TODO: `None`s are temporal. See next `TODO`
     'alerts'        : None,  # identificación de señales de alerta
     'monthy_report' : None,  # reporte mensual
     'report'        : None,  # anexo 6
-    'register'      : None   # registrar anexo 6
+    'register'      : None,  # registrar anexo 6
+    'preview_multi' : None,  # contador de montos (preview de múltiples)
 }
 
 for name in module:  # TODO: Remove when create module auth system
