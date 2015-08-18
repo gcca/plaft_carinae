@@ -95,7 +95,7 @@ def create_alerts():
                        ('I', '14'),
                        ('I', '16'))
 
-    for alert in Alert.query().fetch():
+    for alert in Alert.all():
         alert_signals_key.append(alert.key)
 
         tuple_alert = (alert.section, alert.code)
