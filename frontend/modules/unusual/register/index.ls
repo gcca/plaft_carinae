@@ -172,7 +172,7 @@ class Register extends Module
   /** Field list for numeration form. (Array.<FieldOptions>) */
   _FIELDS =
     * _name: 'description_unusual'
-      _label: 'Descripcion de la operación'
+      _label: '40. Descripcion de la operación'
       _tip: 'Señale los argumentos que lo llevaron a calificar como inusual
            \ la operación.'
       _grid: _GRID._full
@@ -185,15 +185,15 @@ class Register extends Module
       _label: 'Último dia de RO'
 
     * _name: 'is_suspects'
-      _label: '¿Ha sido calificado como sospechosa?'
+      _label: '41. ¿Ha sido calificado como sospechosa?'
       _type: FieldType.kYesNo
 
     * _name: 'ros'
-      _label: 'Número de ROS'
+      _label: '42. Número de ROS'
       _tip: 'Indicar el numero de ROS con el que se remitio en la UIF.'
 
     * _name: 'suspects_by'
-      _label: 'Describir los argumentos porque no calificada como sospechosa'
+      _label: '43. Describir los argumentos porque no calificada como sospechosa'
       _tip: 'Describir los argumentos por los cuales esta operación no
            \ fue calificada como sospechosa.'
       _grid: _GRID._full
@@ -220,7 +220,7 @@ class ListRegister extends Module
     super!
 
 
-  /** @protected */ @@_caption = 'CONTROL OI - OFICIAL CUMPLIMIENTO'
+  /** @protected */ @@_caption = 'CALIFICACION OI - OFICIAL CUMPLIMIENTO'
   /** @protected */ @@_icon    = gz.Css \flash
   /** @protected */ @@_hash    = 'auth-hash-register'
 

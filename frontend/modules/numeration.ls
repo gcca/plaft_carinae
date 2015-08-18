@@ -472,7 +472,7 @@ class Numeration extends Module
   /** @private */ _table: null
   /** @private */ _pending: null
 
-  /** @protected */ @@_caption = 'NUMERACIÓN DE LAS OPERACIONES'
+  /** @protected */ @@_caption = 'NUMERACIÓN DE OPERACIONES'
   /** @protected */ @@_icon    = gz.Css \print
   /** @protected */ @@_hash    = 'auth-hash-numeration'
 

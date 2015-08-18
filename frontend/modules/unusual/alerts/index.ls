@@ -386,7 +386,7 @@ class Alerts extends Module
                 <div class='#{gz.Css \col-md-12}'>
                   <div class='#{gz.Css \col-md-2}'>
                     <button class='#{gz.Css \btn}
-                                 \ #{gz.Css \btn-default}'
+                                 \ #{gz.Css \btn-primary}'
                             type='button'
                             style='margin-bottom: 15px'>
                       Señales de Alerta
@@ -430,7 +430,7 @@ class Alerts extends Module
 
     @_div-table = @el.query "##{_table-content}"
 
-    @el.query ".#{gz.Css \btn-default}"
+    @el.query ".#{gz.Css \btn-primary}"
       ..on-click ~>
         modal-test = ModalAlert._new do
             _title: 'SEÑALES DE ALERTA - ' + window.'plaft'.'user'.'role'
@@ -452,7 +452,10 @@ class Alerts extends Module
     @_income = CustomerAlert._new _customer-dto
       @el._last._append ..render!.el
 
-    @_stakeholders = CustomerAlert._new _dispatch.'stakeholders'.0
+    _stakeholder-dto = _dispatch.'stakeholders'.0
+      ..'unusual_condition' = 'Vinculado' if not ..'unusual_condition'?
+
+    @_stakeholders = CustomerAlert._new _stakeholder-dto
       @el._last._append ..render!.el
 
     @_div-message = @el.query ".#{gz.Css \div-message}"
@@ -494,7 +497,7 @@ class ListAlerts extends Module
     super!
 
   /** @public */ _unusual-alerts: null
-  /** @protected */ @@_caption = 'IDENTIFICACIÓN DE OI'
+  /** @protected */ @@_caption = 'IDENTIFICACIÓN OI POR AREAS'
   /** @protected */ @@_icon    = gz.Css \envelope
   /** @protected */ @@_hash  = 'auth-hash-alerts'
 
