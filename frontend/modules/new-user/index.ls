@@ -27,7 +27,7 @@ class NewOfficer extends Module
   /** @private */ _officer: null
   /** @protected */ @@_caption = 'REGISTRAR USUARIO'
   /** @protected */ @@_icon    = gz.Css \user
-  /** @protected */ @@_hash    = 'NEWUSER-HASH'
+  /** @protected */ @@_hash    = 'auth-hash-new-user'
 
 /** @export */
 module.exports = NewOfficer

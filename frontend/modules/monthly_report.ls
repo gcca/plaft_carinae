@@ -565,7 +565,7 @@ class MonthlyReport extends Module
   _tbody: null
   /** @protected */ @@_caption = 'RO - PROCESO MENSUAL'
   /** @protected */ @@_icon    = gz.Css \certificate
-  /** @protected */ @@_hash    = 'auth-hash-monthy_report'
+  /** @protected */ @@_hash    = 'auth-hash-monthly_report'
 
 
 /** @export */

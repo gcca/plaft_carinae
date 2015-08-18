@@ -12,10 +12,13 @@ module = {  # TODO: `None`s are temporal. See next `TODO`
     'numeration'    : None,  # numeración
     'operation'     : None,  # anexo 2
     'alerts'        : None,  # identificación de señales de alerta
-    'monthy_report' : None,  # reporte mensual
+    'monthly_report': None,  # reporte mensual
     'report'        : None,  # anexo 6
     'register'      : None,  # registrar anexo 6
     'preview_multi' : None,  # contador de montos (preview de múltiples)
+    'new-user'      : None,  # nuevo oficial de cumplimiento
+    'operation-list': None,  # lista de operaciones (cierre mensual)
+    'simulate'      : None,  # simulación (operaciones múltiples)
 }
 
 for name in module:  # TODO: Remove when create module auth system
@@ -33,7 +36,7 @@ employee = [
     module['numeration'],
     module['alerts'],
     module['operation'],
-    module['monthy_report'],
+    module['monthly_report'],
     module['report']
 ]
 
