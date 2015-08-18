@@ -48,7 +48,6 @@ class UtilAnexo
 
     _column-cell-style =
       'order': 'width:92px'
-      'dam': 'width:140px'
       'declaration.customer.name': 'text-overflow: ellipsis;
                                     white-space: nowrap;
                                     overflow: hidden;

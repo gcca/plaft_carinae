@@ -29,7 +29,9 @@ class Simulate extends Module
 
     t-head = App.dom._new \thead
       ..html = '<tr>
-                  <th>Razón Social/Nombre</th>
+                  <th style="max-width:100px">
+                    Razón Social/Nombre
+                  </th>
                   <th>Despachos</th>
                 </tr>'
     _table._append t-head
@@ -43,11 +45,13 @@ class Simulate extends Module
 
       for dispatch in dispatches
         _li = App.dom._new \li
-          ..html = "#{dispatch.'order'} - #{dispatch.'amount'}"
+          ..html = "#{dispatch.'order'} - <strong>Monto: </strong>
+                    #{dispatch.'amount'}"
           _ul._append ..
 
       App.dom._new \td
         ..html = dispatches.'0'.'customer'.'name'
+        ..css = 'max-width:100px'
         _tr._append ..
 
       App.dom._new \td
