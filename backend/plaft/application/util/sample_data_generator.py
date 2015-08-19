@@ -137,7 +137,7 @@ def create_employees(agency, j=3):
     agency.store()
 
 
-def create_dispatches(agency, datastore, customers, n=50):
+def create_dispatches(agency, datastore, customers, n=60):
     from string import digits
     from datetime import datetime, timedelta
     from calendar import monthrange
@@ -172,7 +172,15 @@ def create_dispatches(agency, datastore, customers, n=50):
         [generate_date(prev_month) for i in range(N - N/5)]
         +  [generate_date(curr_month) for i in range(N/5)], reverse=True)
 
+    customers_all = customers
+    customer_flag = True
+    customers = random.sample(customers, int(len(customers) * .25))
+
     while n:
+        if customer_flag and n < (N/4):
+            customer_flag = False
+            customers = customers_all
+
         customer = random.choice(customers)
         jurisdiction = random.choice(jurisdictions)
         regime = random.choice(regimes)
@@ -189,7 +197,7 @@ def create_dispatches(agency, datastore, customers, n=50):
                             regime=regime,
                             stakeholders=[random.choice(stakeholders)],
                             amount=str(int(
-                                random.paretovariate(4.5) * 6789.73)),
+                                random.paretovariate(4.5) * 7000.75)),
                             income_date=income_date,
                             dam=dam,
                             numeration_date=jump_holydays(
