@@ -42,6 +42,7 @@ class PreviewMulti extends Module
                Despachos
                <br><span>Orden
                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                          Monto</span>
              </div>'
             '<span style=\'padding-right:10em\'>Total</span>'
@@ -59,7 +60,8 @@ class PreviewMulti extends Module
               <ul style='list-style:none;padding-left:0'>
               #{["<li>
                     #{..'order'}
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     #{..'amount'}</li>" \
                  for by-customer[k]]._join ''}
               </ul>", \
