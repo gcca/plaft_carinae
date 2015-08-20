@@ -278,8 +278,7 @@ class Operation(RESTful):
                 dispatch = operation.dispatches[i]
                 index = operation.num_modalidad[i]
                 excel_format = dispatch_format
-                amount = float(dispatch.amount)
-                if amount > 10000:
+                if dispatch.amount > 10000:
                     excel_format = operation_format
                 worksheet.write(filas, 1, dispatch.order, excel_format)
                 worksheet.write(filas, 2, dispatch.regime.code, excel_format)
@@ -290,7 +289,7 @@ class Operation(RESTful):
                 worksheet.write(filas, 6, operation.modalidad,
                                 excel_format)
                 worksheet.write(filas, 7, '%s' % index, excel_format)
-                worksheet.write(filas, 8, "{0:.2f}".format(amount),
+                worksheet.write(filas, 8, str(dispatch.amount),
                                 excel_format)
                 worksheet.write(filas, 9,
                                 dispatch.numeration_date.strftime('%d/%m/%Y'),

@@ -22,7 +22,7 @@ def dispatches_in_operation(customs_agency):
         pendings_customer = [dispatch for dispatch in dispatches
                              if dispatch.customer_key == customer_key and
                              dispatch.numeration_date.month == current_month-1]
-        amount = sum(float(dispatch.amount) for dispatch in pendings_customer)
+        amount = sum(dispatch.amount for dispatch in pendings_customer)
 
         if amount >= 50000:
             dispatches_operations.append(pendings_customer)

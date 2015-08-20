@@ -517,7 +517,7 @@ class MonthlyReport extends Module
                 'Md. Op.', 'N&ordm; Md.', 'FOB US$', 'Fecha Num.'
       for operation in operations
         for [dispatch, i] in _.zip operation.'dispatches', operation.'num_modalidad'
-          amount = (parseFloat dispatch.'amount').to-fixed 2
+          amount = dispatch.'amount'
           change = parseFloat dispatch.'exchange_rate'
           @add-row (new Dispatch dispatch),
                    dispatch.'order',
@@ -528,8 +528,8 @@ class MonthlyReport extends Module
                    operation.'modalidad',
                    i,
                    "#{if amount >10000 then "<span style='color:red'>#{
-        ((parseFloat amount).toFixed 2).replace /(\d)(?=(\d{3})+\.)/g, "$1, "}</span>" else
-        ((parseFloat amount).toFixed 2).replace /(\d)(?=(\d{3})+\.)/g, "$1, " }",
+        (new String(amount)).replace /(\d)(?=(\d{3})+\.)/g, "$1, "}</span>" else
+        (new String(amount)).replace /(\d)(?=(\d{3})+\.)/g, "$1, " }",
                    dispatch.'numeration_date'
 
       if not operations._length

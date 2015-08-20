@@ -196,8 +196,8 @@ def create_dispatches(agency, datastore, customers, n=60):
                             jurisdiction=jurisdiction,
                             regime=regime,
                             stakeholders=[random.choice(stakeholders)],
-                            amount=str(int(
-                                random.paretovariate(4.5) * 7000.75)),
+                            amount=float(
+                                random.paretovariate(4.5) * 7000.75),
                             income_date=income_date,
                             dam=dam,
                             numeration_date=jump_holydays(
@@ -274,7 +274,7 @@ def operations(agency, list_dispatches, datastore):
         # NO CONSIDERO LAS MULTIPLE PARA PODER VER SU
         # FUNCIÓN POR SEPARADO.
         # SOLO CONSIDERO LOS SIMPLES.
-        if float(dispatch.get().amount) >= 10000:
+        if dispatch.get().amount >= 10000:
             create_operation(agency, dstp_operation, datastore)
         dispatch_set = dispatch_set.difference(dstp_operation)
 

@@ -33,6 +33,7 @@ class Simulate extends Module
                     Razón Social/Nombre
                   </th>
                   <th>Despachos</th>
+                  <th>Total</th>
                 </tr>'
     _table._append t-head
 
@@ -56,6 +57,11 @@ class Simulate extends Module
 
       App.dom._new \td
         .._append _ul
+        _tr._append ..
+
+      App.dom._new \td
+        ..html = (_.'reduce' ([..'amount' for dispatches]), \
+                  (n, ax) -> n + ax).toFixed 2
         _tr._append ..
 
       t-body._append _tr

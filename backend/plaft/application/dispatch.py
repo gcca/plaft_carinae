@@ -209,13 +209,13 @@ def numerate(dispatch, **args):
     if 'operation' in args:
         del args['operation']  # HARDCODE
 
+    amount = args['amount']
+    args['amount'] = float(amount.replace(' ', '').replace(',', ''))
     dispatch << args
     dispatch.store()
-    amount = dispatch.amount
-    amount = amount.replace(' ', '').replace(',', '')
     if (not dispatch.operation_key and
        dispatch.amount and
-       float(amount) >= 10000):
+       dispatch.amount >= 10000):
         plaft.application.operation.accept(dispatch)
 
 

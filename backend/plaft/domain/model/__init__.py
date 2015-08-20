@@ -324,11 +324,11 @@ class Dispatch(dom.Model):
     dam = dom.String()
     # diferencia entre el income_date y el numeration_date
     numeration_date = dom.Date()  # (-o-) date
-    amount = dom.String(default='0')
+    amount = dom.Decimal(default=0)
     # Campos para la Numeracion.
     exchange_rate = dom.String(default='0')
     amount_soles = dom.Computed(lambda self:
-                                (float(self.amount if self.amount else '0') *
+                                (self.amount if self.amount else 0 *
                                  float(self.exchange_rate if self.exchange_rate
                                        else '0')))
     currency = dom.String()

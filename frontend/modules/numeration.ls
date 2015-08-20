@@ -60,7 +60,7 @@ class NumerationEdit extends Module
 
         @_desktop._spinner-stop!
 
-        if (parseFloat @model._attributes.'amount') > 10000
+        if @model._attributes.'amount' > 10000
           $ (@el.query '.btn-success') ._hide!
           $ (@el.query '.btn-danger') ._hide!
 
@@ -152,9 +152,7 @@ class NumerationEdit extends Module
       @_five-years-display.html = ''
 
   _calculate-amount-soles: (amount, exchange-rate) ->
-    if amount?
-      amount = amount.replace /[,\s]/gi, ''
-    _value = (parseFloat exchange-rate) * (parseFloat amount)
+    _value = (parseFloat exchange-rate) * amount
     @_amount-display.html = if _value then _value.'toFixed' 2 else '-'
 
   load-amount-soles: ~>
@@ -335,7 +333,7 @@ class NumerationEdit extends Module
       @_calculate-storage-years ..'numeration_date'
 
       @_calculate-amount-soles ..'amount', ..'exchange_rate'
-      if parseInt(..'amount') > 10000
+      if ..'amount' > 10000
         $ (@el.query '.btn-success')._parent ._hide!
       else
         @_has-operation ..
@@ -421,7 +419,7 @@ class Numeration extends Module
 
     _templates =
       'amount': ->
-        ((parseFloat it).toFixed 2).replace /(\d)(?=(\d{3})+\.)/g, "$1, "
+        (new String(it)).replace /(\d)(?=(\d{3})+\.)/g, "$1, "
       'channel': ->
         _label-type = if it is 'V' then gz.Css \label-success
                       else if it is 'N' then gz.Css \label-warning
