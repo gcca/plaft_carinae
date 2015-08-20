@@ -419,4 +419,10 @@ class Category(ndb.IntegerProperty):
         return self.choices[value]
 
 
+class Decimal(ndb.FloatProperty):
+
+    def _from_base_type(self, value):
+        return float("{0:.2f}".format(value))
+
+
 # vim: et:ts=4:sw=4
