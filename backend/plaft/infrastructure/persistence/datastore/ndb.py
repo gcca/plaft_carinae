@@ -303,9 +303,18 @@ class User(Model):
 
     def populate(self, **kwargs):
         if 'password' in kwargs:
-            kwargs['password'] = util.make_pw_hash(kwargs['username'],
+            username = (kwargs['username']
+                        if 'username' in kwargs
+                        else self.username)
+            kwargs['password'] = util.make_pw_hash(username,
                                                    kwargs['password'])
         super(User, self).populate(**kwargs)
+
+    def store(self):
+        if (not self.password.startswith('$2a$02$') or
+            not  60 == len(self.password)):
+            self.password = util.make_pw_hash(self.username, self.password)
+        return super(User, self).store()
 
     @classmethod
     def authenticate(cls, username, password):
