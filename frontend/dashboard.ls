@@ -222,8 +222,9 @@ _swbar = App.dom._new \div
       </ul>
     </li>"
 
-if window.'plaft'.'ig'
-  App.dom.query '#id-navbar-collapse' ._append _swbar
+if username in <[cesarvargas@cavasoftsac.com nina@mass.dyn]>
+  ## if window.'plaft'.'ig'
+  App.dom.query "##{gz.Css id-navbar-collapse}" ._append _swbar
 
 
 # vim: ts=2:sw=2:sts=2:et
