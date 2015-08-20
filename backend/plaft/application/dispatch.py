@@ -32,7 +32,7 @@ def update_stakeholders(dispatch, flag=False):
         new_stakeholder = Stakeholder.find(slug=stakeholder.slug)
         if not new_stakeholder:
             new_stakeholder = Stakeholder()
-        dct = stakeholder.dict
+        dct = stakeholder.to_dto()
         del dct['slug']
         new_stakeholder << dct
         new_stakeholder.store()
@@ -41,7 +41,7 @@ def update_stakeholders(dispatch, flag=False):
         new_dcl = Declarant.find(slug=dcl.slug)
         if not new_dcl:
             new_dcl = Declarant()
-        dct = dcl.dict
+        dct = dcl.to_dto()
         del dct['slug']
         new_dcl << dct
         new_dcl.store()
@@ -294,7 +294,7 @@ def list_operations(customs_agency):
 def list_dispatches(customs_agency):
     """."""
     def flag(dispatch, is_accepted):
-        dct = dispatch.dict
+        dct = dispatch.to_dto()
         dct['accepted'] = is_accepted
         return dct
 

@@ -254,7 +254,7 @@ class DataToRestore(Handler):
 
     @staticmethod
     def format_dispatches(dispatches):
-        dispatches = [dispatch.dict for dispatch in dispatches]
+        dispatches = [dispatch.to_dto() for dispatch in dispatches]
 
         def clean(dct):
             if 'id' in dct:
@@ -289,7 +289,7 @@ class DataToRestore(Handler):
         for user in users:
             customs_agency_name = user.customs_agency.name
             user.customs_agency_key = None
-            formated_user = user.dict
+            formated_user = user.to_dto()
             formated_user['customs_agency'] = customs_agency_name
             formated_user['class_'] = formated_user['class_'][-1]
             formated_user['password'] = user.password

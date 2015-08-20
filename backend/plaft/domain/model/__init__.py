@@ -108,7 +108,7 @@ class User(dom.User, dom.PolyModel):
 
     @property  # HARDCODE: permissions sections
     def dict(self):
-        dct = super(User, self).dict
+        dct = super(User, self).to_dto()
         sections = list({a['section'] for a in dct['permissions']['alerts']})
         sections.sort()  # (-o-) Sort by roman instead length
         dct['permissions']['sections'] = sections
@@ -409,7 +409,7 @@ class Dispatch(dom.Model):
                                     self.numeration_date+timedelta(days=15)
                                     ) if self.numeration_date else None
         # TODO: Implementar dict en lista de cascada para `Structured`
-        dct['alerts'] = [a.dict for a in self.alerts]
+        dct['alerts'] = [a.to_dto() for a in self.alerts]
         return dct
 
     @property

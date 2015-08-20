@@ -155,16 +155,15 @@ class Model(Entity, ndb.Model):
 
     __metaclass__ = KeyAccessor
 
-    def to_dict(self):
-        dct = super(Model, self).to_dict()
+    def to_dict(self, **ie):
+        dct = super(Model, self).to_dict(**ie)
         if self.key:
             dct['id'] = self.id
         return dct
 
-    @property
-    def dict(self):
+    def to_dto(self, **ie):
         """."""
-        dct = self.to_dict()
+        dct = self.to_dict(**ie)
         convert_keys(dct, (self.key,))
         return dct
 
@@ -297,8 +296,8 @@ class User(Model):
                                    password=password,
                                    **kwargs)
 
-    def to_dict(self):
-        d = super(User, self).to_dict()
+    def to_dict(self, **ie):
+        d = super(User, self).to_dict(**ie)
         del d['password']
         return d
 
@@ -322,7 +321,7 @@ class JSONEncoderNDB(JSONEncoder):
     def _default(self, o):
         """."""
         if isinstance(o, ndb.Model):
-            d = o.dict
+            d = o.to_dto()
             if o.key:
                 d['id'] = o.id
             return d
