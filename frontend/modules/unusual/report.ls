@@ -36,7 +36,7 @@ class Dispatches extends App.Collection
 class Report extends Module
 
   /** @override */
-  _tagName: \form
+  _tagName: \div
 
   empty-field: (value) ->
     _span = App.dom._new \span
@@ -91,6 +91,14 @@ class Report extends Module
     operation = App.lists.anexo6.operation._display
     alerts = App.lists.anexo6.alerts._display
     person = App.lists.anexo6.person._display
+
+    pdf-report = App.dom._new \a
+      .._class = "#{gz.Css \btn} #{gz.Css \btn-primary} #{gz.Css \pull-right}"
+      ..css = 'margin: 20px'
+      ..href = "api/dispatch/#{dispatch.id}/unusual_report"
+      ..target = '_blank'
+      ..html = 'Exportar a PDF'
+      @el._append ..
 
     # PERSON
     @$el._append "<h4>#{person[0]}</h4>"

@@ -567,5 +567,112 @@ class Dispatch(RESTful):
             dispatch.alerts_visited.append(str(payload['user-visited']))
             dispatch.store()
 
+    @RESTful.method
+    def unusual_report(self, dispatch_id):
+        from reportlab.lib import colors
+        from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER
+        from reportlab.lib.pagesizes import letter
+        from plaft.application.util.data_generator import unusual
+        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib.units import inch, mm
+        from reportlab.platypus import (SimpleDocTemplate, Paragraph,
+                                        Table, TableStyle)
+
+        styles = getSampleStyleSheet()
+        styles.add(ParagraphStyle(name='Justify', alignment=TA_JUSTIFY))
+        styles.add(ParagraphStyle(name='Center', alignment=TA_CENTER))
+
+        def checkEmpty(value):
+            if value:
+                if value is not '':
+                    return value
+                else:
+                    return '-'
+            else:
+                return '-'
+
+        def addTitle(story, title):
+            s_title = styles['Center']
+            s_title.wordWrap = 'LTR'
+            titleTable = [[Paragraph('<b>%s</b>' % title, s_title)]]
+            table = Table(titleTable, colWidths='*')
+            table.setStyle(TableStyle([
+                ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER')
+            ]))
+            story.append(table)
+
+        def addTable(story, attributes, dto=None):
+            s = styles['BodyText']
+            s.wordWrap = 'LTR'
+            content = []
+            for attr in attributes:
+                content.append([attr[0], attr[1], checkEmpty(attr[2](dto))])
+
+            contentTable = [[Paragraph(row[cell], s)
+                            for cell in range(len(row))]
+                            for row in content]
+
+            table = Table(contentTable, colWidths=(0.3*inch,
+                                                   5.5*inch,
+                                                   1.7*inch))
+            table.setStyle(TableStyle([
+                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+                ('BOX', (0, 0), (-1, -1), 0.25, colors.black)
+            ]))
+
+            story.append(table)
+
+        self.response.headers['Content-Type'] = 'application/pdf'
+        dispatch = model.Dispatch.find(int(dispatch_id))
+
+        doc = SimpleDocTemplate(self.response.out,
+                                pagesize=letter,
+                                rightMargin=30,
+                                leftMargin=30,
+                                topMargin=20,
+                                bottomMargin=20)
+        story = []
+        # TITLE
+        addTitle(story, 'ANEXO Nº 6')
+        addTitle(story, 'DISEÑO DE IDENTIFICACIÓN DE OPERACIONES INUSUALES')
+        addTitle(story, ('(Para uso de los agentes y dueños, consignatarios'
+                         ' autorizados para operar como despachadores de'
+                         ' de aduana, supervisados por la SUNAT en materia'
+                         ' de prevención del lavado de activos y del'
+                         ' financiamiento del terrorismo)'))
+
+        #
+        addTable(story, (('<b>Nº</b>', '<b>DESCRIPCIÓN DE DATOS</b>',
+                         lambda v: '<b>VALOR</b>'),))
+
+        # IDENTIFICATION-TITLE
+        addTitle(story, unusual.identification[0])
+        addTable(story, unusual.identification[1])
+
+        # UNUSUAL-TITLE
+        addTitle(story, unusual.unusual[0])
+        addTable(story, unusual.unusual[1], dispatch)
+
+        # PERSON
+        addTitle(story, unusual.person[0])
+        addTable(story, unusual.person[1], dispatch.declaration.customer)
+
+        # PERSON
+        for stakeholder in dispatch.stakeholders:
+            addTitle(story, unusual.person[0])
+            addTable(story, unusual.person[1], stakeholder)
+
+        # OPERATION
+        addTitle(story, unusual.operation[0])
+        addTable(story, unusual.operation[1], dispatch)
+
+        # ALERTS
+        for alert in dispatch.alerts:
+            addTitle(story, unusual.alerts[0])
+            addTable(story, unusual.alerts[1], alert)
+
+        doc.build(story)
 
 # vim: et:ts=4:sw=4
