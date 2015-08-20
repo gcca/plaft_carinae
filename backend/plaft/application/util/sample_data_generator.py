@@ -169,8 +169,8 @@ def create_dispatches(agency, datastore, customers, n=60):
     N = n
 
     income_dates = sorted(
-        [generate_date(prev_month) for i in range(N - N/5)]
-        +  [generate_date(curr_month) for i in range(N/5)], reverse=True)
+        [generate_date(prev_month) for i in range(N - N/5)] +
+        [generate_date(curr_month) for i in range(N/5)], reverse=True)
 
     customers_all = customers
     customer_flag = True

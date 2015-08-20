@@ -477,7 +477,7 @@ class Datastore(dom.Model):
     # Se guarda las operaciones despues del cierre del mes actual.
     operations_last_month_key = dom.Key(Operation, repeated=True)
 
-    current_month = dom.Integer(default=datetime.now().month) # TODO
+    current_month = dom.Integer(default=datetime.now().month)  # TODO
 
     def next_operation_counter(self):
         current_year = datetime.now().year

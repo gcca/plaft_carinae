@@ -3,6 +3,7 @@
 from plaft.domain.model import Operation, Customer
 from datetime import datetime
 
+
 def dispatches_in_operation(customs_agency):
     """."""
     import datetime
@@ -27,6 +28,7 @@ def dispatches_in_operation(customs_agency):
             dispatches_operations.append(pendings_customer)
 
     return dispatches_operations
+
 
 def accept_multiple(customs_agency):
     """."""

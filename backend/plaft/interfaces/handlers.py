@@ -339,8 +339,9 @@ class Customs_Agency(RESTful):
     @RESTful.method
     def dispatches_in_operation(self):
         customs_agency = self.user.customs_agency
+        operations = plaft.application.operations
         self.render_json(
-            plaft.application.operations.dispatches_in_operation(customs_agency)
+            operations.dispatches_in_operation(customs_agency)
         )
 
     @RESTful.method('post')
