@@ -106,8 +106,7 @@ class User(dom.User, dom.PolyModel):
     permissions_key = dom.Key(Permissions)
     role = dom.Category(role_choices)
 
-    @property  # HARDCODE: permissions sections
-    def dict(self):
+    def to_dto(self):
         dct = super(User, self).to_dto()
         sections = list({a['section'] for a in dct['permissions']['alerts']})
         sections.sort()  # (-o-) Sort by roman instead length
