@@ -95,12 +95,15 @@ class UtilAnexo
 
     dct-role =
       'Comercial':
+        'label': 'Comer.'
         'attribute': 'is_comercial'
         'title': 'ÁREA COMERCIAL'
       'Operación':
+        'label': 'Oper.'
         'attribute': 'is_operación'
         'title': 'ÁREA OPERACIONES'
       'Finanza':
+        'label': 'Finan.'
         'attribute': 'is_finanza'
         'title': 'ÁREA FINANZA'
 
@@ -134,9 +137,11 @@ class UtilAnexo
           title-module = 'OFICIAL CUMPLIMIENTO'
 
           for rol in ['Comercial', 'Operación', 'Finanza']
-            __add-column rol, dct-role[rol].'attribute'
+            __add-column dct-role[rol].'label',
+                         dct-role[rol].'attribute'
         else
-          __add-column role, dct-role[role].'attribute'
+          __add-column dct-role[role].'label',
+                       dct-role[role].'attribute'
           title-module = dct-role[role].'title'
 
         # CREATE TABLE

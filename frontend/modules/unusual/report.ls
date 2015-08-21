@@ -135,6 +135,7 @@ class ListReport extends Module
       _desktop: @_desktop
       _parent: @
       _child: Report
+      _url: 'api/customs_agency/dispatches_without_IO'
       _title:'ANEXO 6 - DISEÑO DE IDENTIFICACIÓN
             \ DE OPERACIONES INUSUALES')._load-module!
 
