@@ -9,7 +9,7 @@ table = App.widget.table
  */
 class UtilAnexo
 
-  ({@_desktop, @_parent, @_child, @_url='/api/dispatch/list'}) ->
+  ({@_desktop, @_parent, @_child, @_url='/api/dispatch/list', @_title}) ->
 
   is_officer: -> window.plaft.'user'.'class_'.'1' is 'Officer'
 
@@ -150,12 +150,10 @@ class UtilAnexo
 
         _tabla.set-rows _pending
 
-        @_parent.el.html = "<h3 style='text-align:center'>
-                            \ IDENTIFICACIÓN DE OI - #{title-module}
-                            </h3>
-                            <h4 style='text-align:center'>
-                            \ SECCION I - OPERACIONES O CONDUCTAS
-                          \ INUSUALES RELATIVAS AL CLIENTE</h4>"
+        if not @_title?
+          @_title = "IDENTIFICACIÓN DE OI - #{title-module}"
+        @_parent.el.html = "<h3 style='text-align:center;margin-top:0px'>
+                              #{@_title}</h3>"
         @_parent.el._append _tabla.render!.el
         if _active-transitions
           @_desktop._unlock!
@@ -170,6 +168,7 @@ class UtilAnexo
   /** @private */ _parent: null
   /** @private */ _child: null
   /** @private */ _url: null
+  /** @private */ _title: null
 
 /** @export */
 module.exports = UtilAnexo

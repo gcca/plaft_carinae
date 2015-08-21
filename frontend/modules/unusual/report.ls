@@ -134,7 +134,9 @@ class ListReport extends Module
     (new Utils do
       _desktop: @_desktop
       _parent: @
-      _child: Report)._load-module!
+      _child: Report
+      _title:'ANEXO 6 - DISEÑO DE IDENTIFICACIÓN
+            \ DE OPERACIONES INUSUALES')._load-module!
 
     super!
 
