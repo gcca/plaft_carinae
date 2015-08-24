@@ -147,7 +147,9 @@ def update(dispatch, payload):
     """
     declaration = dispatch.declaration
     if 'declaration' in payload:
-        declaration << payload['declaration']
+        declaration.customer << payload['declaration']['customer']
+        if 'third' in payload['declaration']:
+            declaration.third = payload['declaration']['third']
         del payload['declaration']  # HARDCODE
 
     if 'customer' in payload:

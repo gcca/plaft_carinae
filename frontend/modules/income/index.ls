@@ -8,6 +8,7 @@ table = App.widget.table
 modal = App.widget.message-box
 MessageBox = modal.MessageBox
 declaration = require './declaration'
+declarationv2 = require './declarationv2'
 DeclarantBody = require './declarant'
 dispatch = require './dispatch'
 StakeholderBody = require './stakeholder'
@@ -16,7 +17,7 @@ Module = require '../../workspace/module'
 
 
 class Dispatch extends App.Model
-  /** @oevrride */
+  /** @override */
   urlRoot: \dispatch
 
 
@@ -119,7 +120,9 @@ class Income extends Module
    * @private
    */
   panels2dispatchDTO: ->
-    _declaration = @_panels._declaration._body._json
+    _declaration = if @is-new-version then \
+                   @_panels._declarationv2._body._json \
+                   else @_panels._declaration._body._json
     _declaration.'customer'.'declarants' = @_panels._declarants._body._json
 
     _dispatch-dto =
@@ -151,6 +154,9 @@ class Income extends Module
       _declaration: _panel-group.new-panel do
                       _panel-heading: declaration.Heading
                       _panel-body: declaration.Body
+      _declarationv2: _panel-group.new-panel do
+                      _panel-heading: declarationv2.Heading
+                      _panel-body: declarationv2.Body
       _declarants: _panel-group.new-panel do
                      _panel-heading: panelgroup.PanelHeading
                      _panel-body: DeclarantBody
@@ -161,6 +167,9 @@ class Income extends Module
       .._declaration._header._get c-title ._text = 'Anexo 5 - Declaración
                                             \ Jurada de Conocimiento del
                                             \ Cliente'
+      .._declarationv2._header._get c-title ._text = 'Anexo 5 - Declaración
+                                            \ Jurada de Conocimiento del
+                                            \ Cliente v.2'
       .._declarants._header._get c-title ._text = 'Declarantes'
       .._stakeholders._header._get c-title ._text = 'Vinculado o involucrado
                                                   \ en la operación.'
@@ -174,9 +183,11 @@ class Income extends Module
 
     @_panels
       .._declaration._body._json = _dispatch-dto.'declaration'
+      .._declarationv2._body._json = _dispatch-dto.'declaration'
 
       # Declaration(-stakeholder) changes on type
       .._declaration._body.set-type .._dispatch._body._get-type!
+      .._declarationv2._body.set-type .._dispatch._body._get-type!
       .._dispatch._body.on (gz.Css \code-regime), ~>
         .._declaration._body.set-type it
 
@@ -191,15 +202,63 @@ class Income extends Module
     @_panels._declaration._body.el
       _declaration-ref-el = ..query '[name=reference]'
       _declaration-address-el = ..query '[name=address]'
+
     _dispatch-ref-el.on-key-up ->
       _declaration-ref-el._value = _dispatch-ref-el._value
+
     _declaration-ref-el.on-key-up ->
       _dispatch-ref-el._value = _declaration-ref-el._value
+
     _declaration-address-el.on-blur ~>
       @_panels._declarants._body._dcl-address-el _declaration-address-el._value
 
 
     _panel-group.open-all!
+
+    # CHANGE VERSION
+    @_panels._declarationv2._hide!
+    @is-new-version = off
+
+    __change-version = ~>
+      if it._target._value is \v1
+        @is-new-version = off
+        @_panels._declaration._show!
+        @_panels._declarationv2._hide!
+      else
+        @is-new-version = on
+        @_panels._declaration._hide!
+        @_panels._declarationv2._show!
+
+    label-v1 = App.dom._new \label
+      .._class = gz.Css \radio-inline
+    App.dom._new \input
+      .._type = 'radio'
+      .._name = 'version'
+      .._value = 'v1'
+      .._checked = on
+      ..on-change __change-version
+      label-v1._append ..
+    $ label-v1 ._append 'Versión 1'
+
+    label-v2 = App.dom._new \label
+      .._class = gz.Css \radio-inline
+    App.dom._new \input
+      .._type = 'radio'
+      .._name = 'version'
+      .._value = 'v2'
+      ..on-change __change-version
+      label-v2._append ..
+    $ label-v2 ._append 'Versión 2'
+
+    App.dom._new \div
+      ..css = 'margin: 0 0 15 10'
+      ..html = '<label style="margin-right: 15px">
+                  Cambiar versión
+                </label>'
+      .._append label-v1
+      .._append label-v2
+      @el._append ..
+
     @el._append _panel-group.render!.el
 
   _on-dumpy: (_tr) ->
@@ -296,6 +355,11 @@ class Income extends Module
     super!
 
   ## Attributes
+  /**
+   * @type Boolean
+   * @private
+   */
+  is-new-version: null
 
   /**
    * To generate the JSON dispatch from views.

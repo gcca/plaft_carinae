@@ -252,6 +252,43 @@ class Customer(dom.Model, dom.PolyModel):
     link_type = dom.Category(('Importador', 'Exportador'))
     unusual_operation = dom.String()
 
+    # version 2
+    class NewDeclarant(dom.Model):
+        """."""
+        name = dom.String()
+        father_name = dom.String()
+        mother_name = dom.String()
+        document_type = dom.String()
+        document_number = dom.String()
+        street = dom.String()
+        address = dom.String()
+        urbanization = dom.String()
+        distrit = dom.String()
+        province = dom.String()
+        department = dom.String()
+        flat = dom.String()
+
+    # version 2
+    new_declarant = dom.Structured(NewDeclarant)
+    contributor = dom.String()
+    urbanization = dom.String()
+    distrit = dom.String()
+    province = dom.String()
+    department = dom.String()
+    street = dom.String()
+    flat = dom.String()
+    # version 2 - business
+    legal_document_type = dom.String()
+    legal_document_number = dom.String()
+    legal_name = dom.String()
+    # version 2 - person
+    work_center = dom.String()
+    pep_is_date = dom.Boolean()
+    pep_country = dom.String()
+    pep_country_description = dom.String()
+    pep_organization = dom.String()
+    other_document = dom.String()
+
 
 class Person(Customer):
     """."""
