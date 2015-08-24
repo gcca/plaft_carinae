@@ -189,6 +189,9 @@ class exports.Form extends Array implements PoolMixin
         _radio-second._checked = true
         _check._checked = false
       _div
+    | _type is FieldType.kLabel =>
+      App.dom._new-text ''
+
     | otherwise => throw "Error: Bad type"
 
   /**

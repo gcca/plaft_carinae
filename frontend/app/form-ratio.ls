@@ -5,8 +5,7 @@ FieldType    = builtins.Types.Field
 class FormRatio
 
   ({@fields, @el, _templates = {}}) ->
-    @_names = [field._name for field in @fields ]
-
+    @_names = [field._name for field in @fields when field._name?]
     for _field in @fields
       _name = _field._name
       if not _templates[_name]
@@ -58,6 +57,8 @@ class FormRatio
       _parent = _field._options.el._parent
     else if _field._type is FieldType.kRadioGroup
       _parent = _field-name._parent._parent
+    else if _field._type is FieldType.kLabel
+      return
     else
       @is_disabled = _field-name._disabled
       _parent = _field-name._parent

@@ -31,6 +31,7 @@ exports <<<
       kView      : null
       kHidden    : null
       kYesNo     : null
+      kLabel     : null
 
     /**
      * @typedef {{

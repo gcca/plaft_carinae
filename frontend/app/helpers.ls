@@ -11,6 +11,7 @@
   _new : ref$\createElement
   query: ref$\querySelector
   query-all: ref$\querySelectorAll
+  _new-text : ref$\createTextNode
 
 (κ = Object) <<<
   defineProperty: ref$\defineProperty
