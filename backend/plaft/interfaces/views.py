@@ -253,10 +253,12 @@ class DeclarationPDF(Handler):
                         % (self.checkEmpty(customer, 'name')).upper()])
 
         content.append(['b)', 'Registro Unico de Contribuyentes RUC',
-                        self.checkEmpty(customer, 'document_number')])
+                        ' <br/> %s <br/><br/>'
+                        % self.checkEmpty(customer, 'document_number')])
 
         content.append(['c)', 'Objeto social',
-                        self.checkEmpty(customer, 'social_object')])
+                        ' <br/> %s <br/><br/>'
+                        % self.checkEmpty(customer, 'social_object')])
 
         content.append(['', 'Actividad económica'
                             ' principal (Comercial, industrial, '
@@ -295,7 +297,8 @@ class DeclarationPDF(Handler):
                         self.checkEmpty(customer, 'money_source')])
 
         content.append(['j)', 'Es sujeto obligado informar a la UIF-Peru?',
-                        self.checkButtonchk(dispatch.declaration.customer,
+                        ' <br/> %s <br/><br/>'
+                        % self.checkButtonchk(dispatch.declaration.customer,
                                             'is_obligated')])
 
         content.append(['', 'En caso marco SI, indique si designo a'
