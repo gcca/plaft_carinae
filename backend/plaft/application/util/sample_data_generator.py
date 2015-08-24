@@ -226,15 +226,30 @@ def create_dispatches(agency, datastore, customers, n=60):
             dispatch.alerts = [
                 Dispatch.Alert(info_key=info_key,
                                comment='Comentario de la alerta.',
-                               source='Alguna fuente.',
+                               source='Otras Fuentes',
                                description_source='Descripción de la fuente.')
                 for info_key in info_keys]
             dispatch.alerts_visited = [str(employee.key.id())]
+            dispatch.description_unusual = ('Descripción de la '
+                                            'operación inusual.')
+            is_suspects = random.choice((True, False))
+            if is_suspects:
+                dispatch.ros = ''.join(random.sample(DOCNUMS,6))
+            else:
+                dispatch.suspects_by = 'No cumple las reglas.'
+            dispatch.is_suspects = is_suspects
+            dispatch.declaration.customer.unusual_condition = 'Involucrado'
+            dispatch.stakeholders[0].unusual_condition = 'Vinculado'
+            dispatch.declaration.customer.unusual_operation = 'es Involucrado'
+            dispatch.stakeholders[0].unusual_operation = 'es Vinculado'
 
         dispatch.store()
         dispatch.stakeholders[0].link_type = ('Destinatario de embarque'
                                               if dispatch.is_out
                                               else 'Proveedor')
+        dispatch.declaration.customer.link_type = ('Exportador'
+                                                   if dispatch.is_out
+                                                   else 'Importador')
         dispatch.store()
         datastore.pending_key.append(dispatch.key)
         datastore.store()
@@ -372,7 +387,15 @@ def _data_debug():
             money_source='Recursos de la empresa',
             is_obligated=False,
             has_officer=False,
-            declarants=[random.choice(declarants)])
+            declarants=[random.choice(declarants)],
+            condition='Residente',
+            legal_type='Mandatario',
+            ciiu=CodeName(code='18100',
+                          name=('FAB. DE PRENDAS'
+                                ' DE VESTIR.')),
+            ubigeo=CodeName(code='150115',
+                            name=('LIMA - LIMA -'
+                                  ' LA VICTORIA')))
         customer.store()
         customers.append(customer)
 
