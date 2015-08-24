@@ -35,6 +35,7 @@ class UtilAnexo
       'Nombre/Razon social'
       'N&ordm; DAM'
       'Fecha Declaración'
+      'Fecha UIF'
 
     _attributes =
       'jurisdiction.code'
@@ -43,6 +44,7 @@ class UtilAnexo
       'declaration.customer.name'
       'dam'
       'numeration_date'
+      'last_date_ros'
 
     _templates = {}
 
