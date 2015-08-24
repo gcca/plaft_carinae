@@ -41,9 +41,6 @@ class Declarant extends panelgroup.FormBody
     if _ratio isnt 0
       @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
 
-  read-dto: (dto) ->
-    @_body._first._fromJSON @_options.dto
-
   change-document: ->
     _document-type = @el.query '[name=document_type]'
     switch _document-type._selected-index

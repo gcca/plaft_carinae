@@ -1,11 +1,21 @@
 /** @module app.widget */
 
+/**
+ * ControlBar
+ * ----------
+ * Vista que procede a crear un `progressbar` cuando es invocado.
+ *
+ * @class ControlBar
+ * @extends View
+ */
 class ControlBar extends App.View
 
   @@__hash__ = 'progressbar'
 
+  /** @override */
   _tagName: \div
 
+  /** @override */
   _className: gz.Css \progress
 
   _set-bar: (_ratio) ->
@@ -14,6 +24,7 @@ class ControlBar extends App.View
       ..html = "#{_ratio}%"
       ..css = "width:#{_ratio}%"
 
+  /** @override */
   initialize: ({heading}) ->
     @el.css = 'width:150px;margin:5px;background-color:white;display:none'
     @_div = App.dom._new \div
@@ -26,10 +37,19 @@ class ControlBar extends App.View
 
   /** @private */ _div: null
 
+/**
+ * ControlTitle
+ * ----------
+ * Vista que procede a crear un titulo cuando es invocado.
+ *
+ * @class ControlTitle
+ * @extends View
+ */
 class ControlTitle extends App.View
 
   @@__hash__ = 'title'
 
+  /** @override */
   _tagName: \span
 
   _text:~
@@ -37,25 +57,39 @@ class ControlTitle extends App.View
     (title) ->
       @el.html = title
 
+  /** @override */
   initialize: ({_heading}) ->
-    @el.css = 'margin:5 205 5 15;cursor:pointer'
-    @el.html = '&nbsp;'*8
-    @el._data.'toggle' = 'collapse'
-    @el._data.'parent' = "##{_heading._parent-uid}"
-    @el.attr \href "##{_heading._collapse-id}"
-    @el.attr \aria-expanded \false
+    @el
+      ..css = 'margin:5 205 5 15;cursor:pointer'
+      ..html = '&nbsp;'*8
+      .._data.'toggle' = 'collapse'
+      .._data.'parent' = "##{_heading._parent-uid}"
+      ..attr \href "##{_heading._collapse-id}"
+      ..attr \aria-expanded \false
 
-
+/**
+ * ControlClose
+ * ----------
+ * Vista que al ser invocado crea un botón 'X' al lado derecho que elimina
+ * el panel.
+ *
+ * @class ControlClose
+ * @extends View
+ */
 class ControlClose extends App.View
 
   @@__hash__ = 'close'
 
+  /** @override */
   _tagName: \span
 
+  /** @override */
   _className: gz.Css \pull-right
 
+  /** @see @initialize */
   on-close: ~> @_heading._panel._free!
 
+  /** @override */
   initialize: ({@_heading}) ->
     @el.css = 'flex:1;margin:5px'
     _btn = App.dom._new \button
@@ -69,11 +103,20 @@ class ControlClose extends App.View
 
   _heading: null
 
-
+/**
+ * ControlSearch
+ * -------------
+ * Vista al ser invocado crea un buscador en la parte derecha de
+ * la cabecera del panel.
+ *
+ * @class ControlSearch
+ * @extends View
+ */
 class ControlSearch extends App.View
 
   @@__hash__ = 'search'
 
+  /** @override */
   _tagName: \span
 
   _update-autocompleter: (_items) ->
@@ -101,21 +144,38 @@ class ControlSearch extends App.View
         <p style='float:right;font-style:italic;margin-left:1em'>
           #{p._code}</p>
         <p style='font-size:14px;text-align:justify'>#{p._name}</p>")
-      ..on-closed @changeValue _, @_heading
+      ..on-closed @change-value _, @_heading
       ..render!
 
-  changeValue: (_, _heading) ~>
+  /**
+   * @see @_create-autocompleter
+   * @private
+   */
+  change-value: (_, _heading) ~>
     @_value = @_items[@_input._value]
     @load-dto _heading
 
+  /**
+   * @see @change-value, @_search-dto
+   * @private
+   */
   load-dto: (_heading) ->
     App.ajax._get ("/api/#{@_url}/" + @_value), true, do
       _success: (_dto) ~>
         _heading._panel.trigger (gz.Css \load-body), _dto
 
+  /**
+   * @see @change-value, @_load-search
+   * @private
+   */
   _search-dto: (_, _heading) ~>
     @load-dto _heading
 
+  /**
+   * Crea un buscador y lo agrega en la cabecera del panel.
+   * @see @initialize, @_update-autocompleter
+   * @private
+   */
   _load-search: ->
     @el.css = 'width: 200px;margin: 0;padding: 0;flex:4'
 
@@ -141,16 +201,25 @@ class ControlSearch extends App.View
     @_search._append _span
     @el._append @_search
 
+  /** @override */
   initialize: ({@_heading}) ->
     @_load-search!
 
   /** @private */ _field   : null
   /** @private */ _name    : null
   /** @private */ _input   : null
-  /** @private */ _heading   : null
-  /** @private */ _value  : null
+  /** @private */ _heading : null
+  /** @private */ _value   : null
 
 
+/**
+ * PanelHeading
+ * ----------
+ * @example
+ * >>> Para comenzar a usarlo solo debes heredar de esta clase.
+ * @class PanelHeading
+ * @extends View
+ */
 class PanelHeading extends App.View
 
   /** @override */
@@ -158,7 +227,6 @@ class PanelHeading extends App.View
 
   /** @override */
   _className: "#{gz.Css \panel-heading}"
-
 
   /** @override */
   initialize: ({@_parent-uid, @_panel, @_collapse-id}) ->
@@ -180,46 +248,83 @@ class PanelHeading extends App.View
 
   /** @private */ _parent-uid: null
   /** @private */ _container: null
-  /** @private */ _title: null
   /** @private */ _panel: null
   /** @protected */ _controls: [ControlTitle]
   /** @private */ _control: null
   /** @private */ _collapse-id: null
 
 
+/**
+ * PanelBody
+ * ----------
+ * @example
+ * >>> Para comenzar a usarlo solo debes heredar de esta clase.
+ * @class PanelBody
+ * @extends View
+ */
 class PanelBody extends App.View
 
+  /** @override */
   _tagName: \div
 
+  /** @override */
   _className: gz.Css \panel-body
 
+  /** @override */
   initialize: ({@_panel}) -> super!
 
-  _panel: null
+  /** @protected */ _panel: null
 
 
+/**
+ * JSONBody
+ * ----------
+ *
+ * @class JSONBody
+ * @extends PanelBody
+ */
 class JSONBody extends PanelBody
 
+  /** @protected */
   _json:~
     -> @_json-getter!
     (_dto) ->
       @_json-setter _dto
 
+  /** @protected */
   _json-getter: ->
 
+  /** @protected */
   _json-setter: (_dto) ->
 
 
+/**
+ * FormBody
+ * ----------
+ *
+ * @class FormBody
+ * @extends JSONBody
+ */
 class FormBody extends JSONBody
 
+  /** @override */
   _tagName: \form
 
+  /** @override */
   _json-getter: -> @el._toJSON!
 
+  /** @override */
   _json-setter: (_dto) ->
     @el._fromJSON _dto
 
 
+/**
+ * Panel
+ * ----------
+ *
+ * @class Panel
+ * @extends View
+ */
 class Panel extends App.View
 
   /** @override */
@@ -230,7 +335,6 @@ class Panel extends App.View
 
   /** @override */
   _free: ->
-    #@trigger (gz.Css \free), @
     @_panel-group.drop-panel @
     @_header._free!
     @_body._free!
@@ -241,6 +345,10 @@ class Panel extends App.View
   _close: -> @_collapse._class._remove gz.Css \in
 
   _toggle: -> @_collapse._class._toggle gz.Css \in
+
+  _hide: -> @el._class._add gz.Css \hidden
+
+  _show: -> @el._class._remove gz.Css \hidden
 
   /** @override */
   initialize: ({_heading=PanelHeading, \
@@ -272,10 +380,24 @@ class Panel extends App.View
 
   /** @public */  _header: null
   /** @public */  _body: null
-  _collapse-id: null
-  _collapse: null
+  /** @private */_collapse-id: null
+  /** @private */_collapse: null
 
 
+/**
+ * PanelGroup
+ * ----------
+ * @example
+ * >>> panel-group = new PanelGroup
+ * >>> panel-group.new-panel do
+ * .........._panel-heading: Heading
+ *..........._panel-body: Body
+ * >>> another-view._append panel-group.render!.el
+ *
+ * @class PanelGroup
+ * @extends View
+ * @exports
+ */
 class PanelGroup extends App.View
 
   /** @override */
@@ -285,7 +407,7 @@ class PanelGroup extends App.View
 
   open-all: -> for @_panels then  .._open!
 
-  /** @see @new-panel */
+  /** @public */
   drop-panel: (panel) ~>
     @_panels._remove panel
 
@@ -294,8 +416,6 @@ class PanelGroup extends App.View
    * y lo añade al panel-group.
    * @param {PanelHeading} _panel-heading
    * @param {PanelBody} _panel-body
-   * @param {string} _title
-   * @param {HTMLElement} _element
    * @return Panel
    */
   new-panel: ({_panel-heading = PanelHeading,\
@@ -308,7 +428,6 @@ class PanelGroup extends App.View
       _panel-group: @
 
     @__container._append _panel.render!.el
-    # _panel.on (gz.Css \free), @drop-panel
     @_panels._push _panel
     _panel._open!
     _panel

@@ -44,6 +44,7 @@ class ControlHeadTable extends panelgroup.ControlTitle
 
   /** @override */
   _tagName: \table
+
   /** @override */
   _className: gz.Css \table
 

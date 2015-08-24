@@ -48,15 +48,15 @@ class Person extends Customer
     if _ratio isnt 0
       @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
 
-  clean-text-partner: ~>
-    @el.query('[name=partner]')._disabled = on
-    @el.query('[name=partner]').value = ""
+  clean-text: (text-field, _disabled=on) ->
+    text-field._disabled = _disabled
+    text-field.value = ''
 
   on-civil_state-change: ~>
     _civil_type = @el.query('[name=civil_state]').selectedIndex
     switch _civil_type
       | 1, 4 => @el.query('[name=partner]')._disabled = off
-      | otherwise => @clean-text-partner!
+      | otherwise => @clean-text @el.query '[nam=partner]'
 
   on-is_obligated-change: ~>
     officer = @form-builder._elements.'has_officer'
@@ -78,11 +78,9 @@ class Person extends Customer
     employment = @form-builder._elements.'employment'._view._input
     is_pep = @form-builder._elements.'is_pep'._radios._no
     if is_pep._checked
-      employment._value = ''
-      employment._disabled = on
+      @clean-text employment
     else
-      employment._value = ''
-      employment._disabled = off
+      @clean-text employment, off
 
 
   /** @protected */

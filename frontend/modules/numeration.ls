@@ -38,7 +38,6 @@ class Dispatches extends App.Collection
  *
  * @class NumerationEdit
  * @extends Module
- * @export
  */
 class NumerationEdit extends Module
 

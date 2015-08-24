@@ -4,14 +4,27 @@ panelgroup = App.widget.panelgroup
 
 FormBodyDeclarant = require './declarant'
 
+
+/**
+ * DeclarantHeading
+ * ----------
+ * @class DeclarantHeading
+ * @extends PanelHeading
+ */
 class DeclarantHeading extends panelgroup.PanelHeading
 
+  /** @override */
   _controls: [panelgroup.ControlTitle,
               panelgroup.ControlBar,
               panelgroup.ControlSearch,
               panelgroup.ControlClose]
 
-
+/**
+ * DeclarantGroup
+ * ----------
+ * @class DeclarantGroup
+ * @extends PanelGroup
+ */
 class DeclarantGroup extends panelgroup.PanelGroup
 
   /** @override */
@@ -52,6 +65,12 @@ class DeclarantGroup extends panelgroup.PanelGroup
   _address-declarant: null
 
 
+/**
+ * BodyDeclarant
+ * ----------
+ * @class BodyDeclarant
+ * @extends JSONBody
+ */
 class BodyDeclarant extends panelgroup.JSONBody
 
   /** @override */
@@ -78,7 +97,7 @@ class BodyDeclarant extends panelgroup.JSONBody
     @el._append @_group-declarant.render!.el
     super!
 
-  _group-declarant: null
+  /** @private */ _group-declarant: null
 
 /** @export */
 module.exports = BodyDeclarant

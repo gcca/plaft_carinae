@@ -3,8 +3,15 @@
 panelgroup = App.widget.panelgroup
 LinkedBody = require './linked'
 
+/**
+ * StakeholderHeading
+ * ----------
+ * @class StakeholderHeading
+ * @extends PanelHeading
+ */
 class StakeholderHeading extends panelgroup.PanelHeading
 
+  /** @override */
   _controls: [panelgroup.ControlTitle,
               panelgroup.ControlBar,
               panelgroup.ControlSearch,
@@ -12,9 +19,9 @@ class StakeholderHeading extends panelgroup.PanelHeading
 
 
 /**
- * Stakeholders
+ * LinkedGroup
  * ----------
- * @class Stakeholders
+ * @class LinkedGroup
  * @extends PanelGroup
  */
 class LinkedGroup extends panelgroup.PanelGroup
@@ -33,7 +40,8 @@ class LinkedGroup extends panelgroup.PanelGroup
     for @_panels then .._header._get panelgroup.ControlSearch ._update-autocompleter stakeholders
 
   /**
-   * Mostrar un panel.
+   * Crear un panel.
+   * @override
    */
   new-panel: ->
     _stkholder = super do
@@ -64,10 +72,18 @@ class LinkedGroup extends panelgroup.PanelGroup
   /** @public */ _Body: null
 
 
+/**
+ * BodyLinked
+ * ----------
+ * @class BodyLinked
+ * @extends JSONBody
+ */
 class BodyLinked extends panelgroup.JSONBody
 
+  /** @override */
   _json-getter: -> @_pgStakeholder._toJSON!
 
+  /** @override */
   _json-setter: (_stakeholders) ->
     if _stakeholders?
       for stakeholder in _stakeholders
@@ -90,6 +106,7 @@ class BodyLinked extends panelgroup.JSONBody
     @$el._append "<h3>#{if @_title? then @_title else ''}</h3>"
     @el._append @_pgStakeholder.render!.el
 
+  /** @override */
   render: ->
     @el.html = null
     @_pgStakeholder = new LinkedGroup

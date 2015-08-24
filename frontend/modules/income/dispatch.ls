@@ -11,20 +11,28 @@ DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
 panelgroup = App.widget.panelgroup
 
 
-
+/**
+ * DispatchHeading
+ * ----------
+ *
+ * @class DispatchHeading
+ * @extends PanelHeading
+ */
 class DispatchHeading extends panelgroup.PanelHeading
 
+  /** @override */
   _controls: [panelgroup.ControlTitle, panelgroup.ControlBar]
 
 /**
- * Dispatch
+ * DispatchBody
  * ----------
  *
- * @class Dispatch
- * @extends View
+ * @class DispatchBody
+ * @extends FormBody
  */
 class DispatchBody extends panelgroup.FormBody
 
+  /** @override */
   _json-getter: ->
     _r = super!
     if not @ratio?
@@ -36,6 +44,7 @@ class DispatchBody extends panelgroup.FormBody
       @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
     _r
 
+  /** @override */
   _json-setter: (_dto) ->
     if _dto.'regime'?
       @_display = _dto.'regime'.'name'
@@ -100,8 +109,8 @@ class DispatchBody extends panelgroup.FormBody
       * _name: 'description'
         _label: 'Descripcion mercancia'
 
-  _display: null
-  ratio: null
+  /** @private */ _display: null
+  /** @private */ ratio: null
 
 /** @export */
 exports <<<

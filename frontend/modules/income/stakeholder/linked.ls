@@ -21,6 +21,7 @@ FormRatio = App.form-ratio
  */
 class FormLinked extends panelgroup.FormBody
 
+  /** @override */
   _json-setter: (_dto) ->
     if _dto.'document_type'?
       if _dto.'document_type' isnt \ruc
@@ -41,6 +42,7 @@ class FormLinked extends panelgroup.FormBody
         @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
     super _dto
 
+  /** @override */
   _json-getter: ->
     _dto = super!
     delete! _dto.'customer_type'
@@ -52,27 +54,27 @@ class FormLinked extends panelgroup.FormBody
     @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
     _dto
 
-  template-table: ->
-    _code = App.lists.activity-business._code
-    _sector = App.lists.activity-business._sector
-    _activity = App.lists.activity-business._display
-    _tbody = ["<tr><td>#{_code[i]}</td>
-               <td>#{_sector[i]}</td>
-               <td>#{_activity[i]}</td></tr>" for i from 0 to _code._length-1].join ''
-    tb = App.dom._new \table
-    tb._class = "#{gz.Css \table}
-               \ #{gz.Css \table-hover}"
-    tb.html = "<thead>
-                <tr>
-                  <th><strong>Cod.</strong></th>
-                  <th><strong>Sector</strong></th>
-                  <th><strong>Actividad Económica</strong></th>
-                </tr>
-              </thead>
-              <tbody>
-                  #{_tbody}
-              </tbody>"
-    tb
+  table-activity: ->
+    _labels =
+      'Cod.'
+      'Sector'
+      'Actividad Ecónomica'
+
+    _attributes =
+      'code'
+      'sector'
+      'display'
+
+    _collection = _.zip do
+      App.lists.activity-business._code
+      App.lists.activity-business._sector
+      App.lists.activity-business._display
+
+    _table = new SimpleTable  do
+          _attributes: _attributes
+          _labels: _labels
+    _table.set-rows _collection
+    _table.render!.el
 
   /**
    * @param {Array.<FieldOptions>} _fields
@@ -88,7 +90,7 @@ class FormLinked extends panelgroup.FormBody
             if evt.key-code is 77 and evt.ctrl-key   # [ctrl+M]
               mdl = modal.Modal._new do
                   _title: 'Tabla de actividad económica.'
-                  _body: @template-table!
+                  _body: @table-activity!
               mdl._show!
       ..render!
       .._free!
@@ -109,7 +111,7 @@ class FormLinked extends panelgroup.FormBody
     @render-skateholder @_FIELD, _type
 
   /**
-   * Obtiene el codigo de customer_type
+   * Obtiene el codigo de `customer_type`
    * @private
    */
   _type: ->
@@ -160,7 +162,7 @@ class FormLinked extends panelgroup.FormBody
   _GRID = App.builder.Form._GRID
   _FIELD_ATTR = App.builder.Form._FIELD_ATTR
 
-  ratio: null
+  /** @private */ ratio: null
 
   /** FIELD */
   _FIELD_HEAD :
