@@ -114,6 +114,8 @@ exports <<<
 
   money-source: require './money-source'
 
+  contributor: require './contributor'
+
 # Generate {@code _pair} attribute
 for , _obj of exports
   Object._properties _obj, do

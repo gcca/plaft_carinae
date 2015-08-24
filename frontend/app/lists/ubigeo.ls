@@ -4161,7 +4161,32 @@ exports._pool =
   _code: _pool-code
 
 
+/** @export */
+exports.street =
+  _display:
+    'Av.'
+    'Calle'
+    'Jr.'
+    'Psje.'
+    'Prolongacion'
+    'Plaza'
+    'Parque'
+    'Ovalo'
+    'Malecon'
+    'Alameda'
+    'Carretera'
+    'Block'
 
+
+/** @export */
+exports.urbanization =
+  _display:
+    'Urb.'
+    'Complejo'
+    'AA.HH'
+    'Centro Poblado'
+    'Zona'
+    'Grupo'
 
 
 # vim: ts=2:sw=2:sts=2:et
