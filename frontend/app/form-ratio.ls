@@ -19,7 +19,7 @@ class FormRatio
     | value.__proto__.constructor is Boolean  => true
     | otherwise => value?
 
-  __validate = (field, is-null) ->
+  __validate: (field, is-null) ->
     field-value = (@el.query "[name='#{field._name}']")
     switch field._type
       | FieldType.kView =>
@@ -41,9 +41,9 @@ class FormRatio
     for field in @fields
       if is-not-null _dto[field._name]
         balanced += 1
-        __validate field, off
+        @__validate field, off
       else
-        __validate field, on
+        @__validate field, on
 
     App.math.trunc (balanced/@len-values) * 100
 
