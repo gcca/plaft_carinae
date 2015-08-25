@@ -21,7 +21,7 @@ class Person extends Customer
     _r = super!
     if not @ratio?
       @ratio = new FormRatio do
-        fields: _FIELD_BUSINESS
+        fields: _FIELD_PERSON
         el: @el
     _ratio =  @ratio._calculate _r
     if _ratio isnt 0
@@ -32,7 +32,7 @@ class Person extends Customer
     super _dto
     # Progress Bar
     @ratio = new FormRatio do
-      fields: _FIELD_BUSINESS
+      fields: _FIELD_PERSON
       el: @el
     _ratio =  @ratio._calculate _dto
 
