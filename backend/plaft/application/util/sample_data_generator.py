@@ -213,43 +213,13 @@ def create_dispatches(agency, datastore, customers, n=60):
                                          ' del despacho'))
         dispatch.declaration = Dispatch.Declaration(customer=customer)
 
-        if random.choice((True, False)):
-            employee = random.choice(agency.employees)
-            role2keys = {
-                'Comercial': alert_comercial_keys,
-                'Operación': alert_operation_keys,
-                'Finanza': alert_finance_keys
-            }
-
-            info_keys = random.sample(role2keys[employee.role],
-                                      random.randint(1, 5))
-            dispatch.alerts = [
-                Dispatch.Alert(info_key=info_key,
-                               comment='Comentario de la alerta.',
-                               source='Otras Fuentes',
-                               description_source='Descripción de la fuente.')
-                for info_key in info_keys]
-            dispatch.alerts_visited = [str(employee.key.id())]
-            dispatch.description_unusual = ('Descripción de la '
-                                            'operación inusual.')
-            is_suspects = random.choice((True, False))
-            if is_suspects:
-                dispatch.ros = ''.join(random.sample(DOCNUMS,6))
-            else:
-                dispatch.suspects_by = 'No cumple las reglas.'
-            dispatch.is_suspects = is_suspects
-            dispatch.declaration.customer.unusual_condition = 'Involucrado'
-            dispatch.stakeholders[0].unusual_condition = 'Vinculado'
-            dispatch.declaration.customer.unusual_operation = 'es Involucrado'
-            dispatch.stakeholders[0].unusual_operation = 'es Vinculado'
-
-        dispatch.store()
         dispatch.stakeholders[0].link_type = ('Destinatario de embarque'
                                               if dispatch.is_out
                                               else 'Proveedor')
         dispatch.declaration.customer.link_type = ('Exportador'
                                                    if dispatch.is_out
                                                    else 'Importador')
+        dispatch.alerts_visited = [str(e.key.id()) for e in agency.employees]
         dispatch.store()
         datastore.pending_key.append(dispatch.key)
         datastore.store()
@@ -293,6 +263,39 @@ def operations(agency, list_dispatches, datastore):
             create_operation(agency, dstp_operation, datastore)
         dispatch_set = dispatch_set.difference(dstp_operation)
 
+def unusual(agency, list_dispatches):
+    for k in random.sample(list_dispatches,
+                             int(len(list_dispatches)*0.34)):
+        dispatch = k.get()
+        employee = random.choice(agency.employees)
+        role2keys = {
+            'Comercial': alert_comercial_keys,
+            'Operación': alert_operation_keys,
+            'Finanza': alert_finance_keys
+        }
+
+        info_keys = random.sample(role2keys[employee.role],
+                                  random.randint(1, 5))
+        dispatch.alerts = [
+            Dispatch.Alert(info_key=info_key,
+                           comment='Comentario de la alerta.',
+                           source='Otras Fuentes',
+                           description_source='Descripción de la fuente.')
+            for info_key in info_keys]
+        dispatch.description_unusual = ('Descripción de la '
+                                        'operación inusual.')
+        is_suspects = random.choice((True, False))
+        if is_suspects:
+            dispatch.ros = ''.join(random.sample(DOCNUMS,6))
+        else:
+            dispatch.suspects_by = 'No cumple las reglas.'
+        dispatch.is_suspects = is_suspects
+        dispatch.declaration.customer.unusual_condition = 'Involucrado'
+        dispatch.stakeholders[0].unusual_condition = 'Vinculado'
+        dispatch.declaration.customer.unusual_operation = 'es Involucrado'
+        dispatch.stakeholders[0].unusual_operation = 'es Vinculado'
+
+        dispatch.store()
 
 def _data_debug():
     create_stakeholders()
@@ -403,11 +406,6 @@ def _data_debug():
                       'customs_agency officer username password modules')
 
     init_data = [
-        # Data('Massive Dynamic',
-        #      'Nina Sharp',
-        #      'nina@mass.dyn',
-        #      '789',
-        #      data_generator.permissions.officer),
         Data('CavaSoft SAC',
              'César Vargas',
              'cesarvargas@cavasoftsac.com',
@@ -442,6 +440,7 @@ def _data_debug():
 
         list_dispatches = create_dispatches(agency, datastore, customers)
         operations(agency, list_dispatches, datastore)
+        unusual(agency, list_dispatches)
 
     # HARDCODED data
     # _data_deploy()
