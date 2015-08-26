@@ -102,8 +102,11 @@ class Income extends Module
         @_desktop.notifier.notify do
           _message: 'Guardado'
           _type: @_desktop.notifier.kSuccess
-        @_panels._declaration._header.\
+        @_panels
+          .._declaration._header.\
           _get declaration.ControlPDF ._show @model.'id'
+          .._declarationv2._header.\
+          _get declarationv2.ControlPDF ._show @model.'id'
         App.GLOBALS.update_autocompleter!
         @_panels._stakeholders._body._update-autocompleter App.GLOBALS._stakeholders
         @_panels._declarants._body._update-autocompleter App.GLOBALS._declarants
@@ -195,7 +198,11 @@ class Income extends Module
       .._stakeholders._body._json = _dispatch-dto.'stakeholders'
 
     if _dispatch-dto.'id'?  # Añadiendo botón PDF(en modo edición).
-      @_panels._declaration._header._get declaration.ControlPDF ._show _dispatch-dto.'id'
+      @_panels
+        .._declaration._header.\
+        _get declaration.ControlPDF ._show _dispatch-dto.'id'
+        .._declarationv2._header.\
+        _get declarationv2.ControlPDF ._show _dispatch-dto.'id'
 
     # HARDCODE
     _dispatch-ref-el = @_panels._dispatch._body.el.query '[name=reference]'

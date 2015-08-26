@@ -20,6 +20,7 @@ urls = [
 
     # Views (no html-json.)
     ('/declaration/pdf/(\\d+)', views.DeclarationPDF),
+    ('/declaration/pdfv2/(\\d+)', views.DeclarationPDFv2),
 
     # Handlers: see RESTful classes
 

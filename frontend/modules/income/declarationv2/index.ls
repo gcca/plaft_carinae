@@ -18,7 +18,7 @@ class ControlPDF extends App.View
   _className: gz.Css \pull-right
 
   _show: (_href) ->
-    @_pdf.attr \href "declaration/pdf/#{_href}"
+    @_pdf.attr \href "declaration/pdfv2/#{_href}"
     @el.css.'display' = ''
 
   initialize: ({_heading}) ->
