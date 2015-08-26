@@ -263,9 +263,10 @@ def operations(agency, list_dispatches, datastore):
             create_operation(agency, dstp_operation, datastore)
         dispatch_set = dispatch_set.difference(dstp_operation)
 
+
 def unusual(agency, list_dispatches):
     for k in random.sample(list_dispatches,
-                             int(len(list_dispatches)*0.34)):
+                           int(len(list_dispatches)*0.34)):
         dispatch = k.get()
         employee = random.choice(agency.employees)
         role2keys = {
@@ -286,7 +287,7 @@ def unusual(agency, list_dispatches):
                                         'operación inusual.')
         is_suspects = random.choice((True, False))
         if is_suspects:
-            dispatch.ros = ''.join(random.sample(DOCNUMS,6))
+            dispatch.ros = ''.join(random.sample(DOCNUMS, 6))
         else:
             dispatch.suspects_by = 'No cumple las reglas.'
         dispatch.is_suspects = is_suspects
@@ -296,6 +297,7 @@ def unusual(agency, list_dispatches):
         dispatch.stakeholders[0].unusual_operation = 'es Vinculado'
 
         dispatch.store()
+
 
 def _data_debug():
     create_stakeholders()

@@ -312,7 +312,7 @@ class User(Model):
 
     def store(self):
         if (not self.password.startswith('$2a$02$') or
-            not  60 == len(self.password)):
+            not 60 == len(self.password)):
             self.password = util.make_pw_hash(self.username, self.password)
         return super(User, self).store()
 
