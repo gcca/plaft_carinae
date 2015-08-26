@@ -334,6 +334,8 @@ class JSONEncoderNDB(JSONEncoder):
             if o.key:
                 d['id'] = o.id
             return d
+        if isinstance(o, ndb.Key):
+            return o.id()  # when no DTO
         if isinstance(o, set):
             return tuple(o)
         if isinstance(o, Q.Query):
@@ -410,22 +412,28 @@ class Date(ndb.DateProperty):
 
 class Category(ndb.IntegerProperty):
 
-    choices = tuple()
+    # _choices = None
+    # _cache = {None: 0}
 
     def __init__(self, choices, *args, **kwds):
-        self.choices = choices
+        self._cache = {None: 0}
+        i = 1
+        for choice in choices:
+            self._cache[choice] = i
+            i += 1
+        self._choices = choices
         super(Category, self).__init__(*args, **kwds)
 
     def _to_base_type(self, value):
         try:
-            index = self.choices.index(value)
+            index = self._cache[value]
         except ValueError:
             raise AttributeError('(CategoryProperty) Bad choice "%s"'
                                  % str(value))
         return index
 
     def _from_base_type(self, value):
-        return self.choices[value]
+        return self._choices[value-1]
 
 
 class Decimal(ndb.FloatProperty):
