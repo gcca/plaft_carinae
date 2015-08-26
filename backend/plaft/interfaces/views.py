@@ -433,11 +433,6 @@ class DeclarationPDF(Handler):
 
 class DeclarationPDFv2(Handler):
 
-    _CONDITIONS = (
-        ('Importador', 'Importador/Consignatario'),
-        ('Exportador', 'Exportador/Consignante')
-    )
-
     def shareholdersList(self, shareholders):
         html = []
         for s in shareholders:
@@ -460,31 +455,6 @@ class DeclarationPDFv2(Handler):
         else:
             return '-'
 
-    def check_mark(self, elements, value):
-        render = []
-        for ele in elements:
-            render.append('  %s ( %s )' % (ele[1], ('X' if value == ele[0]
-                                                    else '')))
-            render.append('&nbsp;&nbsp;&nbsp;')
-        return ''.join(render)
-
-    def make_document(self, obj, **args):
-        document_number = self.checkEmpty(obj, args['document_number'])
-        other_document = (self.checkEmpty(obj, args['other_document'])
-                          if 'other_document' in args
-                          else '_____________')
-
-        _DOCTYPE = (('dni', 'DNI'), ('pa', 'Pasaporte'),
-                    ('ce', 'Carnet de Extranjeria'),
-                    ('ci', 'Carnet de Identidad'),
-                    ('cc', 'Cedula de Ciudadania'),
-                    ('cdi', 'Cedula Diplomatica'), ('otro', 'Otro'))
-
-        marks = self.check_mark(_DOCTYPE,
-                                self.checkEmpty(obj, args['document_type']))
-        return '%s  Especifique: %s &nbsp;&nbsp; Nº:  %s' % (
-                marks, other_document, document_number)
-
     def make_address(self, obj, **kwargs):
         street = self.checkEmpty(obj, kwargs['street'])
         urbanization = self.checkEmpty(obj, kwargs['urbanization'])
@@ -492,57 +462,33 @@ class DeclarationPDFv2(Handler):
         distrit = self.checkEmpty(obj, kwargs['distrit'])
         province = self.checkEmpty(obj, kwargs['province'])
         department = self.checkEmpty(obj, kwargs['department'])
-        streets = []
-        urbanizations = []
+        address = self.checkEmpty(obj, kwargs['address'])
 
-        _STREETS = ('Av.', 'Calle', 'Jr.', 'Psje.', 'Prolongacion', 'Plaza',
-                    'Parque', 'Ovalo', 'Malecon', 'Alameda', 'Carretera',
-                    'Block')
-
-        _URBANIZATIONS = ('Urb.', 'Complejo', 'AA.HH', 'Centro Poblado',
-                          'Zona', 'Grupo')
-
-        for s in _STREETS:
-            streets.append('%s' % ('<u>'+s+'</u>'
-                                   if street == s
-                                   else s))
-            streets.append('' if s == _STREETS[-1]
-                           else '/')
-
-        for u in _URBANIZATIONS:
-            urbanizations.append('%s' % ('<u>'+u+'</u>'
-                                 if urbanization == u
-                                 else u))
-            urbanizations.append(''
-                                 if u == _URBANIZATIONS[-1]
-                                 else '/')
-        return ('%s <u>%s</u><br/> Dpto Nº <u>%s</u>'
-                ' <br/> %s <u>%s</u><br/>'
+        return ('%s %s %s <b>Dpto Nº</b> %s<br/>'
                 '<b>Distrito:</b> %s <b>Provincia:</b> %s'
-                ' <b>Departamento:</b> %s' % (''.join(streets), street,
-                                              flat, ''.join(urbanizations),
-                                              urbanization, distrit,
+                ' <b>Departamento:</b> %s' % (street, urbanization,
+                                              address, flat, distrit,
                                               province, department))
 
     def makedeclarant(self, declarant):
         name = '%s %s, %s' % (self.checkEmpty(declarant, 'father_name'),
                               self.checkEmpty(declarant, 'mother_name'),
                               self.checkEmpty(declarant, 'name'))
-        document = self.make_document(declarant,
-                                      document_number='document_number',
-                                      document_type='document_type')
-
+        document_number = self.checkEmpty(declarant, 'document_number')
+        document_type = self.checkEmpty(declarant, 'document_type')
         address = self.make_address(declarant,
+                                    address='address',
                                     street='street',
                                     urbanization='urbanization',
                                     flat='flat', distrit='distrit',
                                     province='province',
                                     department='department')
 
-        return ('1) Nombres y apellidos:  %s <br/>'
-                '2) Tipo y Nº del documento de identidad'
-                '(marque con una "X" según corresponda)<br/> %s <br/><br/>'
-                ' <b>Domicilio</b><br/> %s' % (name, document, address))
+        return ('<b>1) Apellidos y nombres: </b>%s <br/>'
+                '<b>2) N° y tipo de documento: </b>%s - %s <br/>'
+                ' <b>Domicilio</b><br/> %s'
+                % (name, document_number,
+                   (document_type).upper(), address))
 
     def make_pep(self, customer):
         pep = []
@@ -579,7 +525,6 @@ class DeclarationPDFv2(Handler):
 
         return ''.join(pep)
 
-
     # Adds all the paragraphs for the Person class
     def makePersonPDF(self, story, customer):
         content = []
@@ -590,25 +535,20 @@ class DeclarationPDFv2(Handler):
                            self.checkEmpty(customer, 'father_name'),
                            self.checkEmpty(customer, 'mother_name'))])
 
-        document = self.make_document(customer,
-                                      document_number='document_number',
-                                      document_type='document_type',
-                                      other_document='other_document')
+        content.append(['b)', 'Tipo y Nº del documento de identidad',
+                        '%s - %s'
+                        % (self.checkEmpty(customer, 'document_number'),
+                           (self.checkEmpty(customer,
+                                            'document_type')).upper())])
 
-        content.append(['b)', 'Tipo y Nº del documento de identidad'
-                              ' (Marque con un "X" segun corresponda)'
-                              '<br/> %s' % document])
-
-        content.append(['c)', 'Condición en la que se realiza la operación'
-                              ' (marque con una "X" según corresponda):',
-                              self.check_mark(DeclarationPDFv2._CONDITIONS,
-                                              self.checkEmpty(customer,
-                                                              'link_type'))])
+        content.append(['c)', 'Condición en la que se realiza la operación',
+                              self.checkEmpty(customer, 'link_type')])
 
         content.append(['d)', 'Nacionalidad',
                         self.checkEmpty(customer, 'nationality')])
 
         address = self.make_address(customer,
+                                    address='address',
                                     street='street',
                                     urbanization='urbanization',
                                     flat='flat', distrit='distrit',
@@ -657,8 +597,8 @@ class DeclarationPDFv2(Handler):
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
             ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
             ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
-            ('SPAN', (1, 1), (-1, 1)), ('SPAN', (1, 4), (-1, 4)),
-            ('SPAN', (1, 9), (-1, 9)), ('SPAN', (1, 11), (-1, 11)),
+            ('SPAN', (1, 4), (-1, 4)), ('SPAN', (1, 9), (-1, 9)),
+            ('SPAN', (1, 11), (-1, 11)),
         ]))
 
         story.append(table)
@@ -678,8 +618,7 @@ class DeclarationPDFv2(Handler):
 
         content.append(['c)', ('Condición en la que se realiza la operación'
                                ' (marque X según corresponda)'),
-                        self.check_mark(DeclarationPDFv2._CONDITIONS,
-                        self.checkEmpty(customer, 'link_type'))])
+                        self.checkEmpty(customer, 'link_type')])
 
         content.append(['d)', ('Objeto social y actividad económica principal'
                                ' principal (comercial, industrial, '
@@ -694,23 +633,22 @@ class DeclarationPDFv2(Handler):
                               ' <br/>%s'
                               % self.shareholdersList(customer.shareholders)])
 
-        l_doc = self.make_document(customer,
-                                   document_number='legal_document_number',
-                                   document_type='legal_document_type')
-
         content.append(['f)', ('Identificación del representante legal o de'
                                ' quien comparece con facultades de'
                                ' representación y/o disposición de la'
-                               ' persona jurídica (indique nombres y'
-                               ' apellidos y N° de documento de identidad)'
-                               '<br/> (1) Nombres y apellidos: %s'
-                               '<br/> (2) Tipo y Nº del documento de'
-                               'identidad (Marque con "X" según'
-                               ' corresponda)<br/> %s'
-                               % (self.checkEmpty(customer, 'legal_name'),
-                                  l_doc))])
+                               ' persona jurídica<br/>'
+                               '<b>(1) Apellidos y nombres: </b> %s <br/>'
+                               '<b>(2) N° y tipo de documento: </b> %s - %s'
+                               % (self.checkEmpty(customer,
+                                                  'legal_name'),
+                                  self.checkEmpty(customer,
+                                                  'legal_document_number'),
+                                  (self.checkEmpty(customer,
+                                                   ('legal_document'
+                                                    '_type'))).upper()))])
 
         address = self.make_address(customer,
+                                    address='address',
                                     street='street',
                                     urbanization='urbanization',
                                     flat='flat', distrit='distrit',
