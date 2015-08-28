@@ -21,6 +21,8 @@ class exports.Customer extends App.Model
 
 class exports.Dispatch extends App.Model
 
+  urlRoot: 'dispatch'
+
 
 class exports.Dispatches extends App.Collection
 

@@ -674,4 +674,16 @@ class Dispatch(RESTful):
 
         doc.build(story)
 
+
+class IOCounter(RESTful):
+
+    def get(self):
+        from google.appengine.api import memcache
+        counter = memcache.get('iocounter')
+        if counter is None:
+            counter = 0
+            memcache.add('iocounter', counter)
+        self.write_json('{"counter":%d}' % counter)
+
+
 # vim: et:ts=4:sw=4

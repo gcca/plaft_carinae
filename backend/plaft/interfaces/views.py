@@ -59,6 +59,17 @@ class Dashboard(DirectToController):
         self.add_list('alert_s1', alerts.alerts_1)
         self.add_list('alert_s3', alerts.alerts_2)
 
+        from plaft.application.dispatch import pending_and_accepting
+        self.add_arg('dispatches_pa',
+                     pending_and_accepting(self.user.customs_agency))
+
+        from google.appengine.api import memcache
+        counter = memcache.get('iocounter')
+        if counter is None:
+            counter = 0
+            memcache.add('iocounter', counter)
+        self.add_arg('counter', counter)
+
 
 class DeclarationPDF(Handler):
 

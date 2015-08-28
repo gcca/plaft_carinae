@@ -16,18 +16,6 @@ StakeholderBody = require './stakeholder'
 Module = require '../../workspace/module'
 
 
-class Dispatch extends App.Model
-  /** @override */
-  urlRoot: \dispatch
-
-
-/**
-* @Class Dispatches
-* @extends Collection
-*/
-class Dispatches extends App.Collection
-  model: Dispatch
-
 /**
 * @Class Income
 * @extends Module
@@ -143,7 +131,7 @@ class Income extends Module
     @_desktop._show-save!
     @clean!
 
-    @model = new Dispatch _dispatch-dto  # Model for storing data
+    @model = new App.model.Dispatch _dispatch-dto  # Model for storing data
 
     _panel-group = new panelgroup.PanelGroup
 
@@ -338,26 +326,24 @@ class Income extends Module
                                max-width:27ch;
                                text-align:left'
 
-    App.ajax._get '/api/dispatch/list', true, do
-      _success: (dispatches) ~>
-        _pending = new Dispatches dispatches
-        _table = new Table  do
-          _attributes: _attributes
-          _labels: _labels
-          _templates: _templates
-          _column-cell-style: _column-cell-style
-          on-dblclick-row: (evt) ~>
-            _dispatch =  evt._target._model._attributes
-            @on-search _dispatch.'order', @@_SEARCHENUM.kByOrder
+    App.model.Dispatches._all (dispatches) ~>
+    # '/api/dispatch/list'
+      _pending = dispatches
+      _table = new Table  do
+        _attributes: _attributes
+        _labels: _labels
+        _templates: _templates
+        _column-cell-style: _column-cell-style
+        on-dblclick-row: (evt) ~>
+          _dispatch =  evt._target._model._attributes
+          @on-search _dispatch.'order', @@_SEARCHENUM.kByOrder
 
-        _table.set-rows _pending
+      _table.set-rows _pending
 
-        @el._append _table.render!.el
-        @_desktop._unlock!
-        @_desktop._spinner-stop!
+      @el._append _table.render!.el
+      @_desktop._unlock!
+      @_desktop._spinner-stop!
 
-      _error: ->
-        alert 'Error!!! Numeration list'
     @_desktop._search._focus 'DNI o número de orden'
     super!
 

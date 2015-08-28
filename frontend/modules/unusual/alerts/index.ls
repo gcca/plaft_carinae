@@ -12,22 +12,6 @@ DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
 
 
 /**
- * @class Dispatch
- * @extends Model
- */
-class Dispatch extends App.Model
-  urlRoot: 'dispatch'
-
-
-/**
- * @Class Dispatches
- * @extends Collection
- */
-class Dispatches extends App.Collection
-  urlRoot: 'customs_agency/pending'
-  model: Dispatch
-
-/**
  * CustomerAlert
  * --------
  *

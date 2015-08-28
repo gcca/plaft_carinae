@@ -485,29 +485,6 @@ class OperationEdit extends Module
   /** @private */ _tip-module: null
 
 
-/**
-* @class Dispatch
-* @extends Model
-*/
-class Dispatch extends App.Model
-  urlRoot: 'dispatch'
-
-/**
-* @Class Dispatches
-* @extends Collection
-*/
-class DispatchesA extends App.Collection
-  model: Dispatch
-
-
-/**
-* @Class Dispatches
-* @extends Collection
-*/
-class DispatchesP extends App.Collection
-  model: Dispatch
-
-
 class Operations extends Module
 
   /** @override */
@@ -552,59 +529,51 @@ class Operations extends Module
            aceptado
          </span>"
 
-    App.ajax._get '/api/customs_agency/list_dispatches', true, do
-      _success: (dispatches) ~>
-        _pending = new DispatchesP dispatches.'pending'
-        _accepting = new DispatchesA dispatches.'accepting'
-
-        _table-pending = new Table do
-                      _attributes: _attributes
-                      _labels: _labels
-                      _templates: _template-pending
-                      _column-cell-style: _column-cell-style
-                      on-dblclick-row: (evt) ~>
-                        _model = evt._target._model
-                        dam = _model._attributes.'dam'
-                        if dam? and (dam isnt '')
-                          @_desktop.load-next-page OperationEdit, do
-                            model: _model
-                        else
-                          modal-dam = Modal._new do
-                              _title: 'Advertencia'
-                              _body: 'No puede ingresar, porque falta Numerar.'
-                          modal-dam._show!
-
-        _table-pending.set-rows _pending
-
-        _table-accepting = new Table do
-                      _attributes: _attributes
-                      _labels: _labels
-                      _templates: _template-accepting
-                      _column-cell-style: _column-cell-style
-                      on-dblclick-row: (evt) ~>
-                        _model = evt._target._model
+    App.model.Dispatches._both (_pending, _accepting) ~>
+    # '/api/customs_agency/list_dispatches'
+      _table-pending = new Table do
+                    _attributes: _attributes
+                    _labels: _labels
+                    _templates: _template-pending
+                    _column-cell-style: _column-cell-style
+                    on-dblclick-row: (evt) ~>
+                      _model = evt._target._model
+                      dam = _model._attributes.'dam'
+                      if dam? and (dam isnt '')
                         @_desktop.load-next-page OperationEdit, do
-                            model: _model
+                          model: _model
+                      else
+                        modal-dam = Modal._new do
+                            _title: 'Advertencia'
+                            _body: 'No puede ingresar, porque falta Numerar.'
+                        modal-dam._show!
 
-        _table-accepting.set-rows _accepting
+      _table-pending.set-rows _pending
 
-        @$el._append '<h4>Lista de despachos pendientes</h4>'
-        @el._append _table-pending.render!.el
+      _table-accepting = new Table do
+                    _attributes: _attributes
+                    _labels: _labels
+                    _templates: _template-accepting
+                    _column-cell-style: _column-cell-style
+                    on-dblclick-row: (evt) ~>
+                      _model = evt._target._model
+                      @_desktop.load-next-page OperationEdit, do
+                          model: _model
 
-        @$el._append "<div class='#{gz.Css \col-md-12}'
-                           style='margin-bottom:20px'>
-                        <hr>
-                      </div>"
+      _table-accepting.set-rows _accepting
 
-        @$el._append '<h4>Lista de despachos aceptados</h4>'
-        @el._append _table-accepting.render!.el
-        @_desktop._unlock!
-        @_desktop._spinner-stop!
+      @$el._append '<h4>Lista de despachos pendientes</h4>'
+      @el._append _table-pending.render!.el
 
-      _error: ->
-        alert 'Error!!! NumerationP list'
+      @$el._append "<div class='#{gz.Css \col-md-12}'
+                         style='margin-bottom:20px'>
+                      <hr>
+                    </div>"
 
-
+      @$el._append '<h4>Lista de despachos aceptados</h4>'
+      @el._append _table-accepting.render!.el
+      @_desktop._unlock!
+      @_desktop._spinner-stop!
 
     super!
 

@@ -415,6 +415,7 @@ class BaseRESTful(Handler):
                     self.status.INTERNAL_ERROR('Internal store')
                 else:
                     self.render_json(instance.id for instance in instances)
+                    self.incr()
             else:  # create single
                 instance = self._model.new(query)
                 try:
@@ -423,6 +424,7 @@ class BaseRESTful(Handler):
                     self.status.INTERNAL_ERROR('Internal batch store')
                 else:
                     self.write_json('{"id":%d}' % instance.id)
+                    self.incr()
         else:
             self.status.BAD_REQUEST('No query')
 
@@ -443,6 +445,7 @@ class BaseRESTful(Handler):
                         self.status.INTERNAL_ERROR('Internal store')
                     else:
                         self.write_json('{}')
+                        self.incr()
                 else:
                     self.status.BAD_REQUEST('No query')
             else:
@@ -459,6 +462,15 @@ class BaseRESTful(Handler):
                 instance.delete()
             else:
                 self.status.NOT_FOUND('Not found by id %s' % id)
+
+    def incr(self):
+        from google.appengine.api import memcache
+        counter = memcache.get('iocounter')
+        if counter is None:
+            counter = 0
+            memcache.add('iocounter', counter)
+        else:
+            memcache.incr('iocounter')
 
 
 class RESTful(BaseRESTful):

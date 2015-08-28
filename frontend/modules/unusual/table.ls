@@ -9,6 +9,7 @@ table = App.widget.table
  */
 class UtilAnexo
 
+  # TODO: Remove `@_url` because of App.model.Dispaches._all
   ({@_desktop, @_parent, @_child, @_url='/api/dispatch/list', @_title}) ->
 
   is_officer: -> window.plaft.'user'.'class_'.'1' is 'Officer'
@@ -112,62 +113,57 @@ class UtilAnexo
 
     role = window.plaft.'user'.'role'
 
-    App.ajax._get @_url, true, do
-      _success: (dispatches) ~>
+    App.model.Dispatches._all (dispatches) ~>
+      for dispatch in [.._attributes for dispatches._models]
+        is_comercial = off
+        is_operativo = off
+        is_finanza = off
 
-        for dispatch in dispatches
-          is_comercial = off
-          is_operativo = off
-          is_finanza = off
+        for sc in [@get-section-code a for a in dispatch.'alerts']
+          if sc in comercial_alertas
+            is_comercial = on
+          if sc in operacion_alertas
+            is_operativo = on
+          if sc in finanza_alertas
+            is_finanza = on
 
-          for sc in [@get-section-code a for a in dispatch.'alerts']
-            if sc in comercial_alertas
-              is_comercial = on
-            if sc in operacion_alertas
-              is_operativo = on
-            if sc in finanza_alertas
-              is_finanza = on
+        dispatch
+          ..'is_comercial' = is_comercial
+          ..'is_operación' = is_operativo
+          ..'is_finanza' = is_finanza
 
-          dispatch
-            ..'is_comercial' = is_comercial
-            ..'is_operación' = is_operativo
-            ..'is_finanza' = is_finanza
+      _pending = dispatches
 
-        _pending = new Dispatches dispatches
+      if @is_officer!
+        title-module = 'OFICIAL CUMPLIMIENTO'
 
-        if @is_officer!
-          title-module = 'OFICIAL CUMPLIMIENTO'
+        for rol in ['Comercial', 'Operación', 'Finanza']
+          __add-column dct-role[rol].'label',
+                       dct-role[rol].'attribute'
+      else
+        __add-column dct-role[role].'label',
+                     dct-role[role].'attribute'
+        title-module = dct-role[role].'title'
 
-          for rol in ['Comercial', 'Operación', 'Finanza']
-            __add-column dct-role[rol].'label',
-                         dct-role[rol].'attribute'
-        else
-          __add-column dct-role[role].'label',
-                       dct-role[role].'attribute'
-          title-module = dct-role[role].'title'
+      # CREATE TABLE
+      _tabla = new Table do
+                    _attributes: _attributes
+                    _labels: _labels
+                    _templates: _templates
+                    _column-cell-style: _column-cell-style
+                    on-dblclick-row: (evt) ~>
+                      @_desktop.load-next-page @_child, model: evt._target._model
 
-        # CREATE TABLE
-        _tabla = new Table do
-                      _attributes: _attributes
-                      _labels: _labels
-                      _templates: _templates
-                      _column-cell-style: _column-cell-style
-                      on-dblclick-row: (evt) ~>
-                        @_desktop.load-next-page @_child, model: evt._target._model
+      _tabla.set-rows _pending
 
-        _tabla.set-rows _pending
-
-        if not @_title?
-          @_title = "IDENTIFICACIÓN DE OI - #{title-module}"
-        @_parent.el.html = "<h3 style='text-align:center;margin-top:0px'>
-                              #{@_title}</h3>"
-        @_parent.el._append _tabla.render!.el
-        if _active-transitions
-          @_desktop._unlock!
-          @_desktop._spinner-stop!
-
-      _error: ->
-        alert 'Error!!! NumerationP list'
+      if not @_title?
+        @_title = "IDENTIFICACIÓN DE OI - #{title-module}"
+      @_parent.el.html = "<h3 style='text-align:center;margin-top:0px'>
+                            #{@_title}</h3>"
+      @_parent.el._append _tabla.render!.el
+      if _active-transitions
+        @_desktop._unlock!
+        @_desktop._spinner-stop!
 
   _reload-module: -> @_load-module off
 

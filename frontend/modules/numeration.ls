@@ -13,22 +13,6 @@ FieldType = App.builtins.Types.Field
 
 
 /**
-* @class Dispatch
-* @extends Model
-*/
-class Dispatch extends App.Model
-  urlRoot: 'dispatch'
-
-
-/**
- * @Class Dispatches
- * @extends Collection
- */
-class Dispatches extends App.Collection
-  model: Dispatch
-
-
-/**
  * NumerationEdit
  * --------
  * Una vista que contiene el formulario del modulo de Numeracion de registros
@@ -441,27 +425,25 @@ class Numeration extends Module
                                     max-width:27ch;
                                     text-align: left;'
 
-    App.ajax._get '/api/customs_agency/list_dispatches', true, do
-      _success: (dispatches) ~>
-        @_pending = new Dispatches dispatches.'pending'
-        _table = new Table  do
-          _attributes: _attributes
-          _labels: _labels
-          _templates: _templates
-          _column-cell-style: _column-cell-style
-          on-dblclick-row: (evt) ~>
-            @_desktop.load-next-page(NumerationEdit, do
-                                     model: evt._target._model)
+    App.model.Dispatches._pending (dispatches) ~>
+    # '/api/customs_agency/list_dispatches'
+      @_pending = dispatches
+      _table = new Table do
+        _attributes: _attributes
+        _labels: _labels
+        _templates: _templates
+        _column-cell-style: _column-cell-style
+        on-dblclick-row: (evt) ~>
+          @_desktop.load-next-page(NumerationEdit, do
+                                   model: evt._target._model)
 
-        _table.set-rows @_pending
-        @_table = _table
+      _table.set-rows @_pending
+      @_table = _table
 
-        @el._append _table.render!.el
-        @_desktop._unlock!
-        @_desktop._spinner-stop!
+      @el._append _table.render!.el
+      @_desktop._unlock!
+      @_desktop._spinner-stop!
 
-      _error: ->
-        alert 'Error!!! Numeration list'
 
     @_desktop._search._focus 'Buscar por orden de despacho.'
     super!

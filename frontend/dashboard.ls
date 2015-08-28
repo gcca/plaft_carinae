@@ -45,6 +45,52 @@ Workspace = require './workspace'
 Settings = require './settings'
 
 
+# DTO to Dispatch model
+dispatches_pa = window.'plaft'.'dispatches_pa'
+dispatches = new Array
+Dispatch = App.model.Dispatch
+Dispatches = App.model.Dispatches
+for k of dispatches_pa
+  collection-k = new Array
+  for dto, i in dispatches_pa[k]
+    dispatch = new Dispatch dto
+    collection-k._push dispatch
+    dispatches._push dispatch
+  dispatches_pa[k] = new Dispatches collection-k
+window.'plaft'.'dispatches' = new Dispatches dispatches
+
+__current-counter = window.'plaft'.'counter'
+
+__method-counter = (_callback, ..._collections) ->
+  App.ajax._get '/api/iocounter', on, do
+    _success: (_io) ->
+      new-counter = _io.'counter'
+      if new-counter != __current-counter  # TODO: remove `and off`
+        # console.log 'TODO: GET DATA AND UPDATE COUNTER'  # TODO: get
+        _callback.apply @, _collections  # TODO: Move to update-data-callback
+        # call '/api/dispatch/list'
+      else
+        _callback.apply @, _collections
+    _error: ->
+      alert 'ERROR: counter'  # TODO: message
+
+
+App.model.Dispatches <<<
+  _all: (_callback) ->
+    __method-counter _callback, window.'plaft'.'dispatches'
+
+  _pending: (_callback) ->
+    __method-counter _callback, window.'plaft'.'dispatches_pa'.'pending'
+
+  _accepting: (_callback) ->
+    __method-counter _callback, window.'plaft'.'dispatches_pa'.'accepting'
+
+  _both: (_callback) ->
+    __method-counter(_callback,
+                     window.'plaft'.'dispatches_pa'.'pending',
+                     window.'plaft'.'dispatches_pa'.'accepting')
+
+
 /**
  * Dashboard
  * ---------
