@@ -58,11 +58,13 @@ def accept_multiple(customs_agency):
 
 def close_month(customs_agency, current_month=datetime.now().month):
     datastore = customs_agency.datastore
-    if current_month > datastore.current_month:
+    datastore_month = datastore.current_month
+    if current_month > datastore_month:
         accept_multiple(customs_agency)
         datastore.operations_last_month_key = datastore.operations_key
         del datastore.operations_key[:]
-        del datastore.pending_key[:]
+        datastore.pending_key = [d.key for d in datastore.pending
+                                 if d.numeration_date.month == datastore_month]
         del datastore.accepting_key[:]
         datastore.store()
         boolean = True
