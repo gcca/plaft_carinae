@@ -114,5 +114,6 @@ exports.panelgroup = require './panelgroup'
 exports.codename = require './codename'
 exports.table = require './table'
 exports.message-box = modal
+exports.newtable = require './newtable'
 
 # vim: ts=2:sw=2:sts=2:et
