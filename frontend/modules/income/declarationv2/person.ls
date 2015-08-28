@@ -29,6 +29,13 @@ class Person extends Customer
     _r
 
   _json-setter: (_dto) ->
+    pep-date = @form-builder._elements.'pep_is_date'._radios
+
+    if _dto.'pep_is_date'?
+      if _dto.'pep_is_date'
+        pep-date._yes._checked = true
+      else
+        pep-date._no._checked = true
     super _dto
     # Progress Bar
     @ratio = new FormRatio do
@@ -39,6 +46,7 @@ class Person extends Customer
     if _ratio isnt 0
       @_panel._header._get panelgroup.ControlBar ._set-bar _ratio
     @on-document_type-change!
+    @on-pep_country-change!
 
   /** @protected */
   set-default-type: -> @set-type 'n'
@@ -56,6 +64,13 @@ class Person extends Customer
 
   on-pep_country-change: ~>
     description = @form-builder._elements.'pep_country_description'._element
+    pep-country = @el.query '[name=pep_country]:checked'
+    if not pep-country?
+      return
+    else if pep-country._value is \Perú
+      @clean-text description
+    else
+      @clean-text description, off
 
 
   /** @override */
