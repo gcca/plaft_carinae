@@ -24,11 +24,15 @@ def accept(dispatch):
 
 
 def reject(dispatch):
+    datastore = dispatch.customs_agency.datastore
     operation = Operation.find(int(dispatch.operation.id))
     operation.delete()
 
     dispatch.operation_key = None
     dispatch.store()
+    datastore.operations_key.remove(operation.key)
+    datastore.store()
+
 
 
 # vim: ts=4:sw=4:sts=4:et
