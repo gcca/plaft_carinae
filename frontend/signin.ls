@@ -89,7 +89,7 @@ document.body.innerHTML = "
 
 </div>
 
-<div class='#{gz.Css \jumbotron}' style='padding-bottom: 11px'>
+<div class='#{gz.Css \jumbotron}'>
 
   <div class='#{gz.Css \container}'>
     #{
@@ -99,18 +99,18 @@ document.body.innerHTML = "
             </span>'
       else ''
     }
-    <span class='#{gz.Css \col-md-2}' style='padding:0px'>
-      <img src='/static/img/prevencion.png' style='float: left;margin: 0 40 0 10;'>
+    <span class='#{gz.Css \col-md-2} #{gz.Css \title}'>
+      <img src='/static/img/prevencion.png'>
     </span>
     <span class='#{gz.Css \col-md-8}' style='padding:0px'>
-    <h4 style='margin: 0px; text-align:center; font-weight:bold'>
+    <h4 class='#{gz.Css \text-center}'>
       SOFTWARE DE PREVENCION DEL LAVADO DE ACTIVOS Y DEL FINANCIAMIENTO DEL <br/>
       TERRORISMO APLICABLE A LOS DESPACHADORES DE ADUANA  -  PLAFT <br/>
     </h4>
-    <h2 style='text-align:center;'>PLAFT - UIF</h2>
+    <h2 class='#{gz.Css \text-center}'>PLAFT - UIF</h2>
     </span>
-    <span class='#{gz.Css \col-md-2}' style='padding:0px'>
-      <img src='/static/img/torre.png' style='float: left;margin: 0 40 0 10;'>
+    <span class='#{gz.Css \col-md-2} #{gz.Css \title}'>
+      <img src='/static/img/torre.png'>
     </span>
 
     <p class='#{gz.Css \jumbotron-options}
@@ -167,7 +167,7 @@ document.body.innerHTML = "
 </div>
 
   #{if error
-      then "<div class='#{gz.Css \col-md-12}' style='text-align:center'>
+      then "<div class='#{gz.Css \col-md-12} #{gz.Css \text-center}'>
               <div class='#{gz.Css \col-md-4}'>&nbsp;</div>
               <div class='#{gz.Css \alert} #{gz.Css \alert-danger} #{gz.Css \col-md-5}'>
               Usted no es una persona autorizada para ingresar al sistema <strong>PLAFT - UIF</strong> <br/>
@@ -176,47 +176,46 @@ document.body.innerHTML = "
     else ''}
   <div class='#{gz.Css \container}'>
 
-    <div class='#{gz.Css \row} #{gz.Css \publicity}'>
-      <div class='#{gz.Css \col-md-4}'>
-        <h4 style='font-weight:bold'>¿Qué es el lavado de activos?</h4>
-        <p style='text-align:justify;border: 1px solid;padding: 10px;'>
+    <div class='#{gz.Css \row}'>
+      <div class='#{gz.Css \col-md-4} #{gz.Css \publicity}'>
+        <h4>¿Qué es el lavado de activos?</h4>
+        <p>
           El lavado de activos es el conjunto de operaciones realizadas
          \ por una o más personas, destinadas a ocultar o disfrazar el
          \ origen ilícito de bienes o recursos que provienen de actividades
          \ delictivas tales como el narcotráfico, el tráfico de armas, el
          \ tráfico de personas, el secuestro, la corrupción, etc. A estos
          \ delitos se les conoce como delitos precedentes.</p>
-        </p>
       </div>
 
 
       <div class='#{gz.Css \col-md-4}'>
-        <div class='#{gz.Css \col-md-12}' style='text-align:center'>
+        <div class='#{gz.Css \col-md-12} #{gz.Css \text-center}'>
           <img src='/static/img/sbs.png' style='margin: 5 15 5 15;'>
           <img src='/static/img/uif.png' style='margin: 5 15 5 15;'>
         </div>
         <div class='#{gz.Css \col-md-12}'>
-          <h5 style='text-align:center; font-weight:bold'>
+          <h5 class='#{gz.Css \text-center}'>
             RESOLUCION SBS N° 2249-2013
           </h5>
         </div>
-        <div class='#{gz.Css \col-md-12}' style='text-align:center'>
+        <div class='#{gz.Css \col-md-12} #{gz.Css \text-center}'>
           <img src='/static/img/sunat.png' style='margin-right: 7px;'>
           <img src='/static/img/aduana.png' style='margin-left: 7px;'>
         </div>
         <div class='#{gz.Css \col-md-12}'>
-          <h5 style='text-align:center; font-weight:bold'>
+          <h5 class='#{gz.Css \text-center}'>
             ORGANISMO SUPERVISOR
           </h5>
         </div>
       </div>
 
 
-      <div class='#{gz.Css \col-md-4}'>
-        <h4 style='font-size:17px; font-weight:bold'>
+      <div class='#{gz.Css \col-md-4} #{gz.Css \publicity}'>
+        <h4>
           ¿Que es la prevención de lavado de activos?
         </h4>
-        <p style='text-align:justify;border: 1px solid;padding: 10px;'>
+        <p>
           Conjunto de información de las operaciones del sujeto obligado,
           \ cuya finalidad es prevenir y evitar que los servicios de comercio
           \ exterior que se ofrecen sean utilizados con fines ilícitos.
@@ -228,27 +227,27 @@ document.body.innerHTML = "
      </div>
 
     </div>
-    <div class='#{gz.Css \col-md-12}' style='text-align:center;margin: 25 0 25 0;'>
+    <div class='#{gz.Css \col-md-12} #{gz.Css \browsers}'>
       <p>Navegadores recomendados: &nbsp;&nbsp;
       <a title='Mozilla Firefox' href='https://www.mozilla.org/en-US/firefox/new/'
          target='_blank'>
-        <img src='/static/img/mozilla.png' style='width:32px' />
+        <img src='/static/img/mozilla.png'/>
       </a>
       &nbsp;&nbsp;&nbsp;&nbsp;
       <a title='Google Chrome'
          href='https://www.google.com/chrome/browser/desktop/index.html'
          target='_blank'>
-        <img src='/static/img/chrome.png' style='width:32px' />
+        <img src='/static/img/chrome.png' />
       </a>
       &nbsp;&nbsp;&nbsp;&nbsp;
       <a title='Opera' href='http://www.opera.com/es'
          target='_blank'>
-        <img src='/static/img/opera.png' style='width:32px' />
+        <img src='/static/img/opera.png'/>
       </a>
       &nbsp;&nbsp;&nbsp;&nbsp;
       <a title='Safari' href='https://www.apple.com/safari/'
          target='_blank'>
-        <img src='/static/img/safari.png' style='width:32px' />
+        <img src='/static/img/safari.png'/>
       </a>
 
       </p>
