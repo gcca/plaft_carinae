@@ -9,7 +9,7 @@
 
 from webapp2 import WSGIApplication, Route
 from webapp2_extras.routes import PathPrefixRoute
-from plaft.interfaces import views, handlers
+from plaft.interfaces import views, handlers, admin
 import plaft.config
 
 
@@ -17,6 +17,7 @@ urls = [
     # Views
     ('/', views.SignIn),
     ('/dashboard', views.Dashboard),
+    ('/admin', admin.Admin),
 
     # Views (no html-json.)
     ('/declaration/pdf/(\\d+)', views.DeclarationPDF),

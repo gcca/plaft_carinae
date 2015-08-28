@@ -17,17 +17,17 @@ __all__ = ['views', 'handlers']
 
 # views
 
-class AdminSite(DirectToController):
+class Admin(DirectToController):
 
     controller = 'admin'
 
     def _args(self):
-        customs = self.JSON.dumps(model.Customs.all())
-        return 'cs:' + customs
+        self.add_arg('user', self.user)
+        self.add_arg('cs', model.CustomsAgency.all())
 
 
 class views(object):
-    AdminSite = AdminSite
+    Admin = Admin
 
 
 # handlers
@@ -105,7 +105,7 @@ class Customs(Handler):
 
 
 class handlers(object):
-    AdminSite = AdminSite
+    Admin = Admin
     Officer = Officer
     Employee = Employee
     Customs = Customs
