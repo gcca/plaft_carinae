@@ -46,16 +46,6 @@ gen-pair = ->
     @gen-pair = -> ..
 
 
-/**
- * SBS pair generator.
- * @return Object
- * @private
- */
-gen-sbs-pair = ->
-  _._object @_sbs
-    @gen-sbs-pair = -> ..
-
-
 /** @export */
 exports <<<
   document-type:  # Table 1
@@ -108,7 +98,7 @@ exports <<<
 
   country-sbs: require './country-sbs'
 
-  anexo2: require './anexo2'
+  operation: require './operation'
 
   anexo6: require './anexo6'
 
@@ -120,11 +110,9 @@ exports <<<
 for , _obj of exports
   Object._properties _obj, do
     _pair: get: -> @gen-pair!
-    _sbs-pair: get: -> @gen-sbs-pair!
 
   _obj <<<
     gen-pair: gen-pair
-    gen-sbs-pair: gen-sbs-pair
 
 
 # vim: ts=2:sw=2:sts=2:et

@@ -44,4 +44,26 @@ exports._code =
   '43'
   '44'
 
+exports._method =
+  (c) -> c.'link_type'
+  (c) -> c.'legal'
+  (c) -> c.'condition'
+  (c) -> if c.'document_type' is \ruc then 'Persona Jurídica' else 'Persona Natural'
+  (c) -> if c.'document_type' is \ruc then 'No aplica' else (c.'document_type').to-upper-case!
+  (c) -> if c.'document_type' is \ruc then 'No aplica' else c.'document_number'
+  (c) -> if c.'document_type' is \ruc then 'No aplica' else c.'issuance_country'
+  (c) -> if c.'document_type' is \ruc then c.'document_number' else c.'ruc'
+  (c) -> if c.'document_type' is \ruc then c.'name' else c.'father_name'
+  (c) -> if c.'document_type' is \ruc then 'No aplica' else c.'mother_name'
+  (c) -> if c.'document_type' is \ruc then 'No aplica' else c.'name'
+  (c) -> if c.'document_type' is \ruc then 'No aplica' else c.'nationality'
+  (c) -> if c.'document_type' is \ruc then 'No aplica' else c.'activity'
+  (c) -> 'No aplica'
+  (c) -> if c.'document_type' is \ruc then c.'activity' else 'No aplica'
+  (c) -> if c.'ciiu'? then c.'ciiu'.'name' else ''
+  (c) -> if c.'employment'? then c.'employment' else 'No aplica'
+  (c) -> c.'address'
+  (c) -> if c.'ubigeo'? then "#{c.'ubigeo'.'code'} #{c.'ubigeo'.'name'}" else ''
+  (c) -> c.'address'
+
 # vim: ts=2:sw=2:sts=2:et

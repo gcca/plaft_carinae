@@ -36,4 +36,22 @@ exports._code =
   '23'
   '24'
 
+exports._method =
+  (d) -> d.'represents_to'
+  (d) -> d.'residence_status'
+  (d) -> (d.'document_type').to-upper-case!
+  (d) -> d.'document_number'
+  (d) -> d.'issuance_country'
+  (d) -> d.'father_name'
+  (d) -> d.'mother_name'
+  (d) -> d.'name'
+  (d) -> d.'nationality'
+  (d) -> d.'activity'
+  (d) -> 'No aplica'
+  (d) -> if d.'ciiu'? then d.'ciiu'.'name' else d.'ciiu'
+  (d) -> d.'position'
+  (d) -> d.'address'
+  (d) -> if d.'ubigeo' then "#{d.'ubigeo'.'code'} #{d.'ubigeo'.'name'}" else d.'ubigeo'
+  (d) -> d.'phone'
+
 # vim: ts=2:sw=2:sts=2:et

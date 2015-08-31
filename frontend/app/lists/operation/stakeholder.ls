@@ -2,6 +2,7 @@
 
 exports._display =
   'La persona a favor de quien se realiza la operación es: (1) Importador (ingreso de mercancía) ó (2) Destinatario del embarque (salida de mercancía). Si es el destinatario del embarque sólo consignar nombres y apellidos completos (persona natural), razón social (personas jurídicas) y dirección. Si es el importador, consignar todos los datos detallados en esta sección.'
+  ''
   'Condición de residencia de la persona a favor de quien se realiza la operación: (1) Residente ó (2) No residente.'
   'Tipo de persona a favor de quien se realiza la operación: (1) Persona Natural ó (2) Persona Jurídica. Si consignó la opción (2) no llenar los items 48 al 50 ni los items 53 al 57.'
   'Tipo de documento la persona a favor de quien se realiza la operación: Consignar el código de acuerdo a la Tabla N° 1'
@@ -23,6 +24,7 @@ exports._display =
 
 exports._code =
   '45'
+  ''
   '46'
   '47'
   '48'
@@ -41,5 +43,27 @@ exports._code =
   '61'
   '62'
   '63'
+
+exports._method =
+  (s) ->  s.'link_type'
+  -> 'No aplica'
+  -> 'No aplica'
+  (s) ->  if s.'document_type' is\ruc then 'Persona Jurídica' else 'Persona Natural'
+  ->  'No aplica'
+  ->  'No aplica'
+  ->  'No aplica'
+  ->  'No aplica'
+  (s) ->  if s.'document_type' is \ruc then s.'name' else s.'father_name'
+  (s) ->  if s.'document_type' is \ruc then 'No aplica' else s.'mother_name'
+  (s) ->  if s.'document_type' is \ruc then 'No aplica' else s.'name'
+  ->  'No aplica'
+  ->  'No aplica'
+  ->  'No aplica'
+  ->  'No aplica'
+  ->  'No aplica'
+  ->  'No aplica'
+  (s) ->  s.'address'
+  ->  'No aplica'
+  ->  'No aplica'
 
 # vim: ts=2:sw=2:sts=2:et

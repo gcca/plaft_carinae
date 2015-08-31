@@ -30,4 +30,19 @@ exports._code =
   '82'
   '83'
 
+exports._method =
+  (d) -> d.'declaration'.'customer'.'money_source_type'
+  (d) -> d.'regime'.'code'
+  -> 'No aplica'
+  (d) -> d.'description'
+  (d) -> d.'dam'
+  (d) -> d.'numeration_date'
+  (d) -> d.'declaration'.'customer'.'money_source'
+  -> 'USD'
+  -> 'No aplica'
+  (d) -> d.'amount_soles'
+  (d) -> d.'exchange_rate'
+  (d) -> if not d.'is_out' then d.'stakeholders'.'0'.'country' else 'No aplica'
+  (d) -> if d.'is_out' then d.'stakeholders'.'0'.'country' else 'No aplica'
+
 # vim: ts=2:sw=2:sts=2:et
