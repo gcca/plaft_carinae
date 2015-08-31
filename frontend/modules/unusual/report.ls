@@ -39,23 +39,19 @@ class Report extends Module
   _tagName: \div
 
   empty-field: (value) ->
-    _span = App.dom._new \span
-      ..css = 'color:red;font-size:22px'
-      ..title = 'TITLE'
-      ..html = '*'
-      $ .. ._tooltip do
-        'template': "<div class='#{gz.Css \tooltip}' role='tooltip'
-                          style='min-width:175px'>
-                       <div class='#{gz.Css \tooltip-arrow}'></div>
-                       <div class='#{gz.Css \tooltip-inner}'></div>
-                     </div>"
-    if value?
-      if value is ""
-        return _span
-      else
-        return value
+    if value? and value isnt ''
+      value
     else
-      return _span
+      App.dom._new \span
+        ..css = 'color:red;font-size:22px'
+        ..title = 'Valor no encontrado'
+        ..html = '*'
+        $ .. ._tooltip do
+          'template': "<div class='#{gz.Css \tooltip}' role='tooltip'
+                            style='min-width:175px'>
+                         <div class='#{gz.Css \tooltip-arrow}'></div>
+                         <div class='#{gz.Css \tooltip-inner}'></div>
+                       </div>"
 
   add-table: (list, _dto) ->
     _table = App.dom._new \table
@@ -88,10 +84,10 @@ class Report extends Module
   /** @override */
   render: ->
     dispatch = @model._attributes
-    operation = App.lists.anexo6.operation._display
-    alerts = App.lists.anexo6.alerts._display
-    person = App.lists.anexo6.person._display
-
+    App.lists.unusual
+      operation = ..operation._template
+      alerts = ..alerts._template
+      person = ..person._template
     pdf-report = App.dom._new \a
       .._class = "#{gz.Css \btn} #{gz.Css \btn-primary} #{gz.Css \pull-right}"
       ..css = 'margin: 20px'
@@ -101,21 +97,31 @@ class Report extends Module
       @el._append ..
 
     # PERSON
-    @$el._append "<h4>#{person[0]}</h4>"
-    @el._append @add-table person[1], dispatch.'declaration'.'customer'
+    @$el._append "<h4> DATOS DE IDENTIFICACIÓN DE LAS PERSONAS
+                  \ INVOLUCRADAS EN LAS OPERACIONES INUSUALES (consignar
+                  \ los datos consignados en esta sección por cada persona
+                  \ involucrada en la operación inusual)'</h4>"
+    @el._append @add-table person, dispatch.'declaration'.'customer'
 
     # STAKEHOLDER
     for stk in dispatch.'stakeholders'
-      @el._append @add-table person[1], stk
+      @$el._append "<h4> DATOS DE IDENTIFICACIÓN DE LAS PERSONAS
+                    \ INVOLUCRADAS EN LAS OPERACIONES INUSUALES (consignar
+                    \ los datos consignados en esta sección por cada persona
+                    \ involucrada en la operación inusual)'</h4>"
+      @el._append @add-table person, stk
 
     # OPERATION
-    @$el._append "<h4>#{operation[0]}</h4>"
-    @el._append @add-table operation[1], dispatch
+    @$el._append "<h4> DATOS RELACIONADOS A LA DESCRIPCIÓN DE
+                    \ LA OPERACIÓN INUSUAL</h4>"
+    @el._append @add-table operation, dispatch
 
     for alert in dispatch.'alerts'
       # ALERTS
-      @$el._append "<h4>#{alerts[0]}</h4>"
-      @el._append @add-table alerts[1], alert
+      @$el._append "<h4> SEÑALES DE ALERTA IDENTIFICADAS
+                    \ (Se debe consignar estos datos por
+                    \ cada señal de alerta)</h4>"
+      @el._append @add-table alerts, alert
 
     super!
 

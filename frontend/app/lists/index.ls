@@ -100,7 +100,7 @@ exports <<<
 
   operation: require './operation'
 
-  anexo6: require './anexo6'
+  unusual: require './unusual'
 
   money-source: require './money-source'
 
