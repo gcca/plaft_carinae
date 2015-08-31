@@ -9,8 +9,7 @@ table = App.widget.table
  */
 class UtilAnexo
 
-  # TODO: Remove `@_url` because of App.model.Dispaches._all
-  ({@_desktop, @_parent, @_child, @_url='/api/dispatch/list', @_title}) ->
+  ({@_desktop, @_parent, @_child, @_title}) ->
 
   is_officer: -> window.plaft.'user'.'class_'.'1' is 'Officer'
 

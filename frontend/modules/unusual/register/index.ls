@@ -214,8 +214,7 @@ class ListRegister extends Module
     (new Utils do
       _desktop: @_desktop
       _parent: @
-      _child: Register
-      _url: 'api/customs_agency/dispatches_without_IO')._load-module!
+      _child: Register)._load-module!
 
     super!
 
