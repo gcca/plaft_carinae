@@ -57,6 +57,13 @@ class Income extends Module
           _dispatch_dto =
             'declaration':
               'customer': 'document_number': _query
+          # TODO: Esto corrige un error al crear un nuevo despacho.
+          #       Al parecer el código que crea el formulario de cliente
+          #       (Customer) para persona jurídica (Business) exige que
+          #       la lista de acciones exista.
+          #       Se debe validar porque es posible que sea `null`.
+          if _query._length is 11  # is Business
+            _dispatch_dto.'declaration'.'customer'.'shareholders' = new Array
           @render-panels _dispatch_dto
 
     # Find by order number (dispatch)
@@ -87,6 +94,7 @@ class Income extends Module
 
     @model._save @panels2dispatchDTO!, do
       _success: ~>
+        App.model.Dispatches.add-new @model
         @_desktop.notifier.notify do
           _message: 'Guardado'
           _type: @_desktop.notifier.kSuccess

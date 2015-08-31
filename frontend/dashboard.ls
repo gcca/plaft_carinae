@@ -46,29 +46,40 @@ Settings = require './settings'
 
 
 # DTO to Dispatch model
-dispatches_pa = window.'plaft'.'dispatches_pa'
-dispatches = new Array
-Dispatch = App.model.Dispatch
-Dispatches = App.model.Dispatches
-for k of dispatches_pa
-  collection-k = new Array
-  for dto, i in dispatches_pa[k]
-    dispatch = new Dispatch dto
-    collection-k._push dispatch
-    dispatches._push dispatch
-  dispatches_pa[k] = new Dispatches collection-k
-window.'plaft'.'dispatches' = new Dispatches dispatches
+__counter =
+  _current: window.'plaft'.'counter'
+  _ids: null
 
-__current-counter = window.'plaft'.'counter'
+__counter-update = (dispatches_pa) ->
+  dispatches = new Array
+  Dispatch = App.model.Dispatch
+  Dispatches = App.model.Dispatches
+  for k of dispatches_pa
+    collection-k = new Array
+    for dto, i in dispatches_pa[k]
+      dispatch = new Dispatch dto
+      collection-k._push dispatch
+      dispatches._push dispatch
+    dispatches_pa[k] = new Dispatches collection-k
+  window.'plaft'.'dispatches' = new Dispatches dispatches
+  __counter._ids = [.._id for dispatches]
+__counter-update window.'plaft'.'dispatches_pa'
 
 __method-counter = (_callback, ..._collections) ->
   App.ajax._get '/api/iocounter', on, do
     _success: (_io) ->
       new-counter = _io.'counter'
-      if new-counter != __current-counter  # TODO: remove `and off`
-        # console.log 'TODO: GET DATA AND UPDATE COUNTER'  # TODO: get
-        _callback.apply @, _collections  # TODO: Move to update-data-callback
-        # call '/api/dispatch/list'
+      if new-counter != __counter._current
+        # TODO: improve fetching only modified dispatches from datastore.
+        #       Maybe using cache to store the modified keys by counter
+        #       and eval the last version to fetch.
+        App.ajax._get '/api/customs_agency/list_dispatches', true, do
+          _success: (dispatches_pa) ~>
+            __counter-update dispatches_pa
+            window.'plaft'.'dispatches_pa' = dispatches_pa
+            _callback.apply @, _collections
+          _error: ->
+            alert 'ERROR: 8250d1be-4de0-11e5-8eed-001d7d7379f5'
       else
         _callback.apply @, _collections
     _error: ->
@@ -89,6 +100,12 @@ App.model.Dispatches <<<
     __method-counter(_callback,
                      window.'plaft'.'dispatches_pa'.'pending',
                      window.'plaft'.'dispatches_pa'.'accepting')
+
+  add-new: (dispatch) ->
+    if dispatch._id not in __counter._ids
+      window.'plaft'.'dispatches'.'unshift' dispatch
+      window.'plaft'.'dispatches_pa'.'pending'.'unshift' dispatch
+      __counter._ids._push dispatch._id
 
 
 /**
