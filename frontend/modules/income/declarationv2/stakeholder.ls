@@ -26,7 +26,7 @@ class Stakeholder extends App.View
     App.builder.Form._new @el, _FIELDS
       ..render!
 
-      @_legal-field = .._elements.'legal_type'._field
+      @_legal-field = .._elements.'represents_to'._field
 
       .._free!
 
@@ -37,7 +37,7 @@ class Stakeholder extends App.View
   _GRID = App.builder.Form._GRID
 
   _FIELDS =
-    * _name: 'legal_type'
+    * _name: 'represents_to'
       _label: 'Representado Legal'
       _tip: 'La persona en cuyo nombre se realiza la operación ha sido
             \ representado por:'

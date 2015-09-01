@@ -394,7 +394,7 @@ def _data_debug():
             has_officer=False,
             declarants=[random.choice(declarants)],
             condition='Residente',
-            legal_type='Mandatario',
+            represents_to='Mandatario',
             ciiu=CodeName(code='18100',
                           name=('FAB. DE PRENDAS'
                                 ' DE VESTIR.')),

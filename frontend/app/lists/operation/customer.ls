@@ -46,7 +46,7 @@ exports._code =
 
 exports._method =
   (c) -> c.'link_type'
-  (c) -> c.'legal'
+  (c) -> c.'represents_to'
   (c) -> c.'condition'
   (c) -> if c.'document_type' is \ruc then 'Persona Jurídica' else 'Persona Natural'
   (c) -> if c.'document_type' is \ruc then 'No aplica' else (c.'document_type').to-upper-case!

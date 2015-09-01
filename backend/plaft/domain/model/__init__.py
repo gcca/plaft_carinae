@@ -157,9 +157,7 @@ class Customer(dom.Model, dom.PolyModel):
     # (-o-) A los dos.
     document_number = dom.String()
     document_type = dom.String()  # tipo de documento: ruc, dni, etc.
-    client_type = dom.String()  # TODO: ¿Sirve de algo? Remover
     validity = dom.String()
-    document = dom.Structured(Document)
 
     activity = dom.String()  # actividad (jurídica)
     # o profesión-ocupación (natural)
@@ -229,8 +227,8 @@ class Customer(dom.Model, dom.PolyModel):
     reference = dom.String()
     social_object = dom.String()
     legal = dom.String()  # Representante legal
-    legal_type = dom.Category(('Representante Legal', 'Apoderado',
-                               'Mandatario', 'El mismo'))
+    represents_to = dom.Category(('Representante Legal', 'Apoderado',
+                                  'Mandatario', 'El mismo'))
     fiscal_address = dom.String()
     position = dom.String()
 
