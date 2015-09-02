@@ -100,24 +100,22 @@ class Summary extends Module
     t-body = App.dom._new \tbody
     for attr in _attributes
       row = App.dom._new \tr
+      App.dom._new \td
+        ..css = 'width: 0.5%'
+        ..html = attr[0]
+        row._append ..
 
-      if attr[0] isnt ''
-        App.dom._new \td
-          ..css = 'width: 0.5%'
-          ..html = attr[0]
-          row._append ..
+      App.dom._new \td
+        .._class = gz.Css \col-md-7
+        ..html = attr[1]
+        row._append ..
 
-        App.dom._new \td
-          .._class = gz.Css \col-md-7
-          ..html = attr[1]
-          row._append ..
+      App.dom._new \td
+        .._class = gz.Css \col-md-5
+        $ .. ._append @empty-field attr[2] _dto
+        row._append ..
 
-        App.dom._new \td
-          .._class = gz.Css \col-md-5
-          $ .. ._append @empty-field attr[2] _dto
-          row._append ..
-
-        t-body._append row
+      t-body._append row
 
     _table._append t-body
     _table
@@ -187,13 +185,19 @@ class Summary extends Module
                         \ (INGRESO DE MERCANCÍA)/DESTINATARIO DEL EMBARQUE
                         \ (SALIDA DE MERCANCÍA)</h4>'
 
+    stakeholder._slice 1, 1
     @el._append @make-table stakeholder, dispatch.stakeholders[0]
+
+    third-dto = dispatch.'declaration'.'third'
+    if not third-dto?
+      third-dto = new Object
 
     # THIRD
     @$el._append '<h4>DATOS DE IDENTIFICACIÓN DEL TERCERO POR
                         \ CUYO INTERMEDIO SE REALIZA LA OPERACIÓN, DE
                         \ SER EL CASO.</h4>'
-    @el._append @make-table third, dispatch.'declaration'.'third'
+    @el._append @make-table third, third-dto
+
     #OPERATION
     @$el._append '<h4>DATOS RELACIONADOS A LA DESCRIPCIÓN DE LA
                         \ OPERACIÓN</h4>'

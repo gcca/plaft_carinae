@@ -64,6 +64,6 @@ exports._method =
   (c) -> if c.'employment'? then c.'employment' else 'No aplica'
   (c) -> c.'address'
   (c) -> if c.'ubigeo'? then "#{c.'ubigeo'.'code'} #{c.'ubigeo'.'name'}" else ''
-  (c) -> c.'address'
+  (c) -> c.'phone'
 
 # vim: ts=2:sw=2:sts=2:et

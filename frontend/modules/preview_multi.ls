@@ -66,9 +66,9 @@ class PreviewMulti extends Module
                   #{..'amount'}</li>" \
                for by-customer[k]]._join ''}
             </ul>", \
-          'score': (_.'reduce' ([..'amount' \
+          'score': _.'reduce' ([..'amount' \
                               for by-customer[k]]), \
-                              (n, ax) -> n + ax).toFixed 2 \
+                              (n, ax) -> n + ax \
       } for k of by-customer]
 
       @el._append _table.render!.el

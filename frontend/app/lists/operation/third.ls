@@ -20,14 +20,14 @@ exports._code =
 
 exports._method =
   (t) ->
-    if t? and t.'document_type'?
+    if t.'document_type'?
       if t.'document_type' is \ruc
         'Persona Jurídica'
       else 'Persona Natural'
     else
       'No aplica'
   (t) ->
-    if t? and t.'document_type'?
+    if t.'document_type'?
       if t.'document_type' is \ruc
         'No aplica'
       else
@@ -35,33 +35,33 @@ exports._method =
     else
       'No aplica'
   (t) ->
-    if t? and t.'document_type'?
+    if t.'document_type'?
       if t.'document_type' is \ruc
         t.'document_number'
       else 'No aplica'
     else
       'No aplica'
   (t) ->
-    if t? and t.'document_type'?
+    if t.'document_type'?
       if t.'document_type' is \ruc
         t.'name'
       else t.'father_name'
     else
       'No aplica'
   (t) ->
-    if t? and t.'document_type'?
+    if t.'document_type'?
       if t.'document_type' is \ruc
         'No aplica'
       else t.'mother_name'
     else
       'No aplica'
   (t) ->
-    if t? and t.'document_type'?
+    if t.'document_type'?
       if t.'document_type' is \ruc
         'No aplica'
       else t.'name'
     else
       'No aplica'
-  (t) -> if t? and t.'document_type'? then t.'third_ok' else 'No aplica'
+  (t) -> if t.'document_type'? then t.'third_ok' else 'No aplica'
 
 # vim: ts=2:sw=2:sts=2:et
