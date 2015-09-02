@@ -121,10 +121,7 @@ class Table extends App.View
     for _attr in @_attributes
       App.dom._new \td
         ..css = @_column-cell-style[_attr]
-        if _attr is 'dumpy'
-          $ .. ._append @_templates[_attr] _tr
-        else
-          ..html = @__get-value _model._attributes, _attr
+        $ .. ._append @__get-value _model._attributes, _attr, _tr
         _tr._append ..
 
     _tr.on-dbl-click @__dummy-on-dblclick-row
@@ -147,9 +144,8 @@ class Table extends App.View
    * @see @add-row, __get-by-attr
    * @private
    */
-  __get-value: (_dto, _attr) -> @_templates[_attr] (__get-by-attr _dto, _attr),
-                                                   _dto,
-                                                   _attr
+  __get-value: (_dto, _attr, _tr) -> @_templates[_attr] (__get-by-attr _dto, _attr),
+                                                         _dto, _attr, _tr
 
   /**
    * Get object value by parsed attribute name.

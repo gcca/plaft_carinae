@@ -264,8 +264,8 @@ class Income extends Module
 
     @el._append _panel-group.render!.el
 
-  _on-dumpy: (_tr) ->
-    if _tr._model? and not _tr._model._attributes.'accepted'
+  on-dummy: (_value, _dto, _attr, _tr) ->
+    if _dto.'operation'
       _span = App.dom._new \span
         .._class = "#{gz.Css \glyphicon}
                   \ #{gz.Css \glyphicon-remove}"
@@ -273,7 +273,7 @@ class Income extends Module
         ..on-click ~>
           see-button = (_value) ->
             if _value
-              _id = _tr._model._id
+              _id = _dto._id
               App.ajax._delete "/api/dispatch/#{_id}", do
                 _success: ->
                   $ _tr ._remove!
@@ -307,13 +307,13 @@ class Income extends Module
       'declaration.customer'
       'income_date'
       'declaration.customer.document_number'
-      'dumpy'
+      'dummy'
 
     _templates =
       'declaration.customer': ->
         "#{if it.'document_type' is \ruc then it.'name'
             else it.'name'+' '+it.'father_name'+' '+ it.'mother_name'}"
-      'dumpy': @_on-dumpy
+      'dummy': @on-dummy
 
     @el.html = "
       <div>
