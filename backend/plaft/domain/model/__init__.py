@@ -226,7 +226,6 @@ class Customer(dom.Model, dom.PolyModel):
     ubigeo = dom.Structured(CodeName)
     reference = dom.String()
     social_object = dom.String()
-    legal = dom.String()  # Representante legal
     represents_to = dom.Category(('Representante Legal', 'Apoderado',
                                   'Mandatario', 'El mismo'))
     fiscal_address = dom.String()
@@ -250,9 +249,7 @@ class Customer(dom.Model, dom.PolyModel):
     link_type = dom.Category(('Importador', 'Exportador'))
     unusual_operation = dom.String()
 
-    # version 2
-    class NewDeclarant(dom.Model):
-        """."""
+    class Proxy(dom.Model):
         name = dom.String()
         father_name = dom.String()
         mother_name = dom.String()
@@ -266,8 +263,13 @@ class Customer(dom.Model, dom.PolyModel):
         department = dom.String()
         flat = dom.String()
 
+    class Legal(dom.Model):
+        document_type = dom.String()
+        document_number = dom.String()
+        name = dom.String()
+
     # version 2
-    new_declarant = dom.Structured(NewDeclarant)
+    proxy = dom.Structured(Proxy)  # Apoderado
     contributor = dom.String()
     urbanization = dom.String()
     distrit = dom.String()
@@ -276,9 +278,7 @@ class Customer(dom.Model, dom.PolyModel):
     street = dom.String()
     flat = dom.String()
     # version 2 - business
-    legal_document_type = dom.String()
-    legal_document_number = dom.String()
-    legal_name = dom.String()
+    legal = dom.Structured(Legal)
     # version 2 - person
     work_center = dom.String()
     pep_is_date = dom.Boolean()
@@ -419,6 +419,18 @@ class Dispatch(dom.Model):
         """."""
         customer = dom.Structured(Customer)
         third = dom.Structured(Third)
+
+        def declarant(self, dto):
+            customer = dto['customer']
+            if customer['proxy'] and customer['proxy']['document_number']:
+                dto['customer']['legal'] = {}
+            else:
+                dto['customer']['proxy'] = {}
+
+        def to_dict(self):
+            dto = super(Dispatch.Declaration, self).to_dict()
+            self.declarant(dto)
+            return dto
 
     @property
     def declaration(self):

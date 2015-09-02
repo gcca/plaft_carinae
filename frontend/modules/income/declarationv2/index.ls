@@ -55,7 +55,7 @@ class DeclarationBody extends panelgroup.JSONBody
    */
   _json-getter: ->
     declarant-dto =
-      'new_declarant': @_declarant._json
+      'proxy': @_declarant._json
     'customer': @_customer._json <<<< @_stakeholder._json <<<< declarant-dto
 
 
@@ -93,7 +93,7 @@ class DeclarationBody extends panelgroup.JSONBody
     # adding declarant
     @_declarant = new Declarant
     @el._append @_declarant.render!.el
-    @_declarant._json = _customer-dto.'new_declarant'
+    @_declarant._json = _customer-dto.'proxy'
 
     # adding stakeholder data
     @_stakeholder = new Stakeholder

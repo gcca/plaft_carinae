@@ -273,7 +273,7 @@ class DeclarationPDF(Handler):
                               ' o de quien comparece con facultades de'
                               ' representacion y/o disposicion de la'
                               ' persona juridica',
-                        self.checkEmpty(customer, 'legal')])
+                        self.checkEmpty(customer, 'legal.name')])
 
         content.append(['f)', 'Domicilio',
                         self.checkEmpty(customer, 'address')])
@@ -595,7 +595,7 @@ class DeclarationPDFv2(Handler):
                         self.checkEmpty(customer, 'money_source')])
 
         content.append(['k)', ('<b>IDENTIFICACION DEL DECLARANTE</b><br/>%s'
-                               % self.makedeclarant(customer.new_declarant))])
+                               % self.makedeclarant(customer.proxy))])
 
         s = getSampleStyleSheet()
         s = s["BodyText"]
@@ -681,7 +681,7 @@ class DeclarationPDFv2(Handler):
                                ' que el declarante sea una persona distinta'
                                ' a la consignada en el literal f.'
                                ' que antecede)<br/>%s'
-                               % self.makedeclarant(customer.new_declarant))])
+                               % self.makedeclarant(customer.proxy))])
 
         s = getSampleStyleSheet()
         s = s["BodyText"]

@@ -383,7 +383,7 @@ def _data_debug():
             social_object='Comercial',
             activity='Ventas partes, piezas, accesorios',
             shareholders=shareholders,
-            legal='Salhuana Paredes, Carlos Eduardo',
+            legal=Customer.Legal(name='Salhuana Paredes, Carlos Eduardo'),
             address='Av. Jose Chipocco 125 Barranco',
             fiscal_address=('Av. Argentina 2020  ZI Zona'
                             ' Industrial Lima Lima Lima'),

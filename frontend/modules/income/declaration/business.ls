@@ -159,7 +159,7 @@ class Business extends Customer
       _type: FieldType.kView
       _options: new Shareholders
 
-    * _name: 'legal'
+    * _name: 'legal[name]'
       _label: 'e) Identificacion RL'
       _tip: 'Representante legal de la empresa.'
 

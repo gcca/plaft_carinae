@@ -107,17 +107,17 @@ class Business extends Customer
       _type: FieldType.kLabel
       _grid: _GRID._inline
 
-    * _name: 'legal_document_type'
+    * _name: 'legal[document_type]'
       _label: 'Tipo documento'
       _tip: 'Representante legal de la empresa.'
       _type: FieldType.kComboBox
       _options: DOCUMENT_TYPE_PAIR
 
-    * _name: 'legal_document_number'
+    * _name: 'legal[document_number]'
       _label: 'Número de documento'
       _tip: 'Representante legal de la empresa.'
 
-    * _name: 'legal_name'
+    * _name: 'legal[name]'
       _label: 'Apellidos y nombres'
 
     * _label: 'g) Domicilio'
