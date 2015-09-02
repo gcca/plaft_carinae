@@ -36,10 +36,19 @@ class FormRatio
     else
       parent-field._class._remove gz.Css \has-error
 
+  __get-value: (_obj, _attr) ->
+    if not _attr? then return _attr
+    _attr = (_attr.replace \[, '.').replace \],''
+    _levels = _attr._split \.
+    for _key in _levels
+      _obj = _obj[_key]
+    _obj
+
+
   _calculate: (_dto) ->
     balanced = 0
     for field in @fields
-      if is-not-null _dto[field._name]
+      if is-not-null @__get-value _dto, field._name
         balanced += 1
         @__validate field, off
       else
