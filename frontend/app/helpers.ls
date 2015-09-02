@@ -233,6 +233,7 @@ Array::=
   _index  : ref$\indexOf
   _splice : ref$\splice
   _shift  : ref$\shift
+  _slice  : ref$\slice
 
   _length:~
     -> @\length
