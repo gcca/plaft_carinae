@@ -100,22 +100,24 @@ class Summary extends Module
     t-body = App.dom._new \tbody
     for attr in _attributes
       row = App.dom._new \tr
-      App.dom._new \td
-        ..css = 'width: 0.5%'
-        ..html = attr[0]
-        row._append ..
 
-      App.dom._new \td
-        .._class = gz.Css \col-md-7
-        ..html = attr[1]
-        row._append ..
+      if attr[0] isnt ''
+        App.dom._new \td
+          ..css = 'width: 0.5%'
+          ..html = attr[0]
+          row._append ..
 
-      App.dom._new \td
-        .._class = gz.Css \col-md-5
-        $ .. ._append @empty-field attr[2] _dto
-        row._append ..
+        App.dom._new \td
+          .._class = gz.Css \col-md-7
+          ..html = attr[1]
+          row._append ..
 
-      t-body._append row
+        App.dom._new \td
+          .._class = gz.Css \col-md-5
+          $ .. ._append @empty-field attr[2] _dto
+          row._append ..
+
+        t-body._append row
 
     _table._append t-body
     _table
@@ -151,12 +153,8 @@ class Summary extends Module
       operation = ..operation._template
       customer = ..customer._template
       stakeholder = ..stakeholder._template
-      ..customer
-        customer-cod-dis = .._code-display
-        customer-function = .._method
-      ..stakeholder
-        stakeholder-cod-dis = .._code-display
-        stakeholder-function = .._method
+      customer-function = ..customer._method
+      stakeholder-function = ..stakeholder._method
 
     @make-header dispatch
 
@@ -168,17 +166,26 @@ class Summary extends Module
                    \ OBLIGADO (DECLARANTE).'</h4>"
       @el._append @make-table declarant, dcl
 
+    customer-dto = dispatch.declaration.customer
+    stakeholder-dto = dispatch.stakeholders[0]
+
     if not dispatch.'is_out'
-      customer = _.zip  customer-cod-dis, stakeholder-function
-      stakeholder = _.zip stakeholder-cod-dis, customer-function
-      dispatch.declaration.customer = dispatch.stakeholders[0]
-      dispatch.stakeholders[0] = dispatch.declaration.customer
+      customers = []
+      stakeholders = []
+      for [c, s] in _.zip customer, stakeholder-function
+        customers._push [c[0], c[1], s]
+      for [x, y] in _.zip stakeholder, customer-function
+        stakeholders._push [x[0], x[1], y]
+      customer = customers
+      stakeholder = stakeholders
+      customer-dto = dispatch.stakeholders[0]
+      stakeholder-dto = dispatch.declaration.customer
 
     @$el._append '<h4>DATOS DE IDENTIFICACIÓN DE LAS PERSONAS
                         \ EN CUYOS NOMBRES SE REALIZA LA OPERACIÓN
                         \ ORDENANTES/PROVEEDOR EXTRANJERO (INGRESO DE
                         \ MERCANCÍA)/ EXPORTADOR(SALIDA DE MERCANCÍA)</h4>'
-    @el._append @make-table customer, dispatch.declaration.customer
+    @el._append @make-table customer, customer-dto
 
     @$el._append '<h4>DATOS DE IDENTIFICACIÓN DE LAS PERSONAS A FAVOR
                         \ DE QUIENES SE REALIZA LA OPERACIÓN: IMPORTADOR
@@ -186,7 +193,7 @@ class Summary extends Module
                         \ (SALIDA DE MERCANCÍA)</h4>'
 
     stakeholder._slice 1, 1
-    @el._append @make-table stakeholder, dispatch.stakeholders[0]
+    @el._append @make-table stakeholder, stakeholder-dto
 
     third-dto = dispatch.'declaration'.'third'
     if not third-dto?
