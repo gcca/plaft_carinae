@@ -68,6 +68,9 @@ class Handler(RequestHandler):
 
     """
 
+    _user_model = model.User
+
+
     class BaseFactory(object):
         """Base HTTP attribute setter factory."""
 
@@ -238,7 +241,7 @@ class Handler(RequestHandler):
         super(Handler, self).initialize(*args, **kwargs)
         self.response.headers['by'] = self._sign
         user_value = self.read_value('u')
-        self.user = user_value and model.User.find(int(user_value))
+        self.user = user_value and self._user_model.find(int(user_value))
 
     def __init__(self, *args, **kwargs):
         self.user = None

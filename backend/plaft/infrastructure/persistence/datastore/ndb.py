@@ -319,7 +319,7 @@ class User(Model):
     @classmethod
     def authenticate(cls, username, password):
         """."""
-        user = User.find(username=username)
+        user = cls.find(username=username)
         if user and util.valid_pw(username, password, user.password):
             return user
 
