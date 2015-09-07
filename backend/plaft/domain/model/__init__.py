@@ -542,4 +542,9 @@ class Plaft(dom.Model):
     has_datastore = dom.Boolean(default=False)
 
 
+class Admin(dom.User, dom.PolyModel):
+    """ Administrator """
+    name = dom.String()
+
+
 # vim: et:ts=4:sw=4
