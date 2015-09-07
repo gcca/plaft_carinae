@@ -1,6 +1,6 @@
 /** @module modules */
 
-Module = require '../workspace/module'
+Module = require '../../workspace/module'
 
 
 /**
@@ -23,35 +23,12 @@ class Profile extends Module
   /** @override */
   render: ->
     @_desktop._show-save!
-    window.'plaft'.'user'
-      name = ..'name'
-      customs_agency = ..'customs_agency'.'name'
-      username = ..'username'
+    name = window.'plaft'.'user'.'name'
     @el.html = "
-      <span> Bienvenido #{if name? then '-'+ name else '' }</span>
-      <hr>
-      <form class='#{gz.Css \col-md-6}'>
-         <div class='#{gz.Css \form-group}'>
-           <label>Agencia de aduana</label>
-           <input type='text' class='#{gz.Css \form-control}'
-                  name='agency'
-                  value='#{customs_agency}'/>
-         </div>
-         <div class='#{gz.Css \form-group}'>
-           <label>Usuario</label>
-           <input type='text' class='#{gz.Css \form-control}'
-                  name='user'
-                  value='#{username}'/>
-         </div>
-         <div class='#{gz.Css \form-group}'>
-           <label>Contraseña</label>
-           <input type='text' class='#{gz.Css \form-control}'
-                  name='password'/>
-         </div>
-       </form>"
+      <h2> Bienvenido #{if name? then '- '+ name else '' }</h2>"
     super!
 
-  /** @protected */ @@_caption = 'EDITAR PERFIL'
+  /** @protected */ @@_caption = 'BIENVENIDO'
   /** @protected */ @@_icon    = gz.Css \user
   /** @protected */ @@_hash    = 'auth-hash-profile'
 

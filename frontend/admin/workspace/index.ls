@@ -2,10 +2,9 @@
 
 /**
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- * TODO: Workspace should be:
  *
  *  - - - - - - - - - - - - - -
- * |          top-bar   search |
+ * |          top-bar          |
  * |_ _ _ _ _ _ _ _ _ _ _ _ _ _|
  * |                           |
  * |                           |
@@ -19,7 +18,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 
-Menu = require './menu'
+Menu = require '../../workspace/menu'
 Desktop = require './desktop'
 
 
@@ -48,7 +47,6 @@ class Save extends App.View
 /**
  * Workspace
  * ---------
- * TODO(...): Default search place.
  * @class Workspace
  * @extends View
  */
@@ -81,6 +79,8 @@ class Workspace extends App.View
     menu = new Menu
     desktop = new Desktop do
       _save: _save
+
+    menu.el._class = "#{gz.Css \nav} #{gz.Css \nav-sidebar}"
 
     @save-place._append _save.render!.el
 

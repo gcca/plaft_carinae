@@ -9,7 +9,7 @@ MessageBox = modal.MessageBox
 
 class Officer extends App.Model
 
-  urlRoot: \officer
+  urlRoot: 'admin/officer'
 
 /**
  * OfficerItem
@@ -62,7 +62,7 @@ class OfficerItem extends panelgroup.FormBody
     _control-close.el._first.on-click ~>
       see-button = (_value) ~>
         if _value
-          App.ajax._delete "/api/officer/#{@model.id}", do
+          App.ajax._delete "/api/admin/officer/#{@model.id}", do
             _success: ->
               console.log 'Eliminado'
           _control-close.on-close!

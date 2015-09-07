@@ -17,7 +17,9 @@ urls = [
     # Views
     ('/', views.SignIn),
     ('/dashboard', views.Dashboard),
-    ('/admin', admin.Admin),
+    # Views admin
+    ('/admin', admin.views.Admin),
+    ('/admin/site', admin.views.AdminSite),
 
     # Views (no html-json.)
     ('/declaration/pdf/(\\d+)', views.DeclarationPDF),
@@ -29,6 +31,11 @@ urls = [
     ('/generate_user/(\\d+)', handlers.generate_user),
     ('/update_data', handlers.update_data),
     ('/autocompleters', handlers.autocompleters),
+
+    # Handler Admin
+    ('/api/admin/officer', admin.handlers.Officer),
+    Route('/api/admin/officer/<id:\\d+>', admin.handlers.Officer),
+
 ]
 
 

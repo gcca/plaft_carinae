@@ -1,6 +1,6 @@
 /** @module modules */
 
-Module = require '../../workspace/module'
+Module = require '../../../workspace/module'
 Officer = require './user'
 /**
  * NewOfficer
@@ -16,7 +16,7 @@ class NewOfficer extends Module
     @_desktop._lock!
     @_desktop._spinner-start!
 
-    App.ajax._get '/api/customs_agency/officers', true, do
+    App.ajax._get '/api/admin/officer', true, do
       _success: (dto) ~>
         @_officer = Officer._new!
         @el._append @_officer.render!.el
