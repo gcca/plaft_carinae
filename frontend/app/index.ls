@@ -498,6 +498,9 @@ App.GLOBALS =
 
 window.plaft.'declarant' = void
 window.plaft.'stakeholder' = void
+window.plaft.'user'.'permissions' =
+  'modules': void
+  'signals': void
 
 
 # vim: ts=2:sw=2:sts=2:et
