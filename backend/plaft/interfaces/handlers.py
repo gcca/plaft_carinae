@@ -27,53 +27,6 @@ class Declarant(RESTful):
 class Officer(RESTful):
     """Officer RESTful."""
 
-    def post(self):
-        payload = self.query
-        agency_name = payload['agency']
-        username = payload['username']
-        password = payload['password']
-        officer_name = payload['name']
-        customs_agency = model.CustomsAgency(name=agency_name)
-        customs_agency.store()
-        alerts_key = [a.key for a in model.Alert.query().fetch()]
-        from plaft.application.util.data_generator import permissions
-        permission = model.Permissions(modules=permissions.officer,
-                                       alerts_key=alerts_key)
-        permission.store()
-
-        datastore = model.Datastore(customs_agency_key=customs_agency.key)
-        datastore.store()
-
-        officer = model.Officer(username=username,
-                                password=password,
-                                name=officer_name,
-                                customs_agency_key=customs_agency.key,
-                                permissions_key=permission.key)
-        officer.store()
-
-        customs_agency.officer_key = officer.key
-        customs_agency.store()
-        self.render_json({'id': customs_agency.id})
-
-    def put(self, id):
-        payload = self.query
-        agency_name = payload['agency']
-        customs_agency = model.CustomsAgency.find(int(id))
-        customs_agency.name = agency_name
-        customs_agency.store()
-
-        del payload['agency']
-
-        officer = customs_agency.officer
-        officer << payload
-        officer.store()
-
-        self.write_json('{}')
-
-    def delete(self, id):
-        customs_agency = model.CustomsAgency.find(int(id))
-        customs_agency.delete()
-
 
 class User(RESTful):
     """User RESTful."""

@@ -27,7 +27,6 @@ for module in PRE-MODULES
 
 # HARDCODE
 BETAS =
-  NewUser = require './modules/new-user'
   OperationList = require './modules/operation-list'
   Profile = require './modules/profile'
   Simulate = require './modules/simulate'

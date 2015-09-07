@@ -16,7 +16,6 @@ module = {  # TODO: `None`s are temporal. See next `TODO`
     'report': None,          # anexo 6
     'register': None,        # registrar anexo 6
     'preview_multi': None,   # contador de montos (preview de múltiples)
-    'new-user': None,        # nuevo oficial de cumplimiento
     'operation-list': None,  # lista de operaciones (cierre mensual)
     'simulate': None,        # simulación (operaciones múltiples)
 }
