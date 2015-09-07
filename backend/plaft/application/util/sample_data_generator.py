@@ -14,7 +14,7 @@ import plaft.config
 from plaft.domain.model import (Dispatch, CodeName, Declarant, Stakeholder,
                                 Business, Person, Datastore, CustomsAgency,
                                 Operation, Officer, Employee, Permissions,
-                                Alert, User, Customer)
+                                Alert, User, Customer, Admin)
 from plaft.application.util import data_generator
 
 
@@ -444,6 +444,10 @@ def _data_debug():
         operations(agency, list_dispatches, datastore)
         unusual(agency, list_dispatches)
 
+    admin = Admin(name='César Vargas',
+                  username='admin',
+                  password='admin')
+    admin.store()
     # HARDCODED data
     # _data_deploy()
 
