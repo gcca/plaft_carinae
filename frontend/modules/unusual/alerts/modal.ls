@@ -15,7 +15,7 @@ class ModalAlert extends modal.Modal
 
   alerts_user: ->
     sections = []
-    sections_user = window.plaft.'user'.'permissions'.'sections'
+    sections_user = App.permissions.sections
     alert-section-one = window.plaft.'lists'.'alert_s1'
     alert-section-three = window.plaft.'lists'.'alert_s3'
 
@@ -29,7 +29,7 @@ class ModalAlert extends modal.Modal
     sections
 
   _is-alert-user: (code) ->
-    alerts = window.plaft.'user'.'permissions'.'alerts'
+    alerts = App.permissions.alerts
     code in ["#{a.'section'+a.'code'}" for a in alerts]
 
   delete-alert: (_checkbox) ->

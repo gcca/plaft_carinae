@@ -203,7 +203,7 @@ class Alerts extends Module
         alert 'ERROR: e746ae94-5a3a-11e4-9a1d-88252caeb7e8'
 
   _is-alert-user: (code) ->
-    alerts = window.plaft.'user'.'permissions'.'alerts'
+    alerts = App.permissions.alerts
     code in ["#{a.'section'+a.'code'}" for a in alerts]
 
   transform-to-dto: ->

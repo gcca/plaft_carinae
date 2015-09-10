@@ -477,7 +477,8 @@ App.mixin = require './mixin'
 # HARDCODE
 App.permissions =
   modules: window.plaft.'user'.'permissions'.'modules'
-  signals: window.plaft.'user'.'permissions'.'signals'
+  alerts: window.plaft.'user'.'permissions'.'alerts'
+  sections: window.plaft.'user'.'permissions'.'sections'
 
 
 App.GLOBALS =
@@ -500,7 +501,8 @@ window.plaft.'declarant' = void
 window.plaft.'stakeholder' = void
 window.plaft.'user'.'permissions' =
   'modules': void
-  'signals': void
+  'alerts': void
+  'sections': void
 
 
 # vim: ts=2:sw=2:sts=2:et
