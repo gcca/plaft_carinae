@@ -42,6 +42,7 @@ class FormRatio
     _levels = _attr._split \.
     for _key in _levels
       _obj = _obj[_key]
+      if not _obj? then break
     _obj
 
 
