@@ -265,7 +265,7 @@ class Income extends Module
     @el._append _panel-group.render!.el
 
   on-dummy: (_value, _dto, _attr, _tr) ->
-    if _dto.'operation'
+    if not _dto.'operation'
       _span = App.dom._new \span
         .._class = "#{gz.Css \glyphicon}
                   \ #{gz.Css \glyphicon-remove}"
@@ -273,8 +273,7 @@ class Income extends Module
         ..on-click ~>
           see-button = (_value) ->
             if _value
-              _id = _dto._id
-              App.ajax._delete "/api/dispatch/#{_id}", do
+              App.ajax._delete "/api/dispatch/#{_dto.'id'}", do
                 _success: ->
                   $ _tr ._remove!
 
