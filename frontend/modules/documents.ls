@@ -231,6 +231,7 @@ class Documents extends Module
         # viewer
         @_viewer = App.dom._new \div
           .._class = gz.Css \col-md-8
+          ..css = 'background-color:#fffecd'
           @el._append ..
 
 
