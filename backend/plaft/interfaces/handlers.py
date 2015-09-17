@@ -639,4 +639,104 @@ class IOCounter(RESTful):
         self.write_json('{"counter":%d}' % counter)
 
 
+# Document
+
+class Document(RESTful):
+
+    @RESTful.method
+    def getbody(self, document_id):
+        try:
+            header_id = int(document_id)
+        except ValueError, TypeError:
+            self.status.BAD_REQUEST('Bad document id ' + document_id)
+        else:
+            from plaft.domain.model.documents import Header
+            header = Header.find(header_id)
+            if header:
+                content = header.body.content
+                self.write(content)
+            else:
+                self.status.NOT_FOUND('Header not found: ' + document_id)
+
+    @RESTful.method
+    def getsource(self, document_id):  # TODO: No copy paste `gethdr`
+        try:
+            header_id = int(document_id)
+        except ValueError, TypeError:
+            self.status.BAD_REQUEST('Bad document id ' + document_id)
+        else:
+            from plaft.domain.model.documents import Header
+            header = Header.find(header_id)
+            if header:
+                source = header.body.source
+                self.response.headers['Content-Type'] = 'application/pdf'
+                self.write(source)
+            else:
+                self.status.NOT_FOUND('Header not found: ' + document_id)
+
+    @RESTful.method
+    def list(self):
+        from plaft.domain.model.documents import Header
+        def create(parent_key, sublist):
+            headers = (Header.query(Header.parent_key == parent_key)
+                       .order(Header.created)
+                       .fetch())
+            if headers:
+                for header in headers:
+                    newlist = []
+                    r = create(header.key, newlist)
+                    if r:
+                        sublist.append([header.title, newlist])
+                    else:
+                        body_key = header.key
+                        sublist.append([header.title,
+                                        (body_key.id()
+                                         if body_key
+                                         else None)])
+                return True
+            else:
+                return None
+
+        mainlist = []
+        create(None, mainlist)
+
+        self.render_json(mainlist)
+
+    def get(self, id=0):
+        from plaft.domain.model.documents import Header
+        parent_id = int(id)
+        if parent_id:
+            import plaft.infrastructure.persistence.datastore.ndb as dom
+            parent_key = dom.ndb.Key('Header', parent_id)
+        else:
+            parent_key = None
+        self.render_json([(hdr.title, hdr.id)
+                          for hdr
+                          in (Header.query(Header.parent_key == parent_key)
+                              .order(Header.created)
+                              .fetch())])
+
+    def post(self):
+        from plaft.domain.model.documents import Header, Body
+
+        pid = self.request.POST['pid']
+        title = self.request.POST['title']
+        document = self.request.POST['file']
+
+        try:
+            parent_header = Header.find(int(pid))
+        except ValueError, TypeError:
+            self.status.BAD_REQUEST('Bad id: ' + pid)
+        else:
+            if parent_header:
+                body = Body(content=document.file.read().decode('cp1252'))
+                header = Header(title=title,
+                                parent_key=parent_header.key,
+                                body_key=body.store())
+                header.store()
+                self.render_json('{"id":%d}' % header.id)
+            else:
+                self.status.NOT_FOUND('Parent not found: ' + pid)
+
+
 # vim: et:ts=4:sw=4
