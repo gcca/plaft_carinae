@@ -321,6 +321,11 @@ HTMLSelectElement::=
 
   _length:~ -> @\length
 
+HTMLOptionElement::=
+  _value:~
+    -> @\value
+    (x) -> @\value = x
+
 HTMLInputElement::=
   with-name: (x) -> @\name  = x ; @
   with-value: (x) -> @\value = x ; @
@@ -388,6 +393,7 @@ $\fn <<<
   _popover: ref$\popover
   _hide: ref$\hide
   _show: ref$\show
+  _toggle: ref$\toggle
   _remove: ref$\remove
   _tooltip: ref$\tooltip
 

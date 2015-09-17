@@ -30,6 +30,7 @@ BETAS =
   OperationList = require './modules/operation-list'
   Profile = require './modules/profile'
   Simulate = require './modules/simulate'
+  Documents = require './modules/documents'
 
 username = window.plaft.'user'.'username'
 
