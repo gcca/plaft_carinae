@@ -359,11 +359,13 @@ class MetaRESTful(type):
         if 'RESTful' != name:
             cls.path = name.lower()
 
-            try:
-                cls._model = getattr(model, name, None)
-            except AttributeError:
-                raise AttributeError('{"e":"No RESTHandler model class name:'
-                                     ' %s."}' % name)
+            if not cls._model:
+                try:
+                    cls._model = getattr(model, name, None)
+                except AttributeError:
+                    raise AttributeError(
+                        '{"e":"No RESTHandler model class name:'
+                        ' %s."}' % name)
 
         super(MetaRESTful, cls).__init__(name, *args)
 
