@@ -185,6 +185,10 @@ class Table extends App.View
    */
   simple-template = -> it
 
+  _show: -> @el._class._remove gz.Css \hidden
+
+  _hide: -> @el._class._add gz.Css \hidden
+
   /** @override */
   initialize: ({@_attributes, \
                 @_labels, \
