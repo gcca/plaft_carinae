@@ -564,5 +564,33 @@ class Admin(dom.User, dom.PolyModel):
     """ Administrator """
     name = dom.String()
 
+class Bill(dom.Model):
+    date_bill = dom.Date()
+    customs_agency_key = dom.Key(CustomsAgency)
+    billing_type = dom.String()
+    seller = dom.String()
+    exchange_rate = dom.String()
+    payment = dom.String()
+    guide = dom.String()
+    purchase = dom.String()
+    method = dom.Category(('Boleta de Venta', 'Factura',
+                           'Guia de remisión', 'Nota crédito'
+                           'Nota de Abono'))
+
+    total = dom.Float()
+    igv = dom.Float()
+    to_pay = dom.Float()
+    is_service = dom.Boolean()
+
+    class Details(dom.Model):
+        quantity = dom.Integer()
+        description = dom.String()
+        price = dom.Float()
+        unit = dom.String()
+        amount = dom.Float()
+
+    details = dom.Structured(Details, repeated=True)
+
+
 
 # vim: et:ts=4:sw=4

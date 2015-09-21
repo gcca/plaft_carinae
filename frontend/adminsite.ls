@@ -4,6 +4,7 @@ App = require './app'
 MODULES =
   Profile  = require './admin/modules/profile'
   User     = require './admin/modules/new-user'
+  Billing  = require './admin/modules/billing'
 
 App.MODULES = MODULES
 Workspace = require './admin/workspace'
