@@ -475,6 +475,12 @@ App.widget = require './widget'
 App.mixin = require './mixin'
 
 # HARDCODE
+if not window.plaft.'user'.'permissions'
+  window.plaft.'user'.'permissions' =
+    'modules': void
+    'alerts': void
+    'sections': void
+
 App.permissions =
   modules: window.plaft.'user'.'permissions'.'modules'
   alerts: window.plaft.'user'.'permissions'.'alerts'
@@ -497,12 +503,17 @@ App.GLOBALS =
       _success: (employees) ->
         window.plaft.'us' = employees
 
+  update_customs: ->
+    App.ajax._get '/api/admin/customs_agency', true, do
+      _success: (customs_agency) ->
+        dto-customs = new Object
+        for customs in customs_agency
+          dto-customs[customs.'name'] = customs
+
+        window.plaft.'customs' = dto-customs
+
 window.plaft.'declarant' = void
 window.plaft.'stakeholder' = void
-window.plaft.'user'.'permissions' =
-  'modules': void
-  'alerts': void
-  'sections': void
 
 
 # vim: ts=2:sw=2:sts=2:et
