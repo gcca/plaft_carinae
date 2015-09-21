@@ -33,8 +33,8 @@ urls = [
     ('/autocompleters', handlers.autocompleters),
 
     # Handler Admin
-    ('/api/admin/officer', admin.handlers.Officer),
-    Route('/api/admin/officer/<id:\\d+>', admin.handlers.Officer),
+    ('/api/admin/customs_agency', admin.handlers.CustomsAgency),
+    Route('/api/admin/customs_agency/<id:\\d+>', admin.handlers.CustomsAgency),
 
 ]
 

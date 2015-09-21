@@ -8,7 +8,7 @@
 
 """
 
-from plaft.interfaces import Handler, DirectToController
+from plaft.interfaces import Handler, DirectToController, RESTful
 from plaft.domain import model
 
 
@@ -17,25 +17,16 @@ __all__ = ['views', 'handlers']
 
 # views
 
-
-class MetaAdmin(type):
-
-    def __init__(self, *args, **kwargs):
-        self._user_model = model.Admin
-
-
-class AdminFixin(object):
-
-    __metaclass__ = MetaAdmin
-
-
-class AdminSite(DirectToController, AdminFixin):
+class AdminSite(DirectToController):
 
     controller = 'admin'
 
+    _user_model = model.Admin
+
     def _args(self):
         self.add_arg('user', self.user)
-        self.add_arg('cs', model.CustomsAgency.all())
+        self.add_arg('customs',
+                     {c.customs['name']:c.customs for c in model.CustomsAgency.all()})
 
 
 class Admin(DirectToController):
@@ -64,20 +55,26 @@ class views(object):
 
 # handlers
 
-class Officer(Handler, AdminFixin):
+class CustomsAgency(Handler):
+
+    _user_model = model.Admin
 
     def get(self):
-        users = [customs.officers for customs in model.CustomsAgency.all()]
+        users = [c.customs for c in model.CustomsAgency.all()]
         self.render_json(users)
 
     def post(self):
         payload = self.query
-        agency_name = payload['agency']
-        username = payload['username']
-        password = payload['password']
-        officer_name = payload['name']
-        customs_agency = model.CustomsAgency(name=agency_name)
+        officer = payload['officer']
+        username = officer['username']
+        password = ('' if not officer['password']
+                       else officer['password'])
+
+        del payload['officer']
+
+        customs_agency = model.CustomsAgency.new(payload)
         customs_agency.store()
+
         alerts_key = [a.key for a in model.Alert.query().fetch()]
         from plaft.application.util.data_generator import permissions
         permission = model.Permissions(modules=permissions.officer,
@@ -89,7 +86,7 @@ class Officer(Handler, AdminFixin):
 
         officer = model.Officer(username=username,
                                 password=password,
-                                name=officer_name,
+                                name=officer['name'],
                                 customs_agency_key=customs_agency.key,
                                 permissions_key=permission.key)
         officer.store()
@@ -100,15 +97,16 @@ class Officer(Handler, AdminFixin):
 
     def put(self, id):
         payload = self.query
-        agency_name = payload['agency']
+        officer_dto = payload['officer']
+
+        del payload['officer']
+
         customs_agency = model.CustomsAgency.find(int(id))
-        customs_agency.name = agency_name
+        customs_agency << payload
         customs_agency.store()
 
-        del payload['agency']
-
         officer = customs_agency.officer
-        officer << payload
+        officer << officer_dto
         officer.store()
 
         self.write_json('{}')
@@ -119,6 +117,6 @@ class Officer(Handler, AdminFixin):
 
 
 class handlers(object):
-    Officer = Officer
+    CustomsAgency = CustomsAgency
 
 # vim: et:ts=4:sw=4

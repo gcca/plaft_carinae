@@ -191,7 +191,7 @@ class Operation(RESTful):
 
         customs_agency = self.user.customs_agency
         operations = plaft.application.dispatch.list_operations(customs_agency)
-        filas = 3
+        filas = 4
 
         output = StringIO.StringIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
@@ -207,51 +207,43 @@ class Operation(RESTful):
         # NORMAL DISPATCH
         dispatch_format = workbook.add_format({'align': 'center',
                                                'border': 1})
-        # DISPATCH IN OPERATION
-        operation_format = workbook.add_format({'align': 'center',
-                                                'font_color': '#9C0006',
-                                                'border': 1})
-        # DISPATCH IN OPERATION
+        # TITLE
         title_format = workbook.add_format({'align': 'center',
                                             'bold': 1,
-                                            'font_color': '#9C0006',
                                             'border': 1})
-        worksheet.write(2, 1, 'No Orden', title_format)
-        worksheet.write(2, 2, 'Rg.', title_format)
-        worksheet.write(2, 3, 'No F.', title_format)
-        worksheet.write(2, 4, 'No Reg.', title_format)
-        worksheet.write(2, 5, 'DAM', title_format)
-        worksheet.write(2, 6, 'M.O.', title_format)
-        worksheet.write(2, 7, 'N.M.', title_format)
-        worksheet.write(2, 8, 'FOB US$', title_format)
-        worksheet.write(2, 9, 'F. Numeracion', title_format)
+        worksheet.write(3, 1, 'No Orden', title_format)
+        worksheet.write(3, 2, 'Rg.', title_format)
+        worksheet.write(3, 3, 'No F.', title_format)
+        worksheet.write(3, 4, 'No Reg.', title_format)
+        worksheet.write(3, 5, 'DAM', title_format)
+        worksheet.write(3, 6, 'M.O.', title_format)
+        worksheet.write(3, 7, 'N.M.', title_format)
+        worksheet.write(3, 8, 'FOB US$', title_format)
+        worksheet.write(3, 9, 'F. Numeracion', title_format)
 
         for operation in operations:
             for i in range(len(operation.dispatches)):
                 dispatch = operation.dispatches[i]
-                index = operation.num_modalidad[i]
-                excel_format = dispatch_format
-                if dispatch.amount > 10000:
-                    excel_format = operation_format
-                worksheet.write(filas, 1, dispatch.order, excel_format)
-                worksheet.write(filas, 2, dispatch.regime.code, excel_format)
-                worksheet.write(filas, 3, operation.row_number, excel_format)
+                index = operation.num_modalidad()[i]
+                worksheet.write(filas, 1, dispatch.order, dispatch_format)
+                worksheet.write(filas, 2, dispatch.regime.code, dispatch_format)
+                worksheet.write(filas, 3, operation.row_number, dispatch_format)
                 worksheet.write(filas, 4, operation.register_number,
-                                excel_format)
-                worksheet.write(filas, 5, dispatch.dam, excel_format)
+                                dispatch_format)
+                worksheet.write(filas, 5, dispatch.dam, dispatch_format)
                 worksheet.write(filas, 6, operation.modalidad,
-                                excel_format)
-                worksheet.write(filas, 7, '%s' % index, excel_format)
+                                dispatch_format)
+                worksheet.write(filas, 7, '%s' % index, dispatch_format)
                 worksheet.write(filas, 8, str(dispatch.amount),
-                                excel_format)
+                                dispatch_format)
                 worksheet.write(filas, 9,
                                 dispatch.numeration_date.strftime('%d/%m/%Y'),
-                                excel_format)
+                                dispatch_format)
                 filas = filas + 1
         workbook.close()
         output.seek(0)
-        ztime = datetime.now().strftime("%B")
-        name_file = "Reporte MENSUAL-(%s).xlsx" % ztime
+        ztime = datetime.now().strftime("%d/%m/%y")
+        name_file = "RO. PROCESO MENSUAL - (%s).xlsx" % ztime
         self.response.headers['Content-Type'] = 'application/octotet-stream'
         self.response.headers['Content-Disposition'] = 'attachment;\
                                             filename="%s"' % name_file

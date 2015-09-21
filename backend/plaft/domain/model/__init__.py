@@ -62,6 +62,16 @@ class CustomsAgency(dom.Model):
     name = dom.String()  # Nombre de la agencia de aduanas
     employees_key = dom.Key(kind='User', repeated=True)
     officer_key = dom.Key(kind='User')
+    address = dom.String()
+    distrit = dom.String()
+    province = dom.String()
+    name_contact = dom.String()
+    office_contact = dom.String()
+    phone = dom.String()
+    mobile = dom.String()
+    email = dom.String()
+    document_number = dom.String()
+    document_type = dom.String()
 
     @property
     def datastore(self):
@@ -70,11 +80,19 @@ class CustomsAgency(dom.Model):
 
     @property
     def officers(self):
+        if not self.officer_key:
+            return
         officer = self.officer
         return {'agency': self.name,
                 'name': officer.name,
                 'username': officer.username,
                 'id': self.id}
+
+    @property
+    def customs(self):
+        dto = self.to_dto()
+        del dto['employees']
+        return dto
 
 
 # Usuarios
