@@ -246,7 +246,7 @@ class Documents extends Module
   /** @private */ _viewer: null
   /** @private */ _current-node: null
 
-  /** @protected */ @@_caption = 'Legislación'
+  /** @protected */ @@_caption = 'LEGISLACIÓN'
   /** @protected */ @@_icon    = gz.Css \print
   /** @protected */ @@_hash    = 'auth-hash-documents'
 

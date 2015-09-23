@@ -9,6 +9,7 @@ App = require './app'
 
 PRE-MODULES =
   Welcome         = require './modules/welcome'
+  Documents       = require './modules/documents'
   Income          = require './modules/income'
   Numeration      = require './modules/numeration'
   Operation       = require './modules/operation/daily'
@@ -30,7 +31,6 @@ BETAS =
   OperationList = require './modules/operation-list'
   Profile = require './modules/profile'
   Simulate = require './modules/simulate'
-  Documents = require './modules/documents'
 
 username = window.plaft.'user'.'username'
 

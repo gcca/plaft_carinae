@@ -137,7 +137,7 @@ def create_employees(agency, j=3):
     agency.store()
 
 
-def create_dispatches(agency, datastore, customers, n=60):
+def create_dispatches(agency, datastore, customers, n=10):
     from string import digits
     from datetime import datetime, timedelta
     from calendar import monthrange
