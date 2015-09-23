@@ -26,11 +26,15 @@ class Treeview extends App.View
    */
   _toggle: !-> @$el._toggle!
 
+  __UL_TYPES =
+      gz.Css \circle
+      gz.Css \square
+
   /**
    * Generate tree from data.
    * @param {Array<String|Array<...>>} _tree
    */
-  render: (_tree = new Array, _global) ->
+  render: (_tree = new Array, _global, _level = 0) ->  # HARDCODE: level
     _global = @ if not _global  # TODO: Remove this!!
     @el.html = null
     if _tree and _tree._constructor is Array
@@ -43,14 +47,21 @@ class Treeview extends App.View
           if _node.1  # Is there something?
             if _node.1._constructor is Array  # subtree
               tv = new Treeview
-              @el._append (tv.render _node.1, _global).el
+              # HARDCODE: level
+              @el._append (tv.render _node.1, _global, (_level + 1)).el
 
               # TODO: On toggle method for treeview.
               ((tv) -> ..on-click ~> tv._toggle!) tv
 
+              # HARDCODE: level
+              ..css.'list-style-type' = __UL_TYPES[_level % 2]
+
             if _node.1._constructor is Number  # leaf
               ((_node) -> ..on-click ~>
                 _global.trigger (gz.Css \leaf-click), _node.1) _node
+
+              # HARDCODE: level
+              ..css.'list-style-type' = gz.Css \disc
 
 
     # ------------------------
@@ -333,12 +344,12 @@ class Desktop extends App.View
       </ol>"
 
     # Show modal treeview
-    _modal = new App.widget.message-box.Modal do
-      _title: 'Legislación'
-      _body: (new Documents).render!.el
-    _modal._body.style.'padding' = '0'
-    _modal._footer.style.'display' = 'inline'
     @el._first._last._first.on-click ->
+      _modal = new App.widget.message-box.Modal do
+        _title: 'Legislación'
+        _body: (new Documents).render!.el
+      _modal._body.style.'padding' = '0'
+      _modal._footer.style.'display' = 'inline'
       _modal._show App.widget.message-box.Modal.CLASS.large
 
     @$el._append "<div class='#{gz.Css \hidden}'></div>"
