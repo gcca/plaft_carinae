@@ -132,12 +132,14 @@ class Customs extends Module
 
     _labels =
       'Nombre/Razón Social'
+      'RUC'
       'Dirección'
       'Celular'
       ''
 
     _attributes =
       'name'
+      'document_number'
       'address'
       'phone'
       'remove'
@@ -174,11 +176,11 @@ class Customs extends Module
         _table.set-rows new CollectionCustoms dto
 
         @el.html = "<h3 class='#{gz.Css \text-center}'>
-                      GESTION DE CLIENTES
+                      GESTION DE EMPRESA
                     </h3>"
 
         new-customs = App.dom._new \button
-          ..html = 'Agregar Nuevo Cliente'
+          ..html = 'Agregar Nueva Empresa'
           .._class = "#{gz.Css \btn} #{gz.Css \btn-primary}"
           ..on-click ~> @_desktop.load-next-page(CustomsItem, do
                                                  model: new CustomsModel)
