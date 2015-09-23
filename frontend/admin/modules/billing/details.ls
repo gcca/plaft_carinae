@@ -53,6 +53,13 @@ class Details extends App.View
       @el._last._append ..
 
 
+  load-table: (details) ->
+    @details = details
+    @table-details.set-rows new CollectionDetail @details
+
+    @table-details._show!
+    @calculate-total!
+
   add-elements: ~>
     inputs = @el.queryAll 'input'
     tquantity = inputs.'1'
@@ -80,15 +87,12 @@ class Details extends App.View
 
     @details._push element
 
-    @table-details.set-rows new CollectionDetail @details
+    @load-table @details
     # CLEAN
     tquantity._value = '1'
     tprice._value = ''
     tdescription._value = ''
     tunit._value = 'UND'
-
-    @table-details._show!
-    @calculate-total!
 
   /** @override */
   initialize: ->

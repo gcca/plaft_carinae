@@ -4,6 +4,14 @@ Module = require '../../../workspace/module'
 
 FieldType = App.builtins.Types.Field
 Details = require './details'
+table = App.widget.table
+  Table = ..Table
+
+
+class CollectionBilling extends App.Collection
+
+  model: App.Model
+
 
 /**
 * @Class Billing
@@ -17,10 +25,10 @@ class Billing extends Module
   on-save: ~>
     App.ajax._post "/api/admin/billing", @_toJSON!, do
       _success: (billing) ~>
-        @billing-id = billing.'id'
-
+        @model._id = billing.'id'
+        @model._set @_toJSON!
         @el.query ".#{gz.Css \btn-info}"
-          ..attr 'href', "/api/admin/billing/#{@billing-id}"
+          ..attr 'href', "/api/admin/billing/#{@model._id}"
           .._class._remove gz.Css \hidden
 
         @_desktop.notifier.notify do
@@ -34,7 +42,7 @@ class Billing extends Module
     _r = @el._toJSON!
       ..'customs' = @customs-dto
       ..'method' = @method-item
-      ..'id' = @billing-id
+      ..'id' = @model._id
       .. <<< @details._toJSON!
 
   change-value: (item) ->
@@ -187,8 +195,9 @@ class Billing extends Module
                     GUARDAR
                   </a>
                   <a class='#{gz.Css \btn} #{gz.Css \btn-info}
-                          \ #{gz.Css \pull-right}'
-                     target='_blank'>
+                          \ #{gz.Css \pull-right} #{gz.Css \hidden}'
+                     target='_blank'
+                     href='/api/admin/billing/#{@model._id}'>
                     IMPRIMIR
                   </a>
                 </div>
@@ -200,6 +209,11 @@ class Billing extends Module
     @el._append @details.render!.el
     @el.query ".#{gz.Css \btn-primary}"
       ..on-click @on-save
+
+    if @model._id?
+      @el.query ".#{gz.Css \btn-info}"
+          .._class._remove gz.Css \hidden
+      @details.load-table @model._attributes.'details'
     super!
 
 
@@ -215,14 +229,73 @@ class Billing extends Module
   /** @private */ customs-dto: null
   /** @private */ method-item: null
   /** @private */ details: null
-  /** @private */ billing-id: null
+
+
+class BillList extends Module
+
+  /** @override */
+  _tagName: \div
+
+  /** @override */
+  render: ->
+    @_desktop._lock!
+    @_desktop._spinner-start!
+
+    _labels =
+      'Nombre/Razón Social'
+      'Dirección'
+      'Celular'
+      'Fecha de Factura'
+      'Monto Total'
+      ''
+
+    _attributes =
+      'customs_agency.name'
+      'customs_agency.address'
+      'customs_agency.phone'
+      'date_bill'
+      'to_pay'
+
+    _templates =
+      'to_pay': (_value, _dto, _attr, _tr) ->
+        _dto.'billing_type' +
+        \ (new String(_value)).replace /(\d)(?=(\d{3})+\.)/g, "$1, "
+
+    App.ajax._get '/api/admin/list-billing', true, do
+      _success: (dto) ~>
+        _table = new Table do
+          _attributes: _attributes
+          _labels: _labels
+          _templates: _templates
+          on-dblclick-row: (evt) ~>
+            @_desktop.load-next-page(Billing, do
+                                     model: evt._target._model)
+
+        _table.set-rows new CollectionBilling dto
+
+        @el.html = "<h3 class='#{gz.Css \text-center}'>
+                      GESTION DE CLIENTES
+                    </h3>"
+
+        new-customs = App.dom._new \button
+          ..html = 'Agregar Nuevo Factura'
+          .._class = "#{gz.Css \btn} #{gz.Css \btn-primary}"
+          ..on-click ~> @_desktop.load-next-page(Billing, do
+                                                 model: new App.Model)
+          @el._append ..
+
+        @el._append _table.render!.el
+        @_desktop._unlock!
+        @_desktop._spinner-stop!
+    super!
+
 
   /** @protected */ @@_caption = 'FACTURACIÓN'
   /** @protected */ @@_icon    = gz.Css \usd
   /** @protected */ @@_hash    = ''
 
 /** @export */
-module.exports = Billing
+module.exports = BillList
 
 
 # vim: ts=2:sw=2:sts=2:et

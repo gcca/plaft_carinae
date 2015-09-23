@@ -348,9 +348,14 @@ class Billing(Handler):
         billing.store()
         self.render_json({'id': billing.id})
 
+@handler_method
+def list_billing(handler):
+    handler.render_json(model.Bill.all())
+
 
 class handlers(object):
     Billing = Billing
     CustomsAgency = CustomsAgency
+    ListBilling = list_billing
 
 # vim: et:ts=4:sw=4

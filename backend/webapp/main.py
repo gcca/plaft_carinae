@@ -35,6 +35,7 @@ urls = [
     # Handler Admin
     ('/api/admin/billing', admin.handlers.Billing),
     Route('/api/admin/billing/<id:\\d+>', admin.handlers.Billing),
+    ('/api/admin/list-billing', admin.handlers.ListBilling),
     ('/api/admin/customs_agency', admin.handlers.CustomsAgency),
     Route('/api/admin/customs_agency/<id:\\d+>', admin.handlers.CustomsAgency),
 
