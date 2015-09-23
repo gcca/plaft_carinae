@@ -16,6 +16,139 @@
 Notifier = require './notifier'
 
 
+class Treeview extends App.View
+
+  /** @override */
+  _tagName: \ul
+
+  /**
+   * Collapse list.
+   */
+  _toggle: !-> @$el._toggle!
+
+  /**
+   * Generate tree from data.
+   * @param {Array<String|Array<...>>} _tree
+   */
+  render: (_tree = new Array, _global) ->
+    _global = @ if not _global  # TODO: Remove this!!
+    @el.html = null
+    if _tree and _tree._constructor is Array
+      for _node in _tree
+        App.dom._new \li
+          ..css.'cursor' = 'pointer'
+          ..html = _node.0
+          @el._append ..
+
+          if _node.1  # Is there something?
+            if _node.1._constructor is Array  # subtree
+              tv = new Treeview
+              @el._append (tv.render _node.1, _global).el
+
+              # TODO: On toggle method for treeview.
+              ((tv) -> ..on-click ~> tv._toggle!) tv
+
+            if _node.1._constructor is Number  # leaf
+              ((_node) -> ..on-click ~>
+                _global.trigger (gz.Css \leaf-click), _node.1) _node
+
+
+    # ------------------------
+    # What if `_tree` is null?
+    # ------------------------
+    super!
+
+
+class Documents extends App.View
+
+  _tagName: \div
+
+  maximize-viewer: ~>
+    if @_viewer.class-name is gz.Css \col-md-12
+      $ @treeview-container ._show!
+      @_viewer.class-name = gz.Css \col-md-8
+    else
+      $ @treeview-container ._hide!
+      @_viewer.class-name = gz.Css \col-md-12
+
+  __func = (_body, _level, _id, _callback) ->
+    App.ajax._get "/api/document/#_id", null, do
+      _success: (_list) ->
+        _select = App.dom._new \select
+          .._class = "#{gz.Css \form-control}
+                    \ #{gz.Css \col-md-12}"
+          ..css = "float:none;
+                   padding-left:#{_level}em"
+          ..html = '<option value="0"></option>'
+
+          ..on-change (evt) ->
+            _target = evt._target
+
+            _tmp = new Array
+            _iter = _target._next
+            while _iter
+              _tmp._push _iter
+              _iter = _iter._next
+
+            for _el in _tmp
+              _body._remove _el
+
+            _id = _target._value
+            if _id isnt '0'
+              __func _body, (_level + 1), _id, ->  # _body._append _select
+
+        for _pair in _list
+          App.dom._new \option
+            .._value = _pair.1
+            ..html = _pair.0
+            _select._append ..
+
+        _body._append _select  # see callback
+
+        _callback!
+      _error: -> alert 'Loop'
+
+  /** @override */
+  render: ->
+    App.ajax._get '/api/document/list', null, do
+      _success: (_tree) ~>
+        # treeview
+        @treeview-container = App.dom._new \div
+          .._class = gz.Css \col-md-4
+
+          @treeview = new Treeview
+            ..on (gz.Css \leaf-click), (hdr-id) ~>
+              @_current-node = null
+              App.ajax._get "/api/document/#{hdr-id}/getbody", null, do
+                _success: (_body) ~>
+                  @_viewer.html = _body
+                  # TODO: Remove HARCODE for tables
+                  for t in @_viewer.query-all \table
+                    t.style.'width' = '100%'
+                    t.style.'margin' = '0'
+                  @_current-node = hdr-id
+                _error: -> alert '95c4c788-5b2c-11e5-be89-001d7d7379f5'
+          .._append (@treeview.render _tree .el)
+
+          @el._append ..
+
+        # viewer
+        @_viewer = App.dom._new \div
+          .._class = gz.Css \col-md-8
+          ..css = 'background-color:#fffecd'
+          @el._append ..
+
+
+      _error: -> alert '2553a338-575e-11e5-a88b-001d7d7379f5'
+    super!
+
+
+  /** @private */ treeview: null
+  /** @private */ treeview-container: null
+  /** @private */ _viewer: null
+  /** @private */ _current-node: null
+
+
 /**
  * Desktop
  * -------
@@ -180,13 +313,34 @@ class Desktop extends App.View
 
   /** @override */
   render: ->
+    ###########################################
+    # TODO: !!! Remove treeview. No hardcode. #
+    ###########################################
     @$el.html "
       <ol class='#{gz.Css \breadcrumb}'>
         <li class='#{gz.Css \active}'>
           <i class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-home}'></i>
           &nbsp;
         </li>
+        <li class='#{gz.Css \pull-right}'>
+          <button type='button'
+                  class='#{gz.Css \btn}
+                       \ #{gz.Css \btn-default}
+                       \ #{gz.Css \btn-xs}'>
+            Legislación
+          </button>
+        </li>
       </ol>"
+
+    # Show modal treeview
+    _modal = new App.widget.message-box.Modal do
+      _title: 'Legislación'
+      _body: (new Documents).render!.el
+    _modal._body.style.'padding' = '0'
+    _modal._footer.style.'display' = 'inline'
+    @el._first._last._first.on-click ->
+      _modal._show App.widget.message-box.Modal.CLASS.large
+
     @$el._append "<div class='#{gz.Css \hidden}'></div>"
     super!
 
