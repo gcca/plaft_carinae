@@ -28,13 +28,20 @@ class Debug(Handler):
 
     def post(self):
         """Delete entities."""
+        from plaft.domain import model
+        from plaft.domain.model import documents
+        self.delete_all(model)
+        self.delete_all(documents)
+        self.write('The End.')
+
+    @staticmethod
+    def delete_all(module):
         import google.appengine.ext.ndb as ndb
         ndb.delete_multi(v for m in
-                         [getattr(model, i) for i in dir(model)
-                          if isinstance(getattr(model, i),
+                         [getattr(module, i) for i in dir(module)
+                          if isinstance(getattr(module, i),
                                         ndb.model.MetaModel)]
                          for v in m.query().fetch(keys_only=True))
-        self.write('The End.')
 
 
 class NewUsers(Handler):
