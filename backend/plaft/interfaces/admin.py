@@ -8,14 +8,17 @@
 
 """
 
-from plaft.interfaces import Handler, DirectToController, RESTful
+from plaft.interfaces import (Handler, DirectToController,
+                              RESTful, handler_method)
 from plaft.domain import model
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import (SimpleDocTemplate, Paragraph,
                                 Table, TableStyle)
 from reportlab.lib.units import inch, mm
+from reportlab.lib.pagesizes import letter, A4
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER
+from reportlab.pdfgen import canvas
 
 
 
@@ -244,86 +247,91 @@ class Billing(Handler):
         def money_format(money):
             return '%s %s' %(bil.billing_type, format(money, '.2f'))
 
-        def addDate(canvas, doc):
-            canvas.drawString(3.25*inch, 6.15*inch,
-                              bil.date_bill.strftime('%d/%m/%Y')) # fecha factura
-            canvas.drawString(4.3*inch, 6.15*inch, bil.purchase) # ord/compra
-            canvas.drawString(5.2*inch, 6.15*inch, bil.seller) # vendedor
-            canvas.drawString(3.5*inch, 5.72*inch, bil.payment) # condiciones
-            canvas.drawString(4.7*inch, 5.72*inch, bil.guide) # guia
-
-
-        def addTotal(canvas, doc):
-            canvas.drawString(0.5*inch, 1.84*inch,
-                              money_format(bil.total)) # valor venta
-            canvas.drawString(1.5*inch, 1.84*inch, 'Page #01') # descuento
-            canvas.drawString(2.4*inch, 1.84*inch, 'Page #01') # flete
-            canvas.drawString(3.4*inch, 1.84*inch,
-                              money_format(bil.igv)) # igv
-            canvas.drawString(4.5*inch, 1.84*inch,
-                              money_format(bil.to_pay)) # pagar
-
-            canvas.drawString(0.7*inch, 1.55*inch,
-                              number_letter(bil.to_pay,
-                                            bil.billing_type)) # num=> let
-
-
-        def addTemplate(canvas, doc):
-
-            canvas.setFont('Courier', 7.5)
-            addDate(canvas, doc)
-            addTotal(canvas, doc)
-
         styles = getSampleStyleSheet()
 
-        # CUSTOMS NAME STYLE
-        styles.add(ParagraphStyle(name='name-style', fontSize=7.5,
-                                  leftIndent=40,
+        styles.add(ParagraphStyle(name='name-style', fontSize=10,
+                                  leftIndent=50,
                                   spaceBefore=9, spaceAfter=9,
-                                  fontName='Courier-Bold',))
+                                  fontName='Helvetica-Bold'))
         # CUSTOMS ADDRESS STYLE
-        styles.add(ParagraphStyle(name='address-style', fontSize=7.5,
-                                  leftIndent=40,
+        styles.add(ParagraphStyle(name='normal-style', fontSize=10,
+                                  leftIndent=50,
                                   spaceBefore=5.5, spaceAfter=5.5,
-                                  fontName='Courier',leading=6))
-        # CUSTOMS RUC
-        styles.add(ParagraphStyle(name='ruc-style', fontSize=7.5,
-                                  leftIndent=40,
-                                  spaceBefore=9, spaceAfter=25,
-                                  fontName='Courier',))
-
-        doc = SimpleDocTemplate(self.response.out,
-                                pagesize=(425, 566),
-                                rightMargin=10,
-                                leftMargin=10,
-                                topMargin=106.29,
-                                bottomMargin=55)
+                                  fontName='Helvetica',leading=10))
+        # CUSTOMS ADDRESS STYLE
+        styles.add(ParagraphStyle(name='money-style', fontSize=10,
+                                  leftIndent=50,
+                                  spaceBefore=5.5, spaceAfter=5.5,
+                                  fontName='Helvetica'))
 
 
+        c = canvas.Canvas(self.response.out, pagesize=A4)
 
-        story = []
-        story.append(Paragraph(customs.name, styles['name-style']))
-        story.append(Paragraph('%s <br/> &bnsp;' % customs.address,
-                     styles['address-style']))
-        story.append(Paragraph(customs.document_number, styles['ruc-style']))
+        p = Paragraph(customs.name, style=styles["name-style"])
+        p.wrapOn(c, 200, 10)
+        p.drawOn(c, 20, 690, mm)
+
+        p = Paragraph(customs.address, style=styles["normal-style"])
+        p.wrapOn(c, 240, 10)
+        p.drawOn(c, 20, 670, mm)
+
+        p = Paragraph(customs.document_number, style=styles["normal-style"])
+        p.wrapOn(c, 20, 10)
+        p.drawOn(c, 20, 640, mm)
+
+        p = Paragraph(bil.date_bill.strftime('%d/%m/%Y'),
+                      style=styles["name-style"])
+        p.wrapOn(c, 20, 10)
+        p.drawOn(c, 265, 690, mm)
+
+        p = Paragraph(bil.payment, style=styles["normal-style"])
+        p.wrapOn(c, 150, 10)
+        p.drawOn(c, 265, 649, mm)
+
+        p = Paragraph(bil.seller, style=styles["name-style"])
+        p.wrapOn(c, 170, 10)
+        p.drawOn(c, 450, 692, mm)
 
         data = []
         for detail in bil.details:
-            data.append([str(detail.quantity), detail.unit, detail.description,
+            data.append([str(detail.quantity), detail.unit,
+                         detail.description,
                          money_format(detail.price),
                          money_format(detail.amount)])
 
-        s = styles["BodyText"]
+        s = styles['BodyText']
+        s.wordWrap = 'LTR'
+        s.fontSize = 9
+        s.fontName = 'Helvetica'
+        data2 = [[Paragraph(cell, s) for cell in row] for row in data]
+        t = Table(data2, colWidths=(.3*inch, .5*inch, 4.5*inch,
+                                  1*inch, 1.2*inch))
+        t.wrapOn(c, 170, 4000)
+        t.setStyle(TableStyle([
+                ('VALIGN',(0, 0),(-1,-1),'TOP'),
+                ]))
+        t.drawOn(c, 25, 570, mm)
+
+        data = [[money_format(bil.total), 'S/. 0.00' , '  ',
+                 money_format(bil.igv), money_format(bil.to_pay)]]
+        s = styles['BodyText']
         s.wordWrap = 'LTR'
         s.alignment = TA_CENTER
-        s.fontSize = 6.2
-        s.fontName = 'Courier'
+        s.fontSize = 9
+        s.fontName = 'Helvetica'
         data2 = [[Paragraph(cell, s) for cell in row] for row in data]
-        t = Table(data2, colWidths=(0.38*inch, 0.33*inch, 3.06*inch,
-                                  0.74*inch, 0.8*inch))
-        story.append(t)
+        table = Table(data2, colWidths=(1.32*inch, 1.22*inch, 1.32*inch,
+                                  1.52*inch, 1.82*inch))
+        table.wrapOn(c, 800, 100)
+        table.drawOn(c, 20, 180, mm)
 
-        doc.build(story, onFirstPage=addTemplate)
+        p = Paragraph(number_letter(bil.to_pay,
+                                    bil.billing_type),
+                      style=styles["money-style"])
+        p.wrapOn(c, 450, 10)
+        p.drawOn(c, 20, 155, mm)
+
+        c.save()
 
 
     def post(self):
@@ -333,7 +341,7 @@ class Billing(Handler):
         customs = model.CustomsAgency.find(int(customs_dto['id']))
 
         billing = (model.Bill.find(int(payload['id']))
-                   if payload['id'] else model.Bill())
+                   if 'id' in payload else model.Bill())
 
         billing << payload
         billing.customs_agency_key = customs.key
