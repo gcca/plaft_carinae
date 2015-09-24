@@ -219,8 +219,8 @@ class Billing extends Module
 
 
   METHODS =
-    'Boleta de Venta'
     'Factura'
+    'Boleta de Venta'
     'Guia de remisión'
     'Nota crédito'
     'Nota de Abono'

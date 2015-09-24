@@ -169,7 +169,7 @@ class Details extends App.View
                                  class='#{gz.Css \radio-inline}'>
                               <label>
                                 <input type='radio' name='is_service'
-                                       value='true'>
+                                       value='true' checked>
                                 Si
                               </label>
                             </div>
@@ -182,6 +182,11 @@ class Details extends App.View
                             </div>
                             </span>"
     # ACOMEXT U OTRO
+    span-type = App.dom._new \span
+      .._class = gz.Css \pull-right
+      ..html = '<label>Opcion: </label>'
+      @el._first._append ..
+
     App.dom._new \select
       .._class = gz.Css \form-control
       ..css = 'margin: 0 10 0 10'
@@ -192,7 +197,7 @@ class Details extends App.View
           (@el.query 'textarea')._value = ACOMEXT-DETAILS
         else
           (@el.query 'textarea')._value = ''
-      @el._first._append ..
+      span-type._append ..
 
 
     btn-plus = App.dom._new \button
