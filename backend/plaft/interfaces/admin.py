@@ -183,49 +183,65 @@ class CustomsAgency(Handler):
 
     def post(self):
         payload = self.query
-        officer = payload['officer']
-        username = officer['username']
-        password = ('' if not officer['password']
-                       else officer['password'])
 
-        del payload['officer']
+        if 'officer' in payload:
+            officer = payload['officer']
+            username = officer['username']
+            password = (officer['password']
+                        if 'password' in officer else '')
 
-        customs_agency = model.CustomsAgency.new(payload)
-        customs_agency.store()
+            del payload['officer']
 
-        alerts_key = [a.key for a in model.Alert.query().fetch()]
-        from plaft.application.util.data_generator import permissions
-        permission = model.Permissions(modules=permissions.officer,
-                                       alerts_key=alerts_key)
-        permission.store()
+            customs_agency = model.CustomsAgency.new(payload)
+            customs_agency.store()
+
+            alerts_key = [a.key for a in model.Alert.query().fetch()]
+            from plaft.application.util.data_generator import permissions
+            permission = model.Permissions(modules=permissions.officer,
+                                           alerts_key=alerts_key)
+            permission.store()
+
+            officer = model.Officer(username=username,
+                                    password=password,
+                                    name=officer['name'],
+                                    customs_agency_key=customs_agency.key,
+                                    permissions_key=permission.key)
+            officer.store()
+
+            customs_agency.officer_key = officer.key
+            customs_agency.store()
+        else:
+
+            customs_agency = model.CustomsAgency.new(payload)
+            customs_agency.store()
+
 
         datastore = model.Datastore(customs_agency_key=customs_agency.key)
         datastore.store()
-
-        officer = model.Officer(username=username,
-                                password=password,
-                                name=officer['name'],
-                                customs_agency_key=customs_agency.key,
-                                permissions_key=permission.key)
-        officer.store()
-
-        customs_agency.officer_key = officer.key
-        customs_agency.store()
         self.render_json({'id': customs_agency.id})
 
     def put(self, id):
         payload = self.query
         officer_dto = payload['officer']
+        if officer_dto:
+            del payload['officer']
 
-        del payload['officer']
+            customs_agency = model.CustomsAgency.find(int(id))
+            customs_agency << payload
+            customs_agency.store()
 
-        customs_agency = model.CustomsAgency.find(int(id))
-        customs_agency << payload
-        customs_agency.store()
+            if not customs_agency.officer_key:
+                officer = model.Officer.new(officer_dto)
+                officer.store()
+                customs_agency.officer_key = officer.key
 
-        officer = customs_agency.officer
-        officer << officer_dto
-        officer.store()
+            officer = customs_agency.officer
+            officer << officer_dto
+            officer.store()
+        else:
+            customs_agency = model.CustomsAgency.find(int(id))
+            customs_agency << payload
+            customs_agency.store()
 
         self.write_json('{}')
 

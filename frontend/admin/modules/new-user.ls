@@ -6,6 +6,7 @@ table = App.widget.table
 
 modal = App.widget.message-box
 MessageBox = modal.MessageBox
+FieldType = App.builtins.Types.Field
 
 /**
  * CustomsModel
@@ -53,6 +54,9 @@ class CustomsItem extends Module
     if (not officer.'password') or (officer.'password' is '')
       delete officer.'password'
 
+    if (not officer.'username') or (officer.'username' is '')
+      delete _dto.'officer'
+
     @model._save _dto, do
       _success: ~>
         @model._set _dto
@@ -71,22 +75,22 @@ class CustomsItem extends Module
     super!
 
 
+  _GRID = App.builder.Form._GRID
   _FIELD_USER =
     * _name: 'name'
-      _label: 'Nombre de Agencia'
-      _tip: 'Nombre de la agencia de aduana.'
+      _label: 'Razón Social/Nombres'
 
     * _name: 'document_number'
-      _label: 'N RUC'
+      _label: 'RUC'
 
     * _name: 'address'
       _label: 'Dirección fiscal'
 
-    * _name: 'district'
+    * _name: 'distrit'
       _label: 'Distrito'
 
     * _name: 'province'
-      _label: 'Departamento'
+      _label: 'Provincia'
 
     * _name: 'name_contact'
       _label: 'Nombre de la persona de contacto'
@@ -103,16 +107,18 @@ class CustomsItem extends Module
     * _name: 'email'
       _label: 'Correo Electronico'
 
+    * _label: 'Oficial de Cumplimiento (solo para Agentes de Aduana)'
+      _type: FieldType.kLabel
+      _grid: _GRID._inline
+
     * _name: 'officer[name]'
-      _label: 'Nombre de oficial'
-      _tip: 'Nombre de oficial de cumplimiento'
+      _label: 'Nombre de oficial de cumplimiento'
 
     * _name: 'officer[username]'
-      _label: 'Usuario de oficial'
-      _tip: 'Correo de oficial de cumplimiento'
+      _label: 'CLAVE: Usuario'
 
     * _name: 'officer[password]'
-      _label: 'Contraseña'
+      _label: 'CLAVE: Contraseña'
 
 
 
@@ -134,7 +140,7 @@ class Customs extends Module
       'Nombre/Razón Social'
       'RUC'
       'Dirección'
-      'Celular'
+      'Teléfono'
       ''
 
     _attributes =
@@ -163,21 +169,27 @@ class Customs extends Module
               _callback: see-button
             message._show!
 
+    _column-cell-style =
+      'name': 'text-overflow:ellipsis;
+               white-space:nowrap;
+               overflow:hidden;
+               max-width:10ch;
+               text-align: left;'
+      'address': 'text-align: left;'
+      'phone': 'text-align: left;'
+
     App.ajax._get '/api/admin/customs_agency', true, do
       _success: (dto) ~>
         _table = new Table do
           _attributes: _attributes
           _labels: _labels
           _templates: _templates
+          _column-cell-style: _column-cell-style
           on-dblclick-row: (evt) ~>
             @_desktop.load-next-page(CustomsItem, do
                                      model: evt._target._model)
 
         _table.set-rows new CollectionCustoms dto
-
-        @el.html = "<h3 class='#{gz.Css \text-center}'>
-                      GESTION DE EMPRESA
-                    </h3>"
 
         new-customs = App.dom._new \button
           ..html = 'Agregar Nueva Empresa'
