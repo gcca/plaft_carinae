@@ -269,12 +269,17 @@ class Billing(Handler):
                                   leftIndent=50,
                                   spaceBefore=9, spaceAfter=9,
                                   fontName='Helvetica-Bold'))
-        # CUSTOMS ADDRESS STYLE
+        # CUSTOMS NORMAL STYLE
         styles.add(ParagraphStyle(name='normal-style', fontSize=10,
                                   leftIndent=50,
                                   spaceBefore=5.5, spaceAfter=5.5,
                                   fontName='Helvetica',leading=10))
-        # CUSTOMS ADDRESS STYLE
+        # CUSTOMS DETRACCION STYLE
+        styles.add(ParagraphStyle(name='detraccion-style', fontSize=9,
+                                  leftIndent=50,
+                                  spaceBefore=5.5, spaceAfter=5.5,
+                                  fontName='Helvetica',leading=10))
+        # CUSTOMS MONEY STYLE
         styles.add(ParagraphStyle(name='money-style', fontSize=10,
                                   leftIndent=50,
                                   spaceBefore=5.5, spaceAfter=5.5,
@@ -283,31 +288,42 @@ class Billing(Handler):
 
         c = canvas.Canvas(self.response.out, pagesize=A4)
 
+        # Descripcion de la agencia de aduana
         p = Paragraph(customs.name, style=styles["name-style"])
         p.wrapOn(c, 200, 10)
-        p.drawOn(c, 20, 690, mm)
+        p.drawOn(c, 23, 680, mm)
 
         p = Paragraph(customs.address, style=styles["normal-style"])
         p.wrapOn(c, 240, 10)
-        p.drawOn(c, 20, 670, mm)
+        p.drawOn(c, 23, 657, mm)
 
         p = Paragraph(customs.document_number, style=styles["normal-style"])
         p.wrapOn(c, 20, 10)
-        p.drawOn(c, 20, 640, mm)
+        p.drawOn(c, 23, 638, mm)
 
+        # Descripcion de la factura
         p = Paragraph(bil.date_bill.strftime('%d/%m/%Y'),
-                      style=styles["name-style"])
+                      style=styles["name-style"])  # FECHA DE LA FACTURA
         p.wrapOn(c, 20, 10)
-        p.drawOn(c, 265, 690, mm)
+        p.drawOn(c, 270, 690, mm)
 
-        p = Paragraph(bil.payment, style=styles["normal-style"])
+        p = Paragraph(bil.purchase, style=styles["normal-style"])
         p.wrapOn(c, 150, 10)
-        p.drawOn(c, 265, 649, mm)
+        p.drawOn(c, 375, 690, mm)  # ORD/COMPRA
 
         p = Paragraph(bil.seller, style=styles["name-style"])
         p.wrapOn(c, 170, 10)
-        p.drawOn(c, 450, 692, mm)
+        p.drawOn(c, 465, 687, mm) # VENDEDOR
 
+        p = Paragraph(bil.payment, style=styles["normal-style"])
+        p.wrapOn(c, 150, 10)
+        p.drawOn(c, 270, 649, mm) # CONDICIONES PAGO
+
+        p = Paragraph(bil.guide, style=styles["normal-style"])
+        p.wrapOn(c, 150, 10)
+        p.drawOn(c, 425, 649, mm) # GUIA
+
+        # Detalle de la factura
         data = []
         for detail in bil.details:
             data.append([str(detail.quantity), detail.unit,
@@ -315,19 +331,28 @@ class Billing(Handler):
                          money_format(detail.price),
                          money_format(detail.amount)])
 
-        s = styles['BodyText']
+        s = styles['Normal']
         s.wordWrap = 'LTR'
         s.fontSize = 9
         s.fontName = 'Helvetica'
         data2 = [[Paragraph(cell, s) for cell in row] for row in data]
-        t = Table(data2, colWidths=(.3*inch, .5*inch, 4.5*inch,
+        t = Table(data2, colWidths=(.45*inch, .6*inch, 4.3*inch,
                                   1*inch, 1.2*inch))
         t.wrapOn(c, 170, 4000)
         t.setStyle(TableStyle([
                 ('VALIGN',(0, 0),(-1,-1),'TOP'),
                 ]))
-        t.drawOn(c, 25, 570, mm)
+        t.drawOn(c, 25, 500, mm)
 
+        if bil.is_service:
+            #DETRACCION
+            p = Paragraph('AFECTO A LA DETRACCION<br/>CTA. CTE. BANCO DE'
+                          '<br/>LA NACION Nº 00058000779',
+                          style=styles["detraccion-style"])
+            p.wrapOn(c, 450, 10)
+            p.drawOn(c, 50, 250, mm)
+
+        # Descripcion del total
         data = [[money_format(bil.total), 'S/. 0.00' , '  ',
                  money_format(bil.igv), money_format(bil.to_pay)]]
         s = styles['BodyText']
@@ -341,6 +366,8 @@ class Billing(Handler):
         table.wrapOn(c, 800, 100)
         table.drawOn(c, 20, 180, mm)
 
+
+        # Nombre del monto
         p = Paragraph(number_letter(bil.to_pay,
                                     bil.billing_type),
                       style=styles["money-style"])
