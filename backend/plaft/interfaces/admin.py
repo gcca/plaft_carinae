@@ -352,8 +352,8 @@ class Billing(Handler):
 
     def post(self):
         payload = self.query
-        customs_dto = payload['customs']
-        del payload['customs']
+        customs_dto = payload['customs_agency']
+        del payload['customs_agency']
         customs = model.CustomsAgency.find(int(customs_dto['id']))
 
         billing = (model.Bill.find(int(payload['id']))

@@ -22,11 +22,13 @@ class Billing extends Module
   /** @override */
   _tagName: \form
 
+  /** @override */
   on-save: ~>
     App.ajax._post "/api/admin/billing", @_toJSON!, do
       _success: (billing) ~>
-        @model._id = billing.'id'
-        @model._set @_toJSON!
+        dto = @_toJSON!
+          ..'id' = billing.'id'
+        @model._set dto
         @el.query ".#{gz.Css \btn-info}"
           ..attr 'href', "/api/admin/billing/#{@model._id}"
           .._class._remove gz.Css \hidden
@@ -40,9 +42,10 @@ class Billing extends Module
 
   _toJSON: ->
     _r = @el._toJSON!
-      ..'customs' = @customs-dto
+      ..'customs_agency' = @customs-dto
       ..'method' = @method-item
       ..'id' = @model._id
+      ..'is_service' = if ..'is_service' is \true then true else false
       .. <<< @details._toJSON!
 
   change-value: (item) ->
@@ -53,16 +56,12 @@ class Billing extends Module
     ul-method = App.dom._new \ul
       .._class = gz.Css \dropdown-menu
 
-    for k, i in METHODS
-      _a = App.dom._new \a
-        ..html = METHODS[i]
-
-      _li = App.dom._new \li
-        .._item = METHODS[i]
+    for k in METHODS
+      App.dom._new \li
+        .._item = k
         ..on-click (evt) ~> @change-value evt._target._item
-        .._append _a
-
-      ul-method._append _li
+        ..html = "<a>#{k}</a>"
+        ul-method._append ..
 
     @change-value METHODS[0]
     ul-method
@@ -79,13 +78,16 @@ class Billing extends Module
     names = [c for c in Object.keys window.plaft.'customs']
     select-names = App.dom._new \select
       .._class = "#{gz.Css \form-control} #{gz.Css \select-customs}"
+      .._name = 'customs_agency[name]'
       ..on-change (evt) ~> @change-customs-name evt._target._value
 
     for n in names
       App.dom._new \option
         ..html = n
         select-names._append ..
-    @change-customs-name names[0]
+
+    # Name por defecto
+    @change-customs-name select-names._value
     select-names
 
   /** @override */
@@ -123,7 +125,7 @@ class Billing extends Module
       .._first._append @customs-names!
       place-customer._append ..
 
-    # FECHA
+    # DESCRIPCION DE LA FACTURA
     new Date
       day = ..get-date!
       month =  ..get-month!
@@ -185,15 +187,11 @@ class Billing extends Module
 
       place-method._append ..
 
-
+    # DETALLE DE LA FACTURA
     @details = new Details
     # AÑADIR
     @el.html = "<div class='#{gz.Css \col-md-12}'
                      style='margin-bottom: 15px'>
-                  <a class='#{gz.Css \btn} #{gz.Css \btn-primary}
-                          \ #{gz.Css \pull-right} '>
-                    GUARDAR
-                  </a>
                   <a class='#{gz.Css \btn} #{gz.Css \btn-info}
                           \ #{gz.Css \pull-right} #{gz.Css \hidden}'
                      target='_blank'
@@ -207,13 +205,16 @@ class Billing extends Module
     @el._append place-customer
 
     @el._append @details.render!.el
-    @el.query ".#{gz.Css \btn-primary}"
-      ..on-click @on-save
 
     if @model._id?
+      @model._attributes
+        ..'is_service' = String ..'is_service'
+        @el._fromJSON ..
+        @details.load-table ..'details'
+        @change-customs-name ..'customs_agency'.'name'
       @el.query ".#{gz.Css \btn-info}"
           .._class._remove gz.Css \hidden
-      @details.load-table @model._attributes.'details'
+
     super!
 
 
@@ -274,7 +275,7 @@ class BillList extends Module
         _table.set-rows new CollectionBilling dto
 
         @el.html = "<h3 class='#{gz.Css \text-center}'>
-                      GESTION DE CLIENTES
+                      FACTURACIÓN
                     </h3>"
 
         new-customs = App.dom._new \button
