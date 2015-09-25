@@ -12,15 +12,23 @@ class Treeview extends App.View
   _tagName: \ul
 
   /**
-   * Collapse list.
+   * (Un) collapse list.
    */
   _toggle: !-> @$el._toggle!
+
+  _show: !-> @$el._show!
+
+  _hide: !-> @$el._hide!
+
+  __UL_TYPES =
+      gz.Css \circle
+      gz.Css \square
 
   /**
    * Generate tree from data.
    * @param {Array<String|Array<...>>} _tree
    */
-  render: (_tree = new Array, _global) ->
+  render: (_tree = new Array, _global, _level = 0) ->  # HARDCODE: level
     _global = @ if not _global  # TODO: Remove this!!
     @el.html = null
     if _tree and _tree._constructor is Array
@@ -33,19 +41,29 @@ class Treeview extends App.View
           if _node.1  # Is there something?
             if _node.1._constructor is Array  # subtree
               tv = new Treeview
-              @el._append (tv.render _node.1, _global).el
+              # HARDCODE: level
+              @el._append (tv.render _node.1, _global, (_level + 1)).el
 
               # TODO: On toggle method for treeview.
               ((tv) -> ..on-click ~> tv._toggle!) tv
+
+              # HARDCODE: level
+              ..css.'list-style-type' = __UL_TYPES[_level % 2]
+
+              # HARDCODE: collapse
+              tv._hide!
 
             if _node.1._constructor is Number  # leaf
               ((_node) -> ..on-click ~>
                 _global.trigger (gz.Css \leaf-click), _node.1) _node
 
+              # HARDCODE: level
+              ..css.'list-style-type' = gz.Css \disc
 
     # ------------------------
     # What if `_tree` is null?
     # ------------------------
+    # @_hide!  # TODO: collapse by default
     super!
 
 
