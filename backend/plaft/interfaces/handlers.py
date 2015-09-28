@@ -635,6 +635,10 @@ class IOCounter(RESTful):
 
 class Document(RESTful):
 
+    @RESTful.staticmethod
+    def obtener_precio(self, codigo):
+        self.write_json('{}')
+
     @RESTful.method
     def getbody(self, document_id):
         try:

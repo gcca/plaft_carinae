@@ -93,6 +93,19 @@ def restful_init():
                                    isinstance(subrestful, type) and
                                    issubclass(subrestful, BaseRESTful)
                            )):
+
+            # HARDCODE: `type`:attribute to define type of nested resource
+            subtype = getattr(subrestful, '_type', None)
+            # TODO: no `getattr`
+            if subtype:
+                if 1 == subtype:
+                    subprefix = [prefix, subrestful.__name__]
+                    for varname in subrestful.varnames:
+                        subprefix.append('<%s>' % varname)
+                    subprefix = '/'.join(subprefix)
+                    routes.append(Route(subprefix, subrestful))
+                    continue
+
             if subrestful.nested:
                 nestedprefix = ('%s/%s'
                                 % (prefix + ('/<%s_id:\\d+>' % restful.path),
@@ -107,6 +120,13 @@ def restful_init():
                                                subrestful.__name__),
                                     subrestful))
 
+        # print('\n\033[32m%s\033[0m' % ('='*70))
+        from pprint import pprint
+        for route in routes:
+            if 'document' in route.template:
+              print('\n\033[35m%s\033[0m\n\t\033[34m%s\033[0m'
+                    % (route.template, str(route.handler)[8:-2]))
+        # print('\033[32m%s\033[0m\n' % ('='*70))
         urls.append(PathPrefixRoute('/api', routes))
 
 

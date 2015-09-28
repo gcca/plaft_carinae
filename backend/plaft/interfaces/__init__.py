@@ -484,6 +484,12 @@ class RESTful(BaseRESTful):
     __metaclass__ = MetaRESTful
 
     @staticmethod
+    def nested(cls_restful):
+        """Nested RESTful handler."""
+        cls_restful.nested = True
+        return cls_restful
+
+    @staticmethod
     def method(method_or_fn):
         """RESTful handler class from method."""
         if isinstance(method_or_fn, str):  # method
@@ -500,10 +506,22 @@ class RESTful(BaseRESTful):
                      'with_id': method_or_fn.func_code.co_argcount > 1})
 
     @staticmethod
-    def nested(cls_restful):
-        """Nested RESTful handler."""
-        cls_restful.nested = True
-        return cls_restful
+    def staticmethod(method_or_fn):
+        """RESTful handler class from static method."""
+        if isinstance(method_or_fn, str):  # method
+            def wrapper(fn):
+                """Create class with RESTful specific method."""
+                return type(fn.func_name,
+                            (BaseRESTful,),
+                            {method_or_fn: fn,
+                             '_type': 1,
+                             'varnames': fn.func_code.co_varnames[1:]})
+            return wrapper
+        return type(method_or_fn.func_name,  # fn
+                    (BaseRESTful,),
+                    {'get': method_or_fn,
+                     '_type': 1,
+                     'varnames': method_or_fn.func_code.co_varnames[1:]})
 
 
 # Routes for HTTP methods
