@@ -263,6 +263,10 @@ class Billing(Handler):
         def money_format(money):
             return '%s %s' %(bil.billing_type, format(money, '.2f'))
 
+        def encode_str(string):
+            f = (string).encode('utf-8').replace('&', '&amp;')
+            return f
+
         styles = getSampleStyleSheet()
 
         styles.add(ParagraphStyle(name='name-style', fontSize=10,
@@ -289,15 +293,17 @@ class Billing(Handler):
         c = canvas.Canvas(self.response.out, pagesize=A4)
 
         # Descripcion de la agencia de aduana
-        p = Paragraph(customs.name, style=styles["name-style"])
+        p = Paragraph(encode_str(customs.name), style=styles["name-style"])
         p.wrapOn(c, 200, 10)
         p.drawOn(c, 23, 680, mm)
 
-        p = Paragraph(customs.address, style=styles["normal-style"])
+        p = Paragraph(encode_str(customs.address),
+                      style=styles["normal-style"])
         p.wrapOn(c, 240, 10)
         p.drawOn(c, 23, 657, mm)
 
-        p = Paragraph(customs.document_number, style=styles["normal-style"])
+        p = Paragraph(encode_str(customs.document_number),
+                      style=styles["normal-style"])
         p.wrapOn(c, 20, 10)
         p.drawOn(c, 23, 638, mm)
 
@@ -307,19 +313,19 @@ class Billing(Handler):
         p.wrapOn(c, 20, 10)
         p.drawOn(c, 270, 690, mm)
 
-        p = Paragraph(bil.purchase, style=styles["normal-style"])
+        p = Paragraph(encode_str(bil.purchase), style=styles["normal-style"])
         p.wrapOn(c, 150, 10)
         p.drawOn(c, 375, 690, mm)  # ORD/COMPRA
 
-        p = Paragraph(bil.seller, style=styles["name-style"])
+        p = Paragraph(encode_str(bil.seller), style=styles["name-style"])
         p.wrapOn(c, 170, 10)
         p.drawOn(c, 465, 687, mm) # VENDEDOR
 
-        p = Paragraph(bil.payment, style=styles["normal-style"])
+        p = Paragraph(encode_str(bil.payment), style=styles["normal-style"])
         p.wrapOn(c, 150, 10)
         p.drawOn(c, 270, 649, mm) # CONDICIONES PAGO
 
-        p = Paragraph(bil.guide, style=styles["normal-style"])
+        p = Paragraph(encode_str(bil.guide), style=styles["normal-style"])
         p.wrapOn(c, 150, 10)
         p.drawOn(c, 425, 649, mm) # GUIA
 
@@ -335,7 +341,7 @@ class Billing(Handler):
         s.wordWrap = 'LTR'
         s.fontSize = 9
         s.fontName = 'Helvetica'
-        data2 = [[Paragraph(cell, s) for cell in row] for row in data]
+        data2 = [[Paragraph(encode_str(cell), s) for cell in row] for row in data]
         t = Table(data2, colWidths=(.45*inch, .6*inch, 4.3*inch,
                                   1*inch, 1.2*inch))
         t.wrapOn(c, 170, 4000)
@@ -346,8 +352,8 @@ class Billing(Handler):
 
         if bil.is_service:
             #DETRACCION
-            p = Paragraph('AFECTO A LA DETRACCION<br/>CTA. CTE. BANCO DE'
-                          '<br/>LA NACION Nº 00058000779',
+            p = Paragraph('AFECTO A LA DETRACCION<br/>CTA  CTE. BANCO'
+                          ' DE<br/>LA NACION Nº 00058000779',
                           style=styles["detraccion-style"])
             p.wrapOn(c, 450, 10)
             p.drawOn(c, 50, 250, mm)
@@ -360,7 +366,7 @@ class Billing(Handler):
         s.alignment = TA_CENTER
         s.fontSize = 9
         s.fontName = 'Helvetica'
-        data2 = [[Paragraph(cell, s) for cell in row] for row in data]
+        data2 = [[Paragraph(encode_str(cell), s) for cell in row] for row in data]
         table = Table(data2, colWidths=(1.32*inch, 1.22*inch, 1.32*inch,
                                   1.52*inch, 1.82*inch))
         table.wrapOn(c, 800, 100)
