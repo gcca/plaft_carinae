@@ -592,5 +592,11 @@ class Bill(dom.Model):
     details = dom.Structured(Details, repeated=True)
 
 
+class Worker(dom.Model):
+
+    name = dom.String()
+    document_number = dom.String()
+    document_type = dom.String()
+
 
 # vim: et:ts=4:sw=4

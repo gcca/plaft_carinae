@@ -14,7 +14,7 @@ import plaft.config
 from plaft.domain.model import (Dispatch, CodeName, Declarant, Stakeholder,
                                 Business, Person, Datastore, CustomsAgency,
                                 Operation, Officer, Employee, Permissions,
-                                Alert, User, Customer, Admin)
+                                Alert, User, Customer, Admin, Worker)
 from plaft.application.util import data_generator
 
 
@@ -43,6 +43,19 @@ def pick_document_number_by(document_type):
 
 
 # Creations
+
+def create_workers():
+    data = (
+        ('Persona 1', '123456'),
+        ('Persona 2', '345666'),
+        ('Persona 3', '576886'),
+        ('Persona 4', '890890'),
+    )
+    for name, document_number in data:
+        worker = Worker(name=name,
+                        document_number=document_number)
+        worker.store()
+
 
 def create_stakeholders():
     for stakeholder in stakeholders:
@@ -137,7 +150,7 @@ def create_employees(agency, j=3):
     agency.store()
 
 
-def create_dispatches(agency, datastore, customers, n=10):
+def create_dispatches(agency, datastore, customers, n=5):
     from string import digits
     from datetime import datetime, timedelta
     from calendar import monthrange
@@ -303,6 +316,7 @@ def _data_debug():
     create_stakeholders()
     create_declarants()
     create_alerts()
+    create_workers()
 
     from collections import namedtuple
     from string import digits

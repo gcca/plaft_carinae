@@ -735,4 +735,9 @@ class Document(RESTful):
                 self.status.NOT_FOUND('Parent not found: ' + pid)
 
 
+class Worker(RESTful):
+
+    _model = model.Worker
+
+
 # vim: et:ts=4:sw=4

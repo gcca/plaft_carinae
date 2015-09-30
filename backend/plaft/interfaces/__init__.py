@@ -395,12 +395,10 @@ class BaseRESTful(Handler):
 
         else:
             instances = list(self._model.all(**self.query))
-            if instances:
-                self.render_json(instances)
-            else:
-                params = self.request.GET.items()
-                params = ', '.join('%s=%s' % pair for pair in params)
-                self.status.NOT_FOUND('Not found with %s' % params)
+            self.render_json(instances)
+            # params = self.request.GET.items()
+            # params = ', '.join('%s=%s' % pair for pair in params)
+            # self.status.NOT_FOUND('Not found with %s' % params)
 
     def post(self):
         """CREATE."""

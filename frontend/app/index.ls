@@ -311,6 +311,8 @@ class BaseCollection extends Backbone\Collection
   ::off     = ::\off
   ::trigger = ::\trigger
   ::_remove = ::\remove
+  ::_bind   = ::\bind
+  ::_add    = ::\add
 
   _parent : null
   urlRoot : null
