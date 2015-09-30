@@ -10,14 +10,14 @@ App = require './app'
 PRE-MODULES =
   Welcome         = require './modules/welcome'
   Documents       = require './modules/documents'
-  ## Income          = r equire './modules/income'
-  ## Numeration      = r equire './modules/numeration'
-  ## Operation       = r equire './modules/operation/daily'
-  ## Report          = r equire './modules/operation/monthly'
-  ## UnusalAlerts    = r equire './modules/unusual/alerts'
-  ## UnusualRegister = r equire './modules/unusual/register'
-  ## UnusualReport   = r equire './modules/unusual/report'
-  ## PreviewMulti    = r equire './modules/preview_multi'
+  Income          = require './modules/income'
+  Numeration      = require './modules/numeration'
+  Operation       = require './modules/operation/daily'
+  Report          = require './modules/operation/monthly'
+  UnusalAlerts    = require './modules/unusual/alerts'
+  UnusualRegister = require './modules/unusual/register'
+  UnusualReport   = require './modules/unusual/report'
+  PreviewMulti    = require './modules/preview_multi'
 
 MODULES = new Array
 
