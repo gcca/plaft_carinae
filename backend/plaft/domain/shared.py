@@ -28,7 +28,7 @@ class Entity(object):
 
 class Repository(object):
 
-    def findAll(self):
+    def find_all(self):
         return NotImplemented
 
     def find(self, key):
