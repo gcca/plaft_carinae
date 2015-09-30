@@ -163,18 +163,19 @@ class BaseModel extends Backbone\Model
     @\defaults = @defaults
     super ...
 
-  ::_fetch  = ::\fetch
-  ::_save   = ::\save
-  ::_url    = ::\url
-  ::_get    = ::\get
-  ::_set    = ::\set
-  ::_sync   = ::\sync
-  ::_toJSON = ::\toJSON
-  ::on      = ::\on
-  ::off     = ::\off
-  ::trigger = ::\trigger
-  ::_remove = ::\remove
-  ::is-new  = ::\isNew
+  ::_fetch   = ::\fetch
+  ::_save    = ::\save
+  ::_url     = ::\url
+  ::_get     = ::\get
+  ::_set     = ::\set
+  ::_sync    = ::\sync
+  ::_toJSON  = ::\toJSON
+  ::on       = ::\on
+  ::off      = ::\off
+  ::trigger  = ::\trigger
+  ::_remove  = ::\remove
+  ::is-new   = ::\isNew
+  ::_destroy = ::\destroy
 
   _attributes:~
     -> @\attributes
@@ -266,6 +267,21 @@ class App.Model extends BaseModel
   _url: ->
     if @_parent? then "#{@_parent._url!}/#{super!}" else "/api/#{super!}"
 
+  _destroy: (opts = App._void._SyncOptions) ->
+    # super \success : opts._success, \error : opts._error
+    # TODO: Check error in original method of Model
+    _req = new XMLHttpRequest
+    _req.open 'delete', @_url!, on
+    _req.onreadystatechange = ~>
+      if _req.readyState is 4
+        if _req.status is 200
+          @'stopListening'!
+          @'trigger'('destroy', @, @'collection', opts)
+          opts._success!
+        else
+          opts._error!
+    _req.send!
+
   _fetch: (opts = App._void._SyncOptions) ->
     super \success : opts._success, \error : opts._error
 
@@ -313,11 +329,16 @@ class BaseCollection extends Backbone\Collection
   ::_remove = ::\remove
   ::_bind   = ::\bind
   ::_add    = ::\add
+  ::_sort   = ::\sort
 
   _parent : null
   urlRoot : null
   _id     :~ -> @id
   _models :~ -> @\models
+
+  _comparator:~
+    -> @'comparator'
+    (x) -> @'comparator' = x
 
   _url  : -> @urlRoot  # @_url ...
   \sync : -> @_sync ...

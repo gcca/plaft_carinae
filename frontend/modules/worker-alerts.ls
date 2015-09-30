@@ -101,6 +101,14 @@ class WorkerItem extends App.View
                 \ #{gz.Css \glyphicon-check}'>&nbsp;</i>
       </div>
     "
+    _view = @
+    @el.query ".#{gz.Css \glyphicon-remove}" .on-click ~>
+      @model._destroy do
+        _success: ~>
+          console.log _view  ########## TODO
+          _view._remove!
+        _error: ->
+          alert 'ERROR: af8f4bfc-67bb-11e5-89f3-001d7d7379f5'
 
     @el.query ".#{gz.Css \glyphicon-edit}" .on-click ~>
       worker-info = new WorkerInfo
@@ -161,15 +169,29 @@ class WorkerList extends App.View
   _className: gz.Css \col-md-6
 
   _add: (worker) ->
-    new WorkerItem
-      @el._append (..render worker).el
+    @collection._add worker
 
-  initialize: ->
-    super!
+  initialize: (options) ->
+    super ...
     @el.css = 'padding:4px 12px;
                list-style-type:none;'
 
-  render: ->
+    @collection = new Workers
+      .._comparator = (worker) -> worker._attributes.'name'.toUpperCase!
+
+  on-model-change: ~>
+    @collection._sort!
+    @render!
+
+  render: ~>
+    @el.html = null
+    for worker in @collection._models
+      worker-item = new WorkerItem
+      @el._append (worker-item.render worker).el
+      worker.off 'change:name' @on-model-change
+      worker.on 'change:name' @on-model-change
+      worker.off 'destroy' @render
+      worker.on 'destroy' @render
     super!
 
 
@@ -206,11 +228,19 @@ class WorkerAlerts extends Module
     worker-list = new WorkerList
     @el._append worker-list.render!.el
 
-    workers = new Workers
+    workers = worker-list.collection
+
+    workers._fetch do
+      _success: (workers) ->
+        for worker in workers
+          worker-list._add worker
+        worker-list.render!
+      _error: ->
+        alert 'ERROR: b9963032-6790-11e5-89f3-001d7d7379f5'
+
     workers._bind \add (worker) ->
       worker-list._add worker
-    workers._fetch do
-      _error: -> alert 'ERROR: b9963032-6790-11e5-89f3-001d7d7379f5'
+      worker-list.render!  # Possible bad performance on init re-render
 
     super!
 

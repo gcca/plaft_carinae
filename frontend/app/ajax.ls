@@ -2,7 +2,7 @@
 
 
 ajax_base = (_type, [_url, _data, _options]) ->
-  $\ajax do
+  params =
     \type        : _type
     \url         : _url
     \data        : JSON.stringify _data
@@ -10,6 +10,10 @@ ajax_base = (_type, [_url, _data, _options]) ->
     \contentType : 'application/json'
     \dataType    : \json
 
+  if _options._error
+    params.\error = _options._error
+
+  $\ajax params
 
 RC =
   _success: 200
