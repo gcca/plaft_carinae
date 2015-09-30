@@ -7,17 +7,18 @@
 App = require './app'
 
 
-PRE-MODULES =
+PRE-MODULES = [
   Welcome         = require './modules/welcome'
-  Documents       = require './modules/documents'
-  Income          = require './modules/income'
-  Numeration      = require './modules/numeration'
-  Operation       = require './modules/operation/daily'
-  Report          = require './modules/operation/monthly'
-  UnusalAlerts    = require './modules/unusual/alerts'
-  UnusualRegister = require './modules/unusual/register'
-  UnusualReport   = require './modules/unusual/report'
-  PreviewMulti    = require './modules/preview_multi'
+  ]
+  ## Documents       = r equire './modules/documents'
+  ## Income          = r equire './modules/income'
+  ## Numeration      = r equire './modules/numeration'
+  ## Operation       = r equire './modules/operation/daily'
+  ## Report          = r equire './modules/operation/monthly'
+  ## UnusalAlerts    = r equire './modules/unusual/alerts'
+  ## UnusualRegister = r equire './modules/unusual/register'
+  ## UnusualReport   = r equire './modules/unusual/report'
+  ## PreviewMulti    = r equire './modules/preview_multi'
 
 MODULES = new Array
 
@@ -27,11 +28,12 @@ for module in PRE-MODULES
     MODULES._push module
 
 # HARDCODE
-BETAS =
-  WorkerAlerts = require './modules/worker-alerts'
-  OperationList = require './modules/operation-list'
-  Profile = require './modules/profile'
-  Simulate = require './modules/simulate'
+BETAS = [
+  WorkerAlerts  = require './modules/worker-alerts'
+  ]
+  ## OperationList = r equire './modules/operation-list'
+  ## Profile       = r equire './modules/profile'
+  ## Simulate      = r equire './modules/simulate'
 
 username = window.plaft.'user'.'username'
 
