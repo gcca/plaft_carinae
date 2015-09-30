@@ -120,13 +120,13 @@ def restful_init():
                                                subrestful.__name__),
                                     subrestful))
 
-        # print('\n\033[32m%s\033[0m' % ('='*70))
-        from pprint import pprint
-        for route in routes:
-            if 'document' in route.template:
-              print('\n\033[35m%s\033[0m\n\t\033[34m%s\033[0m'
-                    % (route.template, str(route.handler)[8:-2]))
-        # print('\033[32m%s\033[0m\n' % ('='*70))
+        # # print('\n\033[32m%s\033[0m' % ('='*70))
+        # from pprint import pprint
+        # for route in routes:
+        #     if 'document' in route.template:
+        #       print('\n\033[35m%s\033[0m\n\t\033[34m%s\033[0m'
+        #             % (route.template, str(route.handler)[8:-2]))
+        # # print('\033[32m%s\033[0m\n' % ('='*70))
         urls.append(PathPrefixRoute('/api', routes))
 
 
