@@ -599,4 +599,18 @@ class Worker(dom.Model):
     document_type = dom.String()
 
 
+class KnowledgeWorker(dom.Model):
+
+    worker_key = dom.Key(Worker)
+    created = dom.DateTime(auto_now_add=True)
+
+    class AAlert(dom.Model):
+        info_key = dom.Key(kind='Alert')
+        comment = dom.Text()
+        source = dom.String()
+        description_source = dom.String()
+
+    alerts = dom.Structured(AAlert, repeated=True)
+
+
 # vim: et:ts=4:sw=4
