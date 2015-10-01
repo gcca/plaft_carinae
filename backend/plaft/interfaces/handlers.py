@@ -739,5 +739,22 @@ class Worker(RESTful):
 
     _model = model.Worker
 
+    @RESTful.nested
+    class Knowledge(RESTful):
+
+        _model = model.KnowledgeWorker
+
+        #####################################################################
+        # TODO: RESTful nested methods.                                     #
+        #####################################################################
+
+        def get(self, worker_id, id=None):
+            worker = model.Worker.find(int(worker_id))
+            if worker:
+                worker_key = worker.key
+                lst = list(self._model.query(
+                    self._model.worker_key == worker_key).fetch())
+                self.render_json(lst)
+
 
 # vim: et:ts=4:sw=4

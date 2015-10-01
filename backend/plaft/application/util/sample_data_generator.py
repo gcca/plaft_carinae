@@ -14,7 +14,8 @@ import plaft.config
 from plaft.domain.model import (Dispatch, CodeName, Declarant, Stakeholder,
                                 Business, Person, Datastore, CustomsAgency,
                                 Operation, Officer, Employee, Permissions,
-                                Alert, User, Customer, Admin, Worker)
+                                Alert, User, Customer, Admin, Worker,
+                                KnowledgeWorker)
 from plaft.application.util import data_generator
 
 
@@ -54,7 +55,11 @@ def create_workers():
     for name, document_number in data:
         worker = Worker(name=name,
                         document_number=document_number)
-        worker.store()
+        worker_key = worker.store()
+
+        for i in range(random.randint(4, 7)):
+            knowledge = KnowledgeWorker(worker_key=worker_key)
+            knowledge.store()
 
 
 def create_stakeholders():
