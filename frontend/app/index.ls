@@ -273,13 +273,13 @@ class App.Model extends BaseModel
     _req = new XMLHttpRequest
     _req.open 'delete', @_url!, on
     _req.onreadystatechange = ~>
-      if _req.readyState is 4
-        if _req.status is 200
+      if 4 is _req.readyState
+        if 200 is _req.status
           @'stopListening'!
-          @'trigger'('destroy', @, @'collection', opts)
-          opts._success!
+          @'trigger' 'destroy', @, @'collection', opts
+          opts._success @, _req if opts._success
         else
-          opts._error!
+          opts._error _req if opts._error
     _req.send!
 
   _fetch: (opts = App._void._SyncOptions) ->

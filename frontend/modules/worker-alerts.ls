@@ -17,6 +17,77 @@ class Workers extends App.Collection
   urlRoot: \worker
 
 
+#############################################################################
+# KnowledgeWorker #
+###################
+
+class KnowledgeWorker extends App.View
+
+  _tagName: \div
+
+  render-alerts: (knowledge-worker) ->
+    _alerts = [
+    'El estilo de vida del trabajador no corresponde a sus ingresos o existe un cambio notable e inesperado en su situación económica.'
+    'El trabajador utiliza su domicilio personal o el de un tercero, para recibir documentación de los clientes del sujeto obligado, sin la autorización respectiva.'
+    'El domicilio del trabajador consta en operaciones realizadas en la oficina en la que trabaja, en forma reiterada y/o por montos significativos, sin vinculación aparente de aquel con el cliente.'
+    'Se presenta un crecimiento inusual o repentino del número de operaciones que se encuentran a cargo del trabajador.'
+    'Se comprueba que el trabajador no ha comunicado o ha ocultado al oficial de cumplimiento del sujeto obligado, información relativa al cambio de comportamiento de algún cliente.'
+    'El trabajador se niega a actualizar la información sobre sus antecedentes personales, laborales y patrimoniales o se verifica que ha falseado información.'
+    'El trabajador está involucrado en organizaciones cuyos objetivos han quedado debidamente demostrados que se encuentran relacionados con la ideología, reclamos, demandas o financiamiento de una organización terrorista nacional o extranjera, siempre que ello sea debidamente demostrado.'
+    ]
+    th = [
+      "<table class='#{gz.Css \table}'>"
+      '<thead><th>N</th><th>Descripción</th><th>&nbsp;</th></thead>'
+      '<tbody>'
+    ]
+
+    n = 1
+    for _text in _alerts
+      th._push "
+        <tr>
+          <td>#n</td>
+          <td>#_text</td>
+          <td><input type='checkbox'></td>
+        </tr>
+      "
+      n++
+    th._push '</tbody></table>'
+
+    @el.html = "
+      <button type='button'
+              class='#{gz.Css \btn}
+                   \ #{gz.Css \btn-default}'>
+        Regresar
+      </button>
+      #{th._join ''}
+    "
+
+    @el._first.on-click ~>
+      @render-nav!
+
+  render-nav: ->
+    @el.html = "
+      <ul class='#{gz.Css \nav}
+               \ #{gz.Css \nav-pills}
+               \ #{gz.Css \nav-stacked}'>
+      </ul>
+    "
+    _ul = @el._first
+    for knowledge-worker in @collection._models
+      _created = knowledge-worker._get \created
+      App.dom._new \li
+        _ul._append ..
+        ..html = "<a>#_created</a>"
+        ..on-click ~>
+          @render-alerts knowledge-worker
+
+  render: (@collection) ->
+    @render-nav!
+    super!
+
+
+#############################################################################
+
 class WorkerInfo extends App.View
 
   /** @override */
@@ -101,12 +172,9 @@ class WorkerItem extends App.View
                 \ #{gz.Css \glyphicon-check}'>&nbsp;</i>
       </div>
     "
-    _view = @
+
     @el.query ".#{gz.Css \glyphicon-remove}" .on-click ~>
       @model._destroy do
-        _success: ~>
-          console.log _view  ########## TODO
-          _view._remove!
         _error: ->
           alert 'ERROR: af8f4bfc-67bb-11e5-89f3-001d7d7379f5'
 
@@ -127,37 +195,15 @@ class WorkerItem extends App.View
       _modal._show!
 
     @el.query ".#{gz.Css \glyphicon-check}" .on-click ~>
-      _alerts = [
-      'El estilo de vida del trabajador no corresponde a sus ingresos o existe un cambio notable e inesperado en su situación económica.'
-      'El trabajador utiliza su domicilio personal o el de un tercero, para recibir documentación de los clientes del sujeto obligado, sin la autorización respectiva.'
-      'El domicilio del trabajador consta en operaciones realizadas en la oficina en la que trabaja, en forma reiterada y/o por montos significativos, sin vinculación aparente de aquel con el cliente.'
-      'Se presenta un crecimiento inusual o repentino del número de operaciones que se encuentran a cargo del trabajador.'
-      'Se comprueba que el trabajador no ha comunicado o ha ocultado al oficial de cumplimiento del sujeto obligado, información relativa al cambio de comportamiento de algún cliente.'
-      'El trabajador se niega a actualizar la información sobre sus antecedentes personales, laborales y patrimoniales o se verifica que ha falseado información.'
-      'El trabajador está involucrado en organizaciones cuyos objetivos han quedado debidamente demostrados que se encuentran relacionados con la ideología, reclamos, demandas o financiamiento de una organización terrorista nacional o extranjera, siempre que ello sea debidamente demostrado.'
-      ]
-      th = [
-        "<table class='#{gz.Css \table}'>"
-        '<thead><th>N</th><th>Descripción</th></thead>'
-        '<tbody>'
-      ]
-
-      n = 1
-      for _text in _alerts
-        th._push "
-          <tr>
-            <td>#n</td>
-            <td>#_text</td>
-            <td><input type='checkbox'></td>
-          </tr>
-        "
-        n++
-      th._push '</tbody></table>'
-
-      _modal = new App.widget.message-box.Modal do
-        _title: 'Editar información de trabajador'
-        _body: th._join ''
-      _modal._show!
+      App.ajax._get "/api/worker/#{@model._id}/knowledge", null, do
+        _success: (dtos) ->
+          knowledge-workers = new Workers dtos
+          _modal = new App.widget.message-box.Modal do
+            _title: 'Conocimiento del trabajador'
+            _body: (new KnowledgeWorker).render(knowledge-workers).el
+          _modal._show!
+        _error: ->
+          alert 'ERROR: 92199648-6858-11e5-9c31-001d7d7379f5'
 
     super!
 
@@ -183,15 +229,19 @@ class WorkerList extends App.View
     @collection._sort!
     @render!
 
-  render: ~>
+  on-model-destroy: (worker) ~>
+    @collection._remove worker
+    @on-model-change!
+
+  render: ->
     @el.html = null
     for worker in @collection._models
       worker-item = new WorkerItem
       @el._append (worker-item.render worker).el
       worker.off 'change:name' @on-model-change
       worker.on 'change:name' @on-model-change
-      worker.off 'destroy' @render
-      worker.on 'destroy' @render
+      worker.off 'destroy' @on-model-destroy
+      worker.on 'destroy' @on-model-destroy
     super!
 
 
