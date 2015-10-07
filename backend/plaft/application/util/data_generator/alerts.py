@@ -307,7 +307,47 @@ alerts_2 = (
 )
 
 
-alerts = alerts_1 + alerts_2
+alerts_3 = (
+    ('II', '1',
+     'El estilo de vida del trabajador no corresponde a sus ingresos'
+     ' o existe un cambio notable e inesperado en su situación económica.',
+     'SIN AYUDA'),
+    ('II', '2',
+     'El trabajador utiliza su domicilio personal o el de un tercero,'
+     ' para recibir documentación de los clientes del sujeto obligado,'
+     ' sin la autorización respectiva.',
+     'SIN AYUDA'),
+    ('II', '3',
+     'El domicilio del trabajador consta en operaciones realizadas'
+     ' en la oficina en la que trabaja, en forma reiterada'
+     ' y/o por montos significativos, sin vinculación aparente'
+     ' de aquel con el cliente.',
+     'SIN AYUDA'),
+    ('II', '4',
+     'Se presenta un crecimiento inusual o repentino del número'
+     ' de operaciones que se encuentran a cargo del trabajador.',
+     'SIN AYUDA'),
+    ('II', '5',
+     'Se comprueba que el trabajador no ha comunicado o ha ocultado'
+     ' al oficial de cumplimiento del sujeto obligado,'
+     ' información relativa al cambio de comportamiento de algún cliente.',
+     'SIN AYUDA'),
+    ('II', '6',
+     'El trabajador se niega a actualizar la información sobre'
+     ' sus antecedentes personales, laborales y patrimoniales'
+     ' o se verifica que ha falseado información.',
+     'SIN AYUDA'),
+    ('II', '7',
+     'El trabajador está involucrado en organizaciones cuyos objetivos'
+     ' han quedado debidamente demostrados que se encuentran relacionados'
+     ' con la ideología, reclamos, demandas o financiamiento'
+     ' de una organización terrorista nacional o extranjera,'
+     ' siempre que ello sea debidamente demostrado.',
+     'SIN AYUDA')
+)
+
+
+alerts = alerts_1 + alerts_2 + alerts_3
 
 
 # vim: et:ts=4:sw=4

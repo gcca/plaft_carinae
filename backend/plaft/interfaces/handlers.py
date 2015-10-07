@@ -756,5 +756,26 @@ class Worker(RESTful):
                     self._model.worker_key == worker_key).fetch())
                 self.render_json(lst)
 
+        def post(self, worker_id):
+            self.write_json('{}')
+
+        def put(self, worker_id, id):
+            self.write_json('{}')
+            return  #########################################################
+            worker = model.Worker.find(int(worker_id))
+            if worker:
+                worker_key = worker.key
+                knowledge = self._model.find(int(id))
+
+                if knowledge.worker_key != worker_key:
+                    self.status.BAD_REQUEST(
+                        'No match keys for worker and knowledge')
+
+                query = self.query
+                knowledge << query
+                knowledge.store()
+
+                self.render_json(lst)
+
 
 # vim: et:ts=4:sw=4

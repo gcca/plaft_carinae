@@ -21,63 +21,115 @@ class Workers extends App.Collection
 # KnowledgeWorker #
 ###################
 
-class KnowledgeWorker extends App.View
+class WorkerChecklist extends App.View
 
   _tagName: \div
 
-  render-alerts: (knowledge-worker) ->
-    _alerts = [
-    'El estilo de vida del trabajador no corresponde a sus ingresos o existe un cambio notable e inesperado en su situación económica.'
-    'El trabajador utiliza su domicilio personal o el de un tercero, para recibir documentación de los clientes del sujeto obligado, sin la autorización respectiva.'
-    'El domicilio del trabajador consta en operaciones realizadas en la oficina en la que trabaja, en forma reiterada y/o por montos significativos, sin vinculación aparente de aquel con el cliente.'
-    'Se presenta un crecimiento inusual o repentino del número de operaciones que se encuentran a cargo del trabajador.'
-    'Se comprueba que el trabajador no ha comunicado o ha ocultado al oficial de cumplimiento del sujeto obligado, información relativa al cambio de comportamiento de algún cliente.'
-    'El trabajador se niega a actualizar la información sobre sus antecedentes personales, laborales y patrimoniales o se verifica que ha falseado información.'
-    'El trabajador está involucrado en organizaciones cuyos objetivos han quedado debidamente demostrados que se encuentran relacionados con la ideología, reclamos, demandas o financiamiento de una organización terrorista nacional o extranjera, siempre que ello sea debidamente demostrado.'
-    ]
-    th = [
+  render: ->
+    _alerts =
+      'El estilo de vida del trabajador no corresponde a sus ingresos
+      \ o existe un cambio notable e inesperado en su situación económica.'
+      'El trabajador utiliza su domicilio personal o el de un tercero,
+      \ para recibir documentación de los clientes del sujeto obligado,
+      \ sin la autorización respectiva.'
+      'El domicilio del trabajador consta en operaciones realizadas
+      \ en la oficina en la que trabaja, en forma reiterada y/o por montos
+      \ significativos, sin vinculación aparente de aquel con el cliente.'
+      'Se presenta un crecimiento inusual o repentino del número
+      \ de operaciones que se encuentran a cargo del trabajador.'
+      'Se comprueba que el trabajador no ha comunicado o ha ocultado
+      \ al oficial de cumplimiento del sujeto obligado, información relativa
+      \ al cambio de comportamiento de algún cliente.'
+      'El trabajador se niega a actualizar la información sobre
+      \ sus antecedentes personales, laborales y patrimoniales o se verifica
+      \ que ha falseado información.'
+      'El trabajador está involucrado en organizaciones cuyos objetivos
+      \ han quedado debidamente demostrados que se encuentran relacionados
+      \ con la ideología, reclamos, demandas o financiamiento
+      \ de una organización terrorista nacional o extranjera, siempre que ello
+      \ sea debidamente demostrado.'
+
+    th =
       "<table class='#{gz.Css \table}'>"
       '<thead><th>N</th><th>Descripción</th><th>&nbsp;</th></thead>'
       '<tbody>'
-    ]
 
     n = 1
     for _text in _alerts
       th._push "
         <tr>
           <td>#n</td>
-          <td>#_text</td>
+          <td style='text-align:justify'>#_text</td>
           <td><input type='checkbox'></td>
         </tr>
       "
       n++
     th._push '</tbody></table>'
 
+    @el.html = th._join ''
+
+    super!
+
+
+class AssessWorker extends App.View
+
+  _tagName: \div
+
+  render-alerts: (knowledge-worker) ->
     @el.html = "
-      <button type='button'
-              class='#{gz.Css \btn}
-                   \ #{gz.Css \btn-default}'>
-        Regresar
-      </button>
-      #{th._join ''}
+      <div class='#{gz.Css \btn-group}' style='margin-bottom:1em'>
+        <button type='button'
+                class='#{gz.Css \btn}
+                     \ #{gz.Css \btn-default}'>
+          Regresar
+        </button>
+        <button type='button'
+                class='#{gz.Css \btn}
+                     \ #{gz.Css \btn-primary}'>
+          Guardar
+        </button>
+      </div>
     "
 
-    @el._first.on-click ~>
+    worker-checklist = new WorkerChecklist
+    @el._append worker-checklist.render!.el
+
+    @el._first._first.on-click ~>
+      @render-nav!
+
+    @el._first._last.on-click ~>
+      knowledge-worker._save do
+        ## _success: ~>
+        _error: ->
+          alert 'ERROR: fb09cd78-6888-11e5-9c31-001d7d7379f5'
       @render-nav!
 
   render-nav: ->
     @el.html = "
-      <ul class='#{gz.Css \nav}
-               \ #{gz.Css \nav-pills}
-               \ #{gz.Css \nav-stacked}'>
-      </ul>
+      <button type='button'
+              style='margin-bottom:1em'
+              class='#{gz.Css \btn}
+                   \ #{gz.Css \btn-default}'>
+        Agregar
+      </button>
+      <div class='#{gz.Css \list-group}'></div>
     "
-    _ul = @el._first
+
+    @el._first.on-click ~>
+      class KnowledgeWorker extends App.Model
+        urlRoot: "worker/#{worker-id}/knowledge"
+
+      @render-alerts!
+
+    _ul = @el._last
+    n = 0
     for knowledge-worker in @collection._models
       _created = knowledge-worker._get \created
-      App.dom._new \li
+      n++
+      App.dom._new \a
         _ul._append ..
-        ..html = "<a>#_created</a>"
+        ..html = "#n.&nbsp;&nbsp;#_created"
+        .._class = gz.Css \list-group-item
         ..on-click ~>
           @render-alerts knowledge-worker
 
@@ -146,10 +198,10 @@ class WorkerItem extends App.View
 
   initialize: ->
     super!
-    @el.css = 'border: 1px solid #bbb;
+    @el.css = 'border: 1px solid #ddd;
                border-radius: 4px;
-               padding: 6px 0 6px 4px;
-               margin-bottom: 6px;'
+               padding: 8px 0;
+               margin-bottom: 4px;'
 
   render: (@model) ->
     @el.html = "
@@ -195,13 +247,22 @@ class WorkerItem extends App.View
       _modal._show!
 
     @el.query ".#{gz.Css \glyphicon-check}" .on-click ~>
-      App.ajax._get "/api/worker/#{@model._id}/knowledge", null, do
-        _success: (dtos) ->
-          knowledge-workers = new Workers dtos
+      worker-id = @model._id
+
+      class KnowledgeWorker extends App.Model
+        urlRoot: "worker/#{worker-id}/knowledge"
+
+      class KnowledgeWorkers extends App.Collection
+        urlRoot: "worker/#{worker-id}/knowledge"
+        model: KnowledgeWorker
+
+      knowledge-workers = new KnowledgeWorkers
+      knowledge-workers._fetch do
+        _success: (knowledge-workers) ->
           _modal = new App.widget.message-box.Modal do
             _title: 'Conocimiento del trabajador'
-            _body: (new KnowledgeWorker).render(knowledge-workers).el
-          _modal._show!
+            _body: (new AssessWorker).render(knowledge-workers).el
+          _modal._show App.widget.message-box.Modal.CLASS.large
         _error: ->
           alert 'ERROR: 92199648-6858-11e5-9c31-001d7d7379f5'
 

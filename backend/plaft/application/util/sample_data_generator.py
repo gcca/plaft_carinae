@@ -46,6 +46,7 @@ def pick_document_number_by(document_type):
 # Creations
 
 def create_workers():
+    from datetime import datetime, timedelta
     data = (
         ('Persona 1', '123456'),
         ('Persona 2', '345666'),
@@ -59,6 +60,9 @@ def create_workers():
 
         for i in range(random.randint(4, 7)):
             knowledge = KnowledgeWorker(worker_key=worker_key)
+            knowledge.created = (datetime.now()
+                                 + random.choice((-1, 1))
+                                 * timedelta(hours=random.randint(40, 90)))
             knowledge.store()
 
 
