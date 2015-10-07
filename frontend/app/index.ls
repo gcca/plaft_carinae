@@ -174,7 +174,8 @@ class BaseModel extends Backbone\Model
   ::off      = ::\off
   ::trigger  = ::\trigger
   ::_remove  = ::\remove
-  ::is-new   = ::\isNew
+  ::is-new   = ::\isNew  # TODO: remove. Check uses.
+  ::_is-new   = ::\isNew
   ::_destroy = ::\destroy
 
   _attributes:~
@@ -272,6 +273,7 @@ class App.Model extends BaseModel
     # TODO: Check error in original method of Model
     _req = new XMLHttpRequest
     _req.open 'delete', @_url!, on
+    _req.set-request-header \content-type 'application/json; charset=UTF-8'
     _req.onreadystatechange = ~>
       if 4 is _req.readyState
         if 200 is _req.status
@@ -285,8 +287,24 @@ class App.Model extends BaseModel
   _fetch: (opts = App._void._SyncOptions) ->
     super \success : opts._success, \error : opts._error
 
-  _save: (keys, opts = App._void._SyncOptions) ->
-    super keys, \success : opts._success, \error : opts._error
+  _save: (keys, options) ->
+  ## _save: (keys, opts = App._void._SyncOptions) ->
+    # super keys, \success : opts._success, \error : opts._error
+    # TODO: Check error in original method of Model
+    if not options
+      options = keys
+      keys = @_attributes
+
+    _req = new XMLHttpRequest
+    _req.open (if @is-new! then 'post' else 'put'), @_url!, on
+    _req.set-request-header \content-type 'application/json; charset=UTF-8'
+    _req.onreadystatechange = ~>
+      if 4 is _req.readyState
+        if 200 is _req.status
+          options._success @, _req if options._success
+        else
+          options._error _req if options._error
+    _req.send JSON.'stringify' keys
 
   _store: (keys, opts = App._void._SyncOptions) ->
     if @isNew!

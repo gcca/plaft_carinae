@@ -739,6 +739,11 @@ class Worker(RESTful):
 
     _model = model.Worker
 
+    def post(self):
+        instance = super(Worker, self).post()
+        # TODO: to infrastrcuture - auto nested models creation and hooks
+        model.KnowledgeWorker(worker_key=instance.key).store()
+
     @RESTful.nested
     class Knowledge(RESTful):
 
@@ -757,11 +762,21 @@ class Worker(RESTful):
                 self.render_json(lst)
 
         def post(self, worker_id):
-            self.write_json('{}')
+            worker = model.Worker.find(int(worker_id))
+            if worker:
+                knowledge = self._model(worker_key=worker.key)
+                query = self.query
+                knowledge.alerts = [
+                    model.KnowledgeWorker.InternalAlert(
+                        info_key=model.Alert.find(item['info']).key,
+                        comment=item.get('comment', None))  # etc.
+                    for item in query['alerts']]
+                id = knowledge.store().id()
+                self.write_json('{"id":%d}' % id)
+            else:
+                self.status.NOT_FOUND('Worker not found: ' + worker_id)
 
         def put(self, worker_id, id):
-            self.write_json('{}')
-            return  #########################################################
             worker = model.Worker.find(int(worker_id))
             if worker:
                 worker_key = worker.key
@@ -772,10 +787,16 @@ class Worker(RESTful):
                         'No match keys for worker and knowledge')
 
                 query = self.query
-                knowledge << query
+                # knowledge << query  TODO: this in infrastructure
+                knowledge.alerts = [
+                    model.KnowledgeWorker.InternalAlert(
+                        info_key=model.Alert.find(item['info']).key,
+                        comment=item.get('comment', None))  # etc.
+                    for item in query['alerts']]
                 knowledge.store()
-
-                self.render_json(lst)
+                self.write_json('{}')
+            else:
+                self.status.NOT_FOUND('Worker not found: ' + worker_id)
 
 
 # vim: et:ts=4:sw=4
