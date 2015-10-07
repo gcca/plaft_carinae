@@ -57,6 +57,8 @@ class Dashboard(DirectToController):
         self.add_list('employees_roles', model.User.role_choices)
         from plaft.application.util.data_generator import alerts
         self.add_list('alert_s1', alerts.alerts_1)
+        self.add_list('alert_s2',
+                      model.Alert.all(section='II'))
         self.add_list('alert_s3', alerts.alerts_2)
 
         from plaft.application.dispatch import pending_and_accepting
