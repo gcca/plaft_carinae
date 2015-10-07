@@ -397,6 +397,10 @@ $\fn <<<
   _remove: ref$\remove
   _tooltip: ref$\tooltip
 
+_ <<<
+  _sort-by: _\sortBy
+  _group-by: _\groupBy
+
 
 /**
  * HTML5: while support not implemented yet.
