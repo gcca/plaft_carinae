@@ -598,19 +598,30 @@ class Worker(dom.Model):
     document_number = dom.String()
     document_type = dom.String()
 
+    def compute_knowledge(self):
+        ## TODO: change computed to accept 'false' objects: [], {}, etc.
+        knowledge = [knowledge.to_dict()
+                     for knowledge
+                     in (KnowledgeWorker.query(
+                         KnowledgeWorker.worker_key == self.key)
+                         .order(KnowledgeWorker.created).fetch())]
+        return knowledge if knowledge else None
+
+    knowledge = dom.Computed(compute_knowledge)
+
 
 class KnowledgeWorker(dom.Model):
 
     worker_key = dom.Key(Worker)
     created = dom.DateTime(auto_now_add=True)
 
-    class AAlert(dom.Model):
+    class InternalAlert(dom.Model):
         info_key = dom.Key(kind='Alert')
         comment = dom.Text()
         source = dom.String()
         description_source = dom.String()
 
-    alerts = dom.Structured(AAlert, repeated=True)
+    alerts = dom.Structured(InternalAlert, repeated=True)
 
 
 # vim: et:ts=4:sw=4

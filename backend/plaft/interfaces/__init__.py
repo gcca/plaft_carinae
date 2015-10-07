@@ -428,6 +428,7 @@ class BaseRESTful(Handler):
                 else:
                     self.write_json('{"id":%d}' % instance.id)
                     self.incr()
+                    return instance
         else:
             self.status.BAD_REQUEST('No query')
 
