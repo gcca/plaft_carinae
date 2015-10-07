@@ -19,3 +19,8 @@ indexes:
   properties:
   - name: parent_key
   - name: created
+
+- kind: KnowledgeWorker
+  properties:
+  - name: worker_key
+  - name: created
