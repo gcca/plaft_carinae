@@ -598,7 +598,7 @@ class Worker(dom.Model):
     document_number = dom.String()
     document_type = dom.String()
 
-    def compute_knowledge(self):
+    def knowledge(self):
         ## TODO: change computed to accept 'false' objects: [], {}, etc.
         knowledge = [knowledge.to_dict()
                      for knowledge
@@ -607,7 +607,10 @@ class Worker(dom.Model):
                          .order(KnowledgeWorker.created).fetch())]
         return knowledge if knowledge else None
 
-    knowledge = dom.Computed(compute_knowledge)
+    def to_dict(self):
+        dct = super(Worker, self).to_dict()
+        dct['knowledge'] = self.knowledge()
+        return dct
 
 
 class KnowledgeWorker(dom.Model):
