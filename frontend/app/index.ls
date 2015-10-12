@@ -301,6 +301,8 @@ class App.Model extends BaseModel
     _req.onreadystatechange = ~>
       if 4 is _req.readyState
         if 200 is _req.status
+          for k of keys
+            @_attributes[k] = keys[k]
           options._success @, _req if options._success
         else
           options._error _req if options._error

@@ -100,7 +100,7 @@ class AssessWorker extends App.View
     @el._first._last.on-click ~>
       _dto =
         'alerts': [{ \
-          'info': .. \
+          'info_key': .. \
           } for worker-checklist.selected-codes!]
       knowledge-worker._save _dto, do
         ## _success: ~>
@@ -173,20 +173,6 @@ class WorkerInfo extends App.View
         <div class='#{gz.Css \col-sm-8}'>
           <input type='text' class='#{gz.Css \form-control}'
                  name='document_number'>
-        </div>
-      </div>
-
-      <div class='#{gz.Css \form-group}'>
-        <label class='#{gz.Css \control-label} #{gz.Css \col-sm-4}'>
-          Tipo de documento
-        </label>
-        <div class='#{gz.Css \col-sm-8}'>
-          <select name='document_type' class='#{gz.Css \form-control}'>
-            <option>RUC</option>
-            <option>DNI</option>
-            <option>PA</option>
-            <option>CE</option>
-          </select>
         </div>
       </div>
     "
