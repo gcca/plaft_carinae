@@ -758,7 +758,9 @@ class Worker(RESTful):
             if worker:
                 worker_key = worker.key
                 lst = list(self._model.query(
-                    self._model.worker_key == worker_key).fetch())
+                    self._model.worker_key == worker_key)
+                           .order(self._model.created)
+                           .fetch())
                 self.render_json(lst)
 
         def post(self, worker_id):
@@ -768,7 +770,7 @@ class Worker(RESTful):
                 query = self.query
                 knowledge.alerts = [
                     model.KnowledgeWorker.InternalAlert(
-                        info_key=model.Alert.find(item['info']).key,
+                        info_key=model.Alert.find(item['info_key']).key,
                         comment=item.get('comment', None))  # etc.
                     for item in query['alerts']]
                 id = knowledge.store().id()
@@ -790,7 +792,7 @@ class Worker(RESTful):
                 # knowledge << query  TODO: this in infrastructure
                 knowledge.alerts = [
                     model.KnowledgeWorker.InternalAlert(
-                        info_key=model.Alert.find(item['info']).key,
+                        info_key=model.Alert.find(item['info_key']).key,
                         comment=item.get('comment', None))  # etc.
                     for item in query['alerts']]
                 knowledge.store()
