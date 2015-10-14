@@ -20,12 +20,18 @@ class TestII extends Module
   @text = 'ESTO ESTA CARGADO DESDE EL MODULO'
   @@_mod-caption = 'TEST - MODULE II'
   @@_mod-icon    = gz.Css \tags
-  @@_mod-group-buttons =
-    * name: 'GUARDAR'
-      callback: ~> console.log @text
+  _mod-group-buttons:
+    * caption: 'GUARDAR-I'
+      callback: ->
+        console.log 'Test I'
+        console.log 'REGISTRAR'
+        console.log @text
 
-    * name: 'MODIFICAR'
-      callback: -> console.log 'Modificar'
+    * caption: 'MODIFICAR-II'
+      callback: ->
+        console.log 'Test I'
+        console.log 'MODIFICAR'
+        console.log @
 
 
 /** @export */

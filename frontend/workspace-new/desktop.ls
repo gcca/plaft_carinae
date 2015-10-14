@@ -22,14 +22,14 @@ class Desktop extends App.View
    * @private
    */
   on-search: (query, filter) ~>
-    @module.on-search query, filter
+    @current-module.on-search query, filter
 
   /**
    * On save event to module.
    * @private
    */
   on-save: ~>
-    @module.on-save!
+    @current-module.on-save!
 
   #####################################################
   # MODULOS
@@ -66,7 +66,7 @@ class Desktop extends App.View
       'map': [{'caption': k._constructor._mod-caption, \
                'index': j} for k, j in @cache-modules]
       'current': {
-        'module': @current-module._constructor,
+        'module': @current-module,
         'index': @current-index}
 
   /**
@@ -96,13 +96,12 @@ class Desktop extends App.View
    */
   close-last-page: ~>
     @load-module @current-index - 1
-    @send-trigger!
 
   /**
    * Crea un nuevo modulo y guarda modulo en @cache-modules
    */
   _new: (Module, _options = App._void._Object) ->
-    module = Module._new _options
+    Module._new _options
       .._desktop = @
       ..render!
       @cache-modules._push ..

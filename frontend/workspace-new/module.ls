@@ -51,7 +51,7 @@ class Module extends App.View
   /** @protected */ @@_mod-caption     = ''
   /** @protected */ @@_mod-icon        = ''
   /** @protected */ @@_mod-hash        = ''
-  /** @protected */ @@_mod-group-buttons = null
+  /** @protected */ _mod-group-buttons: null
 
 
 /** @export */

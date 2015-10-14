@@ -32,6 +32,7 @@ exports <<<
       kHidden    : null
       kYesNo     : null
       kLabel     : null
+      kButton    : null
 
     /**
      * @typedef {{

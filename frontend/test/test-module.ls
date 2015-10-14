@@ -1,6 +1,7 @@
 /** @module modules */
 
 Module = require '../workspace-new/module'
+FieldType = App.builtins.Types.Field
 
 /**
  */
@@ -25,7 +26,12 @@ class SubTestI extends Module
 
   _tagName: \div
 
-  initialize: ({@text}) ->
+  first-button: ->
+    console.log 'FIRST BUTTON'
+    console.log @text
+
+
+  initialize: ({@text}) -> super!
 
   render: ->
     @el.html = "<h4>#{@text}</h4>"
@@ -41,15 +47,42 @@ class SubTestI extends Module
           @_desktop.load-sub-module(SubSubTestI, do
                                    text: _input._value)
       @el._append ..
+    @div-a = App.dom._new \h1
+      @el._append ..
+
     super!
 
+  div-a: null
   @@_mod-caption = 'SUBMODULO TEST I'
-  @@_mod-group-buttons =
-    * name: 'GUARDAR-I'
-      callback: ~> console.log @text
+  _mod-group-buttons:
+    * caption: 'Grupo I'
+      type: FieldType.kComboBox
+      options:
+        * caption: 'Ingresar'
+          callback: ->
+            console.log 'SubMenu - Ingresar'
+            console.log @text
+            @first-button!
+        * caption: 'Modificar'
+          callback: ->
+            console.log 'SubMenu - Modificar'
+            console.log @text
+        * caption: 'Eliminar'
+          callback: ->
+            console.log 'SubMenu - Eliminar'
+            console.log @text
 
-    * name: 'MODIFICAR-II'
-      callback: -> console.log 'Modificar'
+    * caption: 'radio-module'
+      type: FieldType.kRadioGroup
+      options: <[Primera Segunda Tercera]>
+      callback: (element) ->
+        @div-a.html = element._value
+
+    * caption: 'check-module'
+      type: FieldType.kCheckBox
+      options: <[check1 check2 check3]>
+      callback: (element) ->
+        console.log element
 
 /**
  */

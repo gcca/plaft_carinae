@@ -5,7 +5,7 @@ Module = require '../workspace-new/module'
 
 /**
  */
-class TestII extends Module
+class TestIII extends Module
 
   _tagName: \div
 
@@ -20,16 +20,22 @@ class TestII extends Module
   @text = 'ESTO ESTA CARGADO DESDE EL MODULO'
   @@_mod-caption = 'TEST - MODULE III'
   @@_mod-icon    = gz.Css \tags
-  @@_mod-group-buttons =
-    * name: 'GUARDAR'
-      callback: ~> console.log @text
+  _mod-group-buttons:
+    * caption: 'GUARDAR-I'
+      callback: ->
+        console.log 'Test III'
+        console.log 'REGISTRAR'
+        console.log @text
 
-    * name: 'MODIFICAR'
-      callback: -> console.log 'Modificar'
+    * caption: 'MODIFICAR-II'
+      callback: ->
+        console.log 'Test III'
+        console.log 'MODIFICAR'
+        console.log @
 
 
 /** @export */
-module.exports = TestII
+module.exports = TestIII
 
 
 # vim: ts=2:sw=2:sts=2:et

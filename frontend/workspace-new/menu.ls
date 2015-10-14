@@ -41,7 +41,7 @@ class Menu extends MenuAbstract
   render: ->
     _r = super!
     @index-menu.html = "<i class='#{gz.Css \glyphicon}
-                                \ #{gz.Css \glyphicon-user}'></i>"
+                                \ #{gz.Css \glyphicon-align-justify}'></i>"
     ul = App.dom._new \ul
       .._class = gz.Css \dropdown-menu
       ..role = 'menu'
@@ -53,7 +53,7 @@ class Menu extends MenuAbstract
 
   /** @protected */ _current: _class: _toggle: App._void._Function
   /** @protected */ @@FIRST-OPTION = "<i class='#{gz.Css \glyphicon}
-                                              \ #{gz.Css \glyphicon-user}'></i>"
+                                    \ #{gz.Css \glyphicon-align-justify}'></i>"
 
 /** @exports */
 module.exports = Menu
