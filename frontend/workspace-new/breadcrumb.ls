@@ -245,6 +245,15 @@ class Breadcrumb extends App.View
       .._append @menu.render!.el
       .._append @settings.render!.el
 
+    label-css = 'color:rgb(153,153,153);
+                 display: inline-block;
+                 width: 95px;
+                 text-overflow:ellipsis;
+                 white-space:nowrap;
+                 overflow:hidden'
+    @menu.el._first.css = label-css
+    @settings.el._first.css = label-css
+
     @menu.on (gz.Css \is-active), (msg) ~> @settings.no-active!
     @settings.on (gz.Css \is-active), (msg) ~> @menu.no-active!
 
