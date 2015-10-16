@@ -3,7 +3,7 @@
  * @author Javier Huaman
  */
 
-Module = require '../../workspace/module'
+Module = require '../../workspace-new/module'
 Utils = require './table'
 
 FieldType = App.builtins.Types.Field
@@ -125,6 +125,8 @@ class Report extends Module
 
     super!
 
+  /** @protected */ @@_mod-caption = 'REPORTE OI'
+
 
 /**
  * ListReport
@@ -147,9 +149,9 @@ class ListReport extends Module
     super!
 
 
-  /** @protected */ @@_caption = 'OPERACIONES INUSUALES-ANEXO 6'
-  /** @protected */ @@_icon    = gz.Css \flash
-  /** @protected */ @@_hash    = 'auth-hash-report'
+  /** @protected */ @@_mod-caption = 'OPERACIONES INUSUALES-ANEXO 6'
+  /** @protected */ @@_mod-icon    = gz.Css \flash
+  /** @protected */ @@_mod-hash    = 'auth-hash-report'
 
 
 /** @export */

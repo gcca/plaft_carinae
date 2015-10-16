@@ -1,3 +1,9 @@
+/**
+ * Admin module manage.
+ * @module admin
+ */
+
+
 App = require './app'
 
 
@@ -6,8 +12,14 @@ MODULES =
   User     = require './admin/modules/new-user'
   Billing  = require './admin/modules/billing'
 
-App.MODULES = MODULES
-Workspace = require './admin/workspace'
+
+Menu = require './workspace-new/menu'
+
+MENUS-MODULES = [
+  new Menu MODULES: MODULES
+  ]
+
+Workspace = require './workspace-new'
 
 /**
  * Admin
@@ -22,47 +34,7 @@ class Admin extends App.View
 
   /** @override */
   render: ->
-    @el.html = @template
-    @_content = @el._first._next
-    x-save = @el.query "##{gz.Css \save}"
-
-    workspace = new Workspace do
-      save-place: x-save
-
-    @_content._append workspace.render!.el
-
-    workspace.load-module Profile
+    @el._append (new Workspace MENUS: MENUS-MODULES).render!.el
     super!
-
-  template: "
-    <header class='#{gz.Css \navbar}
-                 \ #{gz.Css \navbar-inverse}
-                 \ #{gz.Css \navbar-fixed-top}'
-          role='banner'>
-      <div class='#{gz.Css \container-fluid}'>
-        <div class='#{gz.Css \navbar-header}'>
-          <a href='#' class='#{gz.Css \navbar-brand}'>
-            CavaSoft SAC
-          </a>
-        </div>
-        <nav class='#{gz.Css \collapse}
-                  \ #{gz.Css \navbar-collapse}'
-             id='#{gz.Css \id-navbar-collapse}'
-             role='navigation'>
-          <div id='#{gz.Css \save}'
-              class='#{gz.Css \navbar-right} #{gz.Css \navbar-form}'
-              role='save'>
-          </div>
-        </nav>
-      </div>
-    </header>
-
-    <div class='#{gz.Css \container} #{gz.Css \app-container}'></div>
-
-    <footer style='padding-top:40px;
-                   padding-bottom:30px;
-                   margin-top:100px'></footer>"
-
-  /** @private */ _content: null
 
 (new Admin).render!

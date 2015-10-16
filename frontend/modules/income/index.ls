@@ -13,7 +13,7 @@ DeclarantBody = require './declarant'
 dispatch = require './dispatch'
 StakeholderBody = require './stakeholder'
 
-Module = require '../../workspace/module'
+Module = require '../../workspace-new/module'
 
 
 /**
@@ -374,9 +374,9 @@ class Income extends Module
     kByDocumentNumber: 0
     kByOrder: 1
 
-  /** @protected*/ @@_caption = 'INGRESO DE OPERACIONES'
-  /** @protected*/ @@_icon    = gz.Css \cloud
-  /** @protected*/ @@_hash   = 'auth-hash-income'
+  /** @protected*/ @@_mod-caption = 'INGRESO DE OPERACIONES'
+  /** @protected*/ @@_mod-icon    = gz.Css \cloud
+  /** @protected*/ @@_mod-hash   = 'auth-hash-income'
   /** @protected*/
   @@_search-menu =
     * _caption: 'C'

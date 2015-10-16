@@ -3,7 +3,7 @@
  * @author gcca@gcca.tk (cristHian Gz. <gcca>)
  */
 
-Module = require '../workspace/module'
+Module = require '../workspace-new/module'
 
 
 class Worker extends App.Model
@@ -354,9 +354,9 @@ class WorkerAlerts extends Module
     super!
 
 
-  /** @protected */ @@_caption = 'CONOCIMIENTO DEL TRABAJOR'
-  /** @protected */ @@_icon    = gz.Css \road
-  /** @protected */ @@_hash    = 'auth-hash-worker-alerts'
+  /** @protected */ @@_mod-caption = 'CONOCIMIENTO DEL TRABAJOR'
+  /** @protected */ @@_mod-icon    = gz.Css \road
+  /** @protected */ @@_mod-hash    = 'auth-hash-worker-alerts'
 
 
 /** @export */

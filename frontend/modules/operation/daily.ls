@@ -3,7 +3,7 @@
  * @author gcca@gcca.tk (cristHian Gz. <gcca>)
  */
 
-Module = require '../../workspace/module'
+Module = require '../../workspace-new/module'
 modal = App.widget.message-box
   Modal = ..Modal
 table = App.widget.table
@@ -103,9 +103,9 @@ class Operations extends Module
     super!
 
 
-  /** @protected */ @@_caption = 'RO - PROCESO DIARIO'
-  /** @protected */ @@_icon    = gz.Css \flash
-  /** @protected */ @@_hash  = 'auth-hash-operation'
+  /** @protected */ @@_mod-caption = 'RO - PROCESO DIARIO'
+  /** @protected */ @@_mod-icon    = gz.Css \flash
+  /** @protected */ @@_mod-hash  = 'auth-hash-operation'
 
 
 /** @export */

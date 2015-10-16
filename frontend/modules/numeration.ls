@@ -4,7 +4,7 @@
  */
 
 
-Module = require '../workspace/module'
+Module = require '../workspace-new/module'
 modal = App.widget.message-box
 Modal = modal.Modal
 table = App.widget.table
@@ -351,6 +351,8 @@ class NumerationEdit extends Module
     * _name: 'exchange_rate'
       _label: 'Tipo de cambio'
 
+  /** @protected */ @@_mod-caption = 'INGRESAR NUMERACIÓN'
+
 
 /**
  * Numeration
@@ -451,9 +453,9 @@ class Numeration extends Module
   /** @private */ _table: null
   /** @private */ _pending: null
 
-  /** @protected */ @@_caption = 'NUMERACIÓN DE OPERACIONES'
-  /** @protected */ @@_icon    = gz.Css \print
-  /** @protected */ @@_hash    = 'auth-hash-numeration'
+  /** @protected */ @@_mod-caption = 'NUMERACIÓN DE OPERACIONES'
+  /** @protected */ @@_mod-icon    = gz.Css \print
+  /** @protected */ @@_mod-hash    = 'auth-hash-numeration'
 
 
 /** @export */

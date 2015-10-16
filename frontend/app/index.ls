@@ -555,6 +555,7 @@ App.GLOBALS =
 
         window.plaft.'customs' = dto-customs
 
+
 window.plaft.'declarant' = void
 window.plaft.'stakeholder' = void
 

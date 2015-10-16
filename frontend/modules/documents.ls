@@ -3,7 +3,7 @@
  * @author gcca@gcca.tk (cristHian Gz. <gcca>)
  */
 
-Module = require '../workspace/module'
+Module = require '../workspace-new/module'
 
 
 class Treeview extends App.View
@@ -264,9 +264,9 @@ class Documents extends Module
   /** @private */ _viewer: null
   /** @private */ _current-node: null
 
-  /** @protected */ @@_caption = 'LEGISLACIÓN'
-  /** @protected */ @@_icon    = gz.Css \print
-  /** @protected */ @@_hash    = 'auth-hash-documents'
+  /** @protected */ @@_mod-caption = 'LEGISLACIÓN'
+  /** @protected */ @@_mod-icon    = gz.Css \print
+  /** @protected */ @@_mod-hash    = 'auth-hash-documents'
 
 
 /** @export */

@@ -1,6 +1,6 @@
 /** @module modules */
 
-Module = require '../../../workspace/module'
+Module = require '../../../workspace-new/module'
 
 FieldType = App.builtins.Types.Field
 Details = require './details'
@@ -231,6 +231,7 @@ class Billing extends Module
   /** @private */ method-item: null
   /** @private */ details: null
 
+  /** @protected */ @@_mod-caption = 'GENERAR FACTURACIÓN'
 
 class BillList extends Module
 
@@ -291,9 +292,9 @@ class BillList extends Module
     super!
 
 
-  /** @protected */ @@_caption = 'FACTURACIÓN'
-  /** @protected */ @@_icon    = gz.Css \usd
-  /** @protected */ @@_hash    = ''
+  /** @protected */ @@_mod-caption = 'FACTURACIÓN'
+  /** @protected */ @@_mod-icon    = gz.Css \usd
+  /** @protected */ @@_mod-hash    = ''
 
 /** @export */
 module.exports = BillList

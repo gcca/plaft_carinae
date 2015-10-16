@@ -1,6 +1,6 @@
 /** @module modules */
 
-Module = require '../workspace/module'
+Module = require '../workspace-new/module'
 
 
 /**
@@ -13,8 +13,8 @@ class Declarations extends Module
     @el.html = "<h4>Declarations</h4>"
     super!
 
-  @@_caption = 'DECLARACIONES JURADAS'
-  @@_icon    = gz.Css \tags
+  @@_mod-caption = 'DECLARACIONES JURADAS'
+  @@_mod-icon    = gz.Css \tags
 
 
 /** @export */

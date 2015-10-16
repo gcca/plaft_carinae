@@ -3,7 +3,7 @@
  * @author gcca@gcca.tk (cristHian Gz. <gcca>)
  */
 
-Module = require '../workspace/module'
+Module = require '../workspace-new/module'
 table = App.widget.table
   Table = ..Table
 
@@ -78,9 +78,9 @@ class PreviewMulti extends Module
 
     super!
 
-  /** @protected */ @@_caption = 'OPERACIONES MÚLTIPLES (EVAL. MONTOS)'
-  /** @protected */ @@_icon    = gz.Css \print
-  /** @protected */ @@_hash    = 'auth-hash-preview_multi'
+  /** @protected */ @@_mod-caption = 'OPERACIONES MÚLTIPLES (EVAL. MONTOS)'
+  /** @protected */ @@_mod-icon    = gz.Css \print
+  /** @protected */ @@_mod-hash    = 'auth-hash-preview_multi'
 
 
 /** @export */

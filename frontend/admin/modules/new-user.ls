@@ -1,6 +1,6 @@
 /** @module modules */
 
-Module = require '../../workspace/module'
+Module = require '../../workspace-new/module'
 table = App.widget.table
   Table = ..Table
 
@@ -121,6 +121,7 @@ class CustomsItem extends Module
       _label: 'CLAVE: Contraseña'
 
 
+  /** @protected */ @@_mod-caption = 'NUEVO USUARIO'
 
 /**
  * Customs
@@ -204,9 +205,9 @@ class Customs extends Module
 
     super!
 
-  /** @protected */ @@_caption = 'REGISTRAR USUARIO'
-  /** @protected */ @@_icon    = gz.Css \user
-  /** @protected */ @@_hash    = 'auth-hash-new-user'
+  /** @protected */ @@_mod-caption = 'REGISTRAR USUARIO'
+  /** @protected */ @@_mod-icon    = gz.Css \user
+  /** @protected */ @@_mod-hash    = 'auth-hash-new-user'
 
 /** @export */
 module.exports = Customs

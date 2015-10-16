@@ -1,6 +1,6 @@
 /** @module modules */
 
-Module = require '../workspace/module'
+Module = require '../workspace-new/module'
 
 
 /**
@@ -51,9 +51,9 @@ class Profile extends Module
        </form>"
     super!
 
-  /** @protected */ @@_caption = 'EDITAR PERFIL'
-  /** @protected */ @@_icon    = gz.Css \user
-  /** @protected */ @@_hash    = 'auth-hash-profile'
+  /** @protected */ @@_mod-caption = 'EDITAR PERFIL'
+  /** @protected */ @@_mod-icon    = gz.Css \user
+  /** @protected */ @@_mod-hash    = 'auth-hash-profile'
 
 
 /** @export */

@@ -1,6 +1,6 @@
 /** @module modules */
 
-Module = require '../../workspace/module'
+Module = require '../../workspace-new/module'
 
 
 class Summary extends Module

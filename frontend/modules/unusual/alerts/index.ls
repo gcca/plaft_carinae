@@ -3,7 +3,7 @@
  * @author Javier Huaman
  */
 
-Module = require '../../../workspace/module'
+Module = require '../../../workspace-new/module'
 Utils = require '../table'
 ModalAlert = require './modal'
 
@@ -461,6 +461,8 @@ class Alerts extends Module
       _remove: ->
 
 
+  /** @protected */ @@_mod-caption = 'ALERTAS EN DESPACHO'
+
 /**
  * ListAlerts
  * --------
@@ -481,9 +483,9 @@ class ListAlerts extends Module
     super!
 
   /** @public */ _unusual-alerts: null
-  /** @protected */ @@_caption = 'IDENTIFICACIÓN OI POR AREAS'
-  /** @protected */ @@_icon    = gz.Css \envelope
-  /** @protected */ @@_hash  = 'auth-hash-alerts'
+  /** @protected */ @@_mod-caption = 'IDENTIFICACIÓN OI POR AREAS'
+  /** @protected */ @@_mod-icon    = gz.Css \envelope
+  /** @protected */ @@_mod-hash    = 'auth-hash-alerts'
 
 
 /** @export */

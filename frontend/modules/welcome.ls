@@ -1,6 +1,6 @@
 /** @module modules */
 
-Module = require '../workspace/module'
+Module = require '../workspace-new/module'
 
 
 /**
@@ -26,9 +26,9 @@ class Welcome extends Module
     super!
 
 
-  /** @protected */ @@_caption = 'INICIO'
-  /** @protected */ @@_icon    = gz.Css \certificate
-  /** @protected */ @@_hash  = 'auth-hash-welcome'
+  /** @protected */ @@_mod-caption = 'INICIO'
+  /** @protected */ @@_mod-icon    = gz.Css \certificate
+  /** @protected */ @@_mod-hash  = 'auth-hash-welcome'
 
 
 /** @export */

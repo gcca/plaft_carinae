@@ -3,7 +3,7 @@
  * @author Javier Huaman
  */
 
-Module = require '../../../workspace/module'
+Module = require '../../../workspace-new/module'
 Utils = require '../table'
 Alerts = require './panel'
 
@@ -199,6 +199,7 @@ class Register extends Module
       _grid: _GRID._full
       _type: FieldType.kTextEdit
 
+  /** @protected */ @@_mod-caption = 'CALIFICAR OI'
 
 /**
  * ListRegister
@@ -219,9 +220,9 @@ class ListRegister extends Module
     super!
 
 
-  /** @protected */ @@_caption = 'CALIFICACION OI - OFICIAL CUMPLIMIENTO'
-  /** @protected */ @@_icon    = gz.Css \flash
-  /** @protected */ @@_hash    = 'auth-hash-register'
+  /** @protected */ @@_mod-caption = 'CALIFICACION OI - OFICIAL CUMPLIMIENTO'
+  /** @protected */ @@_mod-icon    = gz.Css \flash
+  /** @protected */ @@_mod-hash    = 'auth-hash-register'
 
 
 /** @export */

@@ -1,6 +1,6 @@
 /** @module modules */
 
-Module = require '../../workspace/module'
+Module = require '../../workspace-new/module'
 
 
 /**
@@ -28,9 +28,9 @@ class Profile extends Module
       <h2> Bienvenido #{if name? then '- '+ name else '' }</h2>"
     super!
 
-  /** @protected */ @@_caption = 'BIENVENIDO'
-  /** @protected */ @@_icon    = gz.Css \user
-  /** @protected */ @@_hash    = 'auth-hash-profile'
+  /** @protected */ @@_mod-caption = 'BIENVENIDO'
+  /** @protected */ @@_mod-icon    = gz.Css \user
+  /** @protected */ @@_mod-hash    = 'auth-hash-profile'
 
 
 /** @export */

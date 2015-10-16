@@ -4,7 +4,7 @@
  */
 
 
-Module = require '../workspace/module'
+Module = require '../workspace-new/module'
 
 class Simulate extends Module
 
@@ -97,9 +97,9 @@ class Simulate extends Module
     super!
 
 
-  /** @protected */ @@_caption = 'SIMULACIÓN DE OPERACIONES'
-  /** @protected */ @@_icon    = gz.Css \filter
-  /** @protected */ @@_hash    = 'auth-hash-simulate'
+  /** @protected */ @@_mod-caption = 'SIMULACIÓN DE OPERACIONES'
+  /** @protected */ @@_mod-icon    = gz.Css \filter
+  /** @protected */ @@_mod-hash    = 'auth-hash-simulate'
 
 
 /** @export */

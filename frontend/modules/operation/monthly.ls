@@ -1,6 +1,6 @@
 /** @module modules */
 
-Module = require '../../workspace/module'
+Module = require '../../workspace-new/module'
 ReportEdit = require './summary'
 table = App.widget.table
   Table = ..Table
@@ -101,9 +101,9 @@ class MonthlyReport extends Module
         @_desktop._spinner-stop!
     super!
 
-  /** @protected */ @@_caption = 'RO - PROCESO MENSUAL'
-  /** @protected */ @@_icon    = gz.Css \certificate
-  /** @protected */ @@_hash    = 'auth-hash-monthly_report'
+  /** @protected */ @@_mod-caption = 'RO - PROCESO MENSUAL'
+  /** @protected */ @@_mod-icon    = gz.Css \certificate
+  /** @protected */ @@_mod-hash    = 'auth-hash-monthly_report'
 
 
 /** @export */

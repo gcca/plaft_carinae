@@ -2,7 +2,7 @@
  * @module modules
  */
 
-Module = require '../workspace/module'
+Module = require '../workspace-new/module'
 Table = App.widget.table.Table
 modal = App.widget.message-box
 
@@ -220,9 +220,9 @@ class OperationList extends Module
     @_desktop._spinner-stop!
     super!
 
-  /** @protected */ @@_caption = 'REGISTRO OPERACION'
-  /** @protected */ @@_icon    = gz.Css \th-list
-  /** @protected */ @@_hash    = 'auth-hash-operation-list'
+  /** @protected */ @@_mod-caption = 'REGISTRO OPERACION'
+  /** @protected */ @@_mod-icon    = gz.Css \th-list
+  /** @protected */ @@_mod-hash    = 'auth-hash-operation-list'
 
 /** @export */
 module.exports = OperationList
