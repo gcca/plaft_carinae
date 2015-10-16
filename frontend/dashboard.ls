@@ -12,8 +12,11 @@ PRE-MODULES =
   Documents       = require './modules/documents'
   Income          = require './modules/income'
   Numeration      = require './modules/numeration'
-  Operation       = require './modules/operation/daily'
-  Report          = require './modules/operation/monthly'
+  [
+    'REGISTRO OPERACIONES'
+    Operation       = require './modules/operation/daily'
+    Report          = require './modules/operation/monthly'
+  ]
   [
     'SEÑALES DE ALERTA - OI'
     UnusalAlerts    = require './modules/unusual/alerts'

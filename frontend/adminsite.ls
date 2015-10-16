@@ -15,6 +15,8 @@ MODULES =
   User     = require './admin/modules/new-user'
   Billing  = require './admin/modules/billing'
 
+App.MODULES = MODULES
+
 ## Menu
 Menu = require './workspace-new/menu'
 
