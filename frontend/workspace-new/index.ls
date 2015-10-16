@@ -7,7 +7,6 @@
  */
 
 TitleBar = require './title-bar'
-Menu = require './menu'
 Desktop = require './desktop'
 Breadcrumb = require './breadcrumb'
 
@@ -38,13 +37,15 @@ Breadcrumb = require './breadcrumb'
 class Workspace extends App.View
 
   /** @override */
-  el: $ \body
+  _tagName: \div
 
   /**
    * Carga modulo
    */
   load-module: ~>
     @_menu.load-module it, null
+
+  initialize: ({@MENUS})-> super!
 
   /** @override */
   render: ->
@@ -53,10 +54,10 @@ class Workspace extends App.View
       @el._append ..render!.el
 
     # add breadcrumb
-    @_breadcrumb = new Breadcrumb
+    @_breadcrumb = new Breadcrumb MENUS: @MENUS
 
     # add menu
-    @_menu = @_breadcrumb.menu
+    @_menu = @MENUS[0]
 
     # addd desktop
     @_desktop = new Desktop do
@@ -72,7 +73,8 @@ class Workspace extends App.View
       work-place._append ..
 
     ## Listener: Menu seleccionado
-    @_menu.on (gz.Css \select-menu), @_desktop.start-module
+    for menu in @MENUS
+      menu.on (gz.Css \select-menu), @_desktop.start-module
 
     ## Listener: Cambio de modulo
     @_desktop.on (gz.Css \change-module), @_breadcrumb.load-module
@@ -93,6 +95,7 @@ class Workspace extends App.View
   /** @private */ _menu: null
   /** @private */ _desktop: null
   /** @private */ _breadcrumb: null
+  MENUS: null
 
 /** @export */
 module.exports = Workspace

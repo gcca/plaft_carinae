@@ -1,49 +1,8 @@
 /** @module workspace */
 
-Menu = require './menu'
 
-MenuAbstract = require './menu-abstract'
+
 FieldType = App.builtins.Types.Field
-
-/**
- * Settings
- * -------
- * @class Settings
- * @extends MenuAbstract
- */
-class Settings extends MenuAbstract
-
-  no-active: ->
-    @index-menu.html = @@FIRST-OPTION
-
-  /** @override */
-  load-module: (module, evt) ~~>
-    @index-menu.html = module._mod-caption
-    @trigger (gz.Css \is-active), 'SETTINGS ACTIVO'
-    super module, evt
-
-  /** @override */
-  _add: (module) ->
-    li = super module
-      ..on-click @load-module module
-      ..html = "<a>#{module._mod-caption}</a>"
-
-  /** @override */
-  render: ->
-    _r = super!
-    ul = App.dom._new \ul
-      .._class = gz.Css \dropdown-menu
-      ..role = 'menu'
-
-    @index-menu.html = "<i class='#{gz.Css \glyphicon}
-                                \ #{gz.Css \glyphicon-cog}'></i>"
-    for module in App.SETTINGS
-      ul._append @_add module
-    @el._append ul
-    @@FIRST-OPTION = @index-menu.html
-    _r
-
-  /** @public */ index-settings: null
 
 /**
  * Breadcrumb
@@ -232,18 +191,13 @@ class Breadcrumb extends App.View
 
 
   /** @override */
-  initialize: ->
-    @menu = new Menu
-    @settings = new Settings
-    super!
+  initialize: ({@MENUS}) -> super!
 
   /** @override */
   render: ->
-    @menu-buttons = App.dom._new \div
-      .._class = gz.Css \btn-group
-      ..attr 'role', 'group'
-      .._append @menu.render!.el
-      .._append @settings.render!.el
+    @menu-buttons = App.dom._new \span
+      for menu in @MENUS
+        .._append menu.render!.el
 
     label-css = 'color:rgb(153,153,153);
                  display: inline-block;
@@ -251,11 +205,8 @@ class Breadcrumb extends App.View
                  text-overflow:ellipsis;
                  white-space:nowrap;
                  overflow:hidden'
-    @menu.el._first.css = label-css
-    @settings.el._first.css = label-css
-
-    @menu.on (gz.Css \is-active), (msg) ~> @settings.no-active!
-    @settings.on (gz.Css \is-active), (msg) ~> @menu.no-active!
+    for menu in @MENUS
+      menu.el._first.css = label-css
 
     @group-buttons = App.dom._new \div
       .._class = "#{gz.Css \btn-group} #{gz.Css \btn-group-sm}"
@@ -273,9 +224,8 @@ class Breadcrumb extends App.View
 
   /** @public */ menu-buttons: null
   /** @public */ breadcrumb: null
-  /** @public */ menu: null
-  /** @private */ settings: null
   /** @private */ current-module: null
+  MENUS: null
 
 
 module.exports = Breadcrumb

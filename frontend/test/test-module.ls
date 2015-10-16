@@ -103,7 +103,7 @@ class TestI extends Module
     super!
 
   @@_mod-caption = 'TEST - MODULE I'
-  @@_mod-icon    = gz.Css \tags
+  @@_mod-icon    = gz.Css \print
 
 
 /** @export */

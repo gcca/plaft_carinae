@@ -1,5 +1,7 @@
 /** @module workspace.desktop */
 
+Notifier = require './notifier'
+
 /**
  * Desktop
  * -------
@@ -70,6 +72,12 @@ class Desktop extends App.View
         'index': @current-index}
 
   /**
+   * Deprecate
+   * Cambiar el nombre en los otros modulos.
+   */
+  load-next-page: (sub-module, _options) ->
+    @load-sub-module sub-module, _options
+  /**
    * Carga el modulo inicial
    */
   start-module: (module) ~>
@@ -104,17 +112,20 @@ class Desktop extends App.View
     Module._new _options
       .._desktop = @
       ..render!
+      @_search._menu .._constructor._search-menu
       @cache-modules._push ..
 
   /** @overide */
   initialize: ({title-bar})->
-    @search = title-bar.search
+    @_search = title-bar.search
     @save = title-bar.save
     @back = title-bar.back
-    @search.on (gz.Css \search), @on-search
+    App._debug._assert @_search
+    @_search.on (gz.Css \search), @on-search
     @save.on (gz.Css \save), @on-save
     @back.on (gz.Css \back), @close-last-page
     @cache-modules = new Array
+    @notifier = new Notifier
     super!
 
 
@@ -124,7 +135,7 @@ class Desktop extends App.View
 
   /** @private */ last-module: null
 
-  /** @private */ search: null
+  /** @private */ _search: null
 
   /** @private */ save: null
 
@@ -135,6 +146,50 @@ class Desktop extends App.View
   /** @private */ current-index: null
 
   /** @static */ @@FIRST-MODULE = 0
+
+  _lock: -> @_is-locked = true
+
+  _unlock: -> @_is-locked = false
+
+  _spinner-start: -> document.body._append @_spinner
+
+  _spinner-stop: -> document.body._remove @_spinner if @_spinner._parent?
+
+
+  ## ACTIONS IN BUTTON SAVE
+  _show-save: -> @save._show!
+
+  _hide-save: -> @save._hide!
+
+  /**
+   * Avoid re-render. Useful when use tables on main module.
+   * @type {boolean}
+   * @private
+   */
+  _is-locked: null
+
+  /**
+   * Notifier view.
+   * @type {View}
+   * @public
+   */
+  notifier: null
+
+  /**
+   * Avoid re-render. Useful when use tables on main module.
+   * @type {boolean}
+   * @private
+   */
+  _is-locked: null
+
+  /**
+   * Avoid re-render. Useful when use tables on main module.
+   * @type {boolean}
+   * @private
+   */
+  _spinner: (App.dom._new \div
+    .._id = gz.Css \loader-wrapper
+    ..html = "<div id='#{gz.Css \loader}'></div>")
 
 /** @exports */
 module.exports = Desktop

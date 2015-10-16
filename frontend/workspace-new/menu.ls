@@ -1,61 +1,97 @@
 /** @module workspace */
 
-
-MODULES = App.MODULES
-
-MenuAbstract = require './menu-abstract'
-
 /**
- * Menu
+ * MenuAbstract
  * -------
- * @class Menu
- * @extends MenuAbstract
+ * @class MenuAbstract
+ * @extends View
  */
-class Menu extends MenuAbstract
+class Menu extends App.View
 
-  no-active: ->
-    @index-menu.html = @@FIRST-OPTION
+  /** @override */
+  _tagName: \span
 
+  /** @override */
+  _className: "#{gz.Css \dropdown}"
+
+  active-li: (element)->
+    element._class._toggle (gz.Css \active)
+    if element._parent._constructor is HTMLUListElement
+      @active-li element._parent._parent
   /**
-   * @override
+   * Se selecciona el menu desde el `desktop`
+   * @param {Module} module
+   * @param {?Event} evt
+   * @protected
    */
   load-module: (module, evt) ~~>
-    @index-menu.html = "<i class='#{gz.Css \glyphicon}
-                                \ #{gz.Css \glyphicon}-#{module._mod-icon}'></i>"
-    @trigger (gz.Css \is-active), 'MENU ACTIVO'
-    super module, evt
+    @active-li @_current
+    if not evt?
+      evt = _target:
+        @el.query ".#{gz.Css \glyphicon}-#{module._mod-icon}"
+          ._parent._parent
+    @_current = evt._target
+    @active-li @_current
+    @trigger (gz.Css \select-menu), module
 
   /**
    * Add new module item.
    * @param {Module} module
    * @return {HTMLElement} <LI> element for module.
-   * @override
+   * @protected
    */
   _add: (module) ->
-    li = super module
-      ..html = "<a><i class='#{gz.Css \glyphicon}
+    li = App.dom._new \li
+      ..css = 'fontsize: 11px'
+
+    if module._constructor is Array
+      li.html = "<a>#{module[0]}</a>"
+      module = module._slice 1, module._length
+      ul = App.dom._new \ul
+        .._class = gz.Css \dropdown-menu
+      for module then ul._append @_add ..
+
+      li._class = gz.Css \dropdown-submenu
+
+      li._append ul
+    else
+      li.html = "<a><i class='#{gz.Css \glyphicon}
                         \ #{gz.Css \glyphicon}-#{module._mod-icon}'></i>
-                \&nbsp; #{module._mod-caption}</a>"
+                        \&nbsp; #{module._mod-caption}</a>"
+      li.on-click @load-module module
+
+    li
+
+  /** @override */
+  initialize: ({@MODULES}) -> super!
 
   /** @override */
   render: ->
-    _r = super!
-    @index-menu.html = "<i class='#{gz.Css \glyphicon}
-                                \ #{gz.Css \glyphicon-align-justify}'></i>"
+    first-module = @MODULES[0]
+    App.dom._new \span
+      .._class = gz.Css \dropdown-toggle
+      .._data.'toggle' = 'dropdown'
+      ..html = "#{first-module._mod-caption}
+                <span class='#{gz.Css \caret}'></span>"
+      @el._append ..
+
     ul = App.dom._new \ul
-      .._class = gz.Css \dropdown-menu
-      ..role = 'menu'
-    for module in App.MODULES
-      ul._append @_add module
+      .._class = "#{gz.Css \dropdown-menu} #{gz.Css \multi-level}"
+
+    for MODULE in @MODULES
+      ul._append @_add MODULE
+
     @el._append ul
-    _r
+
+    super!
 
 
-  /** @protected */ _current: _class: _toggle: App._void._Function
-  /** @protected */ @@FIRST-OPTION = "<i class='#{gz.Css \glyphicon}
-                                    \ #{gz.Css \glyphicon-align-justify}'></i>"
+  /** @private */
+  _current:
+    _class: _toggle: App._void._Function
+    _parent: _constructor: null
+  /** @protected */ MODULES: null
 
-/** @exports */
 module.exports = Menu
 
 # vim: ts=2:sw=2:sts=2:et

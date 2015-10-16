@@ -19,7 +19,7 @@ class TestIII extends Module
 
   @text = 'ESTO ESTA CARGADO DESDE EL MODULO'
   @@_mod-caption = 'TEST - MODULE III'
-  @@_mod-icon    = gz.Css \tags
+  @@_mod-icon    = gz.Css \remove
   _mod-group-buttons:
     * caption: 'GUARDAR-I'
       callback: ->
