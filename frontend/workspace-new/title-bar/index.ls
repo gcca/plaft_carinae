@@ -40,6 +40,7 @@ class TitleBar extends App.View
 
     nav = App.dom._new \nav
       .._class = "#{gz.Css \collapse} #{gz.Css \navbar-collapse}"
+      ..id = gz.Css \id-navbar-collapse
       ..attr 'role', 'navigation'
 
     ## SETTINGS

@@ -142,4 +142,46 @@ class Dashboard extends App.View
 (new Dashboard).render!
 
 
+# Switch user
+
+user = window.'plaft'.'user'
+employees = user.'customs_agency'.'employees'
+officer = user.'customs_agency'.'officer'
+if officer._constructor is Number
+  officer = user
+
+employee_items = ["<li> \
+                     <a href='/switch/#{..'id'}'> \
+                       <label style='width:18ex;font-weight:normal'> \
+                         #{..'username'} \
+                       </label> \
+                       <em style='font-size:9pt'>(#{..'role'})</em> \
+                     </a> \
+                   </li>" \
+                  for employees]
+
+_swbar = App.dom._new \div
+  .._class = "#{gz.Css \nav} #{gz.Css \navbar-nav}"
+  ..html = "
+    <li class='#{gz.Css \dropdown}'>
+      <a href='#' class='#{gz.Css \dropdown-toggle}' data-toggle='dropdown'>
+        Usuario: #{user.'username'} <span class='#{gz.Css \caret}'></span>
+      </a>
+      <ul class='#{gz.Css \dropdown-menu}' role='menu'>
+        <li>
+          <a href='/switch/#{officer.'id'}'>
+            #{officer.'username'}
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <em style='font-size:9pt'>(Oficial de cumplimiento)</em>
+          </a>
+        </li>
+        <li class='#{gz.Css \divider}'></li>
+        #{employee_items.join ''}
+      </ul>
+    </li>"
+
+if username in <[cesarvargas@cavasoftsac.com nina@mass.dyn]>
+  ## if window.'plaft'.'ig'
+  App.dom.query "##{gz.Css \id-navbar-collapse}" ._append _swbar
+
 # vim: ts=2:sw=2:sts=2:et
