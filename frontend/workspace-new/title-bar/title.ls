@@ -36,7 +36,7 @@ class Title extends App.View
 
     super!
 
-  /** @private */ title: window.'plaft'.'user'.'customs_agency'.'name'
+  /** @private */ title: App.DISPLAY-NAME
 
 /** @exports */
 module.exports = Title

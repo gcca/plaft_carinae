@@ -6,20 +6,39 @@
 
 App = require './app'
 
-
-MODULES =
+## Modulos
+PRE-MODULES =
   Welcome         = require './modules/welcome'
   Documents       = require './modules/documents'
   Income          = require './modules/income'
   Numeration      = require './modules/numeration'
   Operation       = require './modules/operation/daily'
   Report          = require './modules/operation/monthly'
-  UnusalAlerts    = require './modules/unusual/alerts'
-  UnusualRegister = require './modules/unusual/register'
-  UnusualReport   = require './modules/unusual/report'
+  [
+    'SEÑALES DE ALERTA - OI'
+    UnusalAlerts    = require './modules/unusual/alerts'
+    UnusualRegister = require './modules/unusual/register'
+    UnusualReport   = require './modules/unusual/report'
+  ]
   PreviewMulti    = require './modules/preview_multi'
 
-App.MODULES = MODULES
+MODULES = new Array
+## Permisos
+_allowed-modules = App.permissions.modules
+__read-permissions = (modules, array) ->
+  for module in modules
+    if module._constructor is Array
+      new-array = new Array
+        .._push module[0]
+      module = module._slice 1, module._length
+      __read-permissions module, new-array
+      array._push new-array
+    else
+      if module._mod-hash in _allowed-modules # autorización de usuarios
+        array._push module
+
+__read-permissions PRE-MODULES, MODULES
+
 
 BETAS =
   TestIII    = require './test/test-moduleIII'
@@ -28,17 +47,24 @@ BETAS =
     TestIV    = require './test/test-moduleIV'
   ]
 
-SETTINGS =
-  TestI    = require './test/test-module'
-  TestVI    = require './test/test-moduleVI'
+App.MODULES = MODULES
 
+## Nombre en title
+App.DISPLAY-NAME = window.'plaft'.'user'.'customs_agency'.'name'
+
+# Usuarios
+username = window.plaft.'user'.'username'
+
+## Menu
 Menu = require './workspace-new/menu'
 
+## Lista de menus
 MENUS-RENDER =
   new Menu MODULES: MODULES
   new Menu MODULES: BETAS
 
-WorkspaceNew = require './workspace-new'
+## Workspace
+Workspace = require './workspace-new'
 
 
 # DTO to Dispatch model
@@ -109,7 +135,7 @@ class Dashboard extends App.View
   el: $ \body
 
   render: ->
-    @el._append (new WorkspaceNew MENUS: MENUS-RENDER ).render!.el
+    @el._append (new Workspace MENUS: MENUS-RENDER ).render!.el
     super!
 
 
