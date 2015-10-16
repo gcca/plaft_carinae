@@ -50,7 +50,8 @@ BETAS =
     TestIV    = require './test/test-moduleIV'
   ]
 
-App.MODULES = MODULES
+## FIRST MODULE
+App.FIRST-MODULE = Welcome
 
 ## Nombre en title
 App.DISPLAY-NAME = window.'plaft'.'user'.'customs_agency'.'name'

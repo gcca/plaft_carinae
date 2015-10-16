@@ -87,8 +87,8 @@ class Workspace extends App.View
 
     @el._append work-place
 
-    ## Carga el primer modulo de la lista de modulos
-    @load-module App.MODULES[0]
+    ## Carga el primer modulo
+    @load-module App.FIRST-MODULE
 
     super!
 
