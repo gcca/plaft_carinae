@@ -26,6 +26,7 @@ PRE-MODULES =
   PreviewMulti    = require './modules/preview_multi'
 
 MODULES = new Array
+
 ## Permisos
 _allowed-modules = App.permissions.modules
 __read-permissions = (modules, array) ->
@@ -40,10 +41,16 @@ __read-permissions = (modules, array) ->
       if module._mod-hash in _allowed-modules # autorización de usuarios
         array._push module
 
+## Leer permisos
 __read-permissions PRE-MODULES, MODULES
 
 
+# HARDCODE
 BETAS =
+  WorkerAlerts  = require './modules/worker-alerts'
+  OperationList = require './modules/operation-list'
+  Profile       = require './modules/profile'
+  Simulate      = require './modules/simulate'
   TestIII    = require './test/test-moduleIII'
   [
     'Agrupamiento'
@@ -56,16 +63,21 @@ App.FIRST-MODULE = Welcome
 ## Nombre en title
 App.DISPLAY-NAME = window.'plaft'.'user'.'customs_agency'.'name'
 
-# Usuarios
-username = window.plaft.'user'.'username'
-
 ## Menu
 Menu = require './workspace-new/menu'
 
 ## Lista de menus
-MENUS-RENDER =
-  new Menu MODULES: MODULES
-  new Menu MODULES: BETAS
+MENUS-RENDER = new Array
+
+for modules in [MODULES]
+  MENUS-RENDER._push new Menu MODULES: modules
+
+# Usuarios - HARDCODE [ONLY BETAS]
+username = window.plaft.'user'.'username'
+
+if username in <[cesarvargas@cavasoftsac.com nina@mass.dyn]>
+  MENUS-RENDER._push new Menu MODULES: BETAS
+# END 1 HARDCODE
 
 ## Workspace
 Workspace = require './workspace-new'
