@@ -151,7 +151,9 @@ class UtilAnexo
                     _templates: _templates
                     _column-cell-style: _column-cell-style
                     on-dblclick-row: (evt) ~>
-                      @_desktop.load-next-page @_child, model: evt._target._model
+                      @_desktop.load-next-page @_child, do
+                        model: evt._target._model
+                        _parent: @_parent
 
       _tabla.set-rows _pending
 

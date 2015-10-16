@@ -316,6 +316,8 @@ class Alerts extends Module
     _table._append _tbody
     @_div-table._append _table
 
+  initialize: ({@model, @_parent})-> super!
+
   /** @override */
   render: ->
     _dispatch = @model._attributes
