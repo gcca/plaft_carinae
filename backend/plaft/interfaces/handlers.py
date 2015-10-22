@@ -253,6 +253,9 @@ class Operation(RESTful):
 class Customs_Agency(RESTful):
     """Custom Agency RESTful handler."""
 
+    def get(self):
+        self.render_json(model.CustomsAgency.all())
+
     @RESTful.method
     def list_dispatches(self):
         """ (Handler) -> None

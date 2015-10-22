@@ -74,8 +74,14 @@ if plaft.config.DEBUG or True:  # TODO: Remove 'or True' on production.
 def restful_init():
     """Initialize RESTful URI's."""
     from plaft.interfaces import RESTful, BaseRESTful
+    # TODO: HARDCODE remove
+    restfuls_methods = handlers.__dict__.items()
+    if plaft.config.DEBUG or True:
+        from plaft.interfaces import debug
+        restfuls_methods = restfuls_methods + debug.__dict__.items()
+
     for restful in (restful
-                    for _, restful in handlers.__dict__.items()
+                    for _, restful in restfuls_methods
                     if (
                             isinstance(restful, type) and
                             restful != RESTful and

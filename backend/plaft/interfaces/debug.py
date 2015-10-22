@@ -8,6 +8,7 @@
 
 from plaft.interfaces import Handler, RESTful
 from plaft.domain import model
+from plaft.application.util import debug
 
 
 class IsDebug(Handler):
@@ -477,5 +478,68 @@ class Operation(RESTful):
 class Datastore(RESTful):
     """Datastore RESTful."""
 
+class SampleData(RESTful):
+    """SampleData RESTful."""
+
+    @RESTful.method('post')
+    def create_dispatches(self):
+        payload = self.query
+        customs_agency = payload['customs-agency']
+        quantity = payload['quantity']
+
+        agency = model.CustomsAgency.find(int(customs_agency))
+        datastore = agency.datastore
+        customers = model.Customer.all()
+        dispatches = debug.create_dispatches(agency, datastore,
+                                             customers, int(quantity))
+        self.render_json([d.get() for d in dispatches])
+
+    @RESTful.method('post')
+    def numerate_dispatches(self):
+        payload = self.query
+        customs_agency = payload['customs-agency']
+        percent = payload['percent']
+
+        agency = model.CustomsAgency.find(int(customs_agency))
+
+        dispatches = debug.numerate_dispatches(agency, float(percent)/100)
+
+        self.render_json(dispatches)
+
+    @RESTful.method('post')
+    def drop_dispatches(self):
+        payload = self.query
+        customs_agency = payload['customs-agency']
+
+        agency = model.CustomsAgency.find(int(customs_agency))
+        debug.drop_dispatches(agency)
+
+    @RESTful.method('post')
+    def create_operation(self):
+        payload = self.query
+        customs_agency = payload['customs-agency']
+
+        agency = model.CustomsAgency.find(int(customs_agency))
+        debug.operations(agency)
+        self.render_json(agency.datastore.operations)
+
+    @RESTful.method('post')
+    def create_customers(self):
+        customers = debug.create_customers()
+        self.render_json(customers)
+
+    @RESTful.method('post')
+    def create_agency(self):
+        agency = debug.create_agency()
+        self.render_json(agency)
+
+    @RESTful.method('post')
+    def create_stakeholders(self):
+        stakeholders = debug.create_stakeholders()
+        self.render_json(stakeholders)
+
+    @RESTful.method('post')
+    def create_alerts(self):
+        debug.create_alerts()
 
 # vim: et:ts=4:sw=4

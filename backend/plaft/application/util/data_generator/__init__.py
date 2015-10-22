@@ -12,21 +12,12 @@
 from __future__ import unicode_literals
 
 from plaft.domain import model
-from plaft.application.util.data_generator import permissions
+from plaft.application.util.data_generator import (permissions, declarants,
+                                                   regimes, jurisdictions,
+                                                   stakeholders, alerts)
 
 
 __all__ = ['init']
-
-
-def create_alerts():
-    """Main alerts."""
-    from plaft.application.util.data_generator.alerts import alerts
-    for section, code, description, help in alerts:
-        alert = model.Alert(section=section,
-                            code=code,
-                            description=description)
-        alert.store()
-
 
 def create_documents():
     """Public documents."""
@@ -141,8 +132,8 @@ def init():
         plaft.store()
 
     if not plaft.has_datastore:
-        create_alerts()
-        create_documents()
+        ## create_alerts()
+        ## create_documents()
 
         plaft.has_datastore = True
         plaft.store()

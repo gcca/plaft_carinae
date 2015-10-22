@@ -51,11 +51,7 @@ BETAS =
   OperationList = require './modules/operation-list'
   Profile       = require './modules/profile'
   Simulate      = require './modules/simulate'
-  TestIII    = require './test/test-moduleIII'
-  [
-    'Agrupamiento'
-    TestIV    = require './test/test-moduleIV'
-  ]
+  Debug         = require './modules/debug'
 
 ## FIRST MODULE
 App.FIRST-MODULE = Welcome
