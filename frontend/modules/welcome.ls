@@ -17,11 +17,11 @@ class Welcome extends Module
     @el.html = "
       <span>
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <i class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-hand-left}'
+        <i class='#{gz.Css \glyphicon} #{gz.Css \glyphicon-hand-up}'
             style='font-size:20pt'></i>
         \ &nbsp;&nbsp;
         <span style='vertical-align:super'>
-          Dar clic en alguno de los módulos de la izquierda.</span>
+          Seleccione algun modulo de la parte superior</span>
       </span>"
     super!
 
