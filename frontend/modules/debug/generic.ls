@@ -34,7 +34,7 @@ class GenericBody extends panelgroup.JSONBody
   /**
    * Cambia la clase del boton.
    */
-  load-events-button: (button, status) ->
+  load-events-button: (button, status, message) ->
     | status is @kStatus.Loading =>
       @toggle-class button, @kButtons.Info
       @all-buttons true
@@ -42,21 +42,21 @@ class GenericBody extends panelgroup.JSONBody
 
     | status is @kStatus.Success =>
       @toggle-class button, @kButtons.Success
-      button.html = 'Proceso ejecutado '
+      button.html = message
 
       set-timeout ( ~>
                     @toggle-class button, @kButtons.Default
-                    button.html = button._old-name
+                    button.html = 'Ejecutar'
                     @all-buttons false),
                    2500
 
     | status is @kStatus.Error =>
       @toggle-class button, @kButtons.Danger
-      button.html = 'Error al ejecutar'
+      button.html = message
 
       set-timeout ( ~>
                     @toggle-class button, @kButtons.Default
-                    button.html = button._old-name
+                    button.html = 'Ejecutar'
                     @all-buttons false),
                    2500
 

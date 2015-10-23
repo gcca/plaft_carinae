@@ -524,6 +524,27 @@ class SampleData(RESTful):
         self.render_json(agency.datastore.operations)
 
     @RESTful.method('post')
+    def create_employees(self):
+        payload = self.query
+        customs_agency = payload['customs-agency']
+        quantity = payload['quantity']
+
+        agency = model.CustomsAgency.find(int(customs_agency))
+        debug.create_employees(agency, int(quantity))
+
+        self.render_json(agency.employees)
+
+    @RESTful.method('post')
+    def create_unusual(self):
+        payload = self.query
+        customs_agency = payload['customs-agency']
+        percent = payload['percent']
+
+        agency = model.CustomsAgency.find(int(customs_agency))
+
+        debug.create_unusual(agency, float(percent)/100)
+
+    @RESTful.method('post')
     def create_customers(self):
         customers = debug.create_customers()
         self.render_json(customers)
@@ -541,5 +562,16 @@ class SampleData(RESTful):
     @RESTful.method('post')
     def create_alerts(self):
         debug.create_alerts()
+
+    @RESTful.method('post')
+    def execute_all(self):
+        """Ejecutar todos los elementos estaticos"""
+        'Alertas'
+        debug.create_alerts()
+        'Clientes'
+        debug.create_customers()
+        'Vinculados'
+        debug.create_stakeholders()
+
 
 # vim: et:ts=4:sw=4

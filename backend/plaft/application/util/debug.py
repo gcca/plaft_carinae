@@ -109,7 +109,6 @@ def create_dispatches(agency, datastore, customers, n=5):
         dispatch.declaration.customer.link_type = ('Exportador'
                                                    if dispatch.is_out
                                                    else 'Importador')
-        dispatch.alerts_visited = [str(e.key.id()) for e in agency.employees]
         dispatch.store()
         datastore.pending_key.append(dispatch.key)
         datastore.store()
@@ -197,39 +196,8 @@ def operations(agency):
         dispatch_set = dispatch_set.difference(dstp_operation)
 
 
-## CREATE EMPLOYEES -- VERIFICAR
-def create_employees(agency, j=3):
-    from string import ascii_lowercase
-
-    modules = data_generator.permissions.employee
-
-    alerts_keys = [alert_comercial_keys,
-                   alert_finance_keys,
-                   alert_operation_keys]
-    roles = User.role_choices
-
-    data = (('cristhian@cavasoftsac.com', 'Cristhian Gonzales'),
-            ('henry@cavasoftsac.com', 'Henry Vargas'),
-            ('javier@cavasoftsac.com', 'Javier Huaman'))
-
-    while j:
-        permission = Permissions(modules=modules,
-                                 alerts_key=alerts_keys[j % 3])
-        permission.store()
-        employee = Employee(name=data[j % 3][0],
-                            username=data[j % 3][1],
-                            password='123',
-                            customs_agency_key=agency.key,
-                            permissions_key=permission.key,
-                            role=roles[j % 3])
-        employee.store()
-        agency.employees_key.append(employee.key)
-        j -= 1
-    agency.store()
-
-
-## READ ALERTS == VERIFICAR
-def create_alerts():
+## READ ALERTS
+def read_alerts():
     operation_secod = (('I', '3'), ('I', '5'), ('I', '7'),
                        ('I', '8'), ('I', '10'), ('I', '11'),
                        ('I', '12'), ('I', '13'), ('I', '14'),
@@ -266,11 +234,9 @@ def create_alerts():
 
     alert_comercial_keys = []
     alert_finance_keys = []
-    alert_signals_key = []
     alert_operation_keys = []
 
     for alert in Alert.all():
-        alert_signals_key.append(alert.key)
 
         tuple_alert = (alert.section, alert.code)
         if tuple_alert in operation_secod:
@@ -280,17 +246,50 @@ def create_alerts():
         if tuple_alert in comercial_secod:
             alert_comercial_keys.append(alert.key)
 
+    roles = User.role_choices
+    alerts_keys = [alert_comercial_keys,
+                   alert_finance_keys,
+                   alert_operation_keys]
+
+    return dict(zip(roles, alerts_keys))
+
+## CREATE EMPLOYEES
+def create_employees(agency, j=3):
+
+    modules = data_generator.permissions.employee
+
+    dict_alerts = read_alerts()
+
+    roles = User.role_choices
+
+    data = (('cristhian@cavasoftsac.com', 'Cristhian Gonzales'),
+            ('henry@cavasoftsac.com', 'Henry Vargas'),
+            ('javier@cavasoftsac.com', 'Javier Huaman'))
+
+    while j:
+        role = roles[j%3]
+        permission = Permissions(modules=modules,
+                                 alerts_key=dict_alerts[role])
+        permission.store()
+        employee = Employee(name=data[j % 3][1],
+                            username=data[j % 3][0],
+                            password='123',
+                            customs_agency_key=agency.key,
+                            permissions_key=permission.key,
+                            role=role)
+        employee.store()
+        agency.employees_key.append(employee.key)
+        j -= 1
+    agency.store()
+
 ## CREATE OPERATION UNUSUAL -- VERIFICAR
-def unusual(agency, list_dispatches):
-    for k in random.sample(list_dispatches,
-                           int(len(list_dispatches)*0.34)):
+def create_unusual(agency, percent):
+    dispatches = [d.key for d in agency.datastore.pending]
+    for k in random.sample(dispatches,
+                           int(len(dispatches)*percent)):
         dispatch = k.get()
         employee = random.choice(agency.employees)
-        role2keys = {
-            'Comercial': alert_comercial_keys,
-            'Operación': alert_operation_keys,
-            'Finanza': alert_finance_keys
-        }
+        role2keys = read_alerts()
         info_keys = random.sample(role2keys[employee.role],
                                   random.randint(1, 5))
         dispatch.alerts = [
@@ -311,6 +310,7 @@ def unusual(agency, list_dispatches):
         dispatch.stakeholders[0].unusual_condition = 'Vinculado'
         dispatch.declaration.customer.unusual_operation = 'es Involucrado'
         dispatch.stakeholders[0].unusual_operation = 'es Vinculado'
+        dispatch.alerts_visited = [str(employee.key.id())]
 
         dispatch.store()
 

@@ -6,7 +6,6 @@ class RegisterBody extends GenericBody
 
   drop-all-dispatches: (evt) ~>
     button = evt._target
-    button._old-name = button.html
     dto =
       'customs-agency': @customs-agency-id
 
@@ -14,9 +13,9 @@ class RegisterBody extends GenericBody
 
     App.ajax._post '/api/sampledata/drop_dispatches', dto , do
       _success: ~>
-        @load-events-button button, @kStatus.Success
+        @load-events-button button, @kStatus.Success, 'Se elimino'
       _error: ~>
-        @load-events-button button, @kStatus.Error
+        @load-events-button button, @kStatus.Error, 'Error al eliminar'
 
   /** @override */
   render: ->
@@ -35,7 +34,7 @@ class RegisterBody extends GenericBody
       .._type = 'button'
       .._class = "#{gz.Css \btn}
                 \ #{gz.Css \btn-default}"
-      ..html = 'Eliminar todos los despachos'
+      ..html = 'Ejecutar'
       ..on-click @drop-all-dispatches
       b-agency._append ..
 
