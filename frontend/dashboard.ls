@@ -44,6 +44,8 @@ __read-permissions = (modules, array) ->
 ## Leer permisos
 __read-permissions PRE-MODULES, MODULES
 
+## ALL MODULES
+App.MODULES = [m for m in _.flatten PRE-MODULES when m._constructor isnt String]
 
 # HARDCODE
 BETAS =
@@ -65,7 +67,10 @@ Menu = require './workspace-new/menu'
 ## Lista de menus
 MENUS-RENDER = new Array
 
-for modules in [MODULES]
+SETTINGS =
+  [Employee = require './settings/employee']
+
+for modules in [MODULES, SETTINGS]
   MENUS-RENDER._push new Menu MODULES: modules
 
 # Usuarios - HARDCODE [ONLY BETAS]

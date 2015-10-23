@@ -2,7 +2,7 @@
  * @module settings
  * @author gcca@gcca.tk (cristHian Gz. <gcca>)
  */
-
+Module = require '../workspace-new/module'
 panelgroup = App.widget.panelgroup
 modal = App.widget.message-box
 widget = require './widget'
@@ -92,7 +92,8 @@ class EmployeeItem extends panelgroup.FormBody
 
     # MODULES
     @table-module = new widget.ListGroup do
-          _items-group: [{'value': m._hash, 'name': m._caption} for m in MODULES]
+          _items-group: [{'value': m._mod-hash, 'name': m._mod-caption} \
+                         for m in MODULES]
 
     @el._last._append @table-module.render!.el
 
@@ -228,32 +229,22 @@ class EmployeeList extends panelgroup.PanelGroup
  * @Class Settings
  * @extends View
  */
-class Settings extends App.View
+class EmployeeModule extends Module
 
   /** @override */
   _tagName: \div
 
-  on-save: ->
-    App.ajax._post "/api/employee/register", @_employeeList._toJSON!, do
-      _success:     ~>
-        @_desktop.notifier.notify do
-          _message : 'Se actualizó correctamente los datos'
-          _type    : @_desktop.notifier.kSuccess
-      _bad-request: ~>
-        alert 'ERROR: b4f555cc-0bcd-11e5-810c-904ce5010430'
-
-
   /** @override */
   render: ->
-    @el.html = ''
-    @_employeeList = new EmployeeList
-    @el._append (@_employeeList).render!.el
+    @clean!
+    @el._append (new EmployeeList).render!.el
     super!
 
-  _employeeList: null
-
+  /** @protected */ @@_mod-caption     = 'EMPLEADOS'
+  /** @protected */ @@_mod-icon        = gz.Css \user
+  /** @protected */ @@_mod-hash        = 'auth-hash-employee'
 /** @export */
-module.exports = Settings
+module.exports = EmployeeModule
 
 
 # vim: ts=2:sw=2:sts=2:et
