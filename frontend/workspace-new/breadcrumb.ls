@@ -196,17 +196,9 @@ class Breadcrumb extends App.View
   /** @override */
   render: ->
     @menu-buttons = App.dom._new \span
+      .._class = gz.Css \breadcrumb-plaft-menu
       for menu in @MENUS
         .._append menu.render!.el
-
-    label-css = 'color:rgb(153,153,153);
-                 display: inline-block;
-                 width: 95px;
-                 text-overflow:ellipsis;
-                 white-space:nowrap;
-                 overflow:hidden'
-    for menu in @MENUS
-      menu.el._first.css = label-css
 
     @group-buttons = App.dom._new \div
       .._class = "#{gz.Css \btn-group} #{gz.Css \btn-group-sm}"

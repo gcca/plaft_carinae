@@ -71,7 +71,7 @@ class Menu extends App.View
     App.dom._new \span
       .._class = gz.Css \dropdown-toggle
       .._data.'toggle' = 'dropdown'
-      ..html = "#{first-module._mod-caption}
+      ..html = "<span>#{first-module._mod-caption}</span>
                 <span class='#{gz.Css \caret}'></span>"
       @el._append ..
 
