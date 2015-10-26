@@ -55,6 +55,7 @@ class Desktop extends App.View
     @current-index = i
     @el._remove last-module.el
     @el._append @current-module.el
+    @_search.clean-input!
     if @current-index isnt @@FIRST-MODULE then @back._show! else @back._hide!
     @send-trigger!
 
@@ -112,7 +113,7 @@ class Desktop extends App.View
     Module._new _options
       .._desktop = @
       ..render!
-      @_search._menu .._constructor._search-menu
+      @_search._menu .._constructor._mod-search-menu
       @cache-modules._push ..
 
   /** @overide */

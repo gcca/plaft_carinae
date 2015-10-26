@@ -49,21 +49,21 @@ class Income extends Module
 
       App.ajax._get '/api/customer', true, ('document_number': _query), do
         _success: ([_customer-dto]) ~>  # income with registered customer
-          _dispatch_dto =
-            'declaration':
-              'customer': _customer-dto
-          @render-panels _dispatch_dto
-        _not-found: ~>  # income with new customer
-          _dispatch_dto =
-            'declaration':
-              'customer': 'document_number': _query
-          # TODO: Esto corrige un error al crear un nuevo despacho.
-          #       Al parecer el código que crea el formulario de cliente
-          #       (Customer) para persona jurídica (Business) exige que
-          #       la lista de acciones exista.
-          #       Se debe validar porque es posible que sea `null`.
-          if _query._length is 11  # is Business
-            _dispatch_dto.'declaration'.'customer'.'shareholders' = new Array
+          if _customer-dto?
+            _dispatch_dto =
+              'declaration':
+                'customer': _customer-dto
+          else
+            _dispatch_dto =
+              'declaration':
+                'customer': 'document_number': _query
+            # TODO: Esto corrige un error al crear un nuevo despacho.
+            #       Al parecer el código que crea el formulario de cliente
+            #       (Customer) para persona jurídica (Business) exige que
+            #       la lista de acciones exista.
+            #       Se debe validar porque es posible que sea `null`.
+            if _query._length is 11  # is Business
+              _dispatch_dto.'declaration'.'customer'.'shareholders' = new Array
           @render-panels _dispatch_dto
 
     # Find by order number (dispatch)
@@ -378,7 +378,7 @@ class Income extends Module
   /** @protected*/ @@_mod-icon    = gz.Css \cloud
   /** @protected*/ @@_mod-hash   = 'auth-hash-income'
   /** @protected*/
-  @@_search-menu =
+  @@_mod-search-menu =
     * _caption: 'C'
       _label: 'DNI/RUC'
       _value: @@_SEARCHENUM.kByDocumentNumber
