@@ -14,10 +14,17 @@ class Menu extends App.View
   /** @override */
   _className: "#{gz.Css \dropdown}"
 
-  active-li: (element)->
+  /**
+   * @param {HTMLLiElement} element
+   */
+  active-li: (element) ->
+    # BUG: Se ejecuta muchas veces
+    # Imprimir algo en consola de browser
+    # para ver que se imprime varias veces
     element._class._toggle (gz.Css \active)
     if element._parent._constructor is HTMLUListElement
       @active-li element._parent._parent
+
   /**
    * Se selecciona el menu desde el `desktop`
    * @param {Module} module
@@ -32,6 +39,7 @@ class Menu extends App.View
           ._parent._parent
     @_current = evt._target
     @active-li @_current
+    @el._first._first.html = module._mod-caption  # set button title
     @trigger (gz.Css \select-menu), module
 
   /**
@@ -67,7 +75,7 @@ class Menu extends App.View
 
   /** @override */
   render: ->
-    first-module = @MODULES[0]
+    first-module = @MODULES.0
     App.dom._new \span
       .._class = gz.Css \dropdown-toggle
       .._data.'toggle' = 'dropdown'
