@@ -287,9 +287,10 @@ class App.Model extends BaseModel
   _fetch: (opts = App._void._SyncOptions) ->
     super \success : opts._success, \error : opts._error
 
-  _save: (keys, options) ->
-  ## _save: (keys, opts = App._void._SyncOptions) ->
-    # super keys, \success : opts._success, \error : opts._error
+  ## _save: (keys, options) ->
+  _save: (keys, opts = App._void._SyncOptions) ->
+    super keys, \success : opts._success, \error : opts._error
+    return
     # TODO: Check error in original method of Model
     if not options
       options = keys
