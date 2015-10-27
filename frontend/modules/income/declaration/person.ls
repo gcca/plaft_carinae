@@ -172,12 +172,17 @@ class Person extends Customer
 
     * _name: 'address'
       _label: 'f) Domicilio declarado (lugar de residencia)'
+      _tip: 'Nombre y número de la via de la dirección de la persona
+           \ en cuyo nombre se realiza la operación'
 
     * _name: 'fiscal_address'
       _label: 'g) Domicilio fiscal, de ser el caso'
+      _tip: 'Nombre y número de la via de la dirección de la persona
+           \ en cuyo nombre se realiza la operación'
 
     * _name: 'phone'
       _label: 'h) Número telefono fijo'
+      _tip: 'Teléfono de la persona en cuyo nombre se realiza la operación'
 
     * _name: 'mobile'
       _label: 'Número de celular'
@@ -212,12 +217,14 @@ class Person extends Customer
     * _name: 'money_source_type'
       _label: 'l) Tipo de Fondos'
       _type: FieldType.kComboBox
+      _tip: 'Tipo de fondos con que se realizó la operación'
       _options:
         'No efectivo'
         'Efectivo'
 
     * _name: 'money_source'
       _label: 'm) Origen de los fondos'
+      _tip: 'Origen de los fondos involucrados en la operación'
 
     * _name: 'is_obligated'
       _label: 'n) Si es Sujeto obligado'

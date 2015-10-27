@@ -147,6 +147,7 @@ class Business extends Customer
 
     * _name: 'social_object'
       _label: 'c) Objeto Social'
+      _tip: 'Propósito de la empresa'
 
     * _name: 'activity'
       _label: 'Actividad económica principal'
@@ -165,22 +166,29 @@ class Business extends Customer
 
     * _name: 'address'
       _label: 'f) Domicilio'
+      _tip: 'Nombre y número de la via de la dirección de la persona
+           \ en cuyo nombre se realiza la operación'
 
     * _name: 'fiscal_address'
       _label: 'g) Domicilio Fiscal'
+      _tip: 'Nombre y número de la via de la dirección de la persona
+           \ en cuyo nombre se realiza la operación'
 
     * _name: 'phone'
       _label: 'h) Telefono oficina'
+      _tip: 'Teléfono de la persona en cuyo nombre se realiza la operación'
 
     * _name: 'money_source_type'
       _label: 'i) Tipo de Fondos'
       _type: FieldType.kComboBox
+      _tip: 'Tipo de fondos con que se realizó la operación'
       _options:
         'No efectivo'
         'Efectivo'
 
     * _name: 'money_source'
       _label: 'Origen de los fondos'
+      _tip: 'Origen de los fondos involucrados en la operación'
 
     * _name: 'is_obligated'
       _label: 'j) Si es Sujeto obligado'

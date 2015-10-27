@@ -80,10 +80,12 @@ class DispatchBody extends panelgroup.FormBody
   _FIELD_DISPATCH=
       * _name: 'reference'
         _label: 'Ref. cliente'
+        _tip: 'Referencia del cliente de la operación'
 
       * _name: 'jurisdiction'
         _label: 'Aduana despacho/ Juridiccion'
-        _tip: '([ctrl+M] para ver la tabla completa)'
+        _tip: 'Nombre de despacho de la aduana en donde se realiza
+             \ la operación ([ctrl+M] para ver la tabla completa)'
         _type: FieldType.kView
         _options : new CodeNameField do
                      _code : App.lists.jurisdiction._code
@@ -92,14 +94,17 @@ class DispatchBody extends panelgroup.FormBody
 
       * _name: 'order'
         _label: 'N&ordm; Orden despacho'
+        _tip : 'Número de orden de despacho'
 
       * _name: 'income_date'
         _label: 'Fecha ingreso orden de despacho'
         _placeholder: 'dd/mm/YYYY'
+        _tip: 'Fecha en la que se realizo la operación'
 
       * _name: 'regime'
-        _label: 'Regimen Aduanero'
-        _tip: '([ctrl+M] para ver la tabla completa)'
+        _label: 'Regimén Aduanero'
+        _tip: 'Indique el regimén aduanero
+            \ ([ctrl+M] para ver la tabla completa)'
         _type: FieldType.kView
         _options : new CodeNameField do
                      _code : App.lists.regime._code
@@ -107,7 +112,8 @@ class DispatchBody extends panelgroup.FormBody
                      _field : 'regime'
 
       * _name: 'description'
-        _label: 'Descripcion mercancia'
+        _label: 'Descripción mercancía'
+        _tip: 'Descripción de las mercancías involucradas en la operación'
 
   /** @private */ _display: null
   /** @private */ ratio: null

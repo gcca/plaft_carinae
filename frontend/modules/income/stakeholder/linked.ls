@@ -7,6 +7,8 @@ widget = App.widget.codename
 modal = App.widget.message-box
 
 panelgroup = App.widget.panelgroup
+table = App.widget.table
+  SimpleTable = ..SimpleTable
 
 FieldType = App.builtins.Types.Field
 DOCUMENT_TYPE_PAIR = App.lists.document-type._pair
@@ -231,6 +233,7 @@ class FormLinked extends panelgroup.FormBody
 
     * _name: 'social_object'
       _label: 'Objeto social'
+      _tip: 'Propósito de la empresa'
 
     * _name: 'activity'
       _label: 'Actividad económica principal'
