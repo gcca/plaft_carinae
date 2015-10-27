@@ -15,6 +15,12 @@ class Summary extends Module
   on-accept: ~>
     App.ajax._post "/api/dispatch/#{@model._id}/accept_anexo", null, do
       _success: ~>
+        pending = window.'plaft'.'dispatches_pa'.'pending'
+        accepting = window.'plaft'.'dispatches_pa'.'accepting'
+        pending._remove @model
+        if accepting? then accepting = new Array
+        accepting._push @model
+        window.'plaft'.'dispatches_pa'.'accepting' = new App.model.Dispatches accepting
         alert 'ACEPTADO'
       _bad-request: ~>
         alert 'DENEGADO (Error)'
@@ -213,6 +219,8 @@ class Summary extends Module
 
     super!
 
+
+  /** @protected */ @@_mod-caption = 'DETALLE'
 
 /** @export */
 module.exports = Summary

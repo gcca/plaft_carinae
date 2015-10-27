@@ -102,6 +102,7 @@ class Income extends Module
 
     @model._save @panels2dispatchDTO!, do
       _success: ~>
+        @model._set @panels2dispatchDTO!
         App.model.Dispatches.add-new @model
         @_desktop.notifier.notify do
           _message: 'Guardado'

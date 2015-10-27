@@ -404,7 +404,12 @@ class Numeration extends Module
 
     _templates =
       'amount': ->
-        (new String(it)).replace /(\d)(?=(\d{3})+\.)/g, "$1, "
+        _class = if not it? then gz.Css \hidden
+                 else ''
+        "<span class='#{_class}'>
+          #{(new String(it)).replace /(\d)(?=(\d{3})+\.)/g, "$1, "}
+        </span>"
+
       'channel': ->
         _label-type = if it is 'V' then gz.Css \label-success
                       else if it is 'N' then gz.Css \label-warning
