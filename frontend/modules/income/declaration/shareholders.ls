@@ -83,6 +83,7 @@ class Shareholder extends App.View
 
     <div class='#{gz.Css \form-group} #{gz.Css \col-shareholder-2}'>
       <input type='text' class='#{gz.Css \form-control}'
+          maxlength='8'
           name='document_number'>
     </div>
 

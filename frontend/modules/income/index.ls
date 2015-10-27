@@ -115,6 +115,7 @@ class Income extends Module
         @_panels._stakeholders._body._update-autocompleter App.GLOBALS._stakeholders
         @_panels._declarants._body._update-autocompleter App.GLOBALS._declarants
         @_desktop._spinner-stop!
+        @_panel-group.close-all!
 
       _error: ~>
         @_desktop.notifier.notify do
@@ -149,22 +150,22 @@ class Income extends Module
 
     @model = new App.model.Dispatch _dispatch-dto  # Model for storing data
 
-    _panel-group = new panelgroup.PanelGroup
+    @_panel-group = new panelgroup.PanelGroup
 
     @_panels =  # To build dispatch DTO.
-      _dispatch:  _panel-group.new-panel do
+      _dispatch:  @_panel-group.new-panel do
                     _panel-heading: dispatch.DispatchHeading
                     _panel-body: dispatch.DispatchBody
-      _stakeholders: _panel-group.new-panel do
+      _stakeholders: @_panel-group.new-panel do
                       _panel-heading: panelgroup.PanelHeading
                       _panel-body: StakeholderBody
-      _declaration: _panel-group.new-panel do
+      _declaration: @_panel-group.new-panel do
                       _panel-heading: declaration.Heading
                       _panel-body: declaration.Body
-      _declarationv2: _panel-group.new-panel do
+      _declarationv2: @_panel-group.new-panel do
                       _panel-heading: declarationv2.Heading
                       _panel-body: declarationv2.Body
-      _declarants: _panel-group.new-panel do
+      _declarants: @_panel-group.new-panel do
                      _panel-heading: panelgroup.PanelHeading
                      _panel-body: DeclarantBody
 
@@ -224,7 +225,7 @@ class Income extends Module
       @_panels._declarants._body._dcl-address-el _declaration-address-el._value
 
 
-    _panel-group.open-all!
+    @_panel-group.open-all!
 
     # CHANGE VERSION
     @_panels._declarationv2._hide!
@@ -270,7 +271,7 @@ class Income extends Module
       .._append label-v2
       @el._append ..
 
-    @el._append _panel-group.render!.el
+    @el._append @_panel-group.render!.el
 
   on-dummy: (_value, _dto, _attr, _tr) ->
     if not _dto.'operation'
@@ -376,6 +377,8 @@ class Income extends Module
    * @private
    */
   _panels: null
+
+  /** @private */ _panel-group: null
 
   /** Search options */
   @@_SEARCHENUM =
