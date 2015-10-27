@@ -145,7 +145,10 @@ def drop_dispatches(agency):
     dispatches = Dispatch.all(customs_agency_key=agency.key)
     datastore = agency.datastore
     for dispatch in dispatches:
-        datastore.pending_key.remove(dispatch.key)
+        if dispatch.key in datastore.pending_key:
+            datastore.pending_key.remove(dispatch.key)
+        if dispatch.key in datastore.accepting_key:
+            datastore.accepting_key.remove(dispatch.key)
         datastore.store()
         dispatch.delete()
     agency.store()
