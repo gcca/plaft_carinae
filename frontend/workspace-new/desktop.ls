@@ -86,6 +86,7 @@ class Desktop extends App.View
     @clean-cache!
     @cache-modules._length = 0
     mod = @_new module
+    @_search.clean-input!
     @el._append mod.el
     @current-index = @@FIRST-MODULE
     @send-trigger!
