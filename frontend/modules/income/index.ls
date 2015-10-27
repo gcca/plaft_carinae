@@ -47,6 +47,14 @@ class Income extends Module
           _type: @_desktop.notifier.kWarning
         return
 
+      if _query._length > 11
+        @_desktop.notifier.notify do
+          _message: 'No debe superar la cantidad de digitos'
+          _type: @_desktop.notifier.kWarning
+        @_desktop._search.clean-input!
+        @_desktop._search._focus 'DNI o número de orden'
+        return
+
       App.ajax._get '/api/customer', true, ('document_number': _query), do
         _success: ([_customer-dto]) ~>  # income with registered customer
           if _customer-dto?
