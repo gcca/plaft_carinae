@@ -330,8 +330,7 @@ class Dispatch(RESTful):
                                                      customs_agency,
                                                      customer)
         self.render_json({
-            'id': dispatch.id,
-            'customer': dispatch.customer_key.id()
+            'id': dispatch.id
         })
 
     def put(self, id):
@@ -356,7 +355,10 @@ class Dispatch(RESTful):
         dispatch = model.Dispatch.find(int(id))
 
         datastore = dispatch.customs_agency.datastore
-        datastore.pending_key.remove(dispatch.key)
+        if dispatch.key in datastore.pending_key:
+            datastore.pending_key.remove(dispatch.key)
+        if dispatch.key in datastore.accepting_key:
+            datastore.accepting_key.remove(dispatch.key)
         datastore.store()
 
         dispatch.delete()
