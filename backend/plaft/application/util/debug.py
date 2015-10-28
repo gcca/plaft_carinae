@@ -431,7 +431,8 @@ def create_agency():
                    alerts_key=alert_signals_key)
     ds.store()
 
-    perms = Permissions(modules=data_generator.permissions.officer)
+    perms = Permissions(modules=data_generator.permissions.officer,
+                        alerts_key=alert_signals_key)
     perms.store()
 
     of = Officer(customs_agency_key=ca.key,
@@ -461,6 +462,19 @@ def create_alerts():
         alert = Alert(section=section, code=code,
                       description=description)
         alert.store()
+
+    agencies = model.CustomsAgency.all()
+    alerts_key = [alert.key for alert in model.Alert.all()]
+
+    for agency in agencies:
+        datastore = agency.datastore
+        datastore.alerts_key = alerts_key
+        datastore.store()
+
+        permission = agency.officer.permissions
+        permission.alerts_key = alerts_key
+        permission.store()
+        agency.store()
 
 ## CREATE WORKERS
 def create_workers():
