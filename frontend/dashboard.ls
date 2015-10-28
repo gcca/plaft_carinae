@@ -146,6 +146,15 @@ App.model.Dispatches <<<
       window.'plaft'.'dispatches_pa'.'pending'.'unshift' dispatch
       __counter._ids._push dispatch._id
 
+  # TODO: HARDCODE
+  _remove: (dispatch) ->
+    (window.'plaft'.'dispatches')._remove dispatch
+    if dispatch in (window.'plaft'.'dispatches_pa'.'pending')._models
+      (window.'plaft'.'dispatches_pa'.'pending')._remove dispatch
+    if dispatch in (window.'plaft'.'dispatches_pa'.'accepting')._models
+      (window.'plaft'.'dispatches_pa'.'accepting')._remove dispatch
+    if dispatch._id in __counter._ids
+      __counter._ids._remove dispatch._id
 
 class Dashboard extends App.View
 

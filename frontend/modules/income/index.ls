@@ -285,6 +285,7 @@ class Income extends Module
             if _value
               App.ajax._delete "/api/dispatch/#{_dto.'id'}", do
                 _success: ->
+                  App.model.Dispatches._remove _tr._model
                   $ _tr ._remove!
 
           message = MessageBox._new do
