@@ -18,9 +18,9 @@ class Summary extends Module
         pending = window.'plaft'.'dispatches_pa'.'pending'
         accepting = window.'plaft'.'dispatches_pa'.'accepting'
         pending._remove @model
-        if accepting? then accepting = new Array
-        accepting._push @model
-        window.'plaft'.'dispatches_pa'.'accepting' = new App.model.Dispatches accepting
+        if not accepting? then accepting = new App.model.Dispatches
+        accepting._models._push @model
+        window.'plaft'.'dispatches_pa'.'accepting' = accepting
         alert 'ACEPTADO'
       _bad-request: ~>
         alert 'DENEGADO (Error)'
