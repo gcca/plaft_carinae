@@ -195,6 +195,20 @@ class Alerts extends Module
 
     App.ajax._post "/api/dispatch/#{@model._id}/alerts", _dto, do
       _success: ~>
+        @model._attributes
+          stakeholders = ..'stakeholders'.'0' <<< _dto.'stakeholders'
+          customer = ..'declaration'.'customer' <<< _dto.'declaration'.'customer'
+
+        if not @model._attributes.'alerts_visited'?
+          @model._attributes.'alerts_visited' = new Array
+
+        (@model._attributes.'alerts_visited')._push window.'plaft'.'user'.'id'
+
+        delete _dto.'stakeholders'
+        delete _dto.'declaration'
+
+        @model._set _dto
+
         @_desktop.notifier.notify do
           _message : 'Se actualizó correctamente los datos'
           _type    : @_desktop.notifier.kSuccess
@@ -241,6 +255,8 @@ class Alerts extends Module
       ..html = ''
 
     _keys = Object.keys alerts
+
+    if not _keys? then _keys = new Array
 
     # Mensajes:
     # - si ha sido visitado,
@@ -316,6 +332,7 @@ class Alerts extends Module
     _table._append _tbody
     @_div-table._append _table
 
+  /** @override */
   initialize: ({@model, @_parent})-> super!
 
   /** @override */
@@ -412,14 +429,21 @@ class Alerts extends Module
                 </div>
                 <div class='#{gz.Css \col-md-12}' style='display:none;'></div>"
 
+    if not _dispatch.'alerts'? then _dispatch.'alerts' = new Array
+    if not _dispatch.'alerts_visited'? then _dispatch.'alerts_visited' = new Array
+
     @transform-to-alerts _dispatch.'alerts'
 
     @_div-table = @el.query "##{_table-content}"
 
+    role = if not window.'plaft'.'user'.'role'? \
+           then 'Oficial de Cumplimiento' \
+           else window.'plaft'.'user'.'role'
+
     @el.query ".#{gz.Css \btn-primary}"
       ..on-click ~>
         modal-test = ModalAlert._new do
-            _title: 'SEÑALES DE ALERTA - ' + window.'plaft'.'user'.'role'
+            _title: "SEÑALES DE ALERTA - #{role}"
             _alerts: @_alerts
             _module: @
             _model: @model
