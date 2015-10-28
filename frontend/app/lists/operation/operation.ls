@@ -40,7 +40,7 @@ exports._method =
   (d) -> d.'declaration'.'customer'.'money_source'
   -> 'USD'
   -> 'No aplica'
-  (d) -> d.'amount_soles'
+  (d) -> (d.'exchange_rate' * d.'amount').to-fixed 2
   (d) -> d.'exchange_rate'
   (d) -> if not d.'is_out' then d.'stakeholders'.'0'.'country' else 'No aplica'
   (d) -> if d.'is_out' then d.'stakeholders'.'0'.'country' else 'No aplica'
