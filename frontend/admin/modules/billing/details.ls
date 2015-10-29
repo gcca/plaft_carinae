@@ -73,13 +73,14 @@ class Details extends App.View
     tunit = @el.query ".#{gz.Css \unit}"
     tdescription = @el.query 'textarea'
     tprice = @el.query ".#{gz.Css \price}"
+    @_select-acomext._selected-index = 0
 
     tdescription._value = (String tdescription._value).replace /\n/g, '<br/>'
     price = parseFloat tprice._value
     quantity = parseInt tquantity._value
     amount = price * quantity
 
-    if not tdescription._value or not price or not quantity
+    if not tdescription._value or not quantity
       @clean-elements!
       return
 
@@ -187,7 +188,7 @@ class Details extends App.View
       ..html = '<label>Opcion: </label>'
       @el._first._append ..
 
-    App.dom._new \select
+    @_select-acomext = App.dom._new \select
       .._class = gz.Css \form-control
       ..css = 'margin: 0 10 0 10'
       ..html = '<option>OTRO</option>
@@ -280,6 +281,7 @@ class Details extends App.View
   /** @private */ exchange-rate: null
   /** @private */ discount-igv: null
   /** @private */ to-pay: null
+  /** @private */ _select-acomext: null
 
 /** @export */
 module.exports = Details

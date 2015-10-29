@@ -195,7 +195,7 @@ class CustomsAgency(Handler):
             customs_agency = model.CustomsAgency.new(payload)
             customs_agency.store()
 
-            alerts_key = [a.key for a in model.Alert.query().fetch()]
+            alerts_key = [a.key for a in model.Alert.all()]
             from plaft.application.util.data_generator import permissions
             permission = model.Permissions(modules=permissions.officer,
                                            alerts_key=alerts_key)
@@ -330,12 +330,18 @@ class Billing(Handler):
         p.drawOn(c, 425, 649, mm) # GUIA
 
         # Detalle de la factura
+        position_x = -19
         data = []
         for detail in bil.details:
             data.append([str(detail.quantity), detail.unit,
                          detail.description,
                          money_format(detail.price),
                          money_format(detail.amount)])
+            # HARDCODE
+            if len(detail.description) > 65:
+                position_x = position_x + 29.5
+            else:
+                position_x = position_x + 19
 
         s = styles['Normal']
         s.wordWrap = 'LTR'
@@ -348,7 +354,11 @@ class Billing(Handler):
         t.setStyle(TableStyle([
                 ('VALIGN',(0, 0),(-1,-1),'TOP'),
                 ]))
-        t.drawOn(c, 25, 500, mm)
+        # HARDCODE
+        if "ACOMEXT" in bil.details[0].description:
+            t.drawOn(c, 25, 500, mm)
+        else:
+            t.drawOn(c, 25, (572-position_x), mm)
 
         if bil.is_service:
             #DETRACCION
