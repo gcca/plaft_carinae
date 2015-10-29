@@ -463,8 +463,8 @@ def create_alerts():
                       description=description)
         alert.store()
 
-    agencies = model.CustomsAgency.all()
-    alerts_key = [alert.key for alert in model.Alert.all()]
+    agencies = CustomsAgency.all()
+    alerts_key = [alert.key for alert in Alert.all()]
 
     for agency in agencies:
         datastore = agency.datastore
