@@ -16,15 +16,15 @@ from plaft.domain import model
 from plaft.infrastructure.support import util
 
 
-def login_required(m):
+def login_required(method):
     """Handler method decorator."""
-    def wrapper(s, *a, **k):
+    def wrapper(self, *args, **kargs):
         """check authenticated user."""
-        return (m(s, *a, **k)
-                if s.user
-                else (s.status.FORBIDDEN('restricted-access')
-                      if '/api/' in s.request.url
-                      else s.redirect('/?restricted-access')))
+        return (method(self, *args, **kargs)
+                if self.user
+                else (self.status.FORBIDDEN('restricted-access')
+                      if '/api/' in self.request.url
+                      else self.redirect('/?restricted-access')))
     return wrapper
 
 
@@ -116,9 +116,9 @@ class Handler(RequestHandler):
                      THROTTLED=_rc('Throttled', 503))
 
         def __getattr__(self, attr):
-            r, c = self.CODES[attr]
-            self.handler.response.headers['Warning'] = r
-            self.handler.response.set_status(c)
+            req, cod = self.CODES[attr]
+            self.handler.response.headers['Warning'] = req
+            self.handler.response.set_status(cod)
             return self.write_error
 
     class ContentTypeFactory(BaseFactory):
@@ -142,12 +142,12 @@ class Handler(RequestHandler):
 
         def _default(self, o):
             """Serialize ``o``."""
-            if type(o) is date:
+            if isinstance(o, date):
                 day = o.day if o.day > 9 else '0' + str(o.day)
                 month = o.month if o.month > 9 else '0' + str(o.month)
                 return '%s/%s/%s' % (day, month, o.year)
 
-            if type(o) is datetime:
+            if isinstance(o, datetime):
                 day = o.day if o.day > 9 else '0' + str(o.day)
                 month = o.month if o.month > 9 else '0' + str(o.month)
                 return '%s/%s/%s %s:%s:%s' % (day, month, o.year,
@@ -165,25 +165,26 @@ class Handler(RequestHandler):
         """
         self.response.out.write(*args, **kwargs)
 
-    def write_json(self, serial, rc=None):
+    def write_json(self, serial, _rc=None):
         """Write json response.
 
         Args:
            serial (str): Stringified object.
-           rc (str): Request code.
+           _rc (str): Request code.
 
         """
         self.content_type.JSON()
-        if rc:
-            self.status[rc](ValueError('RC JSON'))
+        if _rc:
+            self.status[_rc](ValueError('RC JSON'))
         self.write(serial)
 
-    def write_file(self, file, name=None):
+    def write_file(self, filepayload, name=None):
+        """"Write file response."""
         if name:
             self.response.headers['Content-Disposition'] = \
                 str('attachment; filename=' + name)
         self.content_type.DOWN()
-        self.write(file)
+        self.write(filepayload)
 
     def write_value(self, name, value):
         """Set cookie parameter.
@@ -343,9 +344,9 @@ class DirectToController(Handler):
 def handler_method(method='get'):
     """Method to handler class."""
     if isinstance(method, str):
-        def wrapper(fn):
+        def wrapper(func):
             """Create class with handler specific method."""
-            return type('HandlerMethod', (Handler,), {method: fn})
+            return type('HandlerMethod', (Handler,), {method: func})
         return wrapper
     return type('HandlerMethod', (Handler,), {'get': method})
 
@@ -492,12 +493,12 @@ class RESTful(BaseRESTful):
     def method(method_or_fn):
         """RESTful handler class from method."""
         if isinstance(method_or_fn, str):  # method
-            def wrapper(fn):
+            def wrapper(func):
                 """Create class with RESTful specific method."""
-                return type(fn.func_name,
+                return type(func.func_name,
                             (BaseRESTful,),
-                            {method_or_fn: fn,
-                             'with_id': fn.func_code.co_argcount > 1})
+                            {method_or_fn: func,
+                             'with_id': func.func_code.co_argcount > 1})
             return wrapper
         return type(method_or_fn.func_name,  # fn
                     (BaseRESTful,),
@@ -537,6 +538,215 @@ def route(method='get'):
             return type(fn.func_name, (RouteHandler,), {method: fn})
         return wrapper
     return type(method.func_name, (RouteHandler,), {'get': method})
+
+
+# New RESTful
+
+class NewRESTfulBase(Handler):
+
+    _model = None
+
+    def get(self, model_id=None):
+        """READ or LIST."""
+        if model_id:
+            try:
+                model = self._model.find(int(model_id))
+            except ValueError:
+                self.status.BAD_REQUEST('Bad id %s' % model_id)
+            else:
+                if model:
+                    self.render_json(model)
+                else:
+                    self.status.NOT_FOUND('Not found by id %s' % model_id)
+
+        else:
+            self.render_json(list(self._model.all(**self.query)))
+
+    def post(self):
+        """CREATE."""
+        query = self.query
+
+        if query:
+            model = self._model.new(query)
+            try:
+                model.store()
+            except IOError:
+                self.status.INTERNAL_ERROR('Internal store')
+            else:
+                self.write_json('{"id":%d}' % model.id)
+        else:
+            self.status.BAD_REQUEST('No query')
+
+    def put(self, model_id):
+        """EDIT."""
+        try:
+            model = self._model.find(int(model_id))
+        except ValueError:
+            self.status.BAD_REQUEST('Bad id %s' % model_id)
+        else:
+            if model:
+                query = self.query
+                if query:
+                    model << query
+                    try:
+                        model.store()
+                    except IOError:
+                        self.status.INTERNAL_ERROR('Internal store')
+                    else:
+                        self.write_json('{}')
+                else:
+                    self.status.BAD_REQUEST('No query')
+            else:
+                self.status.NOT_FOUND('Not found by id %s' % model_id)
+
+    def delete(self, model_id):
+        """REMOVE."""
+        try:
+            model = self._model.find(int(model_id))
+        except ValueError:
+            self.status.BAD_REQUEST('Bad id %s' % model_id)
+        else:
+            if model:
+                model.delete()
+            else:
+                self.status.NOT_FOUND('Not found by id %s' % model_id)
+
+
+class NewRESTfulNested(Handler):
+
+    _model = None
+    _parent = None
+
+    def get(self, parent_id, model_id=None):
+        """READ or LIST."""
+        if model_id:
+            try:
+                model = self._model.find(int(model_id))
+                # TODO: check parent
+                # if self._parent.find(parent_id).
+            except ValueError:
+                self.status.BAD_REQUEST('Bad id %s' % model_id)
+            else:
+                if model:
+                    self.render_json(model)
+                else:
+                    self.status.NOT_FOUND('Not found by id %s' % model_id)
+
+        else:
+            self.render_json(list(self._model.all(**self.query)))
+
+    def post(self, parent_id):
+        """CREATE."""
+
+        try:
+            parent = self._parent.find(int(parent_id))
+        except ValueError:
+            self.status.BAD_REQUEST('Bad parent id: ' + parent_id)
+        else:
+            if parent:
+                query = self.query
+                if query:
+                    model = self._model.new(query)
+                    try:
+                        model.store()
+                    except IOError:
+                        self.status.INTERNAL_ERROR('Internal store')
+                    else:
+                        self.write_json('{"id":%d}' % model.id)
+                else:
+                    self.status.BAD_REQUEST('No query')
+            else:
+                self.status.NOT_FOUND('Parent not found: ' + parent_id)
+
+    def put(self, parent_id, model_id):
+        """EDIT."""
+        try:
+            model = self._model.find(int(model_id))
+        except ValueError:
+            self.status.BAD_REQUEST('Bad id %s' % model_id)
+        else:
+            if model:
+                query = self.query
+                if query:
+                    model << query
+                    try:
+                        model.store()
+                    except IOError:
+                        self.status.INTERNAL_ERROR('Internal store')
+                    else:
+                        self.write_json('{}')
+                else:
+                    self.status.BAD_REQUEST('No query')
+            else:
+                self.status.NOT_FOUND('Not found by id %s' % model_id)
+
+    def delete(self, parent_id, model_id):
+        """REMOVE."""
+        try:
+            model = self._model.find(int(model_id))
+        except ValueError:
+            self.status.BAD_REQUEST('Bad id %s' % model_id)
+        else:
+            if model:
+                model.delete()
+            else:
+                self.status.NOT_FOUND('Not found by id %s' % model_id)
+
+
+class NewMetaRESTful(type):
+
+    def __init__(cls, name, bases, dct):
+        if 'NewRESTful' != name:
+            from plaft.config import urls
+            from webapp2 import Route
+            from webapp2_extras.routes import PathPrefixRoute
+            classname = name.lower()
+            prefix = '/' + classname
+            if '_parent' in dct:
+                prefix = ('/%s/<parent_id:\\d+>%s'
+                          % (dct['_parent'].__name__.lower(), prefix))
+            routes = [
+                Route(prefix, cls),
+                Route(prefix + '/<model_id:\\d+>', cls)
+            ]
+            for key, value in dct.items():
+                if isinstance(value, type) and issubclass(value, Handler):
+                    method = ((val for val in value.__dict__.itervalues()
+                               if not (val is None or isinstance(val, str)))
+                              .next())
+                    if method.func_code.co_argcount > 1:
+                        varname = method.func_code.co_varnames[1]
+                        # must be classname no modelname (to remove)
+                        # if varname.startswith(classname):
+                        modelname = cls._model.__name__.lower()
+                        if varname.startswith(modelname):
+                            key = '<%s_id:\\d+>/' % modelname + key
+                    routes.append(Route('%s/%s' % (prefix, key), value))
+            urls.append(PathPrefixRoute('/api', routes))
+        super(NewMetaRESTful, cls).__init__(name, bases, dct)
+
+    def __new__(cls, name, bases, dct):
+        if 'NewRESTful' != name:
+            bases += ((NewRESTfulNested
+                       if '_parent' in dct
+                       else NewRESTfulBase),)
+        return super(NewMetaRESTful, cls).__new__(cls, name, bases, dct)
+
+
+class NewRESTful(Handler):
+
+    __metaclass__ = NewMetaRESTful
+
+    @classmethod
+    def method(cls, func):
+        """RESTful handler class from static method."""
+        if isinstance(func, str):
+            method = func
+            def wrapper(func):
+                """Create class with RESTful specific method."""
+                return type(func.func_name, (Handler,), {method: func})
+            return wrapper
+        return type(func.func_name, (Handler,), {'get': func})
 
 
 # vim: et:ts=4:sw=4
