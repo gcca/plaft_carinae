@@ -545,25 +545,6 @@ class SampleData(RESTful):
         debug.create_unusual(agency, float(percent)/100)
 
     @RESTful.method('post')
-    def create_customers(self):
-        customers = debug.create_customers()
-        self.render_json(customers)
-
-    @RESTful.method('post')
-    def create_agency(self):
-        agency = debug.create_agency()
-        self.render_json(agency)
-
-    @RESTful.method('post')
-    def create_stakeholders(self):
-        stakeholders = debug.create_stakeholders()
-        self.render_json(stakeholders)
-
-    @RESTful.method('post')
-    def create_alerts(self):
-        debug.create_alerts()
-
-    @RESTful.method('post')
     def execute_all(self):
         """Ejecutar todos los elementos estaticos"""
         'Alertas'
@@ -572,6 +553,8 @@ class SampleData(RESTful):
         debug.create_customers()
         'Vinculados'
         debug.create_stakeholders()
+        'Crear documentos'
+        debug.create_documents()
 
 
 # vim: et:ts=4:sw=4
