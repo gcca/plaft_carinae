@@ -2,6 +2,7 @@
 
 
 FieldType = App.builtins.Types.Field
+Documents = require './documents'
 
 /**
  * Breadcrumb
@@ -210,6 +211,7 @@ class Breadcrumb extends App.View
 
     @el._append @menu-buttons
     @el._append @group-buttons
+    @el._append (new Documents).render!.el
     @el._append @breadcrumb
     super!
 

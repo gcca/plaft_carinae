@@ -1,11 +1,3 @@
-/**
- * @module modules
- * @author gcca@gcca.tk (cristHian Gz. <gcca>)
- */
-
-Module = require '../workspace-new/module'
-
-
 class Treeview extends App.View
 
   /** @override */
@@ -67,7 +59,10 @@ class Treeview extends App.View
     super!
 
 
-class Documents extends Module
+class Documents extends App.View
+
+  /** @override */
+  _tagName: \div
 
   /**
    * Add options from buttons or inputs.
@@ -224,8 +219,8 @@ class Documents extends Module
 
   /** @override */
   render: ->
-    @_desktop._lock!
-    @_desktop._spinner-start!
+    ## @_desktop._lock!
+    ## @_desktop._spinner-start!
     App.ajax._get '/api/document/list', null, do
       _success: (_tree) ~>
         @render-controls!
@@ -253,8 +248,8 @@ class Documents extends Module
           @el._append ..
 
 
-        @_desktop._spinner-stop!
-        @_desktop._unlock!
+        ## @_desktop._spinner-stop!
+        ## @_desktop._unlock!
       _error: -> alert '2553a338-575e-11e5-a88b-001d7d7379f5'
     super!
 
@@ -264,13 +259,6 @@ class Documents extends Module
   /** @private */ _viewer: null
   /** @private */ _current-node: null
 
-  /** @protected */ @@_mod-caption = 'LEGISLACIÓN'
-  /** @protected */ @@_mod-icon    = gz.Css \print
-  /** @protected */ @@_mod-hash    = 'auth-hash-documents'
 
-
-/** @export */
+/* @export */
 module.exports = Documents
-
-
-/* vim: ts=2 sw=2 sts=2 et: */
