@@ -189,7 +189,8 @@ def operations(agency):
             create_operation(agency, dstp_operation)
         else:
             dispatches_o = [d for d in list(dispatch_set)
-                            if d.get().customer_key == dispatch.get().customer_key]
+                            if d.get().customer_key == dispatch.get().customer_key
+                            and d.get().amount < 10000]
             amount = sum(d.get().amount for d in dispatches_o)
 
             if amount >= 50000:
