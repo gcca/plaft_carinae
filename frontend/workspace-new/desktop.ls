@@ -14,8 +14,7 @@ class Desktop extends App.View
   _tagName: \div
 
   /** @override */
-  _className: gz.Css \row
-
+  _className: "#{gz.Css \row} #{gz.Css \container}"
 
   /**
    * On search event to module.

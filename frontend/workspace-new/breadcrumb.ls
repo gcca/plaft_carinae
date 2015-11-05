@@ -1,7 +1,6 @@
 /** @module workspace */
 
 
-
 FieldType = App.builtins.Types.Field
 
 /**
