@@ -204,6 +204,7 @@ class RESTful(Handler):
         """RESTful handler class from static method."""
         if isinstance(func, str):
             method = func
+
             def wrapper(func):
                 """Create class with RESTful specific method."""
                 return type(func.func_name, (RESTfulMethod,), {method: func})

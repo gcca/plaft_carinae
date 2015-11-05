@@ -195,15 +195,14 @@ class ImportData(RESTful):
             payload['income_date'] = datetime.now()
             payload['numeration_date'] = (datetime.now()) + timedelta(days=2)
             payload['jurisdiction'] = [j.to_dto() for j in jurisdictions
-                              if j.code == payload['jurisdiction']][0]
+                                       if j.code == payload['jurisdiction']][0]
             payload['regime'] = [r.to_dto() for r in regimes
-                                       if r.code == payload['regime']][0]
+                                 if r.code == payload['regime']][0]
 
             payload['exchange_rate'] = str(payload['exchange_rate'])
             dispatch = plaft.application.dispatch.create(payload,
                                                          customs_agency)
         self.render_json(len(dispatches_dto))
-
 
     @RESTful.method('post')
     def stakeholder(self):
@@ -293,8 +292,10 @@ class Operation(RESTful):
                 dispatch = operation.dispatches[i]
                 index = operation.num_modalidad()[i]
                 worksheet.write(filas, 1, dispatch.order, dispatch_format)
-                worksheet.write(filas, 2, dispatch.regime.code, dispatch_format)
-                worksheet.write(filas, 3, operation.row_number, dispatch_format)
+                worksheet.write(filas, 2, dispatch.regime.code,
+                                dispatch_format)
+                worksheet.write(filas, 3, operation.row_number,
+                                dispatch_format)
                 worksheet.write(filas, 4, operation.register_number,
                                 dispatch_format)
                 worksheet.write(filas, 5, dispatch.dam, dispatch_format)
@@ -745,6 +746,7 @@ class Document(RESTful):
     @RESTful.method
     def list(self):
         from plaft.domain.model.documents import Header
+
         def create(parent_key, sublist):
             headers = (Header.query(Header.parent_key == parent_key)
                        .order(Header.created)

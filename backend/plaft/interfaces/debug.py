@@ -478,6 +478,7 @@ class Operation(RESTful):
 class Datastore(RESTful):
     """Datastore RESTful."""
 
+
 class SampleData(RESTful):
     """SampleData RESTful."""
 

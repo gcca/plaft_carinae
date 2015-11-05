@@ -16,7 +16,7 @@ stakeholders = data_generator.stakeholders.stakeholders
 regimes = data_generator.regimes.regimes
 declarants = data_generator.declarants.declarants
 
-## UTILS
+# UTILS
 
 TYPE2NUMBER = {
     'ruc': 9,
@@ -47,7 +47,7 @@ def jump_holydays(date):
     return date
 
 
-## CREATE DISPATCHES
+# CREATE DISPATCHES
 def create_dispatches(agency, datastore, customers, n=5):
     from calendar import monthrange
 
@@ -118,7 +118,8 @@ def create_dispatches(agency, datastore, customers, n=5):
     return [d for d in list_dispatches
             if d.get().customs_agency_key == agency.key]
 
-## NUMERATE DISPATCHES
+
+# NUMERATE DISPATCHES
 def numerate_dispatches(agency, percent):
     year = 2015
     dispatches = Dispatch.all(customs_agency_key=agency.key)
@@ -128,9 +129,10 @@ def numerate_dispatches(agency, percent):
         jurisdiction = dispatch.jurisdiction
         regime = dispatch.regime
         income_date = dispatch.income_date
-        dispatch.numeration_date=jump_holydays(
-                                    income_date + timedelta(days=2))
-        dispatch.exchange_rate=random.choice(('3.51','3.52','3.53','3.54'))
+        dispatch.numeration_date = jump_holydays(
+                                            income_date + timedelta(days=2))
+        dispatch.exchange_rate = random.choice(('3.51', '3.52',
+                                                '3.53', '3.54'))
         dispatch.dam = '%s-%s-%s-%s' % (jurisdiction.code,
                                         year, regime.code,
                                         ''.join(random.sample(digits, 6)))
@@ -140,7 +142,8 @@ def numerate_dispatches(agency, percent):
 
     return dispatches_n
 
-## DELETE DISPATCHES
+
+# DELETE DISPATCHES
 def drop_dispatches(agency):
     dispatches = Dispatch.all(customs_agency_key=agency.key)
     datastore = agency.datastore
@@ -153,7 +156,8 @@ def drop_dispatches(agency):
         dispatch.delete()
     agency.store()
 
-## CREATE OPERATIONS
+
+# CREATE OPERATIONS
 def create_operation(agency, dstp_operation):
     datastore = agency.datastore
     counter = datastore.next_operation_counter()
@@ -200,7 +204,7 @@ def operations(agency):
         dispatch_set = dispatch_set.difference(dstp_operation)
 
 
-## READ ALERTS
+# READ ALERTS
 def read_alerts():
     operation_secod = (('I', '3'), ('I', '5'), ('I', '7'),
                        ('I', '8'), ('I', '10'), ('I', '11'),
@@ -257,7 +261,8 @@ def read_alerts():
 
     return dict(zip(roles, alerts_keys))
 
-## CREATE EMPLOYEES
+
+# CREATE EMPLOYEES
 def create_employees(agency, j=3):
 
     modules = data_generator.permissions.employee
@@ -286,7 +291,8 @@ def create_employees(agency, j=3):
         j -= 1
     agency.store()
 
-## CREATE OPERATION UNUSUAL -- VERIFICAR
+
+# CREATE OPERATION UNUSUAL -- VERIFICAR
 def create_unusual(agency, percent):
     dispatches = [d.key for d in agency.datastore.pending]
     for k in random.sample(dispatches,
@@ -319,11 +325,11 @@ def create_unusual(agency, percent):
         dispatch.store()
 
 
-## #############################
-## NO-DEPENDENCY [TABLES]
-## #############################
+# #############################
+# NO-DEPENDENCY [TABLES]
+# #############################
 
-## CREATE CUSTOMERS
+# CREATE CUSTOMERS
 def create_customers():
     from collections import namedtuple
 
@@ -418,7 +424,8 @@ def create_customers():
 
     return customers
 
-## CREATE AGENCY
+
+# CREATE AGENCY
 def create_agency():
     import uuid
     agency = (str(uuid.uuid1()))[:8]
@@ -447,7 +454,7 @@ def create_agency():
     return ca
 
 
-## CREATE STAKEHOLDERS
+# CREATE STAKEHOLDERS
 def create_stakeholders():
     for stakeholder in stakeholders:
         stakeholder.document_number = pick_document_number_by(
@@ -456,7 +463,7 @@ def create_stakeholders():
     return stakeholders
 
 
-## CREATE ALERTS
+# CREATE ALERTS
 def create_alerts():
     """Main alerts."""
     for section, code, description, help in data_generator.alerts.alerts:
@@ -477,7 +484,8 @@ def create_alerts():
         permission.store()
         agency.store()
 
-## CREATE WORKERS
+
+# CREATE WORKERS
 def create_workers():
     from datetime import datetime, timedelta
     data = (
@@ -498,7 +506,8 @@ def create_workers():
                                  * timedelta(hours=random.randint(40, 90)))
             knowledge.store()
 
-## CREATE DOCUMENTS
+
+# CREATE DOCUMENTS
 def create_documents():
     """Public documents."""
     import pickle

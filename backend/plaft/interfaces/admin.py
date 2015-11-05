@@ -21,7 +21,6 @@ from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER
 from reportlab.pdfgen import canvas
 
 
-
 __all__ = ['views', 'handlers']
 
 UNIDADES = (
@@ -144,7 +143,8 @@ class AdminSite(DirectToController):
     def _args(self):
         self.add_arg('user', self.user)
         self.add_arg('customs',
-                     {c.customs['name']:c.customs for c in model.CustomsAgency.all()})
+                     {c.customs['name']: c.customs
+                      for c in model.CustomsAgency.all()})
 
 
 class Admin(DirectToController):
@@ -215,7 +215,6 @@ class CustomsAgency(Handler):
             customs_agency = model.CustomsAgency.new(payload)
             customs_agency.store()
 
-
         datastore = model.Datastore(customs_agency_key=customs_agency.key)
         datastore.store()
         self.render_json({'id': customs_agency.id})
@@ -249,6 +248,7 @@ class CustomsAgency(Handler):
         customs_agency = model.CustomsAgency.find(int(id))
         customs_agency.delete()
 
+
 class Billing(Handler):
     """."""
 
@@ -261,7 +261,7 @@ class Billing(Handler):
         customs = bil.customs_agency
 
         def money_format(money):
-            return '%s %s' %(bil.billing_type, format(money, '.2f'))
+            return '%s %s' % (bil.billing_type, format(money, '.2f'))
 
         def encode_str(string):
             f = (string).encode('utf-8').replace('&', '&amp;')
@@ -277,18 +277,17 @@ class Billing(Handler):
         styles.add(ParagraphStyle(name='normal-style', fontSize=10,
                                   leftIndent=50,
                                   spaceBefore=5.5, spaceAfter=5.5,
-                                  fontName='Helvetica',leading=10))
+                                  fontName='Helvetica', leading=10))
         # CUSTOMS DETRACCION STYLE
         styles.add(ParagraphStyle(name='detraccion-style', fontSize=9,
                                   leftIndent=50,
                                   spaceBefore=5.5, spaceAfter=5.5,
-                                  fontName='Helvetica',leading=10))
+                                  fontName='Helvetica', leading=10))
         # CUSTOMS MONEY STYLE
         styles.add(ParagraphStyle(name='money-style', fontSize=10,
                                   leftIndent=50,
                                   spaceBefore=5.5, spaceAfter=5.5,
                                   fontName='Helvetica'))
-
 
         c = canvas.Canvas(self.response.out, pagesize=A4)
 
@@ -325,15 +324,15 @@ class Billing(Handler):
 
         p = Paragraph(encode_str(bil.seller), style=styles["name-style"])
         p.wrapOn(c, 170, 10)
-        p.drawOn(c, 465, 687, mm) # VENDEDOR
+        p.drawOn(c, 465, 687, mm)  # VENDEDOR
 
         p = Paragraph(encode_str(bil.payment), style=styles["normal-style"])
         p.wrapOn(c, 150, 10)
-        p.drawOn(c, 270, 649, mm) # CONDICIONES PAGO
+        p.drawOn(c, 270, 649, mm)  # CONDICIONES PAGO
 
         p = Paragraph(encode_str(bil.guide), style=styles["normal-style"])
         p.wrapOn(c, 150, 10)
-        p.drawOn(c, 425, 649, mm) # GUIA
+        p.drawOn(c, 425, 649, mm)  # GUIA
 
         # Detalle de la factura
         position_x = -19
@@ -353,12 +352,13 @@ class Billing(Handler):
         s.wordWrap = 'LTR'
         s.fontSize = 9
         s.fontName = 'Helvetica'
-        data2 = [[Paragraph(encode_str(cell), s) for cell in row] for row in data]
+        data2 = [[Paragraph(encode_str(cell), s) for cell in row]
+                 for row in data]
         t = Table(data2, colWidths=(.45*inch, .6*inch, 4.3*inch,
-                                  1*inch, 1.2*inch))
+                                    1*inch, 1.2*inch))
         t.wrapOn(c, 170, 4000)
         t.setStyle(TableStyle([
-                ('VALIGN',(0, 0),(-1,-1),'TOP'),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
                 ]))
         # HARDCODE
         if "ACOMEXT" in bil.details[0].description:
@@ -367,7 +367,7 @@ class Billing(Handler):
             t.drawOn(c, 25, (572-position_x), mm)
 
         if bil.is_service:
-            #DETRACCION
+            # DETRACCION
             p = Paragraph('AFECTO A LA DETRACCION<br/>CTA  CTE. BANCO'
                           ' DE<br/>LA NACION Nº 00058000779',
                           style=styles["detraccion-style"])
@@ -375,19 +375,19 @@ class Billing(Handler):
             p.drawOn(c, 50, 250, mm)
 
         # Descripcion del total
-        data = [[money_format(bil.total), 'S/. 0.00' , '  ',
+        data = [[money_format(bil.total), 'S/. 0.00', '  ',
                  money_format(bil.igv), money_format(bil.to_pay)]]
         s = styles['BodyText']
         s.wordWrap = 'LTR'
         s.alignment = TA_CENTER
         s.fontSize = 9
         s.fontName = 'Helvetica'
-        data2 = [[Paragraph(encode_str(cell), s) for cell in row] for row in data]
+        data2 = [[Paragraph(encode_str(cell), s) for cell in row]
+                 for row in data]
         table = Table(data2, colWidths=(1.32*inch, 1.22*inch, 1.32*inch,
-                                  1.52*inch, 1.82*inch))
+                                        1.52*inch, 1.82*inch))
         table.wrapOn(c, 800, 100)
         table.drawOn(c, 20, 180, mm)
-
 
         # Nombre del monto
         p = Paragraph(number_letter(bil.to_pay,
@@ -397,7 +397,6 @@ class Billing(Handler):
         p.drawOn(c, 20, 155, mm)
 
         c.save()
-
 
     def post(self):
         payload = self.query
@@ -412,6 +411,7 @@ class Billing(Handler):
         billing.customs_agency_key = customs.key
         billing.store()
         self.render_json({'id': billing.id})
+
 
 @handler_method
 def list_billing(handler):

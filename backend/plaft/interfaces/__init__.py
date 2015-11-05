@@ -70,7 +70,6 @@ class Handler(RequestHandler):
 
     _user_model = model.User
 
-
     class BaseFactory(object):
         """Base HTTP attribute setter factory."""
 

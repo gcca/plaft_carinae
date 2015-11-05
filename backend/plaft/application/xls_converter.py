@@ -27,10 +27,13 @@ STAKEHOLDER_HEADER = {
 }
 
 # => return List<{'order': value_in_xls}>
+
+
 def converter(workbook, XLSDTO, index=4):
     sheet = workbook[workbook.get_sheet_names()[0]]
     s = 65
     H2K = {}
+
     while True:
         text = sheet['%s%d' %(chr(s), index)].value
         if not text or text is '':
@@ -39,6 +42,7 @@ def converter(workbook, XLSDTO, index=4):
         s = s + 1
     lts = []
     row = index + 1
+
     while True:
         dct = {}
         for k in XLSDTO:
@@ -49,8 +53,6 @@ def converter(workbook, XLSDTO, index=4):
             break
         lts.append(dct)
         row = row + 1
-
-
 
     return lts
 

@@ -225,7 +225,7 @@ functions = {
         lambda d: d.position,
         lambda d: d.address,
         lambda d: ('%s %s' % (d.ubigeo.code, d.ubigeo.name)
-                 if d.ubigeo else d.ubigeo),
+                   if d.ubigeo else d.ubigeo),
         lambda d: d.phone
     ),
     'customer': (
@@ -267,11 +267,11 @@ functions = {
                    if c.document_type == 'ruc'
                    else 'No aplica'),
         lambda c: (c.ciiu.name
-                   if c.ciiu?  else ''),
-        lambda c: (c.employment if c.employment  else 'No aplica'),
+                   if c.ciiu? else ''),
+        lambda c: (c.employment if c.employment else 'No aplica'),
         lambda c: c.address,
         lambda c: ('%s %s' % (c.ubigeo.code, c.ubigeo.name)
-                   if c.ubigeo?  else '')
+                   if c.ubigeo? else '')
         lambda c: c.phone,
 
     ),
@@ -280,7 +280,7 @@ functions = {
         lambda s: 'No aplica',
         lambda s: 'No aplica',
         lambda s: ('Persona Jurídica'
-                   if s.document_type == 'ruc'  else 'Persona Natural'),
+                   if s.document_type == 'ruc' else 'Persona Natural'),
         lambda s: 'No aplica',
         lambda s: 'No aplica',
         lambda s: 'No aplica',
@@ -332,11 +332,9 @@ functions = {
         lambda d: d.amount_soles,
         lambda d: d.exchange_rate,
         lambda d: d.stakeholders[0].country if not d.is_out else 'No aplica',
-        lambda d: d.stakeholders[0].country if d.is_out  else 'No aplica'
+        lambda d: d.stakeholders[0].country if d.is_out else 'No aplica'
     )
 }
-
-
 
 
 # vim: et:ts=4:sw=4
