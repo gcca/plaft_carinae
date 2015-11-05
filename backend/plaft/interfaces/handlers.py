@@ -824,9 +824,9 @@ class NewKnowledge(NewRESTful):
     _parent = model.Worker
     _model = model.KnowledgeWorker
 
-    # @NewRESTful.resourcemethod
-    # def extra_lista(self):
-    #     self.write('all')
+    @NewRESTful.method
+    def extra_lista(self, knowledgeworker_id):
+        self.write('all')
 
 
 # vim: et:ts=4:sw=4

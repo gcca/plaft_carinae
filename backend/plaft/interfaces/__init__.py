@@ -637,9 +637,8 @@ class NewRESTfulNested(Handler):
 
     def post(self, parent_id):
         """CREATE."""
-
         try:
-            parent = self._parent.find(int(parent_id))
+            parent = self._parent._model.find(int(parent_id))
         except ValueError:
             self.status.BAD_REQUEST('Bad parent id: ' + parent_id)
         else:
@@ -714,6 +713,9 @@ class NewMetaRESTful(type):
                     method = ((val for val in value.__dict__.itervalues()
                                if not (val is None or isinstance(val, str)))
                               .next())
+                    print '\033[31m',
+                    print method,
+                    print '\033[0m'
                     if method.func_code.co_argcount > 1:
                         varname = method.func_code.co_varnames[1]
                         # must be classname no modelname (to remove)
