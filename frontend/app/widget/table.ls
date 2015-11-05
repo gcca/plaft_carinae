@@ -79,10 +79,10 @@
 class Table extends App.View
 
   /** @override */
-  _tagName: \table
+  _tagName: \div
 
   /** @override */
-  _className: "#{gz.Css \table} #{gz.Css \table-hover}"
+  _className: "#{gz.Css \col-md-12} #{gz.Css \no-padding}"
 
   /**
    * (Dummy) On double click over row ({@code tr}).
@@ -160,6 +160,43 @@ class Table extends App.View
       _obj = _obj[_key]
     _obj
 
+  load-page: (evt) ~>
+    @current-page._class._toggle gz.Css \active
+
+    @current-page = evt._target
+    cur-page = @current-page._rel
+    start-item = cur-page * @row-show
+    end-item = start-item + @row-show
+
+    tr-s = @table._last.child-nodes
+
+    for hide-tr in tr-s
+      $ hide-tr ._hide!
+
+    for show-tr in ($ tr-s .slice start-item, end-item)
+      $ show-tr ._show!
+
+    @current-page._class._toggle gz.Css \active
+
+  load-pagination: (collection) ->
+    total-rows = collection._length
+
+    if total-rows <= @row-show
+      return
+
+    num-pages = parseInt total-rows/@row-show
+
+    for page from 0 to num-pages
+      page-num = page + 1
+      App.dom._new \li
+        ..html = "<a>#{page-num}</a>"
+        .._rel = page
+        ..on-click @load-page
+        @pagination._append ..
+
+    evt = _target: @pagination._first
+    @load-page evt
+
   /**
    * Build rows from {@code Collection}.
    * @param {Collection} _collection
@@ -178,6 +215,8 @@ class Table extends App.View
     for _model in _collection._models
       @add-row _model
 
+    @load-pagination _collection._models
+
   /**
    * Simple template for no user template passed.
    * @see @initialize
@@ -193,13 +232,27 @@ class Table extends App.View
   initialize: ({@_attributes, \
                 @_labels, \
                 _templates = {}, \
+                @row-show = 12, \
                 _column-cell-style = {} \
                 @on-dblclick-row = App._void._Function}) ->
     super!
+
+    App.dom._new \nav
+      .._class = gz.Css \pull-right
+      ..html = "<ul class='#{gz.Css \pagination}
+                         \ #{gz.Css \pagination-sm}'
+                    style='margin:0'></ul>"
+      @pagination = .._first
+      @el._append ..
+
+    @table = App.dom._new \table
+      .._class = "#{gz.Css \table} #{gz.Css \table-hover}"
+      @el._append ..
+
     # <thead>
     @t-head = App.dom._new \thead
     @make-header @_labels
-    @el._append @t-head
+    @table._append @t-head
 
     # Evaluating templates and column cell style
     for _attr in @_attributes
@@ -214,7 +267,7 @@ class Table extends App.View
 
     # <tbody>
     @t-body = App.dom._new \tbody
-    @el._append @t-body
+    @table._append @t-body
 
   /** @private */ _attributes: null
   /** @private */ _templates: null
@@ -222,6 +275,14 @@ class Table extends App.View
   /** @private */ _column-cell-style: null
   /** @private */ t-head: null
   /** @private */ t-body: null
+  /** @private */ table: null
+  /** @private */ pagination: null
+  /** @private */ row-show: null
+
+  /** @private */
+  current-page:
+    _class: _toggle: App._void._Function
+
   /**
    * On double click over row ({@code tr}).
    * @see @__dummy-on-dbl-click
