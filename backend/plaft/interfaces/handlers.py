@@ -821,7 +821,7 @@ class NewWorker(NewRESTful):
 
 class NewKnowledge(NewRESTful):
 
-    _parent = model.Worker
+    _parent = NewWorker
     _model = model.KnowledgeWorker
 
     @NewRESTful.method

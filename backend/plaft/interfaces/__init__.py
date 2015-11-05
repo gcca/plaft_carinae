@@ -709,13 +709,11 @@ class NewMetaRESTful(type):
                 Route(prefix + '/<model_id:\\d+>', cls)
             ]
             for key, value in dct.items():
-                if isinstance(value, type) and issubclass(value, Handler):
+                if (isinstance(value, type)
+                    and issubclass(value, RESTfulMethod)):
                     method = ((val for val in value.__dict__.itervalues()
                                if not (val is None or isinstance(val, str)))
                               .next())
-                    print '\033[31m',
-                    print method,
-                    print '\033[0m'
                     if method.func_code.co_argcount > 1:
                         varname = method.func_code.co_varnames[1]
                         # must be classname no modelname (to remove)
@@ -735,6 +733,10 @@ class NewMetaRESTful(type):
         return super(NewMetaRESTful, cls).__new__(cls, name, bases, dct)
 
 
+class RESTfulMethod(Handler):
+    pass
+
+
 class NewRESTful(Handler):
 
     __metaclass__ = NewMetaRESTful
@@ -746,9 +748,9 @@ class NewRESTful(Handler):
             method = func
             def wrapper(func):
                 """Create class with RESTful specific method."""
-                return type(func.func_name, (Handler,), {method: func})
+                return type(func.func_name, (RESTfulMethod,), {method: func})
             return wrapper
-        return type(func.func_name, (Handler,), {'get': func})
+        return type(func.func_name, (RESTfulMethod,), {'get': func})
 
 
 # vim: et:ts=4:sw=4
