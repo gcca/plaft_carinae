@@ -8,7 +8,7 @@
 
 """
 import plaft.application
-from plaft.interfaces import RESTful, handler_method, NewRESTful
+from plaft.interfaces import RESTful, handler_method
 from plaft.domain import model
 
 
@@ -804,29 +804,6 @@ class Worker(RESTful):
                 self.write_json('{}')
             else:
                 self.status.NOT_FOUND('Worker not found: ' + worker_id)
-
-
-class NewWorker(NewRESTful):
-
-    _model = model.Worker
-
-    @NewRESTful.method
-    def lista(self, worker_id):
-        self.write('all')
-
-    @NewRESTful.method
-    def datos(self):
-        self.write('all')
-
-
-class NewKnowledge(NewRESTful):
-
-    _parent = model.Worker
-    _model = model.KnowledgeWorker
-
-    @NewRESTful.method
-    def extra_lista(self, knowledgeworker_id):
-        self.write('all')
 
 
 # vim: et:ts=4:sw=4
