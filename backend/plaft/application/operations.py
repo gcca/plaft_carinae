@@ -21,6 +21,7 @@ def dispatches_in_operation(customs_agency):
     for customer_key in customers:
         pendings_customer = [dispatch for dispatch in dispatches
                              if dispatch.customer_key == customer_key and
+                             dispatch.amount < 10000 and
                              dispatch.numeration_date.month == current_month-1]
         amount = sum(dispatch.amount for dispatch in pendings_customer)
 

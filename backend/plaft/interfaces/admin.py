@@ -294,13 +294,19 @@ class Billing(Handler):
 
         # Descripcion de la agencia de aduana
         p = Paragraph(encode_str(customs.name), style=styles["name-style"])
-        p.wrapOn(c, 200, 10)
-        p.drawOn(c, 23, 680, mm)
+        p.wrapOn(c, 250, 10)
+        if len(customs.name) >= 40:
+            p.drawOn(c, 23, 680, mm)
+        else:
+            p.drawOn(c, 23, 692, mm)
 
         p = Paragraph(encode_str(customs.address),
                       style=styles["normal-style"])
-        p.wrapOn(c, 240, 10)
-        p.drawOn(c, 23, 657, mm)
+        p.wrapOn(c, 250, 10)
+        if len(customs.address) > 42:
+            p.drawOn(c, 23, 657, mm)
+        else:
+            p.drawOn(c, 23, 662, mm)
 
         p = Paragraph(encode_str(customs.document_number),
                       style=styles["normal-style"])
