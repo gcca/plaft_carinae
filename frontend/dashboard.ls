@@ -54,6 +54,7 @@ BETAS =
   Profile       = require './modules/profile'
   Simulate      = require './modules/simulate'
   Debug         = require './modules/debug'
+  ImportData    = require './modules/import-data'
 
 ## FIRST MODULE
 App.FIRST-MODULE = Welcome
