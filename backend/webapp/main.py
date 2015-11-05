@@ -7,13 +7,15 @@
 
 """
 
-from webapp2 import WSGIApplication, Route
+from webapp2 import WSGIApplication, Route, RequestHandler
 from webapp2_extras.routes import PathPrefixRoute
 from plaft.interfaces import views, handlers, admin
 import plaft.config
 
 
-urls = [
+urls = plaft.config.urls
+
+urls += [
     # Views
     ('/', views.SignIn),
     ('/dashboard', views.Dashboard),
@@ -126,13 +128,6 @@ def restful_init():
                                                subrestful.__name__),
                                     subrestful))
 
-        # # print('\n\033[32m%s\033[0m' % ('='*70))
-        # from pprint import pprint
-        # for route in routes:
-        #     if 'document' in route.template:
-        #       print('\n\033[35m%s\033[0m\n\t\033[34m%s\033[0m'
-        #             % (route.template, str(route.handler)[8:-2]))
-        # # print('\033[32m%s\033[0m\n' % ('='*70))
         urls.append(PathPrefixRoute('/api', routes))
 
 
@@ -150,6 +145,55 @@ def routes_init():
 
 restful_init()
 routes_init()
+
+
+class Urls(RequestHandler):
+
+    def get(self):
+        def htos(h):
+            return '%s&nbsp;&nbsp;&nbsp;&nbsp;</td><td>%s' % (
+                (k for k in h.__dict__.keys() + [' ']
+                 if k in ('get', 'post', 'put', 'delete', ' '))
+                .next().upper(),
+                repr(h)[25:-2])
+
+        def esc(s):
+            s = s.replace('<', '&lt;')
+            s = s.replace('>', '&gt;')
+            s = s.replace(' ', '&nbsp;')
+            # s = s.replace('', '&;')
+            return s
+
+        html = [
+            '<html>'
+            '<head><style>'
+            'td:first-child {padding-right:50px}'
+            '</style></head>'
+            '<body>'
+            '<table>'
+        ]
+        for url in urls:
+            if isinstance(url, tuple):
+                html.append(
+                    '<tr><td>%s</td><td>%s</td></tr>'
+                    % (esc(url[0]), htos(url[1])))
+            elif isinstance(url, PathPrefixRoute):
+                html.append('<tr><td>%s</td><td></td></tr>' % url.prefix)
+                for sub in url.routes:
+                    html.append(
+                        '<tr><td>&nbsp&nbsp;&nbsp&nbsp%s</td><td>%s</td></tr>'
+                        % (esc(sub.template[4:]),
+                           htos(sub.handler)))
+            else:
+                html.append(
+                    '<tr><td>%s</td><td>%s</td></tr>' % (
+                        esc(url.template[4:]), htos(url.handler)))
+            html.append('<tr><td>&nbsp;</td></tr>')
+        html.append('</table></body></html>')
+        self.response.out.write(''.join(html))
+urls.append(('/urls', Urls))
+
+
 app = WSGIApplication(urls, debug=plaft.config.DEBUG)
 
 
