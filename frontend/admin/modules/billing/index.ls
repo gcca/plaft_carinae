@@ -128,7 +128,7 @@ class Billing extends Module
     # DESCRIPCION DE LA FACTURA
     new Date
       day = ..get-date!
-      month =  ..get-month!
+      month =  (..get-month! + 1)
       year = ..get-full-year!
     App.dom._new \div
       .._class = "#{gz.Css \col-md-6}  #{gz.Css \place-customer}"
@@ -246,7 +246,6 @@ class BillList extends Module
     _labels =
       'Nombre/Razón Social'
       'Dirección'
-      'Celular'
       'Fecha de Factura'
       'Monto Total'
       ''
@@ -254,14 +253,27 @@ class BillList extends Module
     _attributes =
       'customs_agency.name'
       'customs_agency.address'
-      'customs_agency.phone'
       'date_bill'
       'to_pay'
 
     _templates =
       'to_pay': (_value, _dto, _attr, _tr) ->
         _dto.'billing_type' +
-        \ (new String(_value)).replace /(\d)(?=(\d{3})+\.)/g, "$1, "
+        \ ((_value).to-fixed 2)).replace /(\d)(?=(\d{3})+\.)/g, "$1, "
+
+
+    _column-cell-style =
+      'customs_agency.name': 'text-overflow:ellipsis;
+                              white-space:nowrap;
+                              overflow:hidden;
+                              max-width:27ch;
+                              text-align:left'
+
+      'customs_agency.address': 'text-overflow:ellipsis;
+                                 white-space:nowrap;
+                                 overflow:hidden;
+                                 max-width:27ch;
+                                 text-align:left'
 
     App.ajax._get '/api/admin/list-billing', true, do
       _success: (dto) ~>
