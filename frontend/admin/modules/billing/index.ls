@@ -259,7 +259,7 @@ class BillList extends Module
     _templates =
       'to_pay': (_value, _dto, _attr, _tr) ->
         _dto.'billing_type' +
-        \ ((_value).to-fixed 2)).replace /(\d)(?=(\d{3})+\.)/g, "$1, "
+        \ ((_value).to-fixed 2).replace /(\d)(?=(\d{3})+\.)/g, "$1, "
 
 
     _column-cell-style =
@@ -281,6 +281,7 @@ class BillList extends Module
           _attributes: _attributes
           _labels: _labels
           _templates: _templates
+          _column-cell-style: _column-cell-style
           on-dblclick-row: (evt) ~>
             @_desktop.load-next-page(Billing, do
                                      model: evt._target._model)
