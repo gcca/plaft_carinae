@@ -15,6 +15,11 @@ indexes:
   - name: document.number
   - name: name
 
+- kind: Dispatch
+  properties:
+  - name: customs_agency_key
+  - name: order
+
 - kind: Header
   properties:
   - name: parent_key
