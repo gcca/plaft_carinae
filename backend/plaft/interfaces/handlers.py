@@ -168,48 +168,27 @@ class ImportData(RESTful):
     @RESTful.method('post')
     def dispatch(self):
         import openpyxl
-        from plaft.application.xls_converter import (xls_converter,
-                                                     DISPATCH_HEADER)
-        from plaft.application.util import data_generator
-        from datetime import datetime, timedelta
+        from plaft.application.xls_converter import (converter,
+                                                     DISPATCH_HEADER,
+                                                     dto2dispatch,
+                                                     save_dispatches)
 
         f = (self.request.POST['data']).file
         wb = openpyxl.load_workbook(filename=f)
-        dispatches_dto = converter(wb, DISPATCH_HEADER)
+        dtos = converter(wb, DISPATCH_HEADER)
         customs_agency = self.user.customs_agency
-        jurisdictions = data_generator.jurisdictions.jurisdictions
-        regimes = data_generator.regimes.regimes
 
-        for payload in dispatches_dto:
-            payload['declaration'] = {
-                'customer': {
-                    'document_number': payload['document_number'],
-                    'document_type': 'ruc',
-                    'name': payload['name'],
-                    'address': payload['address']
-                }
-            }
-            del payload['document_number']
-            del payload['document_type']
-            del payload['name']
-            payload['income_date'] = datetime.now()
-            payload['numeration_date'] = (datetime.now()) + timedelta(days=2)
-            payload['jurisdiction'] = [j.to_dto() for j in jurisdictions
-                                       if j.code == payload['jurisdiction']][0]
-            payload['regime'] = [r.to_dto() for r in regimes
-                                 if r.code == payload['regime']][0]
+        dispatches = dto2dispatch(dtos)
 
-            payload['exchange_rate'] = str(payload['exchange_rate'])
-            dispatch = plaft.application.dispatch.create(payload,
-                                                         customs_agency)
-        self.render_json(len(dispatches_dto))
+        save_dispatches(dispatches, customs_agency)
+
+        self.render_json(len(dispatches))
 
     @RESTful.method('post')
     def stakeholder(self):
         import openpyxl
-        from plaft.application.xls_converter import (xls_converter,
+        from plaft.application.xls_converter import (converter,
                                                      STAKEHOLDER_HEADER)
-        from plaft.application.util import data_generator
 
         f = (self.request.POST['data']).file
         wb = openpyxl.load_workbook(filename=f)
@@ -220,11 +199,10 @@ class ImportData(RESTful):
             dispatch = model.Dispatch.find(order=payload['order'])
 
             if dispatch:
-                stakeholder = model.Stakeholder.new(payload)
-                if dispatch.stakeholders:
-                    dispatch.stakeholders[0] = stakeholder
-                else:
-                    dispatch.stakeholders.append(stakeholder)
+                stakeholder = model.Stakeholder.find(name=payload['name'])
+                if not stakeholder:
+                    stakeholder = model.Stakeholder.new(payload)
+                dispatch.stakeholders = [stakeholder]
                 stakeholder.store()
                 dispatch.store()
 

@@ -264,6 +264,13 @@ def pending_and_accepting(customs_agency):
     Raises:
 
     """
+    # HARDCODE
+    from plaft.domain.newmodel import Dispatch
+    dispatches = (Dispatch.query(Dispatch.customs_agency_key == customs_agency.key)
+                  .order(-Dispatch.numeration_date)
+                  .fetch(99))
+    customs_agency.datastore.pending_key = [d.key for d in dispatches]
+    customs_agency.datastore.store()
     return {
         'pending': sorted([d for d in customs_agency.datastore.pending],
                           key=lambda d: d.order, reverse=True),
@@ -286,7 +293,7 @@ def anexo_seis(dispatch, **args):
 
 def list_operations(customs_agency):
     """."""
-    operations = customs_agency.datastore.operations_last_month
+    operations = customs_agency.datastore.operations
     for o in operations:
         o.dispatches_key = [d.key for d in sorted([d for d in o.dispatches],
                                                   key=lambda d: d.regime.code)]
