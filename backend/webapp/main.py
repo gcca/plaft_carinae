@@ -9,7 +9,7 @@
 
 from webapp2 import WSGIApplication, Route, RequestHandler
 from webapp2_extras.routes import PathPrefixRoute
-from plaft.interfaces import views, handlers, admin
+from plaft.interfaces import views, handlers, admin, newhandlers
 import plaft.config
 
 

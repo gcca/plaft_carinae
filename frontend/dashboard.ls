@@ -49,6 +49,7 @@ App.MODULES = [m for m in _.flatten PRE-MODULES when m._constructor isnt String]
 
 # HARDCODE
 BETAS =
+  NewIncome     = require './modules/new-income'
   WorkerAlerts  = require './modules/worker-alerts'
   OperationList = require './modules/operation-list'
   Profile       = require './modules/profile'

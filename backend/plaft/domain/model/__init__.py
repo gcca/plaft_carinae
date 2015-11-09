@@ -465,15 +465,18 @@ class Dispatch(dom.Model):
         self.third = d.third
         self.money_source = d.customer.money_source_type
 
-    def to_dict(self):
-        dct = super(Dispatch, self).to_dict()
-        dct['declaration'] = self.declaration.to_dict()
-        dct['last_date_ros'] = self.calculate_date_works(
-                                    self.numeration_date,
-                                    self.numeration_date+timedelta(days=15)
-                                    ) if self.numeration_date else None
+    def to_dict(self, include=None):
+        dct = super(Dispatch, self).to_dict(include=include)
+        if include is not None and 'declaration' in include:
+            dct['declaration'] = self.declaration.to_dict()
+        if include is not None and 'last_date_ros' in include:
+            dct['last_date_ros'] = self.calculate_date_works(
+                                        self.numeration_date,
+                                        self.numeration_date+timedelta(days=15)
+                                        ) if self.numeration_date else None
         # TODO: Implementar dict en lista de cascada para `Structured`
-        dct['alerts'] = [a.to_dto() for a in self.alerts]
+        if include is not None and 'alerts' in include:
+            dct['alerts'] = [a.to_dto() for a in self.alerts]
         return dct
 
     @property

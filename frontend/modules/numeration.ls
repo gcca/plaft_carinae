@@ -356,7 +356,7 @@ class NumerationEdit extends Module
 
 /**
  * Numeration
- * --------
+ * ----------
  * @class Numeration
  * @extends Module
  */
