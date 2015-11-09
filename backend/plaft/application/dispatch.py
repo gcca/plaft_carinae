@@ -265,7 +265,6 @@ def pending_and_accepting(customs_agency):
 
     """
     # HARDCODE
-    from plaft.domain.newmodel import Dispatch
     dispatches = (Dispatch.query(Dispatch.customs_agency_key == customs_agency.key)
                   .order(-Dispatch.numeration_date)
                   .fetch(99))
